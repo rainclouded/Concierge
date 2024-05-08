@@ -1,8 +1,8 @@
 import re
-import Configs as cfg
+import app.Configs as cfg
 from secrets import randbelow
-from DatabaseController import DatabaseController
-from UserObject import UserObject as User
+from app.DatabaseController import DatabaseController
+from app.UserObject import UserObject as User
 
 
 class AuthenticationManager:
@@ -10,19 +10,21 @@ class AuthenticationManager:
     Class for handling the authentication of users as well as the creation
     of new users.
     """
+
+    #Regex to find alphabetic characters
     GET_ALPHAPETIC_REGEX = '[a-zA-Z]'
+    #Regex to find numeric characters
     GET_NUMERIC_REGEX = '[0-9]'
 
-    def __init(self, database):
+    def __init__(self, database):
         self.db = DatabaseController(database)
-        pass
 
 
     def check_hash(self, user:User, password:str)->bool:
         """Validates the hash of password to that of user
 
             Args:
-                user: Dictionary value that contains a "hash" value and an "id"
+                user: Dictionary value that contains a hash value and an id
                     among other values
                 password: string of the password to verify
 
@@ -76,22 +78,18 @@ class AuthenticationManager:
             Returns:
                 If the password meets all criteria
         """
-        if len(password) < cfg.PASSWORD_MINIMAL_LENGTH:
-            return False
-        
-        if (
-            cfg.PASSWORD_MUST_CONTAIN_LETTER 
-            and not re.findall(self.GET_ALPHAPETIC_REGEX, password)
-        ):
-            return False
-        
-        if (
-            cfg.PASSWORD_MUST_CONTAIN_NUMBER 
-            and not re.findall(self.GET_NUMERIC_REGEX, password)
-        ):
-            return False
-        
-        return True
+
+        return not (
+            len(password) < cfg.PASSWORD_MINIMAL_LENGTH
+            or (
+                cfg.PASSWORD_MUST_CONTAIN_LETTER 
+                and not re.findall(self.GET_ALPHAPETIC_REGEX, password)
+            )
+            or (
+                cfg.PASSWORD_MUST_CONTAIN_NUMBER 
+                and not re.findall(self.GET_NUMERIC_REGEX, password)
+            )
+        )
     
 
     def validate_staff_username(self, password:str)->bool:
@@ -103,22 +101,18 @@ class AuthenticationManager:
             Returns:
                 If the password meets all criteria
         """
-        if len(password) < cfg.USERNAME_MINIMAL_LENGTH:
-            return False
+        return not (
+            len(password) < cfg.USERNAME_MINIMAL_LENGTH
+            or (
+                cfg.USERNAME_MUST_CONTAIN_LETTER 
+                and not re.findall(self.GET_ALPHAPETIC_REGEX, password)
+            )
+            or (
+                cfg.USERNAME_MUST_CONTAIN_NUMBER 
+                and not re.findall(self.GET_NUMERIC_REGEX, password)
+            )
+        )
         
-        if (
-            cfg.USERNAME_MUST_CONTAIN_LETTER 
-            and not re.findall(self.GET_ALPHAPETIC_REGEX, password)
-        ):
-            return False
-        
-        if (
-            cfg.USERNAME_MUST_CONTAIN_NUMBER 
-            and not re.findall(self.GET_NUMERIC_REGEX, password)
-        ):
-            return False
-        
-        return True
 
 
     def create_new_guest(self, new_guest:User)->User:
@@ -175,8 +169,10 @@ class AuthenticationManager:
                 If the password meets all criteria
         """
         usernames = list(filter(lambda x: x.username, self.db.get_staff()))
-        if (self.validate_staff_password(new_user.password)
+        return (
+            self.validate_staff_password(new_user.password)
             and self.validate_staff_username(new_user.username)
-            and new_user.username not in usernames):
-            return True
-        return False
+            and new_user.username not in usernames
+            )
+        
+            

@@ -1,5 +1,5 @@
 import hashlib
-from Mockdata import Mockdata
+from app.Mockdata import Mockdata
 
 #Criteria for a staff password
 PASSWORD_HASH_FUNCTION = hashlib.sha256
@@ -14,7 +14,7 @@ USERNAME_MUST_CONTAIN_LETTER = True
 USERNAME_MUST_CONTAIN_NUMBER = True
 
 #The Different fields a user can have
-USER_ATTRIBUTES = ['username', 'password', 'hash','type', 'id']
+USER_ATTRIBUTES = ['username', 'hash','type', 'id']
 GUEST_TYPE = 'guest'
 STAFF_TYPE = 'staff'
 

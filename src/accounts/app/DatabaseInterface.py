@@ -59,12 +59,3 @@ class DatabaseInterface(ABC):
         """
         raise NotImplementedError
     
-    @classmethod
-    @abstractmethod
-    def get_largest_id():
-        """Get the largest user id
-        
-            Raises:
-                NotImplementedError if the method is not implemented
-        """
-        raise NotImplementedError

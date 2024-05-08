@@ -1,5 +1,5 @@
-from Mockdata import Mockdata
-from UserObject import UserObject as User
+from app.UserObject import UserObject as User
+from app.DatabaseInterface import DatabaseInterface
 
 class DatabaseController:
     """
@@ -7,9 +7,9 @@ class DatabaseController:
     with any concrete implementation of the DatabaseInterface
     This class queries the database.
     """
-    def __init__(self, database):
-        #TODO: this should be set through dependency injection
-        self.db = database
+
+    def __init__(self, database:DatabaseInterface):
+        self._database = database
 
     def get_users(self)->list[User]:
         """
@@ -18,7 +18,7 @@ class DatabaseController:
             Returns:
                 List of user objects
         """
-        return [User(user) for user in self.db.get_all_users()]
+        return [User(**user) for user in self.database.get_all_users()]
 
 
     def get_staff(self)->list[User]:
@@ -28,7 +28,7 @@ class DatabaseController:
             Returns:
                 List of user objects
         """
-        return [User(staff) for staff in self.db.get_all_staff()]
+        return [User(**staff) for staff in self.database.get_all_staff()]
 
 
     def get_guests(self)->list[User]:
@@ -38,7 +38,7 @@ class DatabaseController:
             Returns:
                 List of guest objects
         """
-        return [User(guest) for guest in self.db.get_all_guests()]
+        return [User(**guest) for guest in self.database.get_all_guests()]
 
         
     def create_guest(self, new_guest:User)->User:
@@ -51,7 +51,7 @@ class DatabaseController:
             Returns:
                 The user if successfully added else None
         """
-        if self.db.add_guest(self._user_to_dict(new_guest)):
+        if self.database.add_guest(self._user_to_dict(new_guest)):
             return new_guest
         return None
 
@@ -66,7 +66,7 @@ class DatabaseController:
             Returns:
                 The user added or none
         """
-        if self.db.add_staff(self._user_to_dict(new_staff)):
+        if self.database.add_staff(self._user_to_dict(new_staff)):
             return new_staff
         return None
 
@@ -88,7 +88,7 @@ class DatabaseController:
             Returns:
                 bool if the deletion was successful
         """
-        return self.db.delete_user(user.username)
+        return self.database.delete_user(user.username)
 
 
     def _user_to_dict(self, user:User)->dict:
@@ -100,6 +100,14 @@ class DatabaseController:
                 dict of User's attributes
         """
         return user.__dict__
+    
+    @property
+    def database(self):
+        return self._database
+    
+    @database.setter
+    def database(self, new_database):
+        self._database = new_database
 
 
     #ToDo: Add support for connecting/committing and other db administration

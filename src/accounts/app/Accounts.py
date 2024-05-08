@@ -1,9 +1,9 @@
 from flask import Flask, jsonify, request
 import argparse
 import os
-from UserObject import UserObject as User
-from AuthenticationManager import AuthenticationManager
-import Configs as cfg
+from app.UserObject import UserObject as User
+from app.AuthenticationManager import AuthenticationManager
+import app.Configs as cfg
 
 app = Flask(__name__)
 
@@ -39,6 +39,9 @@ def get_port():
 
 @app.route("/accounts/", methods=['GET'])
 def index():
+    """
+    Route the index page
+    """
     response = {
         "message": "You have contacted the accounts", 
         "status": "success"
@@ -48,6 +51,9 @@ def index():
 
 @app.route("/accounts/create_account", methods=["POST"])
 def create():
+    """
+    Route to the account_creation
+    """
     response = {
         "message" : "Could not create user",
         "status" : "error"
@@ -76,6 +82,9 @@ def create():
 
 @app.route("/accounts/login_attempt", methods=["POST"])
 def login():
+    """
+    Route to login
+    """
     response = {
         "user_id": None,
         "message": f"Login Fail - Invalid Credentials",
@@ -93,4 +102,4 @@ if __name__ == "__main__":
     port = get_port()
     print(f"Starting server on port {port}...")
     app.run(host="0.0.0.0", port=port)
-    auth = AuthenticationManager()
+    auth = AuthenticationManager(cfg.DATABASE)

@@ -1,20 +1,19 @@
-from DatabaseInterface import DatabaseInterface
-from UserObject import UserObject as User
+from app.DatabaseInterface import DatabaseInterface
 
 class Mockdata(DatabaseInterface):
     """
     Class used to mock the database and
     provide mock data; just for testing
     """
-
-    users = [
+    def __init__(self):
+        self._users = [
         {
             'username' : 'test1',
             'id' : '1',
             'hash' : '',
             'type' : 'staff'
         },
-                {
+        {
             'username' : 'test2',
             'id' : '2',
             'hash' : '',
@@ -45,10 +44,20 @@ class Mockdata(DatabaseInterface):
             'type' : 'guest'
         }
     ]
+        
+    @property
+    def users(self):
+        return self._users
+
+
+    @users.setter
+    def users(self, new_list):
+        self._users = new_list
+
 
     def get_all_users(self):
         return self.users
-    
+
 
     def get_all_staff(self):
         return list(filter(lambda x : x['type'] == 'staff', self.users))
