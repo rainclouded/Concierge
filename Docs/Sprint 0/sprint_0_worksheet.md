@@ -4,7 +4,7 @@
 ***
 # **Concierge**
 
-Presentation available [here](/Docs/Sprint 0/Presentation/Sprint0.pdf)
+Presentation available [here](/Docs/Sprint\ 0/Presentation/Sprint0.pdf)
 ## Vision Statement:
 
 Concierge is an easy to use hotel administration system which allows guests to communicate with hotel operators from anywhere and provide comprehensive administration tools for hotel employees.
