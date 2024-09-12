@@ -28,6 +28,8 @@ The second from end will be for mobile and desktop and will utilize Vue.js and J
 
 ### Why this will work well:
 
+We chose MongoDB as we have identified it to be more suitable for the objects we will store compared to a SQL based database. Furthermore, it integrates well with our back-end infrastructure allowing us to scale the size as needed. Both Python and C# provide comprehensive web server operability, we will leverage the speed of C# as well as the simplicity of Python to support our end point services. Lastly, to design nice-looking and full-featured front ends we chose Angular/TypeScript and React/JavaScript. Angular will be used for the Desktop focused front end due to its reusable component system and React will be used for the Mobile focused front end for its seamless transition to desktop views.
+
 ## Features
 
 **Core features:**
