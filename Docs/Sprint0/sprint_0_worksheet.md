@@ -9,7 +9,7 @@ Concierge is an easy to use hotel administration system which allows guests to c
 
 
 
-## initial Architecture:
+## Initial Architecture:
 
 ```mermaid
   graph TD;
@@ -22,7 +22,7 @@ Concierge is an easy to use hotel administration system which allows guests to c
 The database will be Mongodb.\
 The backend will be microservices orchestrated by Kubernetes with Python (and maybe C#) webservers.\
 The first front end will be for desktop and will utilize Angular 18 and TypeScript.\
-The second from end will be for mobile and desktop and will utilize Vue.js and JavaScript.
+The second from end will be for mobile and desktop and will utilize React and JavaScript.
 
 ### Why this will work well:
 
@@ -51,6 +51,6 @@ We chose MongoDB as we have identified it to be more suitable for the objects we
 ## Work division:
 
 Each team member will be appointed a '(co-)leader' of each main architectural pillar.
-Database, Backend, Pipeline, Repository/Kanban, First Front-end, and Second Front end.
-The leader of each piece is not required to create everything for that piece but rather oversee it to ensure development is on time and complete. That is, they will look for missing tests, documentation, and other issues while monitoring progress on that particular area. Each member can work on any part of the software as needed, work division and tracking will be done using a kanban board to ensure balanced distruibution. The board is the source of truth, if there are any discrepancies, the board resolves them.
+Database, Backend, Pipeline, Repository/Kanban, First Front-end, and Second Front-end.
+The leader of each piece is not required to create everything for that piece but rather oversee it to ensure development is on time and complete. That is, they will look for missing tests, documentation, and other issues while monitoring progress on that particular area. Each member can work on any part of the software as needed, work division and tracking will be done using a kanban board to ensure balanced distruibution. The board is the source of truth, if there are any discrepancies, the board resolves them. Additionally, there is an expectation each member will develop a complete feature utilizing the entirety of the tech stack.
 
