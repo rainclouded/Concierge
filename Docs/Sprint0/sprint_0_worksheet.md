@@ -3,6 +3,9 @@
 # [**Concierge**](https://github.com/rainclouded/Concierge)
 
 Presentation available [here](https://umanitoba.sharepoint.com/:p:/r/sites/COMP4350/Shared%20Documents/General/Sprint%200/FullPresentation.pptx?d=w097f0f3995644dca837a1eb97dde907b&csf=1&web=1&e=fyVh6n)
+
+[Project/Kanban Board](https://github.com/users/rainclouded/projects/2)
+
 ## Vision Statement:
 
 Concierge is an easy to use hotel administration system which allows guests to communicate with hotel operators from anywhere and provide comprehensive administration tools for hotel employees.
@@ -37,11 +40,21 @@ The backend will be microservices orchestrated by Kubernetes with Python (and ma
 The first front end will be for desktop and will utilize Angular 18 and TypeScript.\
 The second from end will be for mobile and desktop and will utilize React and JavaScript.
 
+#### Separation of layers
+
+
+We will have a 3 layer architecture all encapsulated within microservices.
+
+All layers will be hosted on azure separated into their own microservice component.
+
+The first layer is the UI layer which consists of our two front ends. The second layer is our business/logic layer. This layer handles the logic/processing of the communications between the differet layers. Lastly is out data layer which consists of all of our databases storing all user data.
+
+
 ### Why this will work well:
 
 We chose MongoDB and MySQL as we have identified Mongo to be more suitable for some of the data we will store compared to a SQL based database while utilizing MySQL to maintain our more classical object structured data. Both of these databases integrate well with our back-end infrastructure allowing us to scale the size as needed.​For our backend, both Python and C# provide comprehensive web server operability, we will leverage the speed of C# as well as the simplicity of Python to support our end point services. We will make use of microservices hosted on azure faciliteted by Kubernetes to permit scalability and accessibility as we would like to scale the application according to the user base.  
 
-​Lastly, to design nice-looking and full-featured front ends we chose Angular/TypeScript and React/JavaScript. React is a lightweight and popular JavaScript library, known for its efficiency and flexibility. Its wide adoption ensures access to numerous supported libraries and tools, which can significantly reduce development time, especially for designing user interfaces. With its rich ecosystem, creating visually appealing and polished applications is made easier and faster. This will be used for the mobile/guest front end. With React’s numerous supported libraries and tools, creating visually appealing and polished applications will be a breeze. Which is why we chose this framework for our customer/mobile front end. The component-centric structure of Angular will be leveraged in order to develop a clean and modular desktop environment making use of the various cooked-in libraries which allow angular apps to look so sleek and modern while providing full feature support.
+​Lastly, to design nice-looking and full-featured front-ends we chose Angular/TypeScript and React/JavaScript. React is a lightweight and popular JavaScript library, known for its efficiency and flexibility. Its wide adoption ensures access to numerous supported libraries and tools, which can significantly reduce development time, especially for designing user interfaces. With its rich ecosystem, creating visually appealing and polished applications is made easier and faster. This will be used for the mobile/guest front end. With React’s numerous supported libraries and tools, creating visually appealing and polished applications will be a breeze. Which is why we chose this framework for our customer/mobile front end. The component-centric structure of Angular will be leveraged in order to develop a clean and modular desktop environment making use of the various cooked-in libraries which allow angular apps to look so sleek and modern while providing full feature support.
 
 ## Features
 
