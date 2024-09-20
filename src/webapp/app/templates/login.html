@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Login Page</title>
+   <style>
+      body {
+         font-family: Verdana, sans-serif;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         height: 100vh;
+         margin: 0;
+      }
+
+      .container {
+         max-width: 400px;
+         width: 94%;
+         padding: 20px;
+         border: 1px solid #ddd;
+         border-radius: 5px;
+         box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .container h1 {
+         margin-top: 0;
+      }
+
+      .container input {
+         width: 100%;
+         padding: 10px;
+         margin: 10px 0;
+         border: 1px solid #ccc;
+         border-radius: 5px;
+      }
+
+      .container button {
+         padding: 10px 20px;
+         border: none;
+         background-color: #0072FF;
+         color: #fff;
+         border-radius: 8px;
+         cursor: pointer;
+      }
+
+      .container button:hover {
+         background-color: #0056b3;
+      }
+
+      .error {
+         background-color: #e90614;
+         color: white;
+         padding: 10px 15px;
+         border-radius: 5px;
+         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+         font-size: 14px;
+         margin: 10px 0;
+         display: inline-block;
+         margin-top: 20px;
+      }
+
+      #session_key {
+         margin-bottom: 10px;
+      }
+   </style>
+</head>
+
+<body>
+   <div class="container" id="loginForm">
+      <h1>Login</h1>
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <div class="error" id="response" style="display: none;"></div>
+      <button onclick="submitLogin()">Submit</button>
+   </div>
+   <div class="container" id="successForm" style="display: none;">
+      <h1>Welcome!</h1>
+      <div id="session_key"></div>
+      <button onclick="window.location.reload();">Logout</button>
+   </div>
+
+   <script>
+      async function submitLogin() {
+         const username = document.getElementById('username').value;
+         const password = document.getElementById('password').value;
+
+         try {
+            const response = await fetch('/sessions/', {
+               method: 'POST',
+               headers: {
+                  'Content-Type': 'application/json'
+               },
+               body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+            document.getElementById('response').textContent = data.message;
+            document.getElementById('response').style.display = 'block'
+            if (data.status == 'ok') {
+               document.getElementById("loginForm").style.display = "none";
+               document.getElementById("successForm").style.display = "block";
+               document.getElementById("session_key").textContent = data.session_key;
+            }
+         } catch (error) {
+            document.getElementById('response').textContent = `Error: ${error.message}`;
+         }
+      }
+   </script>
+</body>
+
+</html>
