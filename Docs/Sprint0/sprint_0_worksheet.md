@@ -25,14 +25,7 @@ Concierge stands out by modernizing the hotel experience, aligning it with today
 
 ## Initial Architecture:
 
-```mermaid
-  graph TD;
-      A[MongoDB]-->B[Microservices on Azure\Using C# and Python];
-      C[MongoDB]-->B;
-      D[MySQL]-->B;
-      B-->C[Front end 1 Angular];
-      B-->D[Front End 2 React];
-```
+![Architecture Diagram](/Docs/Sprint0/images/arch.png)
 
 ### Description
 The database will be MongoDB and MySQL.\
