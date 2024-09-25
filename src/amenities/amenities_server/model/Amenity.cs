@@ -14,4 +14,16 @@ public class Amenity
         StartTime = startTime;
         EndTime = endTime;
     }
+
+    public override bool Equals(object? obj)
+    {
+        if(obj is Amenity otherAmenity)
+        {
+            return this.AmenityID == otherAmenity.AmenityID && this.AmenityName.Equals(otherAmenity.AmenityName) &&
+                   this.AmenityDescription.Equals(otherAmenity.AmenityDescription) && this.StartTime.Equals(otherAmenity.StartTime) &&
+                   this.EndTime.Equals(otherAmenity.EndTime);
+        }
+
+        return false;
+    }
 }

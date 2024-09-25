@@ -21,4 +21,8 @@
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\amenities_server\amenities_server.csproj" />
+  </ItemGroup>
+
 </Project>

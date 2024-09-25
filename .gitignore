@@ -3,3 +3,8 @@
 __pycache__
 .vs
 *.sln
+
+bin/
+obj/
+
+obj/Debug/net*/

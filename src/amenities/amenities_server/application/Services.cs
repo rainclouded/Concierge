@@ -5,7 +5,7 @@ public static class Services
     public static IAmenityPersistence GetAmenityPersistence(string forProduction)
     {
         if(_amenityPersistence == null){
-            if(forProduction == "test")
+            if(forProduction.Equals("test"))
             {
                 _amenityPersistence = new StubAmenityPersistence();
             }

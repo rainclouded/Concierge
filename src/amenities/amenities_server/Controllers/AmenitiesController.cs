@@ -13,6 +13,11 @@ public class AmenitiesController : ControllerBase
         _amenityPersistence = Services.GetAmenityPersistence(Environment.GetEnvironmentVariable("forProduction"));
     }
 
+    public AmenitiesController(IAmenityPersistence amenityPersistence)
+    {
+        _amenityPersistence =  amenityPersistence;
+    }
+
     //get: /amenities
     [HttpGet]
     public IActionResult GetAmenities()
@@ -43,7 +48,7 @@ public class AmenitiesController : ControllerBase
 
     //post: /amenities
     [HttpPost]
-    public IActionResult CreateAmenity(Amenity newAmenity)
+    public IActionResult AddAmenity(Amenity newAmenity)
     {
         //validate session
 
