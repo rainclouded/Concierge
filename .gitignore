@@ -6,3 +6,6 @@ __pycache__
 bin/
 obj/
 
+Debug/
+Release/
+net8.0/

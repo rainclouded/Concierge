@@ -8,14 +8,16 @@ public class AmenitiesController : ControllerBase
 {
     private IAmenityPersistence _amenityPersistence;
 
-    public AmenitiesController()
+    public AmenitiesController(IAmenityPersistence amenityPersistence = null)
     {
-        _amenityPersistence = Services.GetAmenityPersistence(Environment.GetEnvironmentVariable("forProduction"));
-    }
-
-    public AmenitiesController(IAmenityPersistence amenityPersistence)
-    {
-        _amenityPersistence =  amenityPersistence;
+        if (amenityPersistence == null)
+        {
+            _amenityPersistence = Services.GetAmenityPersistence(Environment.GetEnvironmentVariable("forProduction"));
+        }
+        else
+        {
+            _amenityPersistence = amenityPersistence;
+        }
     }
 
     //get: /amenities
