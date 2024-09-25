@@ -2,9 +2,7 @@
 .pytest_cache
 __pycache__
 .vs
-*.sln
 
 bin/
 obj/
 
-obj/Debug/net*/
