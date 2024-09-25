@@ -1,27 +1,50 @@
-# StaffWebapp
+# Admin Dashboard - Staff Webapp
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.9.
+## Prerequisites
 
-## Development server
+Ensure you have the following installed on your machine:
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Node.js
+- npm (Node Package Manager)
+- Docker (for containerization)
 
-## Code scaffolding
+## Run Locally
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+1. Install Angular CLI
 
-## Build
+If you haven’t already installed Angular CLI globally, run the following command:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```
+npm install -g @angular/cli
+```
 
-## Running unit tests
+2. Install dependencies
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```
+npm install
+```
 
-## Running end-to-end tests
+3. Run Angular App
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Start the development server using the Angular CLI:
 
-## Further help
+```
+ng serve
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Once the server is running, you can access the application in your web browser at:
+
+[http://localhost:4200/](http://localhost:4200/)
+
+
+## Docker Setup
+
+Run Docker Compose
+
+Execute the following command to start the application:
+
+```
+docker-compose up
+```
+
+This will build the necessary containers and start the application.

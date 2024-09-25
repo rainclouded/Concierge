@@ -1,8 +1,42 @@
-# React + Vite
+# Hotel Services App - Guest Webapp
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Prerequisites
 
-Currently, two official plugins are available:
+Ensure you have the following installed on your machine:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Node.js
+- npm (Node Package Manager)
+- Docker (for containerization)
+
+## Run Locally
+
+1. Install dependencies
+
+```
+npm install
+```
+
+2. Run React App
+
+Run the development server using the following command:
+
+```
+npm run dev
+```
+
+Once the server is running, you can access the application in your web browser at:
+
+[http://localhost:5173/](http://localhost:5173/)
+
+
+## Docker Setup
+
+Run Docker Compose
+
+Execute the following command to start the application:
+
+```
+docker-compose up
+```
+
+This will build the necessary containers and start the application.

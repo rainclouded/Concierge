@@ -1,0 +1,15 @@
+# not sure which version to use
+version: '3.8'
+
+services:
+  angular-frontend:
+    build:
+      context: .
+      # dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    volumes:
+      - .:/staff_webapp
+      - /staff_webapp/node_modules
+    command: ng serve --host 0.0.0.0 # host 0.0.0.0 works on all interfaces
+    working_dir: /staff_webapp

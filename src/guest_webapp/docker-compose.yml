@@ -1,0 +1,15 @@
+# not sure which version to use
+version: '3.8'
+
+services:
+  react-frontend:
+    build:
+      context: .
+      # dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/guest_webapp
+      - /guest_webapp/node_modules
+    command: npm run dev -- --host 0.0.0.0 # host 0.0.0.0 works on all interfaces
+    working_dir: /guest_webapp
