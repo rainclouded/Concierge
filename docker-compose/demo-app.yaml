@@ -26,3 +26,10 @@ services:
     build: ../src/webapp
     ports:
       - 50000:8080
+
+  amenities:
+    build: ../src/amenities/amenities_server
+    ports:
+        - 50004:8080
+    environment:
+        - forProduction=test

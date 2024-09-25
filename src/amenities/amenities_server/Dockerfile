@@ -13,10 +13,10 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["amenities_server/amenities_server.csproj", "amenities_server/"]
-RUN dotnet restore "./amenities_server/amenities_server.csproj"
-COPY . .
+RUN dotnet restore "amenities_server/amenities_server.csproj"
+COPY amenities_server/ amenities_server/
 WORKDIR "/src/amenities_server"
-RUN dotnet build "./amenities_server.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "amenities_server.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
