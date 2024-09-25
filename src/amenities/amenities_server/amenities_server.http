@@ -1,6 +1,38 @@
-@amenities_server_HostAddress = http://localhost:5274
-
-GET {{amenities_server_HostAddress}}/weatherforecast/
+### Get all amenities
+GET http://localhost:8089/amenities
 Accept: application/json
 
 ###
+
+### Get a specific amenity by ID
+GET http://localhost:8089/amenities/1
+Accept: application/json
+
+###
+
+### Add a new amenity
+POST http://localhost:8089/amenities/
+Content-Type: application/json
+
+{
+  "AmenityID": 123,
+  "AmenityName": "Swimming Pool",
+  "AmenityDescription": "A large outdoor swimming pool with heated water.",
+  "StartTime": "00:00:00",
+  "EndTime": "12:00:00"
+}
+
+###
+
+### Update an existing amenity
+PUT http://localhost:8089/amenities/
+Content-Type: application/json
+
+{
+  "AmenityID": 123,
+  "AmenityName": "Updated Swimming Pool",
+  "AmenityDescription": "A large outdoor swimming pool with heated water.",
+  "StartTime": "12:00:00",
+  "EndTime": "23:59:00"
+}
+

@@ -30,6 +30,6 @@ services:
   amenities:
     build: ../src/amenities
     ports:
-        - 50004:8080
+      - 50004:8080
     environment:
-        - forProduction=test
+      - forProduction=test

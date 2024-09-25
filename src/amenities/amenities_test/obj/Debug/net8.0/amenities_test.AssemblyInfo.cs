@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("amenities_test")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d2a99470c131af9a8be734804dd381354a065d15")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3cd4fc854acb5476cb04c38c095750fe1511e032")]
 [assembly: System.Reflection.AssemblyProductAttribute("amenities_test")]
 [assembly: System.Reflection.AssemblyTitleAttribute("amenities_test")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
