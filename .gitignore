@@ -1,4 +1,10 @@
 .vscode
 .pytest_cache
 __pycache__
-/.vs
+.vs
+*.sln
+
+bin/
+obj/
+
+obj/Debug/net*/

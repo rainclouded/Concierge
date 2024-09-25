@@ -13,6 +13,10 @@ public class StubAmenityPersistence : IAmenityPersistence
         };
     }
 
+    public IEnumerable<Amenity> GetAmenities(){
+        return _amenities;
+    }
+
     public Amenity GetAmenityByID(int id)
     {
         return _amenities.FirstOrDefault(a => a.AmenityID == id);
