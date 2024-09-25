@@ -44,7 +44,7 @@ Run Docker Compose
 Execute the following command to start the application:
 
 ```
-docker-compose up
+docker compose up
 ```
 
 This will build the necessary containers and start the application.
