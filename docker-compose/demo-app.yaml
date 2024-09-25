@@ -28,7 +28,7 @@ services:
       - 50000:8080
 
   amenities:
-    build: ../src/amenities/amenities_server
+    build: ../src/amenities
     ports:
         - 50004:8080
     environment:
