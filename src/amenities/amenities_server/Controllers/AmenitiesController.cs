@@ -41,6 +41,21 @@ public class AmenitiesController : ControllerBase
         return amenity;
     }
 
+    //delete: /amenities/{id}
+    [HttpDelete("{id}")]
+    public IActionResult DeleteAmenity(int id)
+    {
+        //validate session
+
+        //validate passed amenity
+        var amenity = _amenityPersistence.GetAmenityByID(id);
+        if(amenity == null){
+            return BadRequest("Invalid request! An non existent amenity was requested.");
+        }
+
+        _amenityPersistence.DeleteAmenity(id);
+        return Ok("Amenity deleted successfully.");
+    }
     //post: /amenities
     [HttpPost]
     public IActionResult AddAmenity(Amenity newAmenity)

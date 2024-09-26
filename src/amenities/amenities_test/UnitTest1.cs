@@ -134,5 +134,37 @@ namespace amenities_test
         {
             Assert.IsInstanceOf<BadRequestObjectResult>(_controller.UpdateAmenity(null));
         }
+
+        [Test]
+        public void DeleteAmenity_ValidAmenity_IsSuccessful()
+        {
+            _amenityPersistence.AddAmenity(_testValidAmenity);
+
+            Assert.IsInstanceOf<OkObjectResult>(_controller.DeleteAmenity(_testValidAmenity.AmenityID));
+
+        }
+
+        [Test]
+        public void DeleteAmenity_ValidAmenity_UpdatedAmenityNotFetched()
+        {
+            _amenityPersistence.AddAmenity(_testValidAmenity);
+
+            _controller.DeleteAmenity(_testValidAmenity.AmenityID);
+
+            Assert.IsInstanceOf<NotFoundResult>(_controller.GetAmenityByID(_testValidAmenity.AmenityID).Result);
+        }
+        [Test]
+        public void DeleteAmenity_InvalidAmenity_Fails()
+        {
+            Assert.IsInstanceOf<BadRequestObjectResult>(_controller.DeleteAmenity(_testInvalidAmenity.AmenityID));
+        }
+
+        [Test]
+        public void DeleteAmenity_InvalidAmenity_NotFetchable()
+        {
+            _controller.DeleteAmenity(_testInvalidAmenity.AmenityID);
+
+            Assert.IsInstanceOf<NotFoundResult>(_controller.GetAmenityByID(_testInvalidAmenity.AmenityID).Result);
+        }
     }
 }

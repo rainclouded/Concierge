@@ -4,4 +4,6 @@ public interface IAmenityPersistence
     Amenity GetAmenityByID(int id);
     void AddAmenity(Amenity amenity);
     void UpdateAmenity(Amenity amenity);
+
+    void DeleteAmenity(int id);
 }

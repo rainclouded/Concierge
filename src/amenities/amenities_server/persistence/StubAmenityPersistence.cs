@@ -24,6 +24,11 @@ public class StubAmenityPersistence : IAmenityPersistence
 
     public void AddAmenity(Amenity amenity)
     {
+        if (_amenities.Any(a => a.AmenityID == amenity.AmenityID))
+        {
+            throw new InvalidOperationException("Amenity with the same ID already exists.");
+        }
+
         _amenities.Add(amenity);
     }
 
@@ -33,12 +38,25 @@ public class StubAmenityPersistence : IAmenityPersistence
         
         if (existingAmenity == null)
         {
-            return;
+            throw new KeyNotFoundException("Amenity not found.");
         }
 
         existingAmenity.AmenityName = amenity.AmenityName;
         existingAmenity.AmenityDescription = amenity.AmenityDescription;
         existingAmenity.StartTime = amenity.StartTime;
         existingAmenity.EndTime = amenity.EndTime;
+    }
+
+    public void DeleteAmenity(int id){
+        var amenityToDelete = GetAmenityByID(id);
+        
+        if (amenityToDelete != null)
+        {
+            _amenities.Remove(amenityToDelete);
+        }
+        else
+        {
+            throw new KeyNotFoundException("Amenity not found.");
+        }
     }
 }
