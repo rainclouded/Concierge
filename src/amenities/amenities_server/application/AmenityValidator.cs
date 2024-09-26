@@ -1,6 +1,7 @@
 public static class AmenityValidator
 {
-    private static IAmenityPersistence amenityPersistence = Services.GetAmenityPersistence(Environment.GetEnvironmentVariable("forProduction"));
+    private static IAmenityPersistence amenityPersistence;
+    
     public static bool ValidateAmenityParameters(Amenity amenity)
     {
         if (amenity == null)
@@ -29,6 +30,9 @@ public static class AmenityValidator
 
     public static bool ValidateNewAmenity(Amenity amenity)
     {
+        //get recent instance of persistence
+        amenityPersistence = Services.GetAmenityPersistence();
+
         if (!ValidateAmenityParameters(amenity)){
             return false;
         }
@@ -38,6 +42,9 @@ public static class AmenityValidator
 
     public static bool ValidateExistingAmenity(Amenity amenity)
     {
+        //get recent instance of persistence
+        amenityPersistence = Services.GetAmenityPersistence();
+
         if (!ValidateAmenityParameters(amenity)){
             return false;
         }

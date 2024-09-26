@@ -2,14 +2,16 @@ public static class Services
 {
     private static IAmenityPersistence _amenityPersistence = null;
 
-    public static IAmenityPersistence GetAmenityPersistence(string forProduction)
+    public static IAmenityPersistence GetAmenityPersistence()
     {
         if(_amenityPersistence == null){
-            if(forProduction.Equals("test"))
-            {
-                _amenityPersistence = new StubAmenityPersistence();
-            }
+            _amenityPersistence = new StubAmenityPersistence();
         }
+
         return _amenityPersistence;
+    }
+
+    public static void clearPersistences(){
+        _amenityPersistence = null;
     }
 }

@@ -9,6 +9,5 @@ obj/
 Debug/
 Release/
 net8.0/
-src/amenities/amenities_server/obj/Debug/net8.0/amenities_server.AssemblyInfo.cs
-src/amenities/amenities_server/obj/Debug/net8.0/amenities_server.AssemblyInfoInputs.cache
-src/amenities/amenities_test/obj/Debug/net8.0/amenities_test.AssemblyInfo.cs
+
+

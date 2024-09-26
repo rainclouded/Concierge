@@ -19,16 +19,10 @@ namespace amenities_test
             _testUpdatedValidAmenity = new Amenity(999, "testInvalidAmenity", "testValidDesc", new TimeSpan(12, 0, 0), new TimeSpan(24, 0, 0));
             _testInvalidAmenity = new Amenity(999, "testInvalidAmenity", "testValidDesc", new TimeSpan(13, 0, 0), new TimeSpan(12, 0, 0));
 
-            if (Environment.GetEnvironmentVariable("forProduction").Equals("test"))
-            {
-                _amenityPersistence = new StubAmenityPersistence();
-            }
-            else
-            {
-                _amenityPersistence = null;
-            }
-
-            _controller = new AmenitiesController(_amenityPersistence);
+            Services.clearPersistences();
+            _amenityPersistence = Services.GetAmenityPersistence();
+  
+            _controller = new AmenitiesController();
         }
 
         [Test]
@@ -46,7 +40,7 @@ namespace amenities_test
             _amenityPersistence.AddAmenity(_testValidAmenity);
             var amenity = _amenityPersistence.GetAmenityByID(_testValidAmenity.AmenityID);
 
-            Assert.IsInstanceOf<Amenity>(_controller.GetAmenityByID(amenity.AmenityID));
+            Assert.IsInstanceOf<Amenity>(_controller.GetAmenityByID(amenity.AmenityID).Value);
         }
 
         [Test]
@@ -55,7 +49,7 @@ namespace amenities_test
             //assuming amenities exist within database
             int invalidID = -1;
 
-            Assert.IsInstanceOf<NotFoundObjectResult>(_controller.GetAmenityByID(invalidID));
+            Assert.IsInstanceOf<NotFoundResult>(_controller.GetAmenityByID(invalidID).Result);
         }
 
         [Test]
@@ -69,7 +63,7 @@ namespace amenities_test
         {
             _controller.AddAmenity(_testValidAmenity);
 
-            Assert.IsInstanceOf<Amenity>(_controller.GetAmenityByID(_testValidAmenity.AmenityID));
+            Assert.IsInstanceOf<Amenity>(_controller.GetAmenityByID(_testValidAmenity.AmenityID).Value);
         }
         [Test]
         public void AddAmenity_InvalidAmenity_Fails()
@@ -82,7 +76,7 @@ namespace amenities_test
         {
             _controller.AddAmenity(_testInvalidAmenity);
 
-            Assert.IsInstanceOf<NotFoundObjectResult>(_controller.GetAmenityByID(_testInvalidAmenity.AmenityID));
+            Assert.IsInstanceOf<NotFoundResult>(_controller.GetAmenityByID(_testInvalidAmenity.AmenityID).Result);
         }
 
         [Test]
@@ -113,7 +107,7 @@ namespace amenities_test
 
             _controller.UpdateAmenity(_testUpdatedValidAmenity);
 
-            Assert.Equals(_controller.GetAmenityByID(_testValidAmenity.AmenityID), _testUpdatedValidAmenity);
+            Assert.IsTrue(_controller.GetAmenityByID(_testValidAmenity.AmenityID).Value.Equals(_testUpdatedValidAmenity));
         }
         [Test]
         public void UpdateAmenity_InvalidAmenity_Fails()
@@ -126,7 +120,7 @@ namespace amenities_test
         {
             _controller.UpdateAmenity(_testInvalidAmenity);
 
-            Assert.IsInstanceOf<NotFoundObjectResult>(_controller.GetAmenityByID(_testInvalidAmenity.AmenityID));
+            Assert.IsInstanceOf<NotFoundResult>(_controller.GetAmenityByID(_testInvalidAmenity.AmenityID).Result);
         }
 
         [Test]
