@@ -1,19 +1,21 @@
-# choose node
 FROM node:20-alpine AS build_react
 
-# set working directory inside the container
-WORKDIR /guest_webapp
+WORKDIR /app
 
-# copy package.json & package-lock.json
 COPY package*.json ./
-# install dependencies/packages
+
 RUN npm install
 
-# copy all the project files
 COPY . .
 
-# react default expose port
-EXPOSE 5173
+RUN npm run build
 
-# build our webapp
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+FROM nginx:alpine
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+COPY --from=build_react /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

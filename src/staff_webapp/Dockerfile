@@ -1,21 +1,22 @@
-# choose node
 FROM node:20-alpine AS build_angular
 
-# set working directory inside the container
-WORKDIR /staff_webapp
+WORKDIR /app
 
-# copy package.json & package-lock.json
 COPY package*.json ./
 
-# install dependencies/packages
 RUN npm install -g @angular/cli
 RUN npm install
 
-# copy all the project files
 COPY . .
 
-# react default expose port
-EXPOSE 4200
+RUN npm run build --prod
 
-# build our webapp
-CMD ["ng", "serve", "--host", "0.0.0.0"]
+FROM nginx:alpine
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+COPY --from=build_angular /app/dist/staff_webapp/browser /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

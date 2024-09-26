@@ -48,3 +48,7 @@ docker compose up
 ```
 
 This will build the necessary containers and start the application.
+
+Once it is running, you can access the application in your web browser at:
+
+[http://localhost:8082/](http://localhost:8082/)
