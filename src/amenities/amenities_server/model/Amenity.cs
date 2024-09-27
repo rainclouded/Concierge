@@ -1,26 +1,33 @@
 public class Amenity
 {
-    public int AmenityID { get; set; }
-    public string AmenityName { get; set; }
-    public string AmenityDescription { get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
     public TimeSpan StartTime { get; set; }
     public TimeSpan EndTime { get; set; }
 
-    public Amenity(int amenityID, string amenityName, string amenityDescription, TimeSpan startTime, TimeSpan endTime)
+    public Amenity(int id, string name, string description, TimeSpan startTime, TimeSpan endTime)
     {
-        AmenityID = amenityID;
-        AmenityName = amenityName;
-        AmenityDescription = amenityDescription;
+        Id = id;
+        Name = name;
+        Description = description;
         StartTime = startTime;
         EndTime = endTime;
     }
 
+    public void updateAmenity(Amenity updatedAmenity){
+        Name = updatedAmenity.Name;
+        Description = updatedAmenity.Description;
+        StartTime = updatedAmenity.StartTime;
+        EndTime = updatedAmenity.EndTime;
+    }
+    
     public override bool Equals(object? obj)
     {
         if(obj is Amenity otherAmenity)
         {
-            return this.AmenityID == otherAmenity.AmenityID && this.AmenityName.Equals(otherAmenity.AmenityName) &&
-                   this.AmenityDescription.Equals(otherAmenity.AmenityDescription) && this.StartTime.Equals(otherAmenity.StartTime) &&
+            return this.Id == otherAmenity.Id && this.Name.Equals(otherAmenity.Name) &&
+                   this.Description.Equals(otherAmenity.Description) && this.StartTime.Equals(otherAmenity.StartTime) &&
                    this.EndTime.Equals(otherAmenity.EndTime);
         }
 
@@ -29,6 +36,6 @@ public class Amenity
 
     public override int GetHashCode()
     {
-        return AmenityID;
+        return Id;
     }
 }

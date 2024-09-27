@@ -9,15 +9,15 @@ public static class AmenityValidator
             return false;
         }
 
-        if(amenity.AmenityID < 0){
+        if(amenity.Id < 0){
             return false;
         }
 
-        if(string.IsNullOrWhiteSpace(amenity.AmenityName)){
+        if(string.IsNullOrWhiteSpace(amenity.Name)){
             return false;
         }
 
-        if(string.IsNullOrWhiteSpace(amenity.AmenityDescription)){
+        if(string.IsNullOrWhiteSpace(amenity.Description)){
             return false;
         }
 
@@ -37,7 +37,7 @@ public static class AmenityValidator
             return false;
         }
 
-        return amenityPersistence.GetAmenityByID(amenity.AmenityID) == null;
+        return amenityPersistence.GetAmenityByID(amenity.Id) == null;
     }
 
     public static bool ValidateExistingAmenity(Amenity amenity)
@@ -49,6 +49,6 @@ public static class AmenityValidator
             return false;
         }
 
-        return amenityPersistence.GetAmenityByID(amenity.AmenityID) != null;
+        return amenityPersistence.GetAmenityByID(amenity.Id) != null;
     }
 }
