@@ -96,7 +96,7 @@ namespace amenities_test
         public void UpdateAmenity_ValidAmenity_IsSuccessful()
         {
             _amenityPersistence.AddAmenity(_testValidAmenity);
-            Assert.IsInstanceOf<OkObjectResult>(_controller.UpdateAmenity(_testValidAmenity));
+            Assert.IsInstanceOf<OkObjectResult>(_controller.UpdateAmenity(_testValidAmenity.AmenityID,_testValidAmenity));
 
         }
 
@@ -105,20 +105,20 @@ namespace amenities_test
         {
             _amenityPersistence.AddAmenity(_testValidAmenity);
 
-            _controller.UpdateAmenity(_testUpdatedValidAmenity);
+            _controller.UpdateAmenity(_testValidAmenity.AmenityID, _testUpdatedValidAmenity);
 
             Assert.IsTrue(_controller.GetAmenityByID(_testValidAmenity.AmenityID).Value.Equals(_testUpdatedValidAmenity));
         }
         [Test]
         public void UpdateAmenity_InvalidAmenity_Fails()
         {
-            Assert.IsInstanceOf<BadRequestObjectResult>(_controller.UpdateAmenity(_testInvalidAmenity));
+            Assert.IsInstanceOf<BadRequestObjectResult>(_controller.UpdateAmenity(_testInvalidAmenity.AmenityID, _testInvalidAmenity));
         }
 
         [Test]
         public void UpdateAmenity_InvalidAmenity_NotFetchable()
         {
-            _controller.UpdateAmenity(_testInvalidAmenity);
+            _controller.UpdateAmenity(_testInvalidAmenity.AmenityID, _testInvalidAmenity);
 
             Assert.IsInstanceOf<NotFoundResult>(_controller.GetAmenityByID(_testInvalidAmenity.AmenityID).Result);
         }
@@ -126,13 +126,13 @@ namespace amenities_test
         [Test]
         public void UpdateAmenity_NonExistingAmenity_Fails()
         {
-            Assert.IsInstanceOf<BadRequestObjectResult>(_controller.UpdateAmenity(_testValidAmenity));
+            Assert.IsInstanceOf<BadRequestObjectResult>(_controller.UpdateAmenity(_testValidAmenity.AmenityID, _testValidAmenity));
         }
 
         [Test]
         public void UpdateAmenity_NullAmenity_Fails()
         {
-            Assert.IsInstanceOf<BadRequestObjectResult>(_controller.UpdateAmenity(null));
+            Assert.IsInstanceOf<BadRequestObjectResult>(_controller.UpdateAmenity(0, null));
         }
 
         [Test]

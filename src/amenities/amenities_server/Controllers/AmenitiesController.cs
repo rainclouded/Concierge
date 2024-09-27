@@ -73,18 +73,23 @@ public class AmenitiesController : ControllerBase
         return Ok("Amenity added successfully.");
     }
 
-    //put: /amenities
-    [HttpPut]
-    public IActionResult UpdateAmenity(Amenity newAmenity)
+    //put: /amenities/{id}
+    [HttpPut("{id}")]
+    public IActionResult UpdateAmenity(int id, Amenity newAmenity)
     {
         //validate session
+
+        if(_amenityPersistence.GetAmenityByID(id) == null)
+        {
+            return BadRequest("Invalid amenity! A non existent amenity was requested to be updated");
+        }
 
         if (!AmenityValidator.ValidateExistingAmenity(newAmenity))
         {
             return BadRequest("Invalid amenity! An amenity with invalid parameters was passed.");
         }
 
-        _amenityPersistence.UpdateAmenity(newAmenity);
+        _amenityPersistence.UpdateAmenity(id, newAmenity);
 
         return Ok("Amenity updated successfully");
     }

@@ -25,7 +25,7 @@ Content-Type: application/json
 ###
 
 ### Update an existing amenity
-PUT http://localhost:8089/amenities/
+PUT http://localhost:8089/amenities/123
 Content-Type: application/json
 
 {

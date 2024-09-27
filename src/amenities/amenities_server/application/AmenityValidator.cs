@@ -51,5 +51,4 @@ public static class AmenityValidator
 
         return amenityPersistence.GetAmenityByID(amenity.AmenityID) != null;
     }
-
 }

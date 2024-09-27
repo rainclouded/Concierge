@@ -32,9 +32,9 @@ public class StubAmenityPersistence : IAmenityPersistence
         _amenities.Add(amenity);
     }
 
-    public void UpdateAmenity(Amenity amenity)
+    public void UpdateAmenity(int id, Amenity amenity)
     {
-        var existingAmenity = GetAmenityByID(amenity.AmenityID);
+        var existingAmenity = GetAmenityByID(id);
         
         if (existingAmenity == null)
         {
