@@ -1,3 +1,6 @@
+include:
+  - ../src/guest_webapp/docker-compose.yaml     # uses port 8081
+  - ../src/staff_webapp/docker-compose.yaml     # uses port 8082
 services:
   nginx:
     image: nginx:stable-alpine-slim
@@ -26,13 +29,3 @@ services:
     build: ../src/webapp
     ports:
       - 50000:8080
-
-  guest_webapp:
-    build: ../src/guest_webapp
-    ports:
-      - 8081:80
-  
-  staff_webapp:
-    build: ../src/staff_webapp
-    ports:
-      - 8082:80

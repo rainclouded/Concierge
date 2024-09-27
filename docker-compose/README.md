@@ -2,16 +2,16 @@
 
 ## Running the services
 - Ensure Docker Engine is running, and that Docker Compose is installed on your machine
-- run `docker compose -f demo-app.yaml build`
-    - Note, ensure the relative path to demo-app.yaml is provided in the above command
+- run `docker compose -f docker-compose.yaml build`
+    - Note, ensure the relative path to docker-compose.yaml is provided in the above command
 - Browse to localhost:8089
-- Or, Browse to the endpoint you want to test, as defined in the demo-app.yaml
+- Or, Browse to the endpoint you want to test, as defined in the docker-compose.yaml
 
 
 ## Adding a service to the environment
 - Create a Dockerfile for your service. 
 - Test it locally in straight Docker. Ensure endpoints are accessible
-- In demo-app.yaml, add an entry to to "services:"
+- In docker-compose.yaml, add an entry to to "services:"
 - Give your service a *meaningful* name.
     - This name is how services can find each other within Docker Compose
 - Give your service proprties
