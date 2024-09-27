@@ -26,4 +26,9 @@ public class Amenity
 
         return false;
     }
+
+    public override int GetHashCode()
+    {
+        return AmenityID;
+    }
 }

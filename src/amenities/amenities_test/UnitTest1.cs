@@ -107,7 +107,7 @@ namespace amenities_test
 
             _controller.UpdateAmenity(_testValidAmenity.AmenityID, _testUpdatedValidAmenity);
 
-            Assert.IsTrue(_controller.GetAmenityByID(_testValidAmenity.AmenityID).Value.Equals(_testUpdatedValidAmenity));
+            Assert.That(_controller.GetAmenityByID(_testValidAmenity.AmenityID).Value, Is.EqualTo(_testUpdatedValidAmenity));
         }
         [Test]
         public void UpdateAmenity_InvalidAmenity_Fails()

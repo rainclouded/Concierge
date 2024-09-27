@@ -21,6 +21,7 @@ public class StubAmenityPersistence : IAmenityPersistence
     {
         return _amenities.FirstOrDefault(a => a.AmenityID == id);
     }
+    
 
     public void AddAmenity(Amenity amenity)
     {
