@@ -1,3 +1,7 @@
 .vscode
 .pytest_cache
 __pycache__
+
+.vs 
+bin/
+obj/
