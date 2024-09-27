@@ -1,7 +1,20 @@
 import datetime
-from incident_reports.incident_reports_server.model import Severity, Status
+from enum import Enum
 
+class Severity(Enum):
+    LOW = "Low"
+    Medium = "Medium"
+    High = "High"
+    Critical = "Critical"
+    
+    from enum import Enum
 
+class Status(Enum):
+    OPEN = "Open"
+    CLOSED = "Closed"
+    RESOLVED = "Resolved"
+    IN_PROGRESS = "In Progress"
+    
 class IncidentReport:
     def __init__(self, ID: int, severity: Severity, status: Status, title: str, description: str, 
                 created_at: datetime, filingPersonID: int, reviewerID: int):
@@ -22,6 +35,4 @@ class IncidentReport:
         self.description = updatedReport.description
         self.reviewerID = updatedReport.reviewerID
         self.updated_at = datetime.now()
-        
     
-        
