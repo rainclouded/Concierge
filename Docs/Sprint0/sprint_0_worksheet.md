@@ -34,18 +34,63 @@ We chose MongoDB as we have identified it to be more suitable for the objects we
 
 |||
 |--|--|
-|**Functional Features**|
-|1. User Story: |As a hotelier, I want a way for guests to access hotel amenities.|
-|Acceptance Criteria:|The guest dashboard should be able to review all available hotel amenity information.|
-|2. User Story:| As a hotel guest, I want to request hotel services to improve my stay.|
-|Acceptance Criteria:|The guest dashboard should be able to request all available hotel services.|
-|3. User Story:|As an employee, I want to be informed of guest requests to efficiently perform my job.|
-|Acceptance Criteria:|The employee dashboard shows all appropriate requests.|
-|4. User Story:| As a hotel managaer, I want to provide tasks to my employees.|
-|Acceptance Criteria:|The manager dashboard should be able to create recurring and one-time employee tasks.|
-|**Non-functional Features**|
-|1. User Story: | As a hotel owner, I want 500 guests to be able to make 1000 requests (cumulative) without loss of access.|
-|Acceptance Criteria:|500 concurrent users should be able to make 1000 cumulative requests without noticible latency (less than one second).|
+**Core Features:**
+
+### Feature: Task System
+
+| **Key Features** | **User Story**                                                                                                     | **Acceptance Criteria**                                                                                                                                                                                                                            |
+|-------------------|-------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Create Tasks      | As a hotel guest, I want to create service requests (e.g., room service, extra towels) so that my needs are promptly addressed. | **Scenario:** Guest creates a service request. <br> Given I’m a guest, when I open the guest task dashboard and choose to create a new service request, I can enter the request details (type of service, description, priority). When I submit the request, it appears in my task list with a status of "pending," and the relevant staff members are notified. |
+| View Task Status  | As a hotel guest, I want to view the status of my service requests so I can know when my needs will be met.       | **Scenario:** Guest views the status of service requests. <br> Given I’m a guest, when I open the guest task dashboard, I can see a list of my active requests with their status ("pending," "in progress," "completed").                                  |
+| Staff View Incomplete Tasks | As a hotel staff member, I want to see a list of all incomplete guest requests so I can prioritize my work.      | **Scenario:** Staff views a list of incomplete tasks. <br> Given I’m a staff member, when I open the staff task dashboard, I can see a list of all incomplete tasks with details such as request type, room number, and priority.                             |
+| Claim a Task      | As a hotel staff member, I want to claim a task so that I can take responsibility for completing it.              | **Scenario:** Staff claims a task. <br> Given I’m a staff member, when I open the staff task dashboard and click to claim a task, I am assigned as the responsible staff member, and the task status changes to "in progress."                                      |
+| Mark Task Complete | As a hotel staff member, I want to mark a task as complete once it's finished so that I can keep my work queue up to date. | **Scenario:** Staff completes a task. <br> Given I’m a staff member, when I view an existing task I have completed on the staff dashboard, I can click the “Completed” button, and the system updates the task in real-time, giving a confirmation alert.             |
+
+---
+
+### Feature: Accounts
+
+| **Key Features**              | **User Story**                                                                                              | **Acceptance Criteria**                                                                                                                                                                                                                            |
+|-------------------------------|-------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Login (Staff & Guest)         | As a user, I need to be able to access the tools relevant to me so that I can make use of the system.    | Users can log in with credentials and are directed to role-specific dashboards (guest, staff, manager).                                                                                                                                           |
+| Creation (Staff & Room Accounts) | As a hotel manager, I need to be able to give access to guests and employees so they can do their work. | **Scenario:** Creating a new account. <br> Given I’m a staff member with permission to create accounts, when I fill in the necessary fields for user creation and submit, a new account is created.                                                       |
+| Permissions                    | As a manager, I need to be able to restrict access to various tools so that my services remain secure.   | **Scenario:** Editing permissions. <br> Given I’m a logged-in staff member with permission to edit permissions, when I create a new group, configure its permissions, and assign accounts to it, those accounts gain access to those tools.                   |
+| Settings                       | As a user, I want to be able to tailor the tools to my needs so that I can engage with the system as I prefer. | **Scenario:** Modifying preferences. <br> Given I’m a logged-in staff member, when I update settings (e.g., default dashboard views, notification preferences, initial landing pages), the system saves the changes and reflects them in my next login.         |
+
+---
+
+### Feature: Amenities
+
+| **Key Features**            | **User Story**                                                                                           | **Acceptance Criteria**                                                                                                                                                                                                                            |
+|-----------------------------|----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| View                        | As a guest, I want to access hotel amenity information so I can find out when amenities are available (e.g., the hotel swimming pool is open). | **Scenario:** Guest views hotel amenity information. <br> Given I’m a guest, when I open the amenities dashboard, I can see a list of amenities offered by the hotel, with operating hours, descriptions, and titles.                                       |
+| Create, Update, Delete     | As a staff member, I want to either create, delete, or update hotel amenities so guests are always up to date with our amenity information. | **Scenario:** Staff updates an amenity. <br> Given I’m a staff member, when I update the amenity details on the staff dashboard and click "Save," the system updates the report in real-time and displays a confirmation message.                                |
+
+---
+
+### Feature: Incident Reports
+
+| **Key Features**            | **User Story**                                                                                           | **Acceptance Criteria**                                                                                                                                                                                                                            |
+|-----------------------------|----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| View                        | As a hotel manager, I want a way to view past and current incident reports created by my staff to better monitor hotel incidents. | **Scenario:** Hotel manager views past and current incident reports. <br> Given I’m a hotel manager, when I access the incident reports dashboard, I can see a list of past and current incident reports, including details like severity, status, and description. |
+| Update                      | As a hotel manager, I want a way to update incident report details as their related case progresses in real-time. | **Scenario:** Hotel manager updates an incident report. <br> Given I’m a hotel manager, when I update incident details and click “Save,” the system updates the report in real-time and shows a confirmation message.                                          |
+
+---
+
+### Feature: Business Analytics (TRIMMABLE)
+
+| **Key Features**            | **User Story**                                                                                           | **Acceptance Criteria**                                                                                                                                                                                                                            |
+|-----------------------------|----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| No Guest                    | As a staff member, I want to view a guest’s charges incurred during their stay so I can better review and verify them. | **Scenario:** Staff member views guest billing. <br> Given I’m a staff member, when I access the guest billing dashboard, I can select a specific guest’s reservation info and review their charges.                                                          |
+
+---
+
+### Feature: Booking Service (TRIMMABLE)
+
+| **Key Features**            | **User Story**                                                                                           | **Acceptance Criteria**                                                                                                                                                                                                                            |
+|-----------------------------|----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| See Available Dates, Rooms & Prices | As a guest, I want to check room availability and view pricing details so I can plan and budget my hotel stay. | **Scenario:** Guest checks room availability. <br> Given I’m a guest, when I view available dates, rooms, and prices, I can see details that allow me to plan my next stay.                                                                                  |
+
 
 
 ## Work division:
