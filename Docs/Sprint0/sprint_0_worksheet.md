@@ -11,12 +11,7 @@ Concierge is an easy to use hotel administration system which allows guests to c
 
 ## Initial Architecture:
 
-```mermaid
-  graph TD;
-      A[MongoDB]-->B[Microservices on Azure];
-      B-->C[Front end 1 Angular];
-      B-->D[Front End 2 Flutter];
-```
+![Diagram](./block_diagram.svg)
 
 ### Description
 The database will be Mongodb.\
