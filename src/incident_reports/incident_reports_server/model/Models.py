@@ -17,7 +17,7 @@ class Status(Enum):
     
 class IncidentReport:
     def __init__(self, ID: int, severity: Severity, status: Status, title: str, description: str, 
-                created_at: datetime, filing_person_ID: int, reviewer_ID: int):
+                created_at: datetime, filing_person_ID: int, reviewer_ID: int) -> None:
         self.ID = ID
         self.severity = severity
         self.status = status
@@ -28,7 +28,7 @@ class IncidentReport:
         self.filing_person_ID = filing_person_ID
         self.reviewer_ID = reviewer_ID
         
-    def update(self, updated_report: 'IncidentReport'):
+    def update(self, updated_report: 'IncidentReport') -> None:
         self.severity = updated_report.severity
         self.status = updated_report.status
         self.title = updated_report.title

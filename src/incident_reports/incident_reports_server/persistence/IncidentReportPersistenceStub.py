@@ -1,9 +1,10 @@
 import datetime
+from typing import List
 from incident_reports.incident_reports_server.model.Models import IncidentReport, Severity, Status
 from incident_reports.incident_reports_server.persistence import IIncidentReportPersistence
 
 class IncidentReportPersistenceStub(IIncidentReportPersistence):
-    def __init__(self):
+    def __init__(self) -> None:
         self._incident_reports = [
             IncidentReport(
                 ID=1,
@@ -12,8 +13,8 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
                 title="Room Maintenance Request",
                 description="Guest reported a leaky faucet in Room 203.",
                 created_at=datetime.datetime(2024, 9, 1, 10, 30),
-                filing_person_ID=301,  # Filing person could be a staff member
-                reviewer_ID=401  # Reviewer could be a maintenance supervisor
+                filing_person_ID=301, 
+                reviewer_ID=401 
             ),
             IncidentReport(
                 ID=2,
@@ -47,20 +48,20 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
             )
     ]
 
-    def get_incident_reports(self):
+    def get_incident_reports(self) -> List[IncidentReport]:
         return self._incident_reports
     
-    def get_incident_report_by_id(self, id:int):
+    def get_incident_report_by_id(self, id:int) -> IncidentReport:
         for incident_report in self._incident_reports:
             if incident_report.ID == id:
                 return incident_report
             
         return None 
     
-    def create_incident_report(self, incident_report: IncidentReport):
+    def create_incident_report(self, incident_report: IncidentReport) -> None:
         self._incident_reports.insert(incident_report)
     
-    def update_incident_report(self, id: int, updated_incident_report: IncidentReport):
+    def update_incident_report(self, id: int, updated_incident_report: IncidentReport) -> None:
         incident_report = self.get_incident_report_by_id(id)
 
         if(incident_report != None):
@@ -69,7 +70,7 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
             return ValueError
 
                 
-    def delete_incident_report(self, id:int):
+    def delete_incident_report(self, id:int) -> None:
         for incident_report in self._incident_reports:
             if incident_report.ID == id:
                 self._incident_reports.remove(incident_report)
