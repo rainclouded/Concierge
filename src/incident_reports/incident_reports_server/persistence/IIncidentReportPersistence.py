@@ -13,11 +13,11 @@ class IIncidentReportPersistence(ABC):
         pass
     
     @abstractmethod
-    def create_incident_report(self, incidentReport: IncidentReport) -> None:
+    def create_incident_report(self, incident_report: IncidentReport) -> None:
         pass 
     
     @abstractmethod
-    def update_incident_report(self, id: int, incidentReport: IncidentReport) -> None:
+    def update_incident_report(self, id: int, incident_report: IncidentReport) -> None:
         pass 
     
     @abstractmethod
