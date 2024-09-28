@@ -30,21 +30,16 @@ We chose MongoDB as we have identified it to be more suitable for the objects we
 
 ## Features
 
-**Core features:**
-
-|||
-|--|--|
-**Core Features:**
 
 ### Feature: Task System
 
 | **Key Features** | **User Story**                                                                                                     | **Acceptance Criteria**                                                                                                                                                                                                                            |
 |-------------------|-------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Create Tasks      | As a hotel guest, I want to create service requests (e.g., room service, extra towels) so that my needs are promptly addressed. | **Scenario:** Guest creates a service request. <br> Given I’m a guest, when I open the guest task dashboard and choose to create a new service request, I can enter the request details (type of service, description, priority). When I submit the request, it appears in my task list with a status of "pending," and the relevant staff members are notified. |
-| View Task Status  | As a hotel guest, I want to view the status of my service requests so I can know when my needs will be met.       | **Scenario:** Guest views the status of service requests. <br> Given I’m a guest, when I open the guest task dashboard, I can see a list of my active requests with their status ("pending," "in progress," "completed").                                  |
-| Staff View Incomplete Tasks | As a hotel staff member, I want to see a list of all incomplete guest requests so I can prioritize my work.      | **Scenario:** Staff views a list of incomplete tasks. <br> Given I’m a staff member, when I open the staff task dashboard, I can see a list of all incomplete tasks with details such as request type, room number, and priority.                             |
-| Claim a Task      | As a hotel staff member, I want to claim a task so that I can take responsibility for completing it.              | **Scenario:** Staff claims a task. <br> Given I’m a staff member, when I open the staff task dashboard and click to claim a task, I am assigned as the responsible staff member, and the task status changes to "in progress."                                      |
-| Mark Task Complete | As a hotel staff member, I want to mark a task as complete once it's finished so that I can keep my work queue up to date. | **Scenario:** Staff completes a task. <br> Given I’m a staff member, when I view an existing task I have completed on the staff dashboard, I can click the “Completed” button, and the system updates the task in real-time, giving a confirmation alert.             |
+| Create Tasks (Guest)      | As a hotel guest, I want to create service requests (e.g., room service, extra towels) so that my needs are promptly addressed. | **Scenario:** Guest creates a service request. <br> Given I’m a guest, when I open the guest task dashboard and choose to create a new service request, I can enter the request details (type of service, description, priority). When I submit the request, it appears in my task list with a status of "pending," and the relevant staff members are notified. |
+| View Task Status (Guest)  | As a hotel guest, I want to view the status of my service requests so I can know when my needs will be met.       | **Scenario:** Guest views the status of service requests. <br> Given I’m a guest, when I open the guest task dashboard, I can see a list of my active requests with their status ("pending," "in progress," "completed").                                  |
+| Incomplete Tasks (Staff) | As a hotel staff member, I want to see a list of all incomplete guest requests so I can prioritize my work.      | **Scenario:** Staff views a list of incomplete tasks. <br> Given I’m a staff member, when I open the staff task dashboard, I can see a list of all incomplete tasks with details such as request type, room number, and priority.                             |
+| Claim a Task (Staff)      | As a hotel staff member, I want to claim a task so that I can take responsibility for completing it.              | **Scenario:** Staff claims a task. <br> Given I’m a staff member, when I open the staff task dashboard and click to claim a task, I am assigned as the responsible staff member, and the task status changes to "in progress."                                      |
+| Mark Task Complete (Staff) | As a hotel staff member, I want to mark a task as complete once it's finished so that I can keep my work queue up to date. | **Scenario:** Staff completes a task. <br> Given I’m a staff member, when I view an existing task I have completed on the staff dashboard, I can click the “Completed” button, and the system updates the task in real-time, giving a confirmation alert.             |
 
 ---
 
@@ -81,7 +76,7 @@ We chose MongoDB as we have identified it to be more suitable for the objects we
 
 | **Key Features**            | **User Story**                                                                                           | **Acceptance Criteria**                                                                                                                                                                                                                            |
 |-----------------------------|----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| No Guest                    | As a staff member, I want to view a guest’s charges incurred during their stay so I can better review and verify them. | **Scenario:** Staff member views guest billing. <br> Given I’m a staff member, when I access the guest billing dashboard, I can select a specific guest’s reservation info and review their charges.                                                          |
+| —                   | As a staff member, I want to view a guest’s charges incurred during their stay so I can better review and verify them. | —                                                        |
 
 ---
 
@@ -89,7 +84,7 @@ We chose MongoDB as we have identified it to be more suitable for the objects we
 
 | **Key Features**            | **User Story**                                                                                           | **Acceptance Criteria**                                                                                                                                                                                                                            |
 |-----------------------------|----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| See Available Dates, Rooms & Prices | As a guest, I want to check room availability and view pricing details so I can plan and budget my hotel stay. | **Scenario:** Guest checks room availability. <br> Given I’m a guest, when I view available dates, rooms, and prices, I can see details that allow me to plan my next stay.                                                                                  |
+| See Available Dates, Rooms & Prices | As a guest, I want to check room availability and view pricing details so I can plan and budget my hotel stay. | —                                                                                  |
 
 
 
