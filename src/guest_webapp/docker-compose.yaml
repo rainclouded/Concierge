@@ -1,0 +1,5 @@
+services:
+  guest_webapp:
+    build: .
+    ports:
+      - "8081:80"
