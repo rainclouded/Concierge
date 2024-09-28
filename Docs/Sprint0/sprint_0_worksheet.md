@@ -76,7 +76,8 @@ We chose MongoDB as we have identified it to be more suitable for the objects we
 
 | **Key Features**            | **User Story**                                                                                           | **Acceptance Criteria**                                                                                                                                                                                                                            |
 |-----------------------------|----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| —                   | As a staff member, I want to view a guest’s charges incurred during their stay so I can better review and verify them. | —                                                        |
+| View Guest Charges | As a staff member, I want to view and analyze guest charges during their stay so I can ensure accurate billing and identify trends. | **Scenario:** Viewing guest charges.
+Given I’m a staff member, when I access the analytics dashboard, I can see a list of guest charges, their details, and any relevant trends over time. |
 
 ---
 
@@ -84,7 +85,8 @@ We chose MongoDB as we have identified it to be more suitable for the objects we
 
 | **Key Features**            | **User Story**                                                                                           | **Acceptance Criteria**                                                                                                                                                                                                                            |
 |-----------------------------|----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| See Available Dates, Rooms & Prices | As a guest, I want to check room availability and view pricing details so I can plan and budget my hotel stay. | —                                                                                  |
+| See Available Dates, Rooms & Prices | As a guest, I want to check room availability and view pricing details so I can plan and budget my hotel stay. | **Scenario:** Checking room availability and pricing.
+Given I’m a guest, when I enter my check-in and check-out dates, I can see a list of available rooms, their prices, and any special offers. |
 
 
 
