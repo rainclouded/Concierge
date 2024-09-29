@@ -11,7 +11,7 @@ Concierge is an easy to use hotel administration system which allows guests to c
 
 ## Initial Architecture:
 
-![Diagram](./block_diagram.svg)
+![Diagram](./block_diagram.jpg)
 
 ### Description
 The database will be Mongodb.\
