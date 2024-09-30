@@ -31,8 +31,6 @@ services:
       - 50000:8080
 
   amenities:
-    build: ../src/amenities
-    ports:
-      - 50004:8080
-    environment:
-      - forProduction=test
+    extends:
+      file: ../src/amenities/amenities_server/docker-compose.yaml
+      service: amenities
