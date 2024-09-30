@@ -3,6 +3,14 @@
 
 ![Concierge Logo](/Docs/images/logo.png)
 
+# Team 6
+
+![rainclouded](https://avatars.githubusercontent.com/u/rainclouded?v=4) [rainclouded](https://github.com/rainclouded)\
+![LeeroyDilim](https://avatars.githubusercontent.com/u/LeeroyDilim?v=4) [LeeroyDilim](https://github.com/LeeroyDilim)\
+![mykolabesarab](https://avatars.githubusercontent.com/u/mykolabesarab?v=4) [mykolabesarab](https://github.com/mykolabesarab)\
+![nateng98](https://avatars.githubusercontent.com/u/nateng98?v=4) [nateng98](https://github.com/nateng98)\
+![Mondane-Monkeys](https://avatars.githubusercontent.com/u/Mondane-Monkeys?v=4) [Mondane-Monkeys](https://github.com/Mondane-Monkeys)
+
 ## Table of contents
 1. [Vision Statement](#vision-statement)
 2. [Build Instructions](#build-instructions)
