@@ -32,5 +32,5 @@ services:
 
   amenities:
     extends:
-      file: ../src/amenities/amenities_server/docker-compose.yaml
+      file: ../src/amenities/docker-compose.yaml
       service: amenities

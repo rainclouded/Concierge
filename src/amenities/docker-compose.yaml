@@ -1,6 +1,6 @@
 services:
   amenities:
-    build: ../src/amenities
+    build: .
     ports:
       - 50004:8080
     environment:

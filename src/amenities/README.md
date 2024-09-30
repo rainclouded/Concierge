@@ -3,7 +3,7 @@ Microservice to access and manage hotel amenities.
 
 ## How to Run Server
 ### Locally
-1. Go to directory: ./src/amenities/amenities_server
+1. Go to directory: ./src/amenities
 2. run command: dotnet run
 
 ### Via Docker Compose

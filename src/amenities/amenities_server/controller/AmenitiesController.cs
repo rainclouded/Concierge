@@ -45,7 +45,7 @@ public class AmenitiesController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult DeleteAmenity(int id)
     {
-        //todo validate session call
+        //TODO:  validate session call
         //if(!Services.GetPermissionValidator().ValidatePermissions(permission,sessionKey))
 
         //validate passed amenity
@@ -62,7 +62,7 @@ public class AmenitiesController : ControllerBase
     [HttpPost]
     public IActionResult AddAmenity(Amenity newAmenity)
     {
-        //todo validate session call
+        //TODO: validate session call
         //if(!Services.GetPermissionValidator().ValidatePermissions(permission,sessionKey))
 
         //validate passed amenity
@@ -82,7 +82,7 @@ public class AmenitiesController : ControllerBase
     [HttpPut("{id}")]
     public IActionResult UpdateAmenity(int id, Amenity newAmenity)
     {
-        //todo validate session call
+        //TODO:  validate session call
         //if(!Services.GetPermissionValidator().ValidatePermissions(permission,sessionKey))
 
         if(_amenityPersistence.GetAmenityByID(id) == null)
