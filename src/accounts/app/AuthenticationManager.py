@@ -1,16 +1,17 @@
-
 import hashlib
 import re
 import Configs as cfg
-from DatabaseConroller import DatabaseController as db
+from secrets import randbelow
+from DatabaseController import DatabaseController as db
+from UserObject import UserObject as User
+
 class AuthenticationManager:
     """
     Class for handling the authentication of users as well as the creation
     of new users.
     """
 
-
-    def check_hash(self, user:dict, password:str):
+    def check_hash(self, user:User, password:str):
         """Validates the hash of password to that of user
 
             Args:
@@ -21,11 +22,16 @@ class AuthenticationManager:
             Returns:
                 If the hashed password matches the user's hash
         """
-        return (
-            cfg.PASSWORD_HASH_FUNCTION(
-                f"{password}+{user["id"]}".encode()
-            ).hexdigest() == user["hash"]
-        )
+        if user.type == 'guest':
+            return self.get_hash(user.id, password) == user.hash
+        else:
+            return self.get_hash(user.username, password) == user.hash
+
+
+    def get_hash(self, id:int, password:str):
+        return cfg.PASSWORD_HASH_FUNCTION(
+                f"{password}+{id}".encode()
+            ).hexdigest()
 
 
     def validate_staff_login(self, username:str, password:str):
@@ -98,8 +104,17 @@ class AuthenticationManager:
         
         return True
 
+    def create_new_guest(self, new_guest:User):
+        if self.validate_new_guest(new_guest):
+            new_guest.password = randbelow(cfg.MAX_GUEST_PASSWORD)
+            new_guest.hash = self.get_hash(new_guest.username,new_guest.password)
+            return db.create_guest(new_guest)
+        return False
+    
+    def delete_user(self, user:User):
+        return db.delete_user(user)
 
-    def create_new_staff(self, new_user:dict):
+    def create_new_staff(self, new_user:User):
         """Attempt to create a new staff in the database
 
             Args:
@@ -109,11 +124,13 @@ class AuthenticationManager:
                 If the staff was successfully created
         """
         if self.validate_new_staff(new_user):
+            new_user.id = db.getLargestId()+1
+            new_user.hash = self.get_hash(new_user.id, new_user.password)
             return db.create_staff(new_user)
         return False #Todo: Throw an error
 
 
-    def validate_new_staff(self, new_user:dict):
+    def validate_new_staff(self, new_user:User):
         """Validate if the credentials can be used
 
             Args:
@@ -122,8 +139,9 @@ class AuthenticationManager:
             Returns:
                 If the password meets all criteria
         """
-        if (self.validate_staff_password(new_user['password'])
-            and self.validate_staff_username(new_user['username'])):
-            #Todo: also is not in the database already
+        usernames = list(filter(lambda x: x['username'], db.get_staff()))
+        if (self.validate_staff_password(new_user.password)
+            and self.validate_staff_username(new_user.username)
+            and new_user.username not in usernames):
             return True
         return False #Todo: throw an error

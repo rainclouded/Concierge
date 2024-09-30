@@ -1,8 +1,8 @@
 from flask import Flask, jsonify, request
 import argparse
 import os
-from . import AuthenticationManager
-
+from UserObject import UserObject as User
+from AuthenticationManager import AuthenticationManager
 
 app = Flask(__name__)
 
@@ -53,13 +53,13 @@ def create():
     }
 
     data = request.get_json()
-    new_user  = {
+    new_user  = User({
         'username' : data["username"],
         'password' : data["password"],
         'type' : data['type']
-    }
-    if new_user['type'] == 'guest':
-        pass
+    })
+    if new_user.type == 'guest':
+        return auth.create_new_guest(new_user)
     else:
         return auth.create_new_staff(new_user)
 
