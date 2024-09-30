@@ -35,6 +35,7 @@ def get_port():
 
     return DEFAULT_PORT
 
+
 @app.route("/accounts/", methods=['GET'])
 def index():
     response = {
@@ -60,12 +61,7 @@ def create():
     if new_user['type'] == 'guest':
         pass
     else:
-        if (
-            auth.validate_staff_password(new_user["password"]) 
-            and auth.validate_new_user(new_user)
-        ):
-            pass
-
+        return auth.create_new_staff(new_user)
 
 
 @app.route("/accounts/login_attempt", methods=["POST"])
@@ -81,7 +77,6 @@ def login():
         response["status"] = "ok"
 
     return response
-
 
 
 if __name__ == "__main__":
