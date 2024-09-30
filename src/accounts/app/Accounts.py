@@ -1,18 +1,19 @@
 from flask import Flask, jsonify, request
 import argparse
 import os
+from . import AuthenticationManager
+
 
 app = Flask(__name__)
 
 DEFAULT_PORT = 8080
 ENVIRONMENT_VAR_NAME_PORT = "ACCOUNTS_PORT"
 
-
-attempt_count = 0  # TODO remove state from server
+auth = AuthenticationManager()
 
 def get_port():
     parser = argparse.ArgumentParser(
-        description="A Flask app that returns accounts information"
+        description="The authorization microservice"
     )
     parser.add_argument(
         "-p", "--port", type=int, help="Port number for the server to listen on"
@@ -28,38 +29,59 @@ def get_port():
             return int(port)
         except ValueError:
             print(
-                f"Invalid PORT environment variable: {port}. Using default port {DEFAULT_PORT}."
+                f"Invalid PORT environment variable: {port}."
+                + f" Using default port {DEFAULT_PORT}."
             )
 
     return DEFAULT_PORT
 
-
 @app.route("/accounts/", methods=['GET'])
 def index():
-    response = {"message": "Hello, World From Accounts", "status": "success"}
+    response = {
+        "message": "You have contacted the accounts", 
+        "status": "success"
+        }
     return jsonify(response)
 
 
-@app.route("/accounts/login_attempts", methods=["POST"])
-def login():
-    global attempt_count
+@app.route("/accounts/create_account", methods=["POST"])
+def create():
     response = {
-        "key": None,
-        "account_id": None,
-        "message": f"Login Fail #{attempt_count}: Invalid Credentials",
+        "message" : "Could not create user - {reason}",
+        "status" : "error"
+    }
+
+    data = request.get_json()
+    new_user  = {
+        'username' : data["username"],
+        'password' : data["password"],
+        'type' : data['type']
+    }
+    if new_user['type'] == 'guest':
+        pass
+    else:
+        if (
+            auth.validate_staff_password(new_user["password"]) 
+            and auth.validate_new_user(new_user)
+        ):
+            pass
+
+
+
+@app.route("/accounts/login_attempt", methods=["POST"])
+def login():
+    response = {
+        "user_id": None,
+        "message": f"Login Fail - Invalid Credentials",
         "status": "error",
     }
     data = request.get_json()
-    if validate_password(data["username"], data["password"]):
+    if auth.validate_staff_login(data["username"], data["password"]):
         response["message"] = f"Welcome, {data['username']}!"
         response["status"] = "ok"
-    else:
-      attempt_count+=1
+
     return response
 
-
-def validate_password(username, password):
-    return username == "admin" and password == "admin"
 
 
 if __name__ == "__main__":
