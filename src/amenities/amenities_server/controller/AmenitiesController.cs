@@ -24,7 +24,7 @@ public class AmenitiesController : ControllerBase
             return NotFound();
         }
 
-        return Ok(amenities);
+        return Ok(new AmenityResponse<IEnumerable<Amenity>>("Amenities retrieved successfully.", amenities));
     }
 
     //get: /amenities/{id}
@@ -35,7 +35,7 @@ public class AmenitiesController : ControllerBase
 
         if (amenity == null)
         {
-            return NotFound();
+            return NotFound(new AmenityResponse<int>("Amenity with specified id not found.", id));
         }
 
         return amenity;
@@ -51,11 +51,12 @@ public class AmenitiesController : ControllerBase
         //validate passed amenity
         var amenity = _amenityPersistence.GetAmenityByID(id);
         if(amenity == null){
-            return BadRequest("Invalid request! An non existent amenity was requested.");
+            return BadRequest(new AmenityResponse<int>("Bad Request. Amenity with specified id not found.", id));
         }
 
         _amenityPersistence.DeleteAmenity(id);
-        return Ok("Amenity deleted successfully.");
+
+        return Ok(new AmenityResponse<string>("Amenity deleted successfully.", null));
     }
     //post: /amenities
     [HttpPost]
@@ -67,12 +68,14 @@ public class AmenitiesController : ControllerBase
         //validate passed amenity
         if (!AmenityValidator.ValidateNewAmenity(newAmenity))
         {
-            return BadRequest("Invalid amenity! An amenity with invalid parameters was passed.");
+            return BadRequest(new AmenityResponse<Amenity>("Bad Request. Amenity with invalid parameters was passed.", newAmenity));
         }
 
         _amenityPersistence.AddAmenity(newAmenity);
 
-        return Ok("Amenity added successfully.");
+        //create uri that points to the newly added amenity
+        var uri = $"{Request.Scheme}://{Request.Host}/amenities/{newAmenity.Id}";
+        return Created(uri, new AmenityResponse<Amenity>("Amenity created successfully.", newAmenity));
     }
 
     //put: /amenities/{id}
@@ -84,17 +87,17 @@ public class AmenitiesController : ControllerBase
 
         if(_amenityPersistence.GetAmenityByID(id) == null)
         {
-            return BadRequest("Invalid amenity! A non existent amenity was requested to be updated");
+            return BadRequest(new AmenityResponse<Amenity>("Bad Request. Non existing amenity was requested to be updated.", newAmenity));
         }
 
         if (!AmenityValidator.ValidateExistingAmenity(newAmenity))
         {
-            return BadRequest("Invalid amenity! An amenity with invalid parameters was passed.");
+            return BadRequest(new AmenityResponse<Amenity>("Bad Request. Amenity with invalid parameters was passed.", newAmenity));
         }
 
         _amenityPersistence.UpdateAmenity(id, newAmenity);
 
-        return Ok("Amenity updated successfully");
+        return Ok(new AmenityResponse<Amenity>("Amenity was created successfully.", newAmenity));
     }
 }
 
