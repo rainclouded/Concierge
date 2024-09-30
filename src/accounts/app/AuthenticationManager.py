@@ -71,6 +71,7 @@ class AuthenticationManager:
         
         return True
     
+
     def validate_staff_username(self, password:str):
         """Validate if a password can be used
 
@@ -98,9 +99,31 @@ class AuthenticationManager:
         return True
 
 
-    def create_new_user(self):
-        pass
+    def create_new_staff(self, new_user:dict):
+        """Attempt to create a new staff in the database
+
+            Args:
+                new_user: dictionary containing at least a username and password
+
+            Returns:
+                If the staff was successfully created
+        """
+        if self.validate_new_staff(new_user):
+            return db.create_staff(new_user)
+        return False #Todo: Throw an error
 
 
-    def validate_newUser(self,new_user:dict):
-        pass
+    def validate_new_staff(self, new_user:dict):
+        """Validate if the credentials can be used
+
+            Args:
+                new_user: dictionary containing at least a username and password
+
+            Returns:
+                If the password meets all criteria
+        """
+        if (self.validate_staff_password(new_user['password'])
+            and self.validate_staff_username(new_user['username'])):
+            #Todo: also is not in the database already
+            return True
+        return False #Todo: throw an error
