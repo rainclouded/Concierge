@@ -19,7 +19,7 @@ namespace amenities_test
             _testUpdatedValidAmenity = new Amenity(999, "testInvalidAmenity", "testValidDesc", new TimeSpan(12, 0, 0), new TimeSpan(24, 0, 0));
             _testInvalidAmenity = new Amenity(999, "testInvalidAmenity", "testValidDesc", new TimeSpan(13, 0, 0), new TimeSpan(12, 0, 0));
 
-            Services.clearPersistences();
+            Services.clear();
             _amenityPersistence = Services.GetAmenityPersistence();
   
             _controller = new AmenitiesController();
