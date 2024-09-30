@@ -171,5 +171,17 @@ namespace amenities_test
 
             Assert.IsInstanceOf<NotFoundObjectResult>(_controller.GetAmenityByID(_testInvalidAmenity.Id).Result);
         }
+
+        [Test]
+        public void AmenityModel_EqualsWorksForIncompatibleObject()
+        {
+            Assert.IsFalse(_testValidAmenity.Equals("Non-Amenity"));
+        }
+
+        [Test]
+        public void AmenityModel_GetHashCodeWorks()
+        {
+            Assert.That(_testValidAmenity.Id, Is.EqualTo(_testValidAmenity.GetHashCode()));
+        }
     }
 }
