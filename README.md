@@ -12,12 +12,11 @@
 [Mondane-Monkeys](https://github.com/Mondane-Monkeys)
 
 ## Table of contents
-1. [Vision Statement](#vision-statement)
-2. [Build Instructions](#build-instructions)
-3. [Endpoints](#endpoints)
-4. [Enviornment Variables](#environment-variables)
-5. [Project Structure](#project-structure)
-6. [Supporting Documents](#supporting-documents)
+- [Vision Statement](#vision-statement)
+- [Build Instructions](#build-instructions)
+- [Enviornment Variables](#environment-variables)
+- [Project Structure](#project-structure)
+- [Supporting Documents](#supporting-documents)
 
 ## Vision Statement:
 
@@ -42,7 +41,7 @@ Backend: Microservices written in Python/C# ASP.NET\
 Databases: MongoDB and MySQL\
 Contained in docker
 
-![Architecture diagram](/Docs/Sprint0/block_diagram.jpg)
+![Architecture diagram](/Docs/Sprint0/images/block_diagram.jpg)
 
 ## Build Instructions:
 
@@ -62,7 +61,6 @@ docker compose -f ./docker-compose/docker-compose.yaml down
 ```
 
 
-
 ## Project Structure
 ```
 Concierge/
@@ -79,28 +77,46 @@ Concierge/
     ├── staff_webapp
     └── webapp
 ```
+## Branch Naming:
+Before you branch, create an issue for what you are working on.
+We'll use the issue # in the branch name and snake_case.
 
+the format is:
+```
+{branch-type}/{feature-name}/{issue-#}
+ex. feature/account_server/9354093
+```
 
 ## Supporting Documents
 
 ### Sprint 0:
-[Sprint 0 Worksheet](/Docs/Sprint0/sprint_0_worksheet.md)
+- [Sprint 0 Worksheet](/Docs/Sprint0/sprint_0_worksheet.md)
 ### Sprint 1:
 (In progress)
 
 ### Project:
 
-[Docker build instructions](/docker-compose/README.md)
+- [Docker build instructions](/docker-compose/README.md)
 
 ### Technical details
-[Concierge Technical Info](/Docs/project-technical-details.md)
+- [Concierge Technical Info](/Docs/project-technical-details.md)
 
 ### We have style
 
-[Python](https://google.github.io/styleguide/pyguide.html)\
-[C#](https://google.github.io/styleguide/csharp-style.html)\
-[JavaScript](https://google.github.io/styleguide/jsguide.html)\
-[TypeScript](https://google.github.io/styleguide/tsguide.html)
+- [Python](https://google.github.io/styleguide/pyguide.html)
+- [C#](https://google.github.io/styleguide/csharp-style.html)
+- [JavaScript](https://google.github.io/styleguide/jsguide.html)
+- [TypeScript](https://google.github.io/styleguide/tsguide.html)
 
 ### Api Full Documentation:
-(Best to open in a browser)\
+(Best to open in a browser)
+- [Api Documentation](/src/api-help/redoc-static.html)
+
+### Other important (more specific) information
+
+- [accounts](/src/accounts/README.md)
+- [permissions](/src/permissions/README.md)
+- [sessions](/src/permissions/README.md)
+- [webapp](/src/webapp/README.md)
+- [staff webapp](/src/staff_webapp/README.md)
+- [guest webapp](/src/guest_webapp/README/md)
