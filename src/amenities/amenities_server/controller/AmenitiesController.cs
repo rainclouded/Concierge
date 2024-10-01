@@ -29,7 +29,7 @@ public class AmenitiesController : ControllerBase
 
     //get: /amenities/{id}
     [HttpGet("{id}")]
-    public ActionResult<Amenity> GetAmenityByID(int id)
+    public IActionResult GetAmenityByID(int id)
     {
         var amenity = _amenityPersistence.GetAmenityByID(id);
 
@@ -38,7 +38,7 @@ public class AmenitiesController : ControllerBase
             return NotFound(new AmenityResponse<int>("Amenity with specified id not found.", id));
         }
 
-        return amenity;
+        return Ok(new AmenityResponse<Amenity>("Amenity retrieved successfully.", amenity));
     }
 
     //delete: /amenities/{id}

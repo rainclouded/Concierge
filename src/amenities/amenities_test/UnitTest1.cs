@@ -45,7 +45,7 @@ namespace amenities_test
             _amenityPersistence.AddAmenity(_testValidAmenity);
             var amenity = _amenityPersistence.GetAmenityByID(_testValidAmenity.Id);
 
-            Assert.IsInstanceOf<Amenity>(_controller.GetAmenityByID(amenity.Id).Value);
+            Assert.IsInstanceOf<OkObjectResult>(_controller.GetAmenityByID(amenity.Id));
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace amenities_test
             //assuming amenities exist within database
             int invalidID = -1;
 
-            Assert.IsInstanceOf<NotFoundObjectResult>(_controller.GetAmenityByID(invalidID).Result);
+            Assert.IsInstanceOf<NotFoundObjectResult>(_controller.GetAmenityByID(invalidID));
         }
 
         [Test]
@@ -68,7 +68,7 @@ namespace amenities_test
         {
             _controller.AddAmenity(_testValidAmenity);
 
-            Assert.IsInstanceOf<Amenity>(_controller.GetAmenityByID(_testValidAmenity.Id).Value);
+            Assert.IsInstanceOf<OkObjectResult>(_controller.GetAmenityByID(_testValidAmenity.Id));
         }
         [Test]
         public void AddAmenity_InvalidAmenity_Fails()
@@ -81,7 +81,7 @@ namespace amenities_test
         {
             _controller.AddAmenity(_testInvalidAmenity);
 
-            Assert.IsInstanceOf<NotFoundObjectResult>(_controller.GetAmenityByID(_testInvalidAmenity.Id).Result);
+            Assert.IsInstanceOf<NotFoundObjectResult>(_controller.GetAmenityByID(_testInvalidAmenity.Id));
         }
 
         [Test]
@@ -112,7 +112,13 @@ namespace amenities_test
 
             _controller.UpdateAmenity(_testValidAmenity.Id, _testUpdatedValidAmenity);
 
-            Assert.That(_controller.GetAmenityByID(_testValidAmenity.Id).Value, Is.EqualTo(_testUpdatedValidAmenity));
+            var result = _controller.GetAmenityByID(_testValidAmenity.Id) as OkObjectResult;
+            Assert.IsNotNull(result); 
+            
+            var amenityResponse = result.Value as AmenityResponse<Amenity>;
+            Assert.IsNotNull(amenityResponse); 
+            
+            Assert.That(amenityResponse.Data, Is.EqualTo(_testUpdatedValidAmenity));
         }
         [Test]
         public void UpdateAmenity_InvalidAmenity_Fails()
@@ -125,7 +131,7 @@ namespace amenities_test
         {
             _controller.UpdateAmenity(_testInvalidAmenity.Id, _testInvalidAmenity);
 
-            Assert.IsInstanceOf<NotFoundObjectResult>(_controller.GetAmenityByID(_testInvalidAmenity.Id).Result);
+            Assert.IsInstanceOf<NotFoundObjectResult>(_controller.GetAmenityByID(_testInvalidAmenity.Id));
         }
 
         [Test]
@@ -156,7 +162,7 @@ namespace amenities_test
 
             _controller.DeleteAmenity(_testValidAmenity.Id);
 
-            Assert.IsInstanceOf<NotFoundObjectResult>(_controller.GetAmenityByID(_testValidAmenity.Id).Result);
+            Assert.IsInstanceOf<NotFoundObjectResult>(_controller.GetAmenityByID(_testValidAmenity.Id));
         }
         [Test]
         public void DeleteAmenity_InvalidAmenity_Fails()
@@ -169,7 +175,7 @@ namespace amenities_test
         {
             _controller.DeleteAmenity(_testInvalidAmenity.Id);
 
-            Assert.IsInstanceOf<NotFoundObjectResult>(_controller.GetAmenityByID(_testInvalidAmenity.Id).Result);
+            Assert.IsInstanceOf<NotFoundObjectResult>(_controller.GetAmenityByID(_testInvalidAmenity.Id));
         }
 
         [Test]
