@@ -16,17 +16,16 @@ class Status(Enum):
     IN_PROGRESS = "In Progress"
     
 class IncidentReport:
-    def __init__(self, ID: int, severity: Severity, status: Status, title: str, description: str, 
-                created_at: datetime, filing_person_ID: int, reviewer_ID: int) -> None:
-        self.ID = ID
+    def __init__(self, id: int, severity: Severity, status: Status, title: str, description: str, filing_person_Id: int, reviewer_Id: int) -> None:
+        self.id = id
         self.severity = severity
         self.status = status
         self.title = title
         self.description = description
-        self.created_at = created_at
-        self.updated_at = created_at
-        self.filing_person_ID = filing_person_ID
-        self.reviewer_ID = reviewer_ID
+        self.created_at = datetime.now()
+        self.updated_at = self.created_at
+        self.filing_person_Id = filing_person_Id
+        self.reviewer_Id = reviewer_Id
         
     def update(self, updated_report: 'IncidentReport') -> None:
         self.severity = updated_report.severity
@@ -35,4 +34,11 @@ class IncidentReport:
         self.description = updated_report.description
         self.reviewerID = updated_report.reviewerID
         self.updated_at = datetime.now()
+        
+class IncidentReportResponse:
+    def __init__(self, message : str, data) -> None:
+        self.message = message
+        self.data = data
+        self.timeStamp = datetime.now()
+        
     

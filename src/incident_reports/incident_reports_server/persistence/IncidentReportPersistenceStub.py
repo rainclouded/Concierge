@@ -7,7 +7,7 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
     def __init__(self) -> None:
         self._incident_reports = [
             IncidentReport(
-                ID=1,
+                id=1,
                 severity=Severity.LOW,
                 status=Status.OPEN,
                 title="Room Maintenance Request",
@@ -17,7 +17,7 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
                 reviewer_ID=401 
             ),
             IncidentReport(
-                ID=2,
+                id=2,
                 severity=Severity.MEDIUM,
                 status=Status.IN_PROGRESS,
                 title="Lost Property",
@@ -27,7 +27,7 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
                 reviewer_ID=402
             ),
             IncidentReport(
-                ID=3,
+                id=3,
                 severity=Severity.HIGH,
                 status=Status.RESOLVED,
                 title="Fire Alarm Malfunction",
@@ -37,7 +37,7 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
                 reviewer_ID=403
             ),
             IncidentReport(
-                ID=4,
+                id=4,
                 severity=Severity.CRITICAL,
                 status=Status.CLOSED,
                 title="Food Poisoning Incident",
@@ -53,7 +53,7 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
     
     def get_incident_report_by_id(self, id:int) -> IncidentReport:
         for incident_report in self._incident_reports:
-            if incident_report.ID == id:
+            if incident_report.id == id:
                 return incident_report
             
         return None 
@@ -72,7 +72,7 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
                 
     def delete_incident_report(self, id:int) -> None:
         for incident_report in self._incident_reports:
-            if incident_report.ID == id:
+            if incident_report.id == id:
                 self._incident_reports.remove(incident_report)
                 return
             

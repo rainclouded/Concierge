@@ -7,13 +7,16 @@ class IncidentReportValidator:
         _incident_report_persistence = None;
 
     def validate_incident_report_parameters(self, incident_report: IncidentReport) -> bool:
-        if not isinstance(incident_report.ID, int) or incident_report.ID <= 0:
+        status_values = [status.value for status in Status]
+        severity_values = [severity.value for severity in Severity]
+        
+        if not isinstance(incident_report.id, int) or incident_report.id <= 0:
             return False
         
-        if not isinstance(incident_report.severity, Severity):
+        if not isinstance(incident_report.status, Status) or IncidentReport.status not in status_values:
             return False
         
-        if not isinstance(incident_report.status, Status):
+        if not isinstance(incident_report.severity, Severity) or IncidentReport.severity not in severity_values:
             return False
         
         if not isinstance(incident_report.title, str) or not incident_report.title.strip():
@@ -40,7 +43,7 @@ class IncidentReportValidator:
             return False
         
         #check if id exists or not
-        return not self.get_incident_report_by_id(new_incident_report.ID) #we don't want to override an existing id
+        return not self.get_incident_report_by_id(new_incident_report.id) #we don't want to override an existing id
     
     def validate_existing_incident_report(self, new_incident_report: IncidentReport) -> bool:
         self._incident_report_persistence = Services.get_incident_report_persistence()
@@ -49,6 +52,6 @@ class IncidentReportValidator:
             return False
         
         #check if id exists or not
-        return self.get_incident_report_by_id(new_incident_report.ID) #want to make sure incident report exists in database
+        return self.get_incident_report_by_id(new_incident_report.id) #want to make sure incident report exists in database
            
     
