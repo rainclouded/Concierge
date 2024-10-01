@@ -42,6 +42,8 @@ Backend: Microservices written in Python/C# ASP.NET\
 Databases: MongoDB and MySQL\
 Contained in docker
 
+![Architecture diagram](/Docs/Sprint0/block_diagram.jpg)
+
 ## Build Instructions:
 
 (See [here](/docker-compose/README.md) for more details)
@@ -99,3 +101,6 @@ Concierge/
 [C#](https://google.github.io/styleguide/csharp-style.html)\
 [JavaScript](https://google.github.io/styleguide/jsguide.html)\
 [TypeScript](https://google.github.io/styleguide/tsguide.html)
+
+### Api Full Documentation:
+(Best to open in a browser)\
