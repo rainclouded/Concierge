@@ -1,18 +1,34 @@
 # Amenities Microservice
-Microservice to access and manage amenities.
+Microservice to access and manage hotel amenities.
+
+## How to Run Server
+### Locally
+1. Go to directory: ./src/amenities
+2. run command: dotnet run
+
+### Via Docker Compose
+1. Go to directory: ./docker-compose
+2. run command: docker-compose -f docker-compose.yaml up
+
+## How to Run Unit Tests
+1. Go to directory: ./src/amenities/amenities_test
+2. run command: dotnet test
 
 ## Endpoints
-### Get /amenities
+### GET /amenities
 get all amenities
 
-### Get /amenities/id
+### GET /amenities/id
 get specific amenity by id
 
-### Post /amenities
+### POST /amenities
 create amenity
 
-### Put /amenities
+### PUT /amenities
 update amenity with changed information
+
+### DELETE /amenities/id
+delete specified amenity from database
 
 ## Environment Variables
  * forProduction
