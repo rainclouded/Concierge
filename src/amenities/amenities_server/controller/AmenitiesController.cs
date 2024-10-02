@@ -7,10 +7,11 @@ namespace amenities_server.Controllers;
 public class AmenitiesController : ControllerBase
 {
     private IAmenityPersistence _amenityPersistence;
-
+    //private IPermissionValidator _permissionValidator
     public AmenitiesController()
     {
         _amenityPersistence = Services.GetAmenityPersistence();
+        //IPermissionValidator = Services.GetPermissionValidator();
     }
 
     //get: /amenities
@@ -21,10 +22,10 @@ public class AmenitiesController : ControllerBase
 
         if (amenities == null)
         {
-            return NotFound(new AmenityResponse<string>("We had trouble fetching your amenities.", null));
+            return NotFound(new AmenityResponse<string>(ResponseMessages.GET_AMENITIES_FAILED, null));
         }
 
-        return Ok(new AmenityResponse<IEnumerable<Amenity>>("Amenities retrieved successfully.", amenities));
+        return Ok(new AmenityResponse<IEnumerable<Amenity>>(ResponseMessages.GET_AMENITIES_SUCCESS, amenities));
     }
 
     //get: /amenities/{id}
@@ -35,10 +36,10 @@ public class AmenitiesController : ControllerBase
 
         if (amenity == null)
         {
-            return NotFound(new AmenityResponse<int>("Amenity with specified id not found.", id));
+            return NotFound(new AmenityResponse<int>(ResponseMessages.GET_AMENITY_FAILED, id));
         }
 
-        return Ok(new AmenityResponse<Amenity>("Amenity retrieved successfully.", amenity));
+        return Ok(new AmenityResponse<Amenity>(ResponseMessages.GET_AMENITY_SUCCESS, amenity));
     }
 
     //delete: /amenities/{id}
@@ -46,36 +47,38 @@ public class AmenitiesController : ControllerBase
     public IActionResult DeleteAmenity(int id)
     {
         //TODO:  validate session call
-        //if(!Services.GetPermissionValidator().ValidatePermissions(permission,sessionKey))
+        //if(_permissionValidator.ValidatePermissions(permission,sessionKey))
 
         //validate passed amenity
         var amenity = _amenityPersistence.GetAmenityByID(id);
         if(amenity == null){
-            return BadRequest(new AmenityResponse<int>("Bad Request. Amenity with specified id not found.", id));
+            return NotFound(new AmenityResponse<int>(ResponseMessages.GET_AMENITY_FAILED, id));
         }
 
         _amenityPersistence.DeleteAmenity(id);
 
-        return Ok(new AmenityResponse<string>("Amenity deleted successfully.", null));
+        return Ok(new AmenityResponse<string>(ResponseMessages.DELETE_AMENITY_SUCCESS, null));
     }
     //post: /amenities
     [HttpPost]
     public IActionResult AddAmenity(Amenity newAmenity)
     {
         //TODO: validate session call
-        //if(!Services.GetPermissionValidator().ValidatePermissions(permission,sessionKey))
-
+        //if(_permissionValidator.ValidatePermissions(permission,sessionKey))
+        // 
         //validate passed amenity
         if (!AmenityValidator.ValidateNewAmenity(newAmenity))
         {
-            return BadRequest(new AmenityResponse<Amenity>("Bad Request. Amenity with invalid parameters was passed.", newAmenity));
+            return BadRequest(new AmenityResponse<Amenity>(ResponseMessages.INVALID_AMENITY_PASSED, newAmenity));
         }
 
         _amenityPersistence.AddAmenity(newAmenity);
 
-        //create uri that points to the newly added amenity
-        var uri = $"{Request.Scheme}://{Request.Host}/amenities/{newAmenity.Id}";
-        return Created(uri, new AmenityResponse<Amenity>("Amenity created successfully.", newAmenity));
+        return CreatedAtAction(
+            nameof(GetAmenityByID),  // The action to get the newly created amenity
+            new { id = newAmenity.Id },  // The route values (e.g., the ID of the created amenity)
+            new AmenityResponse<Amenity>(ResponseMessages.CREATE_AMENITY_SUCCESS, newAmenity)  // The response body
+        );
     }
 
     //put: /amenities/{id}
@@ -87,17 +90,17 @@ public class AmenitiesController : ControllerBase
 
         if(_amenityPersistence.GetAmenityByID(id) == null)
         {
-            return BadRequest(new AmenityResponse<Amenity>("Bad Request. Non existing amenity was requested to be updated.", newAmenity));
+            return NotFound(new AmenityResponse<Amenity>(ResponseMessages.GET_AMENITY_FAILED, newAmenity));
         }
 
         if (!AmenityValidator.ValidateAmenityParameters(newAmenity))
         {
-            return BadRequest(new AmenityResponse<Amenity>("Bad Request. Amenity with invalid parameters was passed.", newAmenity));
+            return BadRequest(new AmenityResponse<Amenity>(ResponseMessages.INVALID_AMENITY_PASSED, newAmenity));
         }
 
         newAmenity = _amenityPersistence.UpdateAmenity(id, newAmenity);
 
-        return Ok(new AmenityResponse<Amenity>("Amenity was updated successfully.", newAmenity));
+        return Ok(new AmenityResponse<Amenity>(ResponseMessages.UPDATE_AMENITY_SUCCESS, newAmenity));
     }
 }
 

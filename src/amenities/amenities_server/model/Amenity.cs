@@ -14,7 +14,7 @@ public class Amenity
         EndTime = endTime;
     }
 
-    public void updateAmenity(Amenity updatedAmenity){
+    public void UpdateAmenity(Amenity updatedAmenity){
         Name = updatedAmenity.Name;
         Description = updatedAmenity.Description;
         StartTime = updatedAmenity.StartTime;

@@ -43,7 +43,7 @@ public class StubAmenityPersistence : IAmenityPersistence
             throw new KeyNotFoundException("Amenity not found.");
         }
 
-        existingAmenity.updateAmenity(amenity);
+        existingAmenity.UpdateAmenity(amenity);
 
         return existingAmenity;
     }

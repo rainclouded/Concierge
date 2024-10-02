@@ -58,7 +58,7 @@ namespace amenities_test
         [Test]
         public void AddAmenity_ValidAmenity_IsSuccessful()
         {
-            Assert.IsInstanceOf<CreatedResult>(_controller.AddAmenity(_testValidAmenity));
+            Assert.IsInstanceOf<CreatedAtActionResult>(_controller.AddAmenity(_testValidAmenity));
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace amenities_test
         [Test]
         public void UpdateAmenity_InvalidAmenity_Fails()
         {
-            Assert.IsInstanceOf<BadRequestObjectResult>(_controller.UpdateAmenity(_testInvalidAmenity.Id, _testInvalidAmenity));
+            Assert.IsInstanceOf<NotFoundObjectResult>(_controller.UpdateAmenity(_testInvalidAmenity.Id, _testInvalidAmenity));
         }
 
         [Test]
@@ -137,13 +137,13 @@ namespace amenities_test
         [Test]
         public void UpdateAmenity_NonExistingAmenity_Fails()
         {
-            Assert.IsInstanceOf<BadRequestObjectResult>(_controller.UpdateAmenity(_testValidAmenity.Id, _testValidAmenity));
+            Assert.IsInstanceOf<NotFoundObjectResult>(_controller.UpdateAmenity(_testValidAmenity.Id, _testValidAmenity));
         }
 
         [Test]
         public void UpdateAmenity_NullAmenity_Fails()
         {
-            Assert.IsInstanceOf<BadRequestObjectResult>(_controller.UpdateAmenity(0, null));
+            Assert.IsInstanceOf<NotFoundObjectResult>(_controller.UpdateAmenity(0, null));
         }
 
         [Test]
@@ -167,7 +167,7 @@ namespace amenities_test
         [Test]
         public void DeleteAmenity_InvalidAmenity_Fails()
         {
-            Assert.IsInstanceOf<BadRequestObjectResult>(_controller.DeleteAmenity(_testInvalidAmenity.Id));
+            Assert.IsInstanceOf<NotFoundObjectResult>(_controller.DeleteAmenity(_testInvalidAmenity.Id));
         }
 
         [Test]
