@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from incident_reports.incident_reports_server.model.Models import IncidentReport
+from incident_reports_server.model.models import IncidentReport
 
 class IIncidentReportPersistence(ABC):
     @abstractmethod
@@ -13,11 +13,11 @@ class IIncidentReportPersistence(ABC):
         pass
     
     @abstractmethod
-    def create_incident_report(self, incident_report: IncidentReport) -> None:
+    def create_incident_report(self, incident_report: IncidentReport) -> IncidentReport:
         pass 
     
     @abstractmethod
-    def update_incident_report(self, id: int, incident_report: IncidentReport) -> None:
+    def update_incident_report(self, id: int, incident_report: IncidentReport) -> IncidentReport:
         pass 
     
     @abstractmethod

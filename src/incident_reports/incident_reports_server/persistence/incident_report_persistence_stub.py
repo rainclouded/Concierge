@@ -1,52 +1,52 @@
-import datetime
 from typing import List
-from incident_reports.incident_reports_server.model.Models import IncidentReport, Severity, Status
-from incident_reports.incident_reports_server.persistence import IIncidentReportPersistence
+from incident_reports_server.model.models import IncidentReport, Severity, Status
+from incident_reports_server.persistence.i_incident_report_persistence import IIncidentReportPersistence
 
 class IncidentReportPersistenceStub(IIncidentReportPersistence):
+
     def __init__(self) -> None:
-        self._incident_reports = [
+        self._incident_reports = []
+        self._nextId = 1
+        self.create_incident_report(
             IncidentReport(
-                id=1,
                 severity=Severity.LOW,
                 status=Status.OPEN,
                 title="Room Maintenance Request",
                 description="Guest reported a leaky faucet in Room 203.",
-                created_at=datetime.datetime(2024, 9, 1, 10, 30),
-                filing_person_ID=301, 
-                reviewer_ID=401 
-            ),
+                filing_person_Id=301, 
+                reviewer_Id=401 
+            )
+        )
+        self.create_incident_report(
             IncidentReport(
-                id=2,
                 severity=Severity.MEDIUM,
                 status=Status.IN_PROGRESS,
                 title="Lost Property",
                 description="A guest has reported a lost wallet in the lobby area.",
-                created_at=datetime.datetime(2024, 9, 10, 14, 15),
-                filing_person_ID=302,
-                reviewer_ID=402
-            ),
+                filing_person_Id=302,
+                reviewer_Id=402
+            )
+        )
+        self.create_incident_report(
             IncidentReport(
-                id=3,
                 severity=Severity.HIGH,
                 status=Status.RESOLVED,
                 title="Fire Alarm Malfunction",
                 description="The fire alarm went off during dinner service; it was a false alarm.",
-                created_at=datetime.datetime(2024, 9, 15, 9, 0),
-                filing_person_ID=303,
-                reviewer_ID=403
-            ),
+                filing_person_Id=303,
+                reviewer_Id=403
+            )
+        )
+        self.create_incident_report(
             IncidentReport(
-                id=4,
                 severity=Severity.CRITICAL,
                 status=Status.CLOSED,
                 title="Food Poisoning Incident",
                 description="Multiple guests reported food poisoning after dining at the hotel restaurant.",
-                created_at=datetime.datetime(2024, 9, 20, 18, 45),
-                filing_person_ID=304,
-                reviewer_ID=404
+                filing_person_Id=304,
+                reviewer_Id=404
             )
-    ]
+        )
 
     def get_incident_reports(self) -> List[IncidentReport]:
         return self._incident_reports
@@ -58,14 +58,19 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
             
         return None 
     
-    def create_incident_report(self, incident_report: IncidentReport) -> None:
-        self._incident_reports.insert(incident_report)
-    
-    def update_incident_report(self, id: int, updated_incident_report: IncidentReport) -> None:
+    def create_incident_report(self, incident_report: IncidentReport) -> IncidentReport:
+        incident_report.set_id(self._nextId)
+        self._nextId += 1
+
+        self._incident_reports.append(incident_report)
+        return incident_report
+
+    def update_incident_report(self, id: int, updated_incident_report: IncidentReport) -> IncidentReport:
         incident_report = self.get_incident_report_by_id(id)
 
         if(incident_report != None):
-            incident_report.update(None)
+            incident_report.update(updated_incident_report)
+            return incident_report
         else:
             return ValueError
 

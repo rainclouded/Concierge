@@ -1,14 +1,12 @@
-import datetime
+from datetime import datetime
 from enum import Enum
 
 class Severity(Enum):
     LOW = "Low"
-    Medium = "Medium"
-    High = "High"
-    Critical = "Critical"
+    MEDIUM = "Medium"
+    HIGH = "High"
+    CRITICAL = "Critical"
     
-    from enum import Enum
-
 class Status(Enum):
     OPEN = "Open"
     CLOSED = "Closed"
@@ -16,8 +14,7 @@ class Status(Enum):
     IN_PROGRESS = "In Progress"
     
 class IncidentReport:
-    def __init__(self, id: int, severity: Severity, status: Status, title: str, description: str, filing_person_Id: int, reviewer_Id: int) -> None:
-        self.id = id
+    def __init__(self, severity: Severity, status: Status, title: str, description: str, filing_person_Id: int, reviewer_Id: int) -> None:
         self.severity = severity
         self.status = status
         self.title = title
@@ -34,11 +31,32 @@ class IncidentReport:
         self.description = updated_report.description
         self.reviewerID = updated_report.reviewerID
         self.updated_at = datetime.now()
+
+    def set_id(self, id : int) -> None:
+        self.id = id
+        
+    def to_dict(self): 
+        return {
+            "severity": self.severity.value,
+            "status": self.status.value,        
+            "title": self.title,
+            "description": self.description,
+            "created_at": self.created_at.isoformat(),
+            "updated_at": self.updated_at.isoformat(),
+            "filing_person_Id": self.filing_person_Id,
+            "reviewer_Id": self.reviewer_Id,
+         }
         
 class IncidentReportResponse:
     def __init__(self, message : str, data) -> None:
         self.message = message
         self.data = data
-        self.timeStamp = datetime.now()
+        self.time_stamp = datetime.now()
         
+    def to_dict(self):
+        return {
+            "message": self.message,
+            "data": self.data,
+            "timestamp": self.time_stamp
+        }
     

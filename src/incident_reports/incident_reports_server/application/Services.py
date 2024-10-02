@@ -1,4 +1,5 @@
-from incident_reports.incident_reports_server.persistence.IIncidentReportPersistence import IIncidentReportPersistence, IncidentReportPersistenceStub
+from incident_reports_server.persistence.i_incident_report_persistence import IIncidentReportPersistence
+from incident_reports_server.persistence.incident_report_persistence_stub import IncidentReportPersistenceStub
 
 class Services:
     _incident_report_persistence = None
