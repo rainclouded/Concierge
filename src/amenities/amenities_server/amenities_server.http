@@ -1,0 +1,42 @@
+### Get all amenities
+GET http://localhost:8089/amenities
+Accept: application/json
+
+###
+
+### Get a specific amenity by ID
+GET http://localhost:8089/amenities/1
+Accept: application/json
+
+###
+
+### Add a new amenity
+POST http://localhost:8089/amenities/
+Content-Type: application/json
+
+{
+  "Name": "Swimming Pool",
+  "Description": "A large outdoor swimming pool with heated water.",
+  "StartTime": "00:00:00",
+  "EndTime": "12:00:00"
+}
+
+###
+
+### Update an existing amenity
+PUT http://localhost:8089/amenities/5
+Content-Type: application/json
+
+{
+  "Name": "Updated Swimming Pool",
+  "Description": "A large outdoor swimming pool with heated water.",
+  "StartTime": "12:00:00",
+  "EndTime": "23:59:00"
+}
+
+###
+
+## Delete an Amenity
+DELETE http://localhost:8089/amenities/5
+Accept: application/json
+

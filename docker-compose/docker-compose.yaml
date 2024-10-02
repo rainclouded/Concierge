@@ -29,3 +29,8 @@ services:
     build: ../src/webapp
     ports:
       - 50000:8080
+
+  amenities: #uses port 50004
+    extends:
+      file: ../src/amenities/docker-compose.yaml
+      service: amenities
