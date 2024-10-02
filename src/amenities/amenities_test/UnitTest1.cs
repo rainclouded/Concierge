@@ -35,7 +35,6 @@ namespace amenities_test
         {
             var result = _controller.GetAmenities();
 
-            Assert.NotNull(result);
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
 
@@ -86,7 +85,7 @@ namespace amenities_test
         [Test]
         public void AddAmenity_DuplicateAmenity_Fails()
         {
-            _amenityPersistence.AddAmenity(_testValidAmenity);
+            _testValidAmenity = _amenityPersistence.AddAmenity(_testValidAmenity);
 
             Assert.IsInstanceOf<BadRequestObjectResult>(_controller.AddAmenity(_testValidAmenity));
         }

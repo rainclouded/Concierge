@@ -21,7 +21,7 @@ public class AmenitiesController : ControllerBase
 
         if (amenities == null)
         {
-            return NotFound();
+            return NotFound(new AmenityResponse<string>("We had trouble fetching your amenities.", null));
         }
 
         return Ok(new AmenityResponse<IEnumerable<Amenity>>("Amenities retrieved successfully.", amenities));
