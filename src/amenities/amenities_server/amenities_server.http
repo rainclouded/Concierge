@@ -34,3 +34,9 @@ Content-Type: application/json
   "EndTime": "23:59:00"
 }
 
+###
+
+## Delete an Amenity
+DELETE http://localhost:8089/amenities/123
+Accept: application/json
+

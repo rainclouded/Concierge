@@ -97,7 +97,7 @@ public class AmenitiesController : ControllerBase
 
         _amenityPersistence.UpdateAmenity(id, newAmenity);
 
-        return Ok(new AmenityResponse<Amenity>("Amenity was created successfully.", newAmenity));
+        return Ok(new AmenityResponse<Amenity>("Amenity was updated successfully.", newAmenity));
     }
 }
 
