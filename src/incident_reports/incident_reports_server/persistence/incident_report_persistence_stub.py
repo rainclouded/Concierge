@@ -13,8 +13,8 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
                 status=Status.OPEN,
                 title="Room Maintenance Request",
                 description="Guest reported a leaky faucet in Room 203.",
-                filing_person_Id=301, 
-                reviewer_Id=401 
+                filing_person_id=301, 
+                reviewer_id=401 
             )
         )
         self.create_incident_report(
@@ -23,8 +23,8 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
                 status=Status.IN_PROGRESS,
                 title="Lost Property",
                 description="A guest has reported a lost wallet in the lobby area.",
-                filing_person_Id=302,
-                reviewer_Id=402
+                filing_person_id=302,
+                reviewer_id=402
             )
         )
         self.create_incident_report(
@@ -33,8 +33,8 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
                 status=Status.RESOLVED,
                 title="Fire Alarm Malfunction",
                 description="The fire alarm went off during dinner service; it was a false alarm.",
-                filing_person_Id=303,
-                reviewer_Id=403
+                filing_person_id=303,
+                reviewer_id=403
             )
         )
         self.create_incident_report(
@@ -43,8 +43,8 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
                 status=Status.CLOSED,
                 title="Food Poisoning Incident",
                 description="Multiple guests reported food poisoning after dining at the hotel restaurant.",
-                filing_person_Id=304,
-                reviewer_Id=404
+                filing_person_id=304,
+                reviewer_id=404
             )
         )
 

@@ -14,22 +14,22 @@ class Status(Enum):
     IN_PROGRESS = "In Progress"
     
 class IncidentReport:
-    def __init__(self, severity: Severity, status: Status, title: str, description: str, filing_person_Id: int, reviewer_Id: int) -> None:
+    def __init__(self, severity: Severity, status: Status, title: str, description: str, filing_person_id: int, reviewer_id: int) -> None:
         self.severity = severity
         self.status = status
         self.title = title
         self.description = description
         self.created_at = datetime.now()
         self.updated_at = self.created_at
-        self.filing_person_Id = filing_person_Id
-        self.reviewer_Id = reviewer_Id
+        self.filing_person_id = filing_person_id
+        self.reviewer_id = reviewer_id
         
     def update(self, updated_report: 'IncidentReport') -> None:
         self.severity = updated_report.severity
         self.status = updated_report.status
         self.title = updated_report.title
         self.description = updated_report.description
-        self.reviewerID = updated_report.reviewerID
+        self.reviewer_id = updated_report.reviewer_id
         self.updated_at = datetime.now()
 
     def set_id(self, id : int) -> None:
@@ -43,12 +43,12 @@ class IncidentReport:
             "description": self.description,
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
-            "filing_person_Id": self.filing_person_Id,
-            "reviewer_Id": self.reviewer_Id,
+            "filing_person_id": self.filing_person_id,
+            "reviewer_id": self.reviewer_id,
          }
         
 class IncidentReportResponse:
-    def __init__(self, message : str, data) -> None:
+    def __init__(self, message : str, data):
         self.message = message
         self.data = data
         self.time_stamp = datetime.now()
