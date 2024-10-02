@@ -45,7 +45,7 @@ public class StubAmenityPersistence : IAmenityPersistence
 
         existingAmenity.updateAmenity(amenity);
 
-        return amenity;
+        return existingAmenity;
     }
 
     public void DeleteAmenity(int id){

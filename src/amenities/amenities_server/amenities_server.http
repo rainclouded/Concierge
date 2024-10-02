@@ -37,6 +37,6 @@ Content-Type: application/json
 ###
 
 ## Delete an Amenity
-DELETE http://localhost:8089/amenities/123
+DELETE http://localhost:8089/amenities/5
 Accept: application/json
 

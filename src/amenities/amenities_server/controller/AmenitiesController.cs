@@ -95,7 +95,7 @@ public class AmenitiesController : ControllerBase
             return BadRequest(new AmenityResponse<Amenity>("Bad Request. Amenity with invalid parameters was passed.", newAmenity));
         }
 
-        _amenityPersistence.UpdateAmenity(id, newAmenity);
+        newAmenity = _amenityPersistence.UpdateAmenity(id, newAmenity);
 
         return Ok(new AmenityResponse<Amenity>("Amenity was updated successfully.", newAmenity));
     }
