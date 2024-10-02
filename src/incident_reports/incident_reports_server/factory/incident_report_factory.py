@@ -14,8 +14,8 @@ class IncidentReportFactory:
         missing_keys = [key for key in required_keys if key not in incident_report_JSON]
         if missing_keys:
             raise KeyError(f"Values are missing in incident report: {','.join(missing_keys)}")
-                
-        return IncidentReport(
+        
+        result = IncidentReport(
             severity=Severity[incident_report_JSON['severity'].upper()], 
             status=Status[incident_report_JSON['status'].upper()],        
             title=incident_report_JSON['title'],
@@ -23,7 +23,11 @@ class IncidentReportFactory:
             filing_person_id=incident_report_JSON['filing_person_id'],
             reviewer_id=incident_report_JSON['reviewer_id']  
         )
-
+        
+        if "id" in incident_report_JSON:
+            result.set_id(incident_report_JSON["id"])
+        
+        return result
         
  
         

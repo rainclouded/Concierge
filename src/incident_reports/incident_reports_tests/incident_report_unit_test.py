@@ -45,7 +45,11 @@ class incident_report_unit_test(unittest.TestCase):
         self.assertEqual(response.status_code, 201) 
 
     def test_add_incident_report_valid_incident_report_able_to_be_fetched(self):
-        pass
+        response = self.app.post("/incident_reports", data=json.dumps(self.valid_incident_report.to_dict()), content_type='application/json')
+        
+        incident_report = response.data
+        
+        response = self.app.get(f"/incident_reports/{incident_report.id}")
 
     def test_add_incident_report_invalid_incident_report_fails(self):
         pass
