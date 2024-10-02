@@ -16,9 +16,9 @@ namespace amenities_test
         [SetUp]
         public void Setup()
         {
-            _testValidAmenity = new Amenity(999, "testValidAmenity", "testValidDesc", new TimeSpan(0, 0, 0), new TimeSpan(12, 0, 0));
-            _testUpdatedValidAmenity = new Amenity(999, "testInvalidAmenity", "testValidDesc", new TimeSpan(12, 0, 0), new TimeSpan(24, 0, 0));
-            _testInvalidAmenity = new Amenity(999, "testInvalidAmenity", "testValidDesc", new TimeSpan(13, 0, 0), new TimeSpan(12, 0, 0));
+            _testValidAmenity = new Amenity("testValidAmenity", "testValidDesc", new TimeSpan(0, 0, 0), new TimeSpan(12, 0, 0));
+            _testUpdatedValidAmenity = new Amenity("_testUpdatedValidAmenity", "testUpdatedValidDesc", new TimeSpan(12, 0, 0), new TimeSpan(24, 0, 0));
+            _testInvalidAmenity = new Amenity("testInvalidAmenity", "testInvalidDesc", new TimeSpan(13, 0, 0), new TimeSpan(12, 0, 0));
 
             Services.clear();
             _amenityPersistence = Services.GetAmenityPersistence();
@@ -42,8 +42,7 @@ namespace amenities_test
         [Test]
         public void GetAmenityByID_ValidID_NotReturnNull()
         {
-            _amenityPersistence.AddAmenity(_testValidAmenity);
-            var amenity = _amenityPersistence.GetAmenityByID(_testValidAmenity.Id);
+            var amenity = _amenityPersistence.AddAmenity(_testValidAmenity);
 
             Assert.IsInstanceOf<OkObjectResult>(_controller.GetAmenityByID(amenity.Id));
         }
@@ -108,8 +107,10 @@ namespace amenities_test
         [Test]
         public void UpdateAmenity_ValidAmenity_UpdatedAmenityFetched()
         {
-            _amenityPersistence.AddAmenity(_testValidAmenity);
+            _testValidAmenity = _amenityPersistence.AddAmenity(_testValidAmenity);
 
+            _testUpdatedValidAmenity.Id = _testValidAmenity.Id;
+            
             _controller.UpdateAmenity(_testValidAmenity.Id, _testUpdatedValidAmenity);
 
             var result = _controller.GetAmenityByID(_testValidAmenity.Id) as OkObjectResult;

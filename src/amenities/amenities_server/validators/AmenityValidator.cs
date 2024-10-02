@@ -9,10 +9,6 @@ public static class AmenityValidator
             return false;
         }
 
-        if(amenity.Id < 0){
-            return false;
-        }
-
         if(string.IsNullOrWhiteSpace(amenity.Name)){
             return false;
         }
@@ -25,7 +21,7 @@ public static class AmenityValidator
             return false;
         }
 
-        return true;;
+        return true;
     }
 
     public static bool ValidateNewAmenity(Amenity amenity)
@@ -37,18 +33,6 @@ public static class AmenityValidator
             return false;
         }
 
-        return amenityPersistence.GetAmenityByID(amenity.Id) == null;
-    }
-
-    public static bool ValidateExistingAmenity(Amenity amenity)
-    {
-        //get recent instance of persistence
-        amenityPersistence = Services.GetAmenityPersistence();
-
-        if (!ValidateAmenityParameters(amenity)){
-            return false;
-        }
-
-        return amenityPersistence.GetAmenityByID(amenity.Id) != null;
+        return amenity.Id < 0 || amenityPersistence.GetAmenityByID(amenity.Id) == null;
     }
 }

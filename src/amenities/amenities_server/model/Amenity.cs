@@ -6,9 +6,8 @@ public class Amenity
     public TimeSpan StartTime { get; set; }
     public TimeSpan EndTime { get; set; }
 
-    public Amenity(int id, string name, string description, TimeSpan startTime, TimeSpan endTime)
+    public Amenity(string name, string description, TimeSpan startTime, TimeSpan endTime)
     {
-        Id = id;
         Name = name;
         Description = description;
         StartTime = startTime;

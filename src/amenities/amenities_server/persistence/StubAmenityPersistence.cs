@@ -1,16 +1,15 @@
 public class StubAmenityPersistence : IAmenityPersistence
 {
     private List<Amenity> _amenities;
-
+    private static int _nextId = 1;
     public StubAmenityPersistence()
     {
-        _amenities = new List<Amenity>
-        {
-            new Amenity(1, "Pool", "Outdoor pool", new TimeSpan(9, 0, 0), new TimeSpan(21, 0, 0)),
-            new Amenity(2, "Gym", "24/7 access gym", new TimeSpan(0, 0, 0), new TimeSpan(24, 0, 0)),
-            new Amenity(3, "Breakfast", "Free breakfast", new TimeSpan(6, 0, 0), new TimeSpan(10, 0, 0)),
-            new Amenity(4, "Bar", "Serves alcohol and food", new TimeSpan(17, 0, 0), new TimeSpan(2, 0, 0))
-        };
+        _amenities = new List<Amenity>();
+
+        AddAmenity(new Amenity("Pool", "Outdoor pool", new TimeSpan(9, 0, 0), new TimeSpan(21, 0, 0)));
+        AddAmenity(new Amenity("Gym", "24/7 access gym", new TimeSpan(0, 0, 0), new TimeSpan(24, 0, 0)));
+        AddAmenity(new Amenity("Breakfast", "Free breakfast", new TimeSpan(6, 0, 0), new TimeSpan(10, 0, 0)));
+        AddAmenity(new Amenity("Bar", "Serves alcohol and food", new TimeSpan(17, 0, 0), new TimeSpan(2, 0, 0)));
     }
 
     public IEnumerable<Amenity> GetAmenities(){
@@ -22,18 +21,20 @@ public class StubAmenityPersistence : IAmenityPersistence
         return _amenities.FirstOrDefault(a => a.Id == id);
     }
     
-
-    public void AddAmenity(Amenity amenity)
+    public Amenity AddAmenity(Amenity amenity)
     {
-        if (_amenities.Any(a => a.Id == amenity.Id))
+        if (GetAmenityByID(amenity.Id) != null)
         {
             throw new InvalidOperationException("Amenity with the same ID already exists.");
         }
 
+        amenity.Id = _nextId++;
         _amenities.Add(amenity);
+
+        return amenity;
     }
 
-    public void UpdateAmenity(int id, Amenity amenity)
+    public Amenity UpdateAmenity(int id, Amenity amenity)
     {
         var existingAmenity = GetAmenityByID(id);
         
@@ -43,6 +44,8 @@ public class StubAmenityPersistence : IAmenityPersistence
         }
 
         existingAmenity.updateAmenity(amenity);
+
+        return amenity;
     }
 
     public void DeleteAmenity(int id){

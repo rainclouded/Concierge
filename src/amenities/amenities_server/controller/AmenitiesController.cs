@@ -90,7 +90,7 @@ public class AmenitiesController : ControllerBase
             return BadRequest(new AmenityResponse<Amenity>("Bad Request. Non existing amenity was requested to be updated.", newAmenity));
         }
 
-        if (!AmenityValidator.ValidateExistingAmenity(newAmenity))
+        if (!AmenityValidator.ValidateAmenityParameters(newAmenity))
         {
             return BadRequest(new AmenityResponse<Amenity>("Bad Request. Amenity with invalid parameters was passed.", newAmenity));
         }

@@ -15,9 +15,8 @@ POST http://localhost:8089/amenities/
 Content-Type: application/json
 
 {
-  "AmenityID": 123,
-  "AmenityName": "Swimming Pool",
-  "AmenityDescription": "A large outdoor swimming pool with heated water.",
+  "Name": "Swimming Pool",
+  "Description": "A large outdoor swimming pool with heated water.",
   "StartTime": "00:00:00",
   "EndTime": "12:00:00"
 }
@@ -25,13 +24,12 @@ Content-Type: application/json
 ###
 
 ### Update an existing amenity
-PUT http://localhost:8089/amenities/123
+PUT http://localhost:8089/amenities/5
 Content-Type: application/json
 
 {
-  "AmenityID": 123,
-  "AmenityName": "Updated Swimming Pool",
-  "AmenityDescription": "A large outdoor swimming pool with heated water.",
+  "Name": "Updated Swimming Pool",
+  "Description": "A large outdoor swimming pool with heated water.",
   "StartTime": "12:00:00",
   "EndTime": "23:59:00"
 }

@@ -14,6 +14,23 @@ Microservice to access and manage hotel amenities.
 1. Go to directory: ./src/amenities/amenities_test
 2. run command: dotnet test
 
+## Model
+
+### Id
+* Unique value that identifies the amenity
+
+### Name
+* Name of amenity
+
+### Description
+* Description of amenity
+
+### StartTime
+* Opening time of amenity (constant throughout the week) 
+
+### EndTime
+* Closing time of amenity (constant throughout the week)
+
 ## Endpoints
 ### GET /amenities
 get all amenities
