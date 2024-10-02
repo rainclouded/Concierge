@@ -1,6 +1,6 @@
 import unittest
 from flask import json
-from incident_reports_server.applicat.services import Services
+from incident_reports_server.application.services import Services
 from incident_reports_server.controllers.incident_reports_controller import create_app
 from incident_reports_server.models.models import Severity, Status, IncidentReport
 
