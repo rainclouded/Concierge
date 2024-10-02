@@ -1,5 +1,5 @@
 from typing import List
-from incident_reports_server.model.models import IncidentReport, Severity, Status
+from incident_reports_server.models.models import IncidentReport, Severity, Status
 from incident_reports_server.persistence.i_incident_report_persistence import IIncidentReportPersistence
 
 class IncidentReportPersistenceStub(IIncidentReportPersistence):

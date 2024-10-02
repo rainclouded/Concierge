@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from incident_reports_server.model.models import IncidentReport
+from incident_reports_server.models.models import IncidentReport
 
 class IIncidentReportPersistence(ABC):
     @abstractmethod

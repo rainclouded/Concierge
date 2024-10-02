@@ -1,5 +1,5 @@
 from datetime import datetime
-from incident_reports_server.model.models import IncidentReport, Severity, Status
+from incident_reports_server.models.models import IncidentReport, Severity, Status
 
 class IncidentReportValidator:
     @staticmethod

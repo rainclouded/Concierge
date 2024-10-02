@@ -2,9 +2,9 @@ from flask import Flask, jsonify, request
 import argparse
 import os
 
-from incident_reports_server.application.services import Services
+from incident_reports_server.applicat.services import Services
 from incident_reports_server.factory.incident_report_factory import IncidentReportFactory
-from incident_reports_server.model.models import IncidentReportResponse
+from incident_reports_server.models.models import IncidentReportResponse
 from incident_reports_server.validators.incident_report_validator import IncidentReportValidator
 
 DEFAULT_PORT = 8080
