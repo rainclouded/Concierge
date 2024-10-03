@@ -1,9 +1,10 @@
 from DatabaseInterface import DatabaseInterface
 from UserObject import UserObject as User
+
 class Mockdata(DatabaseInterface):
     """
     Class used to mock the database and
-    provide mock data
+    provide mock data; just for testing
     """
 
     users = [
@@ -67,7 +68,6 @@ class Mockdata(DatabaseInterface):
         return True
 
 
-  
     def delete_user(self, username):
         found_user = -1
 
@@ -75,4 +75,3 @@ class Mockdata(DatabaseInterface):
             if user['username'] == username:
                 found_user = idx
         self.users.pop(idx)
-        

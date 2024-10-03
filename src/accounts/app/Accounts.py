@@ -3,13 +3,14 @@ import argparse
 import os
 from UserObject import UserObject as User
 from AuthenticationManager import AuthenticationManager
+import Configs as cfg
 
 app = Flask(__name__)
 
 DEFAULT_PORT = 8080
 ENVIRONMENT_VAR_NAME_PORT = "ACCOUNTS_PORT"
 
-auth = AuthenticationManager()
+auth = None
 
 def get_port():
     parser = argparse.ArgumentParser(
@@ -48,7 +49,7 @@ def index():
 @app.route("/accounts/create_account", methods=["POST"])
 def create():
     response = {
-        "message" : "Could not create user - {reason}",
+        "message" : "Could not create user",
         "status" : "error"
     }
 
@@ -58,10 +59,19 @@ def create():
         'password' : data["password"],
         'type' : data['type']
     })
-    if new_user.type == 'guest':
-        return auth.create_new_guest(new_user)
-    else:
-        return auth.create_new_staff(new_user)
+    
+    if (
+        auth.create_new_guest(new_user) 
+        if new_user.type == cfg.GUEST_TYPE 
+        else auth.create_new_staff(new_user)
+        ):
+        return jsonify({
+            "message" : "User created successfully",
+            "status" : "success"
+
+        })
+    return jsonify(response)
+
 
 
 @app.route("/accounts/login_attempt", methods=["POST"])
@@ -83,3 +93,4 @@ if __name__ == "__main__":
     port = get_port()
     print(f"Starting server on port {port}...")
     app.run(host="0.0.0.0", port=port)
+    auth = AuthenticationManager()
