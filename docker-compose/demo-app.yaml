@@ -26,3 +26,8 @@ services:
     build: ../src/webapp
     ports:
       - 50000:8080
+
+  incident_reports: #uses port 50005
+    extends:
+      file: ../src/incident_reports/docker-compose.yaml
+      service: incident_reports

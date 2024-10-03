@@ -37,6 +37,7 @@ class IncidentReport:
         
     def to_dict(self): 
         return {
+            "id": getattr(self, 'id', None),
             "severity": self.severity.value,
             "status": self.status.value,        
             "title": self.title,

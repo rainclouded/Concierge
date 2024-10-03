@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, make_response
 import argparse
 import os
 
@@ -67,14 +67,18 @@ def create_app(persistence=None):
         if not IncidentReportValidator.validate_incident_report_parameters(incident_report):
             return jsonify(IncidentReportResponse("Invalid incident report passed!", None).to_dict()), 400
 
-        _incident_report_persistence.create_incident_report(incident_report)
+        incident_report = _incident_report_persistence.create_incident_report(incident_report)
 
         uri = f"{request.scheme}://{request.host}/incident_reports/{incident_report.id}"
+        
+        response_data = IncidentReportResponse("Incident Report successfully created.", incident_report.to_dict()).to_dict()
+        response = make_response(jsonify(response_data), 201)
+        response.headers["Location"] = uri
 
-        return jsonify(IncidentReportResponse("Incident Report successfully created.", incident_report.to_dict()).to_dict(), {"Location": uri}), 201
+        return response
 
     @app.route("/incident_reports/<int:id>", methods=["PUT"])
-    def update_incident_report(id: int) -> IncidentReportResponse:
+    def update_incident_report(id: int) -> IncidentReportResponse:        
         try:
             incident_report = IncidentReportFactory.create_incident_report(request.get_json())
         except Exception as e:
@@ -83,16 +87,17 @@ def create_app(persistence=None):
         if not IncidentReportValidator.validate_incident_report_parameters(incident_report):
             return jsonify(IncidentReportResponse("Invalid incident report passed!", None).to_dict()), 400
 
-        _incident_report_persistence.update_incident_report(incident_report)
+        if _incident_report_persistence.get_incident_report_by_id(id) is None:
+            return jsonify(IncidentReportResponse("Incident report not found.", None).to_dict()), 404
+        
+        incident_report = _incident_report_persistence.update_incident_report(id, incident_report)
 
         return jsonify(IncidentReportResponse("Incident Report successfully updated.", incident_report.to_dict()).to_dict()), 200
 
     @app.route("/incident_reports/<int:id>", methods=["DELETE"])
     def delete_incident_report(id: int) -> IncidentReportResponse:
-        incident_report = _incident_report_persistence.get_incident_report_by_id(id)
-
-        if incident_report is None:
-            return jsonify(IncidentReportResponse("Non-existent incident report requested to be deleted.", None).to_dict()), 400
+        if _incident_report_persistence.get_incident_report_by_id(id) is None:
+            return jsonify(IncidentReportResponse("Incident report not found.", None).to_dict()), 404
 
         _incident_report_persistence.delete_incident_report(id)
         return jsonify(IncidentReportResponse("Incident report deleted successfully", None).to_dict()), 200
