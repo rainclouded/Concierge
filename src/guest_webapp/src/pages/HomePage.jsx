@@ -9,7 +9,7 @@ const HomePage = () => {
 				<Link to='/amenities'>Amenities</Link>
 			</div>
 			<div>
-			<Link to='/'>Log out</Link>
+				<Link to='/'>Log out</Link>
 			</div>
 		</div>
 	)
