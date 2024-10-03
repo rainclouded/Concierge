@@ -45,7 +45,7 @@ class incident_report_unit_test(unittest.TestCase):
         self.app.testing = True
 
     def test_get_incident_reports(self):
-        response = self.app.get('/incident_reports')
+        response = self.app.get('/incident_reports/')
         
         self.assertEqual(response.status_code, 200)
         self.assertIsNotNone(response.json['data'])
@@ -64,11 +64,11 @@ class incident_report_unit_test(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_add_incident_report_valid_incident_report_is_successful(self):
-        response = self.app.post("/incident_reports", data=json.dumps(self.valid_incident_report.to_dict()), content_type='application/json')
+        response = self.app.post("/incident_reports/", data=json.dumps(self.valid_incident_report.to_dict()), content_type='application/json')
         self.assertEqual(response.status_code, 201) 
 
     def test_add_incident_report_valid_incident_report_able_to_be_fetched(self):
-        response = self.app.post("/incident_reports", data=json.dumps(self.valid_incident_report.to_dict()), content_type='application/json')
+        response = self.app.post("/incident_reports/", data=json.dumps(self.valid_incident_report.to_dict()), content_type='application/json')
         
         incident_report = IncidentReportFactory.create_incident_report(response.json['data'])
         
@@ -77,11 +77,11 @@ class incident_report_unit_test(unittest.TestCase):
         self.assertEqual(response.status_code, 200) 
 
     def test_add_incident_report_invalid_incident_report_fails(self):
-        response = self.app.post("/incident_reports", data=json.dumps(self.invalid_incident_report_json), content_type='application/json')
+        response = self.app.post("/incident_reports/", data=json.dumps(self.invalid_incident_report_json), content_type='application/json')
         self.assertEqual(response.status_code, 400) 
 
     def test_add_incident_report_null_incident_report_fails(self):
-        response = self.app.post("/incident_reports", data=json.dumps(None), content_type='application/json')
+        response = self.app.post("/incident_reports/", data=json.dumps(None), content_type='application/json')
         self.assertEqual(response.status_code, 400) 
 
     def test_update_incident_report_valid_incident_report_is_successful(self):

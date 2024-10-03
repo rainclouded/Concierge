@@ -38,7 +38,7 @@ def create_app(persistence=None):
     
     _incident_report_persistence = persistence or Services.get_incident_report_persistence()
 
-    @app.route("/incident_reports", methods=["GET"])
+    @app.route("/incident_reports/", methods=["GET"])
     def get_incident_reports() -> IncidentReportResponse:
         incident_reports = _incident_report_persistence.get_incident_reports()
 
@@ -57,7 +57,7 @@ def create_app(persistence=None):
 
         return jsonify(IncidentReportResponse("Incident report retrieved successfully", incident_report.to_dict()).to_dict()), 200
 
-    @app.route("/incident_reports", methods=["POST"])
+    @app.route("/incident_reports/", methods=["POST"])
     def create_incident_report() -> IncidentReportResponse:
         try:
             incident_report = IncidentReportFactory.create_incident_report(request.get_json())
