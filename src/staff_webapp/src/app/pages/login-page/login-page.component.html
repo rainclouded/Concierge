@@ -1,0 +1,16 @@
+<div class='flex justify-center items-center h-screen flex-col'>
+	<h3 class='text-2xl mb-4'>Concierge Admin Dashboard</h3>
+	<form [formGroup]="loginForm" (ngSubmit)="handleLogin()" class='border p-5 rounded-xl'>
+		<div class='mb-3'>
+			<label htmlFor="room-num-input" class='block'>Username</label>
+			<input id='room-num-input' type="text" placeholder='username' class='px-3 py-2 w-full rounded-lg border border-neutral-200'/>
+		</div>
+		<div class='mb-3'>
+			<label htmlFor="pass-code-input" class='block'>Password</label>
+			<input id='pass-code-input' type="password" placeholder='password' class='px-3 py-2 w-full rounded-lg border border-neutral-200'/>
+		</div>
+		<div class='grid place-content-center'>
+			<button type='submit' [disabled]="loginForm.invalid" class='px-3 py-2 bg-neutral-200 rounded-lg'>Sign In</button>
+		</div>
+	</form>
+</div>
