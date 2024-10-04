@@ -48,9 +48,23 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
             )
         )
 
-    def get_incident_reports(self) -> List[IncidentReport]:
-        return self._incident_reports
-    
+    def get_incident_reports(self, severities=None, statuses=None, beforeDate=None, afterDate=None) -> List[IncidentReport]:
+        filtered_reports = self._incident_reports
+        
+        if severities:
+            filtered_reports = [report for report in filtered_reports if report.severity in severities]
+        
+        if statuses:
+            filtered_reports = [report for report in filtered_reports if report.status in statuses]
+        
+        if beforeDate:
+            filtered_reports = [report for report in filtered_reports if report.created_at <= beforeDate]
+        
+        if afterDate:
+            filtered_reports = [report for report in filtered_reports if report.created_at >= afterDate]
+        
+        return filtered_reports
+        
     def get_incident_report_by_id(self, id:int) -> IncidentReport:
         for incident_report in self._incident_reports:
             if incident_report.id == id:

@@ -15,7 +15,36 @@ def create_app(persistence=None):
 
     @app.route("/incident_reports/", methods=["GET"])
     def get_incident_reports() -> IncidentReportResponse:
-        incident_reports = _incident_report_persistence.get_incident_reports()
+        severity_list = None
+        status_list = None
+        beforeDate = None
+        afterDate = None
+        
+        # Get query parameters
+        severity_args = request.args.get('severity')
+        statuses_args = request.args.get('status')
+        beforeDate_args = request.args.get('beforeDate')
+        afterDate_args = request.args.get('afterDate')
+        
+        #convert strings to model objects
+        try:
+            if severity_args:
+                severity_list = IncidentReportFactory.create_severity(severity_args)
+                
+            if statuses_args:
+                status_list = IncidentReportFactory.create_status(statuses_args)
+                
+            if beforeDate_args:
+                beforeDate = IncidentReportFactory.create_date(beforeDate_args)
+                
+            if afterDate_args:
+                afterDate = IncidentReportFactory.create_date(afterDate_args)
+        except ValueError:
+            response = IncidentReportResponse(ResponseMessages.INVALID_PARAMETERS_PASSED, None).to_dict()
+            return jsonify(response), 400
+                        
+        incident_reports = _incident_report_persistence.get_incident_reports(severities=severity_list, statuses=status_list, 
+                                                                             beforeDate=beforeDate, afterDate=afterDate)
 
         if incident_reports is None:
             response = IncidentReportResponse(ResponseMessages.GET_INCIDENT_REPORTS_FAILED, None).to_dict()
@@ -24,7 +53,7 @@ def create_app(persistence=None):
         #convert list to JSON object
         incident_reports_data = [report.to_dict() for report in incident_reports]
         
-        response = IncidentReportResponse(ResponseMessages.GET_INCIDENT_REPORT_SUCCESS, incident_reports_data).to_dict()
+        response = IncidentReportResponse(ResponseMessages.GET_INCIDENT_REPORTS_SUCCESS, incident_reports_data).to_dict()
         return jsonify(response), 200
     
     @app.route("/incident_reports/<int:id>", methods=["GET"])

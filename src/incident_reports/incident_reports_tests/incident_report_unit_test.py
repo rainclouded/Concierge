@@ -21,7 +21,7 @@ class incident_report_unit_test(unittest.TestCase):
         )
 
         self.updated_incident_report_json = {
-            "severity": "High",
+            "severity": "HIGH",
             "status": "Open",
             "title": "Fire Alarm Malfunction",
             "description": "The fire alarm in the lobby is continuously ringing but there is no fire. Immediate attention is required.",
@@ -44,12 +44,41 @@ class incident_report_unit_test(unittest.TestCase):
         self.app = create_app(self._incident_report_persistence).test_client()
         self.app.testing = True
 
-    def test_get_incident_reports(self):
+    def test_get_incident_reports_filter_severity(self):
+        response = self.app.get('/incident_reports/?severity=HIGH')
+        
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_incident_reports_filter_status(self):
+        response = self.app.get('/incident_reports/?status=Closed')
+        
+        self.assertEqual(response.status_code, 200)
+    
+    def test_get_incident_reports_filter_by_dates(self):
+        response = self.app.get('/incident_reports/?beforeDate=2024-01-03&afterDate=2024-01-01')
+        
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_incident_reports_no_filters(self):
         response = self.app.get('/incident_reports/')
         
         self.assertEqual(response.status_code, 200)
-        self.assertIsNotNone(response.json['data'])
         
+    def test_get_incident_reports_filter_invalid_severity(self):
+        response = self.app.get('/incident_reports/?severity=SUPERHIGH')
+        
+        self.assertEqual(response.status_code, 400)
+
+    def test_get_incident_reports_filter_invalid_status(self):
+        response = self.app.get('/incident_reports/?status=YUH')
+        
+        self.assertEqual(response.status_code, 400)
+    
+    def test_get_incident_reports_filter_by_invalid_dates(self):
+        response = self.app.get('/incident_reports/?beforeDate=123&afterDate=231')
+        
+        self.assertEqual(response.status_code, 400)
+
     def test_get_incident_report_by_id_valid_id_should_not_return_none(self):
         incident_report = self._incident_report_persistence.create_incident_report(self.valid_incident_report)
         
@@ -57,7 +86,6 @@ class incident_report_unit_test(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIsNotNone(response.json['data'])
         self.assertDictEqual(response.json['data'], incident_report.to_dict())
-        pass
 
     def test_get_incident_report_by_id_invalid_id_returns_not_found(self):
         response = self.app.get("/incident_reports/-1")

@@ -2,16 +2,16 @@ from datetime import datetime
 from enum import Enum
 
 class Severity(Enum):
-    LOW = "Low"
-    MEDIUM = "Medium"
-    HIGH = "High"
-    CRITICAL = "Critical"
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+    CRITICAL = "CRITICAL"
     
 class Status(Enum):
-    OPEN = "Open"
-    CLOSED = "Closed"
-    RESOLVED = "Resolved"
-    IN_PROGRESS = "In Progress"
+    OPEN = "OPEN"
+    CLOSED = "CLOSED"
+    RESOLVED = "RESOLVED"
+    IN_PROGRESS = "IN_PROGRESS"
     
 class IncidentReport:
     def __init__(self, severity: Severity, status: Status, title: str, description: str, filing_person_id: int, reviewer_id: int) -> None:
@@ -70,5 +70,6 @@ class ResponseMessages:
     GET_INCIDENT_REPORTS_FAILED = "We had trouble fetching your incident reports."
     GET_INCIDENT_REPORT_FAILED = "Incident report with specified id not found."
     INVALID_INCIDENT_REPORT_PASSED = "Bad Request. Incident report with invalid parameters was passed."
+    INVALID_PARAMETERS_PASSED = "Bad Request. Invalid parameters was passed."
 
     

@@ -42,6 +42,14 @@ Microservice to access and manage incident reports for hotels.
 ### GET /incident_reports
 Retrieve all incident reports.
 
+#### Query Parameters
+- **severities**: (optional) A comma-separated list of severity values to filter the reports. 
+  - **Valid Values**: `LOW`, `MEDIUM`, `HIGH`, `CRITICAL`
+- **statuses**: (optional) A comma-separated list of status values to filter the reports. 
+  - **Valid Values**: `OPEN`, `CLOSED`, `RESOLVED`, `IN_PROGRESS`
+- **beforeDate**: (optional) A date string to filter reports created before this date.
+- **afterDate**: (optional) A date string to filter reports created after this date.
+
 ### GET /incident_reports/<id>
 Retrieve a specific incident report by ID.
 

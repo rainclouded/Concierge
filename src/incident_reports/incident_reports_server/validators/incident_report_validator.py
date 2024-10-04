@@ -3,15 +3,15 @@ from incident_reports_server.application.services import Services
 from incident_reports_server.models.models import IncidentReport, Severity, Status
 
 class IncidentReportValidator:
+    status_values = [status.value for status in Status]
+    severity_values = [severity.value for severity in Severity]
+        
     @staticmethod
     def validate_incident_report_parameters(incident_report: IncidentReport) -> bool:
-        status_values = [status.value for status in Status]
-        severity_values = [severity.value for severity in Severity]
-        
-        if not isinstance(incident_report.status, Status) or incident_report.status.value not in status_values:
+        if not isinstance(incident_report.status, Status) or incident_report.status.value not in IncidentReportValidator.status_values:
             return False
         
-        if not isinstance(incident_report.severity, Severity) or incident_report.severity.value not in severity_values:
+        if not isinstance(incident_report.severity, Severity) or incident_report.severity.value not in IncidentReportValidator.severity_values:
             return False
         
         if not isinstance(incident_report.title, str) or not incident_report.title.strip():
@@ -30,4 +30,22 @@ class IncidentReportValidator:
             return False
         
         return True
+    
+    @staticmethod
+    def validate_incident_report_severity(severity : str) -> bool:     
+        if severity not in IncidentReportValidator.severity_values:
+            return False
+        
+        return True
+    
+    @staticmethod
+    def validate_incident_report_status(severity : str) -> bool:     
+        if severity not in IncidentReportValidator.status_values:
+            return False
+        
+        return True
+    
+    
+    
+    
     

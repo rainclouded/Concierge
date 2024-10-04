@@ -5,7 +5,7 @@ from incident_reports_server.models.models import IncidentReport
 
 class IIncidentReportPersistence(ABC):
     @abstractmethod
-    def get_incident_reports(self) -> List[IncidentReport]:
+    def get_incident_reports(self, severities=None, statuses=None, beforeDate=None, afterDate=None) -> List[IncidentReport]:
         pass
     
     @abstractmethod
