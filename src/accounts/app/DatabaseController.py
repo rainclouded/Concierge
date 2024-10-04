@@ -108,13 +108,3 @@ class DatabaseController:
     @database.setter
     def database(self, new_database):
         self._database = new_database
-
-
-    #ToDo: Add support for connecting/committing and other db administration
-
-"""             return {
-            'username' : user.username,
-            'hash' : user.hash,
-            'id' : '' if user.type == 'guest' else user.id,
-            'type' : user.type
-        } """
