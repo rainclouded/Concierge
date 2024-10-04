@@ -1,3 +1,6 @@
+include:
+  - ../src/guest_webapp/docker-compose.yaml     # uses port 8081
+  - ../src/staff_webapp/docker-compose.yaml     # uses port 8082
 services:
   nginx:
     image: nginx:stable-alpine-slim
@@ -31,3 +34,8 @@ services:
     extends:
       file: ../src/incident_reports/docker-compose.yaml
       service: incident_reports
+      
+  amenities: #uses port 50004
+    extends:
+      file: ../src/amenities/docker-compose.yaml
+      service: amenities

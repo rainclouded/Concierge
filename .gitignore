@@ -1,8 +1,14 @@
 .vscode
 .pytest_cache
 __pycache__
+.vs
 
-.vs 
 bin/
 obj/
 .coverage
+
+Debug/
+Release/
+net8.0/
+
+
