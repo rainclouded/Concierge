@@ -77,7 +77,7 @@ class DatabaseController:
             Returns:
                 The largest id
         """
-        return max(list(filter(lambda x: int(x.id), self.get_staff())))
+        return max([int(user.id) for user in self.get_staff()])
 
 
     def delete_user(self, user:User)->bool:

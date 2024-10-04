@@ -18,8 +18,4 @@ class UserObject:
                 for key in cfg.USER_ATTRIBUTES
             ]
         )
-    def __str__(self):
-        to_string = 'thing for the tihing\n'
-        for key, value in self.__dict__.items():
-            to_string += f'{key} : {value}\n'
-        return to_string
+

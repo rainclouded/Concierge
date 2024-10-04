@@ -37,16 +37,17 @@ class AuthenticationManager:
             return self.get_hash(user.username, password) == user.hash
 
 
-    """Computes the hash of the seeded password
 
-        Args:
-            id: seed of the password
-            password: string of the password to process
-
-        Returns:
-            Hex hash of the password
-    """
     def get_hash(self, id:int, password:str)->str:
+        """Computes the hash of the seeded password
+
+            Args:
+                id: seed of the password
+                password: string of the password to process
+
+            Returns:
+                Hex hash of the password
+        """
         return cfg.PASSWORD_HASH_FUNCTION(
                 f"{password}+{id}".encode()
             ).hexdigest()

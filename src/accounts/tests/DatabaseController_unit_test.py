@@ -88,14 +88,62 @@ class TestDatabaseController(unittest.TestCase):
         self.assertEqual(newly_added_guest.pop(), new_user)
         self.assertTrue(len(guests) == 4)
         
-        pass
     def test_create_staff(self):
+        new_user = User(**{
+            'username' : 'new',
+            'hash' : '',
+            'id' : '',
+            'type' : 'staff'
+        })
+
+        self.db.create_staff(new_user)
+        staff = self.db.get_staff()
+        newly_added_guest = list(filter(lambda x : x.username == 'new', staff))
+        self.assertTrue(len(newly_added_guest) == 1)
+        self.assertEqual(newly_added_guest.pop(), new_user)
+        self.assertTrue(len(staff) == 4)
         pass
+
     def test_gest_largest_id(self):
-        pass
+        self.assertEqual(3, self.db.get_largest_id())
+
+        new_users = [User(**{
+            'username' : 'new',
+            'hash' : '',
+            'id' : '4',
+            'type' : 'staff'
+        }),
+        User(**{
+            'username' : 'new',
+            'hash' : '',
+            'id' : '-3',
+            'type' : 'staff'
+        })
+        ]
+        for staff in new_users:
+            self.db.create_staff(staff)
+        self.assertEqual(4, self.db.get_largest_id())
+
 
     def test_delete_user(self):
-        pass
+        to_delete = list(filter(lambda x : x.username == 'test3', self.db.get_staff())).pop()
 
-    def test_user_to_dict(self):
-        pass
+        valid_staff = [User(**{
+            'username' : 'test1',
+            'id' : '1',
+            'hash' : '',
+            'type' : 'staff'
+        }),
+        User(**{
+            'username' : 'test2',
+            'id' : '2',
+            'hash' : '',
+            'type' : 'staff'
+        })]
+
+        self.db.delete_user(to_delete)
+        resultant_staff = self.db.get_staff()
+
+        self.assertCountEqual(resultant_staff, valid_staff)
+        self.assertEqual(len(resultant_staff), 2)
+        self.assertEqual(self.db.get_largest_id(), 2)

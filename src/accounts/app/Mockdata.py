@@ -80,7 +80,7 @@ class Mockdata(DatabaseInterface):
     def delete_user(self, username):
         found_user = -1
 
-        for idx, user in enumerate(self.users) and not found_user < 0:
+        for idx, user in enumerate(self.users):
             if user['username'] == username:
-                found_user = idx
-        self.users.pop(idx)
+                self.users.pop(idx)
+                break
