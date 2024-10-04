@@ -72,7 +72,7 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
             incident_report.update(updated_incident_report)
             return incident_report
         else:
-            return ValueError
+            return ValueError("Incident report not found!")
 
                 
     def delete_incident_report(self, id:int) -> None:
@@ -81,5 +81,5 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
                 self._incident_reports.remove(incident_report)
                 return
             
-        return ValueError
+        return ValueError("Incident report not found!")
             

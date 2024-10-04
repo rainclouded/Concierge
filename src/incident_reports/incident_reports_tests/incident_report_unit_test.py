@@ -5,39 +5,39 @@ from incident_reports_server.application.services import Services
 from incident_reports_server.controllers.incident_reports_controller import create_app
 from incident_reports_server.models.models import Severity, Status, IncidentReport
 
-class incident_report_unit_test(unittest.TestCase):
-    valid_incident_report = IncidentReport(
-        severity=Severity.HIGH,  
-        status=Status.OPEN,       
-        title="Fire Alarm Malfunction",
-        description="The fire alarm in the lobby is continuously ringing but there is no fire. Immediate attention is required.",
-        filing_person_id=303,    
-        reviewer_id=403          
-    )
-
-    updated_incident_report_json = {
-        "severity": "High",
-        "status": "Open",
-        "title": "Fire Alarm Malfunction",
-        "description": "The fire alarm in the lobby is continuously ringing but there is no fire. Immediate attention is required.",
-        "filing_person_id": 303,
-        "reviewer_id": 403
-    }
-    
-    invalid_incident_report_json = {
-        "severity": "Awesome",
-        "status": "Open",
-        "title": "Fire Alarm Malfunction",
-        "description": "The fire alarm in the lobby is continuously ringing but there is no fire. Immediate attention is required.",
-        "filing_person_id": 303,
-        "reviewer_id": 403
-    }
-    
+class incident_report_unit_test(unittest.TestCase):    
     @staticmethod
     def from_byte_string(byte_string):
         return json.loads(byte_string.decode('utf-8'))[0]['data']
     
     def setUp(self):
+        self.valid_incident_report = IncidentReport(
+            severity=Severity.HIGH,  
+            status=Status.OPEN,       
+            title="Fire Alarm Malfunction",
+            description="The fire alarm in the lobby is continuously ringing but there is no fire. Immediate attention is required.",
+            filing_person_id=303,    
+            reviewer_id=403          
+        )
+
+        self.updated_incident_report_json = {
+            "severity": "High",
+            "status": "Open",
+            "title": "Fire Alarm Malfunction",
+            "description": "The fire alarm in the lobby is continuously ringing but there is no fire. Immediate attention is required.",
+            "filing_person_id": 303,
+            "reviewer_id": 403
+        }
+        
+        self.invalid_incident_report_json = {
+            "severity": "High",
+            "status": "Open",
+            "title": "Fire Alarm Malfunction",
+            "description": "The fire alarm in the lobby is continuously ringing but there is no fire. Immediate attention is required.",
+            "filing_person_id": 303,
+            "reviewer_id": 403
+        }
+        
         Services.clear()
         self._incident_report_persistence = Services.get_incident_report_persistence()
 
@@ -76,7 +76,8 @@ class incident_report_unit_test(unittest.TestCase):
                 
         self.assertEqual(response.status_code, 200) 
 
-    def test_add_incident_report_invalid_incident_report_fails(self):
+    def test_add_incident_report_invalid_incident_report_title_fails(self):
+        self.invalid_incident_report_json["title"] = ""
         response = self.app.post("/incident_reports/", data=json.dumps(self.invalid_incident_report_json), content_type='application/json')
         self.assertEqual(response.status_code, 400) 
 
@@ -84,6 +85,21 @@ class incident_report_unit_test(unittest.TestCase):
         response = self.app.post("/incident_reports/", data=json.dumps(None), content_type='application/json')
         self.assertEqual(response.status_code, 400) 
 
+    def test_add_incident_report_invalid_incident_report_desc_fails(self):
+        self.invalid_incident_report_json["description"] = ""
+        response = self.app.post("/incident_reports/", data=json.dumps(self.invalid_incident_report_json), content_type='application/json')
+        self.assertEqual(response.status_code, 400) 
+        
+    def test_add_incident_report_invalid_incident_report_filing_person_id_fails(self):
+        self.invalid_incident_report_json["filing_person_id"] = ""
+        response = self.app.post("/incident_reports/", data=json.dumps(self.invalid_incident_report_json), content_type='application/json')
+        self.assertEqual(response.status_code, 400) 
+        
+    def test_add_incident_report_invalid_incident_report_reviewer_id_fails(self):
+        self.invalid_incident_report_json["reviewer_id"] = ""
+        response = self.app.post("/incident_reports/", data=json.dumps(self.invalid_incident_report_json), content_type='application/json')
+        self.assertEqual(response.status_code, 400) 
+        
     def test_update_incident_report_valid_incident_report_is_successful(self):
         incident_report = self._incident_report_persistence.create_incident_report(self.valid_incident_report)
 
@@ -99,6 +115,7 @@ class incident_report_unit_test(unittest.TestCase):
         self.assertEqual(response.status_code, 200) 
 
     def test_update_incident_report_invalid_incident_report_fails(self):
+        self.invalid_incident_report_json["title"] = ""
         incident_report = self._incident_report_persistence.create_incident_report(self.valid_incident_report)
 
         response = self.app.put(f"/incident_reports/{incident_report.id}", data=json.dumps(self.invalid_incident_report_json), content_type='application/json')

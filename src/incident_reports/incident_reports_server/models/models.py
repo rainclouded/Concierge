@@ -60,4 +60,15 @@ class IncidentReportResponse:
             "data": self.data,
             "timestamp": self.time_stamp
         }
+        
+class ResponseMessages:
+    GET_INCIDENT_REPORTS_SUCCESS = "Incident reports retrieved successfully."
+    GET_INCIDENT_REPORT_SUCCESS = "Incident report retrieved successfully."
+    CREATE_INCIDENT_REPORT_SUCCESS = "Incident report created successfully."
+    UPDATE_INCIDENT_REPORT_SUCCESS = "Incident report was updated successfully."
+    DELETE_INCIDENT_REPORT_SUCCESS = "Incident report deleted successfully."
+    GET_INCIDENT_REPORTS_FAILED = "We had trouble fetching your incident reports."
+    GET_INCIDENT_REPORT_FAILED = "Incident report with specified id not found."
+    INVALID_INCIDENT_REPORT_PASSED = "Bad Request. Incident report with invalid parameters was passed."
+
     
