@@ -16,7 +16,7 @@ class DatabaseController:
     @property
     def database(self):
         return self._database
-    
+
 
     @database.setter
     def database(self, new_database):
@@ -52,7 +52,7 @@ class DatabaseController:
         """
         return [User(**guest) for guest in self.database.get_all_guests()]
 
-        
+
     def create_guest(self, new_guest:User)->User:
         """
             Add a guest to the database

@@ -44,7 +44,8 @@ class Mockdata(DatabaseInterface):
             'type' : 'guest'
         }
     ]
-        
+
+
     @property
     def users(self):
         return self._users
@@ -78,8 +79,6 @@ class Mockdata(DatabaseInterface):
 
 
     def delete_user(self, username):
-        found_user = -1
-
         for idx, user in enumerate(self.users):
             if user['username'] == username:
                 self.users.pop(idx)

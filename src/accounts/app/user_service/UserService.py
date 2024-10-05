@@ -1,5 +1,5 @@
-import app.Configs as cfg
 from secrets import randbelow
+import app.Configs as cfg
 from app.authentication.AuthenticationManager import AuthenticationManager
 from app.validation.ValidationManager import ValidationManager
 from app.database.DatabaseController import DatabaseController
@@ -9,7 +9,7 @@ class UserService():
     """
     Class for handling maintnance of user accounts
     """
-    
+
     def __init__(self, database:DatabaseController):
         self.db = database
         self.auth = AuthenticationManager(database)
@@ -24,11 +24,11 @@ class UserService():
         Returns:
             The newly created user
         """
-        
+
         new_guest.password = randbelow(cfg.MAX_GUEST_PASSWORD)
         new_guest.hash = self.auth.get_hash(new_guest.username,new_guest.password)
         return self.db.create_guest(new_guest)
-    
+
 
     def delete_user(self, user:User)->bool:
         """Remove a user from the database

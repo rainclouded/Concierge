@@ -3,9 +3,9 @@ from abc import ABC, abstractmethod
 class DatabaseInterface(ABC):
     """Interface to decouple the database from the server"""
 
-    @classmethod
+
     @abstractmethod
-    def get_all_users():
+    def get_all_users(self):
         """Get all of the guests and staff from the database
         
             Returns:
@@ -14,10 +14,10 @@ class DatabaseInterface(ABC):
                 NotImplementedError if the method is not implemented
         """
         raise NotImplementedError
-    
-    @classmethod
+
+
     @abstractmethod
-    def get_all_staff():
+    def get_all_staff(self):
         """Get all staff from the database
         
             Returns:
@@ -26,10 +26,10 @@ class DatabaseInterface(ABC):
                 NotImplementedError if the method is not implemented
         """
         raise NotImplementedError
-    
-    @classmethod
+
+
     @abstractmethod
-    def get_all_guests():
+    def get_all_guests(self):
         """Get all of the guests from the database
         
             Returns:
@@ -39,19 +39,19 @@ class DatabaseInterface(ABC):
         """
         raise NotImplementedError
 
-    @classmethod
+
     @abstractmethod
-    def add_staff():
+    def add_staff(self, new_staff:dict):
         """Add a staff to the database
         
             Raises:
                 NotImplementedError if the method is not implemented
         """
         raise NotImplementedError
-        
-    @classmethod
+
+
     @abstractmethod
-    def add_guest():
+    def add_guest(self, new_guest:dict):
         """Add a guest to the database
         
             Raises:

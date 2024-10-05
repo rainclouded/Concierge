@@ -31,11 +31,11 @@ class ValidationManager():
         return not (
             len(password) < cfg.PASSWORD_MINIMAL_LENGTH
             or (
-                cfg.PASSWORD_MUST_CONTAIN_LETTER 
+                cfg.PASSWORD_MUST_CONTAIN_LETTER
                 and not re.findall(self.GET_ALPHAPETIC_REGEX, password)
             )
             or (
-                cfg.PASSWORD_MUST_CONTAIN_NUMBER 
+                cfg.PASSWORD_MUST_CONTAIN_NUMBER
                 and not re.findall(self.GET_NUMERIC_REGEX, password)
             )
         )
@@ -53,15 +53,15 @@ class ValidationManager():
         return not (
             len(password) < cfg.USERNAME_MINIMAL_LENGTH
             or (
-                cfg.USERNAME_MUST_CONTAIN_LETTER 
+                cfg.USERNAME_MUST_CONTAIN_LETTER
                 and not re.findall(self.GET_ALPHAPETIC_REGEX, password)
             )
             or (
-                cfg.USERNAME_MUST_CONTAIN_NUMBER 
+                cfg.USERNAME_MUST_CONTAIN_NUMBER
                 and not re.findall(self.GET_NUMERIC_REGEX, password)
             )
         )
-    
+
 
     def validate_new_staff(self, new_user:User)->bool:
         """Validate if the credentials can be used
