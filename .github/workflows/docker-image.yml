@@ -15,4 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker compose -f ./Concierge/docker-compose/docker-compose.yaml build
+      run: docker compose -f ./docker-compose/docker-compose.yaml build
