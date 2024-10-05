@@ -5,7 +5,6 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './home-tab.component.html',
-  styleUrl: './home-tab.component.css'
 })
 export class HomeTabComponent {
 

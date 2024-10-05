@@ -1,1 +1,44 @@
-<p>amenities-tab works!</p>
+<h3 class="font-semibold text-5xl mb-5">Amenities</h3>
+<p class="mb-5 font-bold text-xl">Manage Amenities</p>
+<button (click)="openWindow()" type="button" class="bg-blue-500 text-white p-2 rounded-lg mb-4">
+  Add Amenity
+</button>
+<div class="relative overflow-x-auto shadow-sm rounded-lg">
+  <table class="w-full text-left rtl:text-right">
+    <thead class="text-md text-gray-700 uppercase bg-gray-50">
+      <tr>
+        <th scope="col" class="px-6 py-3">Title</th>
+        <th scope="col" class="px-6 py-3">Description</th>
+        <th scope="col" class="px-6 py-3">Time</th>
+        <th scope="col" class="px-6 py-3 w-1/12">Edit</th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (amenities.length > 0) {
+        @for(amenity of amenities; track amenity.id) {
+          <tr class="bg-white border-b">
+            <th scope="row" class="px-6 py-6 font-semibold text-2xl whitespace-nowrap">
+              {{amenity.name}}
+            </th>
+            <td class="px-6 py-6">
+              {{amenity.description}}
+            </td>
+            <td class="px-6 py-6">
+              {{amenity.startTime}} - {{amenity.endTime}}
+            </td>
+            <td class="px-6 py-6 flex gap-3 items-center justify-end">
+              <button type="button" (click)="amenity.id && loadAmenity(amenity)" class="bg-slate-200 p-3 rounded-lg">Edit</button>
+              <button type="button" (click)="amenity.id && deleteAmenity(amenity.id)" class="bg-red-700 text-white p-3 rounded-lg">Delete</button>
+            </td>
+          </tr>
+        }
+      } @else {
+        <p>No amenities found</p>
+      } 
+    </tbody>
+  </table>
+</div>
+
+<app-window [isOpen]="isOpenWIndow" (closeWindow)="closeWindow()">
+  <app-amenity-form (onCloseWindow)="closeWindow()" [data]="amenity"></app-amenity-form>
+</app-window>
