@@ -1,5 +1,5 @@
 import hashlib
-from app.Mockdata import Mockdata
+from app.database.Mockdata import Mockdata
 
 #Criteria for a staff password
 PASSWORD_HASH_FUNCTION = hashlib.sha256

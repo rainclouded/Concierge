@@ -1,16 +1,19 @@
 from flask import Flask, jsonify, request
 import argparse
 import os
-from app.UserObject import UserObject as User
-from app.AuthenticationManager import AuthenticationManager
 import app.Configs as cfg
+from app.dto.UserObject import UserObject as User
+from app.authentication.AuthenticationManager import AuthenticationManager
+from app.database.DatabaseController import DatabaseController
+from app.validation import ValidationManager
+from app.user_service import UserService
 
 app = Flask(__name__)
 
 DEFAULT_PORT = 8080
 ENVIRONMENT_VAR_NAME_PORT = "ACCOUNTS_PORT"
 
-auth = None
+auth = validation = user_service = None
 
 def get_port():
     parser = argparse.ArgumentParser(
@@ -67,9 +70,9 @@ def create():
     })
     
     if (
-        auth.create_new_guest(new_user) 
+        user_service.create_new_guest(new_user) 
         if new_user.type == cfg.GUEST_TYPE 
-        else auth.create_new_staff(new_user)
+        else user_service.create_new_staff(new_user)
         ):
         return jsonify({
             "message" : "User created successfully",
@@ -77,8 +80,6 @@ def create():
 
         })
     return jsonify(response)
-
-
 
 @app.route("/accounts/login_attempt", methods=["POST"])
 def login():
@@ -91,15 +92,18 @@ def login():
         "status": "error",
     }
     data = request.get_json()
-    if auth.validate_staff_login(data["username"], data["password"]):
+    if validation.authenticate_user_login(data["username"], data["password"]):
         response["message"] = f"Welcome, {data['username']}!"
         response["status"] = "ok"
 
     return response
 
 
-if __name__ == "__main__":
+def start_service(database:DatabaseController):
     port = get_port()
     print(f"Starting server on port {port}...")
     app.run(host="0.0.0.0", port=port)
-    auth = AuthenticationManager(cfg.DATABASE)
+    auth = AuthenticationManager(database)
+    validation = ValidationManager(database)
+    user_service = UserService(database)
+

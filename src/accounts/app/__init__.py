@@ -1,6 +1,6 @@
-from .Accounts import app
-from .AuthenticationManager import AuthenticationManager
-from .UserObject import UserObject
-from .DatabaseController import DatabaseController
+from .server.Accounts import app
+from .authentication.AuthenticationManager import AuthenticationManager
+from .dto.UserObject import UserObject
+from .database.DatabaseController import DatabaseController
 
 __all__ = [app, AuthenticationManager, UserObject, DatabaseController]

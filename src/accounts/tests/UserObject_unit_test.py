@@ -1,6 +1,6 @@
 import unittest
 from app import app
-from app.UserObject import UserObject as User
+from app.dto.UserObject import UserObject as User
 
 class TestUserObject(unittest.TestCase):
 

@@ -1,4 +1,4 @@
-from app.DatabaseInterface import DatabaseInterface
+from app.database.DatabaseInterface import DatabaseInterface
 
 class Mockdata(DatabaseInterface):
     """

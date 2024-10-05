@@ -1,8 +1,8 @@
 import unittest
 from app import app
-from app.DatabaseController import DatabaseController
-from app.Mockdata import Mockdata
-from app.UserObject import UserObject as User
+from app.database.DatabaseController import DatabaseController
+from app.database.Mockdata import Mockdata
+from app.dto.UserObject import UserObject as User
 
 class TestDatabaseController(unittest.TestCase):
     TEST_DATA = [

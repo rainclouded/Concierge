@@ -1,5 +1,5 @@
-from app.UserObject import UserObject as User
-from app.DatabaseInterface import DatabaseInterface
+from app.dto.UserObject import UserObject as User
+from app.database.DatabaseInterface import DatabaseInterface
 
 class DatabaseController:
     """
@@ -8,8 +8,20 @@ class DatabaseController:
     This class queries the database.
     """
 
+
     def __init__(self, database:DatabaseInterface):
         self._database = database
+
+
+    @property
+    def database(self):
+        return self._database
+    
+
+    @database.setter
+    def database(self, new_database):
+        self._database = new_database
+
 
     def get_users(self)->list[User]:
         """
@@ -51,7 +63,7 @@ class DatabaseController:
             Returns:
                 The user if successfully added else None
         """
-        if self.database.add_guest(self._user_to_dict(new_guest)):
+        if self.database.add_guest(new_guest.__dict__):
             return new_guest
         return None
 
@@ -66,7 +78,7 @@ class DatabaseController:
             Returns:
                 The user added or none
         """
-        if self.database.add_staff(self._user_to_dict(new_staff)):
+        if self.database.add_staff(new_staff.__dict__):
             return new_staff
         return None
 
@@ -89,22 +101,3 @@ class DatabaseController:
                 bool if the deletion was successful
         """
         return self.database.delete_user(user.username)
-
-
-    def _user_to_dict(self, user:User)->dict:
-        """Private method that converts a User to a dictionary for the database
-
-            Args:
-                user: is the User to convert
-            Returns:
-                dict of User's attributes
-        """
-        return user.__dict__
-    
-    @property
-    def database(self):
-        return self._database
-    
-    @database.setter
-    def database(self, new_database):
-        self._database = new_database
