@@ -75,15 +75,16 @@ def create():
         'password' : data["password"],
         'type' : data['type']
     })
+    created_user = new_password = None
+    if data['type'] == cfg.GUEST_TYPE:
+        created_user, newPassword = user_service.create_new_guest(new_user)
+    else:
+        created_user = user_service.create_new_staff(new_user)
 
-    if (
-        user_service.create_new_guest(new_user)
-        if new_user.type == cfg.GUEST_TYPE
-        else user_service.create_new_staff(new_user)
-        ):
+    if (created_user):
         return jsonify({
-            "message" : "User created successfully",
-            "status" : "success"
+            "message" : f"User created successfully. password: {new_password}",
+            "status" : "success",
 
         })
     return jsonify(response)

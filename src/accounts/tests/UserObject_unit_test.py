@@ -57,8 +57,3 @@ class TestUserObject(unittest.TestCase):
         self.assertTrue(User(**test_user_1) == User(**test_user_2))
         self.assertTrue(User(**test_user_1) == User(**test_user_3))
         self.assertFalse(User(**test_user_1) == User(**test_user_4))
-
-
-
-        
-

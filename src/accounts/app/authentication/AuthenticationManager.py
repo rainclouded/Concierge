@@ -1,5 +1,4 @@
 import app.Configs as cfg
-from app.database.DatabaseController import DatabaseController
 from app.dto.UserObject import UserObject as User
 
 class AuthenticationManager:
@@ -8,7 +7,7 @@ class AuthenticationManager:
     """
 
     def __init__(self, database):
-        self.db = DatabaseController(database)
+        self.db = database
 
 
     def check_hash(self, user:User, password:str)->bool:
@@ -22,7 +21,7 @@ class AuthenticationManager:
             Returns:
                 If the hashed password matches the user's hash
         """
-        if user.type == cfg.GUEST_TYPE:
+        if user.type == cfg.STAFF_TYPE:
             return self.get_hash(user.id, password) == user.hash
         else:
             return self.get_hash(user.username, password) == user.hash
@@ -39,7 +38,7 @@ class AuthenticationManager:
                 Hex hash of the password
         """
         return cfg.PASSWORD_HASH_FUNCTION(
-                f"{password}+{user_id}".encode()
+                f"{user_id}{password}".encode()
             ).hexdigest()
 
 

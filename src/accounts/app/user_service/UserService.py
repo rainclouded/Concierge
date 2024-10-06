@@ -15,7 +15,7 @@ class UserService():
         self.auth = AuthenticationManager(database)
         self.validation = ValidationManager(database)
 
-    def create_new_guest(self, new_guest:User)->User:
+    def create_new_guest(self, new_guest:User)->tuple[User, str]:
         """Adds a new guest user
 
         Args:
@@ -24,10 +24,11 @@ class UserService():
         Returns:
             The newly created user
         """
-
+        print('huh')
         new_guest.password = randbelow(cfg.MAX_GUEST_PASSWORD)
-        new_guest.hash = self.auth.get_hash(new_guest.username,new_guest.password)
-        return self.db.create_guest(new_guest)
+        new_guest.hash = \
+            self.auth.get_hash(new_guest.username,new_guest.password)
+        return (self.db.create_guest(new_guest), f'{new_guest.password}')
 
 
     def delete_user(self, user:User)->bool:

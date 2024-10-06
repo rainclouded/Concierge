@@ -4,7 +4,7 @@ from .dto.UserObject import UserObject
 from .database.DatabaseController import DatabaseController
 from .Configs import DATABASE
 
-__all__ = [app, AuthenticationManager, UserObject, DatabaseController]
+__all__ = [app]
 
 def create_database():
     return DatabaseController(DATABASE)

@@ -6,16 +6,16 @@ class UserObject:
     def __init__(self, **kwargs):
         #Takes in a dictionary, the correct attributes get mapped to values
         for key in cfg.USER_ATTRIBUTES:
-            if key in kwargs.keys():
+            if key in kwargs:
                 setattr(self, key, kwargs[key])
             else:
                 setattr(self, key, None)
 
     def __eq__(self, comparable)->bool:
-        return type(comparable) == type(self) and all(
-            [
-                getattr(self, key) ==  getattr(comparable, key) 
+        return (
+            type(comparable) is type(self)
+            and all(
+                getattr(self, key) ==  getattr(comparable, key)
                 for key in cfg.USER_ATTRIBUTES
-            ]
+            )
         )
-
