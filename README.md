@@ -60,5 +60,6 @@ Please refer to our guide on how to get started on running our project:
 - [Getting Started (How to Run Our Project)](/docs/getting_started.md)
 - [Project Overview](/docs/README.md)
 - [Microservice Overview](/docs/microservice_overview.md)
+- [Meeting Agenda](/docs/meeting_agenda.md)
 - [Testing Plan](/docs/testing_plan.md)
 - [API Documentation (Best to open in a browser)](/src/api-help/redoc-static.html)
