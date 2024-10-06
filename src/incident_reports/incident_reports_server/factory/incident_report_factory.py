@@ -38,8 +38,10 @@ class IncidentReportFactory:
         
         for severity in severities.split(','):
             severity = severity.strip()
+            
             if not IncidentReportValidator.validate_incident_report_severity(severity.upper()):
                 raise ValueError("Invalid severity passed!")
+            
             severity_list.append(Severity[severity.upper()])
             
         return severity_list
@@ -51,8 +53,10 @@ class IncidentReportFactory:
         
         for status in statuses.split(','):
             status = status.strip()
+            
             if not IncidentReportValidator.validate_incident_report_status(status.upper()):
                 raise ValueError("Invalid status passed!")
+            
             status_list.append(Status[status.upper()])
             
         return status_list

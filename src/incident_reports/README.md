@@ -63,5 +63,7 @@ Update an existing incident report with changed information.
 Delete a specified incident report from the database.
 
 ## Environment Variables
-* `forProduction`
-  * Used to determine whether a stub or real implementation of a data layer is returned.
+* `forProduction_DB`
+  * Used to determine whether a stub or real implementation of a data layer is used.
+* `forProduction_Auth`
+  * Used to determine whether a fake or real implementation of a permission validator is used.
