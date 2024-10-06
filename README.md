@@ -1,7 +1,7 @@
 # Concierge
 
 
-![Concierge Logo](/Docs/images/logo.png)
+![Concierge Logo](/docs/images/logo.png)
 
 # Team 6
 
