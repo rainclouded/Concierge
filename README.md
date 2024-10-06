@@ -41,90 +41,24 @@ Backend: Microservices written in Python/C# ASP.NET\
 Databases: MongoDB and MySQL\
 Contained in docker
 
-![Architecture diagram](/Docs/Sprint0/images/block_diagram.jpg)
+![Architecture diagram](/docs/sprint_0/images/block_diagram.jpg)
 
-## Build Instructions:
+## Getting Started:
 
-(See [here](/docker-compose/README.md) for more details)
+Please refer to our guide on how to get started on running our project: 
 
-To get the app up and running, cd into Concierge/docker-compose and run:
-```bash
-docker compose -f ./docker-compose/docker-compose.yaml build
-```
-Then once that has been completed run:
-```bash
-docker compose -f ./docker-compose/docker-compose.yaml up
-```
-Then once you are done run:
-```bash
-docker compose -f ./docker-compose/docker-compose.yaml down
-```
-
-
-## Project Structure
-```
-Concierge/
-├── docker-compose/
-|   └──configs/
-├── Docs/
-|   └──Sprint0/
-└── src/
-    ├── accounts/
-    ├── api-help/
-    ├── guest_webapp     
-    ├── permissions
-    ├── sessions
-    ├── staff_webapp
-    └── webapp
-```
-## Branch Naming:
-Before you branch, create an issue for what you are working on.
-We'll use the issue # in the branch name and snake_case.
-
-the format is:
-```
-{branch-type}/{feature-name}/{issue-#}
-ex. feature/account_server/9354093
-```
-
-| Branch Type | Description                                                          |
-| ---------- | ----------------------------------------------------------------     |
-| `feature`  | use this when changes are related to a development of a feature.     |
-| `dev_task` | use this when changes are related to a specified dev task            |
-| `docs`     | use this when changes are documentation related                      |
-| `refactor` | use this when refactor the code base                                 |
-
+* [Link to Guide](/docs/getting_started.md)
 
 ## Supporting Documents
 
 ### Sprint 0:
-- [Sprint 0 Worksheet](/Docs/Sprint0/sprint_0_worksheet.md)
+- [Sprint 0 Worksheet](/docs/sprint_0/sprint_0_worksheet.md)
 ### Sprint 1:
-(In progress)
+- [Sprint 1 Worksheet](/docs/sprint_1/sprint_1_worksheet.md)
 
-### Project:
-
-- [Docker build instructions](/docker-compose/README.md)
-
-### Technical details
-- [Concierge Technical Info](/Docs/project-technical-details.md)
-
-### We have style
-
-- [Python](https://google.github.io/styleguide/pyguide.html)
-- [C#](https://google.github.io/styleguide/csharp-style.html)
-- [JavaScript](https://google.github.io/styleguide/jsguide.html)
-- [TypeScript](https://google.github.io/styleguide/tsguide.html)
-
-### Api Full Documentation:
-(Best to open in a browser)
-- [Api Documentation](/src/api-help/redoc-static.html)
-
-### Other important (more specific) information
-
-- [accounts](/src/accounts/README.md)
-- [permissions](/src/permissions/README.md)
-- [sessions](/src/permissions/README.md)
-- [webapp](/src/webapp/README.md)
-- [staff webapp](/src/staff_webapp/README.md)
-- [guest webapp](/src/guest_webapp/README/md)
+### Developer Notes:
+- [Getting Started (How to Run Our Project)](/docs/getting_started.md)
+- [Project Overview](/docs/README.md)
+- [Microservice Overview](/docs/microservice_overview.md)
+- [Testing Plan](/docs/testing_plan.md)
+- [API Documentation (Best to open in a browser)](/src/api-help/redoc-static.html)

@@ -25,7 +25,7 @@ Concierge stands out by modernizing the hotel experience, aligning it with today
 
 ## Initial Architecture:
 
-![Diagram](/Docs/Sprint0/images/block_diagram.jpg)
+![Diagram](/docs/sprint_0/images/block_diagram.jpg)
 
 
 ### Description
