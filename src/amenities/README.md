@@ -3,16 +3,17 @@ Microservice to access and manage hotel amenities.
 
 ## How to Run Server
 ### Locally
-1. Go to directory: ./src/amenities
-2. run command: dotnet run
+1. Go to directory: `./src/amenities`
+2. run command: `dotnet run`
 
 ### Via Docker Compose
-1. Go to directory: ./docker-compose
-2. run command: docker-compose -f docker-compose.yaml up
+1. Go to directory: `./docker-compose`
+2. run command: `docker-compose -f docker-compose.yaml build`
+3. run command: `docker-compose -f docker-compose.yaml up`
 
 ## How to Run Unit Tests
-1. Go to directory: ./src/amenities/amenities_test
-2. run command: dotnet test
+1. Go to directory: `./src/amenities/amenities_test`
+2. run command: `dotnet test`
 
 ## Model
 
@@ -48,5 +49,7 @@ update amenity with changed information
 delete specified amenity from database
 
 ## Environment Variables
- * forProduction
+ * `forProduction_DB`
 	* used to determine whether a stub or real implementation of a data layer is returned
+ * `forProduction_Auth`
+	* used to determine whether a fake or real implementation of a permission validator is returned
