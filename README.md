@@ -87,6 +87,14 @@ the format is:
 ex. feature/account_server/9354093
 ```
 
+| Branch Type | Description                                                          |
+| ---------- | ----------------------------------------------------------------     |
+| `feature`  | use this when changes are related to a development of a feature.     |
+| `dev_task` | use this when changes are related to a specified dev task            |
+| `docs`     | use this when changes are documentation related                      |
+| `refactor` | use this when refactor the code base                                 |
+
+
 ## Supporting Documents
 
 ### Sprint 0:
