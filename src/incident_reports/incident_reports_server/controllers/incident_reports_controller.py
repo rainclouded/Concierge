@@ -14,31 +14,26 @@ def create_app(persistence=None):
     #_permission_validator = Services.get_permission_validator()
 
     @app.route("/incident_reports/", methods=["GET"])
-    def get_incident_reports() -> IncidentReportResponse:
-        severity_list = None
-        status_list = None
-        beforeDate = None
-        afterDate = None
-        
+    def get_incident_reports() -> IncidentReportResponse:        
         # Get query parameters
-        severity_args = request.args.get('severity')
-        statuses_args = request.args.get('status')
-        beforeDate_args = request.args.get('beforeDate')
-        afterDate_args = request.args.get('afterDate')
+        severity_list = request.args.get('severity')
+        status_list = request.args.get('status')
+        beforeDate = request.args.get('beforeDate')
+        afterDate = request.args.get('afterDate')
         
         #convert strings to model objects
         try:
-            if severity_args:
-                severity_list = IncidentReportFactory.create_severity(severity_args)
+            if severity_list:
+                severity_list = IncidentReportFactory.create_severity(severity_list)
                 
-            if statuses_args:
-                status_list = IncidentReportFactory.create_status(statuses_args)
+            if status_list:
+                status_list = IncidentReportFactory.create_status(status_list)
                 
-            if beforeDate_args:
-                beforeDate = IncidentReportFactory.create_date(beforeDate_args)
+            if beforeDate:
+                beforeDate = IncidentReportFactory.create_date(beforeDate)
                 
-            if afterDate_args:
-                afterDate = IncidentReportFactory.create_date(afterDate_args)
+            if afterDate:
+                afterDate = IncidentReportFactory.create_date(afterDate)
         except ValueError:
             response = IncidentReportResponse(ResponseMessages.INVALID_PARAMETERS_PASSED, None).to_dict()
             return jsonify(response), 400
