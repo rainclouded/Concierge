@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request, make_response
+from flask_cors import CORS
 import argparse
 import os
 
@@ -132,4 +133,5 @@ def create_app(persistence=None):
 
 if __name__ == "__main__":
     app = create_app()
+    CORS(app)
     app.run(host="0.0.0.0", port=8080, debug=True)
