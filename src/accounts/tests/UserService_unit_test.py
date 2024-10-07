@@ -70,6 +70,19 @@ class TestUserService(unittest.TestCase):
         
 
     def test_create_new_staff(self):
-        pass
+        new_user = User(
+            **{
+            'username' : '8',
+            'id' : '',
+            'hash' : '',
+            'type' : 'staff'
+            }
+        )
+    
+        user = self.us.create_new_staff(new_user)
+
+        self.assertEqual(new_user, user)
+
+        
     def test_delete_user(self):
         pass
