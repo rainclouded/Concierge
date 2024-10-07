@@ -10,7 +10,7 @@ on:
     branches: [ "main", "dev" ]
 
 jobs:
-  build:
+  test_accounts:
 
     runs-on: ubuntu-latest
     strategy:
@@ -27,6 +27,32 @@ jobs:
     - name: Install dependencies
       run: |
         cd ./src/accounts/
+        python3 -m pip install --upgrade pip
+        python3 -m pip install -r requirements.txt
+       
+
+    - name: Test with unittest
+      run: |
+        python3 -m tests
+
+  test_amenities:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        cd ~
+        cd ./src/amenities/
         python3 -m pip install --upgrade pip
         python3 -m pip install -r requirements.txt
        
