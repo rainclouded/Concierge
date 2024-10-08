@@ -51,15 +51,14 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        cd ~
-        cd ./src/amenities/
+        cd ./src/incident_reports/
         python3 -m pip install --upgrade pip
         python3 -m pip install -r requirements.txt
        
 
     - name: Test with unittest
       run: |
-        python3 -m tests
+        python3 -m unittest discover -s .\incident_reports_tests\ -p "*.py"
 
 # This action will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
@@ -75,10 +74,12 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Select Directory
-      run: cd ./Concierge/amenities
+      run: cd ./Concierge/src/amenities
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: |
+        cd ./amenities_test
+        dotnet test --no-build --verbosity normal
