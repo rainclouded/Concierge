@@ -42,7 +42,7 @@ get specific amenity by id
 ### POST /amenities
 create amenity
 
-### PUT /amenities
+### PUT /amenities/id
 update amenity with changed information
 
 ### DELETE /amenities/id
