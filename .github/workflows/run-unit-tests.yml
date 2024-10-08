@@ -73,14 +73,10 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-    - name: Select Directory
-      run: |
-        cd /home/runner/work/Concierge/Concierge/src/amenities
     - name: Restore dependencies
       run: dotnet restore /home/runner/work/Concierge/Concierge/src/amenities/amenities_server/amenities_server.csproj
     - name: Build
       run: dotnet build --no-restore /home/runner/work/Concierge/Concierge/src/amenities/amenities_server/amenities_server.csproj
     - name: Test
       run: |
-        cd ./amenities_test
         dotnet test --no-build --verbosity normal /home/runner/work/Concierge/Concierge/src/amenities/amenities_test/amenities_test.csproj
