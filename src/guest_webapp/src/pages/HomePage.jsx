@@ -60,7 +60,7 @@ const HomePage = () => {
         <ServiceCard
           icon={faExclamationTriangle}
           text="Incident Report"
-          link="/incident-report"
+          link="/incident_reports"
         />
       </div>
 
