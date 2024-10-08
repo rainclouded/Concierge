@@ -10,10 +10,13 @@ const IncidentReportPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const requestBody = {
-      title: title,
-      description: description,
-      filing_person_id: 1234,  // replace with actual person ID later
-    };
+        title: title,
+        description: description,
+        filing_person_id: 1234,  // Replace with actual person ID
+        reviewer_id: 5678,       // Add reviewer_id, replace with logc
+        severity: "LOW",         // Default value for severity
+        status: "OPEN",          // Default value for status
+      };
 
     try {
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/incident_reports/`, {
