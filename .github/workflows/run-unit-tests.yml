@@ -26,7 +26,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        cd ./src/accounts/
+        cd /home/runner/work/Concierge/Concierge/src/accounts/
         python3 -m pip install --upgrade pip
         python3 -m pip install -r requirements.txt
        
@@ -51,8 +51,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        cd ~
-        cd ./src/incident_reports/
+        cd /home/runner/work/Concierge/Concierge/src/incident_reports/
         python3 -m pip install --upgrade pip
         python3 -m pip install -r requirements.txt
        
@@ -76,11 +75,7 @@ jobs:
         dotnet-version: 8.0.x
     - name: Select Directory
       run: |
-        ls
-        pwd
-        cd ~
-        ls
-        cd ~/src/amenities
+        cd /home/runner/work/Concierge/Concierge/src/amenities
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
