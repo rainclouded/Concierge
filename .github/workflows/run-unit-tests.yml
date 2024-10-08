@@ -76,8 +76,8 @@ jobs:
     - name: Select Directory
       run: |
         cd /home/runner/work/Concierge/Concierge/src/amenities/
-    - name: Build
-      run: dotnet build
+
     - name: Test
       run: |
+        cd ./amenities_test
         dotnet test
