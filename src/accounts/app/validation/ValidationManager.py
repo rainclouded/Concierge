@@ -28,7 +28,7 @@ class ValidationManager():
                 If the password meets all criteria
         """
 
-        return not (
+        return password is not  None and not (
             len(password) < cfg.PASSWORD_MINIMAL_LENGTH
             or (
                 cfg.PASSWORD_MUST_CONTAIN_LETTER
@@ -41,7 +41,7 @@ class ValidationManager():
         )
 
 
-    def validate_staff_username(self, password:str)->bool:
+    def validate_staff_username(self, username:str)->bool:
         """Validate if a password can be used
 
             Args:
@@ -50,20 +50,20 @@ class ValidationManager():
             Returns:
                 If the password meets all criteria
         """
-        return not (
-            len(password) < cfg.USERNAME_MINIMAL_LENGTH
+        return username is not None and not (
+            len(username) < cfg.USERNAME_MINIMAL_LENGTH
             or (
                 cfg.USERNAME_MUST_CONTAIN_LETTER
-                and not re.findall(self.GET_ALPHAPETIC_REGEX, password)
+                and not re.findall(self.GET_ALPHAPETIC_REGEX, username)
             )
             or (
                 cfg.USERNAME_MUST_CONTAIN_NUMBER
-                and not re.findall(self.GET_NUMERIC_REGEX, password)
+                and not re.findall(self.GET_NUMERIC_REGEX, username)
             )
         )
 
 
-    def validate_new_staff(self, new_user:User)->bool:
+    def validate_new_staff(self, new_user:User, password:str)->bool:
         """Validate if the credentials can be used
 
             Args:
@@ -72,9 +72,10 @@ class ValidationManager():
             Returns:
                 If the password meets all criteria
         """
-        usernames = list(filter(lambda x: x.username, self.db.get_staff()))
+        usernames = [user.username for user in self.db.get_staff()]
         return (
-            self.validate_staff_password(new_user.password)
+            new_user is not None
+            and self.validate_staff_password(password)
             and self.validate_staff_username(new_user.username)
             and new_user.username not in usernames
             )

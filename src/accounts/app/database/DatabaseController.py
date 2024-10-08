@@ -92,7 +92,7 @@ class DatabaseController:
         return max(int(user.id) for user in self.get_staff())
 
 
-    def delete_user(self, user:User)->bool:
+    def delete_user(self, user:User)->User:
         """Delete a user from the database
         
             Args:
@@ -100,4 +100,8 @@ class DatabaseController:
             Returns:
                 bool if the deletion was successful
         """
-        return self.database.delete_user(user.username)
+        return (
+                User(**user)
+                if ( user := self.database.delete_user(user.username))
+                else None
+            )

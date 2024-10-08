@@ -1,6 +1,8 @@
 import hashlib
 from app.database.Mockdata import Mockdata
 
+
+
 #Criteria for a staff password
 PASSWORD_HASH_FUNCTION = hashlib.sha256
 PASSWORD_MINIMAL_LENGTH = 5
@@ -20,3 +22,6 @@ STAFF_TYPE = 'staff'
 
 #The database to use
 DATABASE = Mockdata()
+
+def create_database():
+    return DATABASE

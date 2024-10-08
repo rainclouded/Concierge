@@ -48,7 +48,7 @@ class TestUserService(unittest.TestCase):
     ]
     def setUp(self):
         self.database = Mockdata()
-        self.database.users = self.TEST_DATA
+        self.database.users = [*self.TEST_DATA]#Deepcopy hack
         self.database_controller = DatabaseController(self.database)
         self.us = UserService(self.database_controller)
 
@@ -63,6 +63,7 @@ class TestUserService(unittest.TestCase):
             'type' : 'guest'
             }
         )
+
         user, _ = self.us.create_new_guest(new_guest)
         
         mock_randbelow.assert_called_with(cfg.MAX_GUEST_PASSWORD)
@@ -72,17 +73,82 @@ class TestUserService(unittest.TestCase):
     def test_create_new_staff(self):
         new_user = User(
             **{
-            'username' : '8',
+            'username' : 'newUser99',
             'id' : '',
             'hash' : '',
             'type' : 'staff'
             }
         )
-    
-        user = self.us.create_new_staff(new_user)
+        valid_staff = User(
+            **{
+            'username' : 'newUser99',
+            'id' : 4,
+            'hash' : '7668b598580e46d2e6347841824c847c84994feaffff228aadfacf059e5ef5bb',
+            'type' : 'staff'
+            }
+        )
+        user = self.us.create_new_staff(User(**{}), 'nothing')
 
-        self.assertEqual(new_user, user)
+        self.assertIsNone(user)
+
+        user = self.us.create_new_staff(new_user, 'testPassword99')
+
+        self.assertTrue(valid_staff, user)
 
         
     def test_delete_user(self):
-        pass
+        remaining_valid_users = [
+            User(**{
+                'username' : 'test1',
+                'id' : '1',
+                'hash' : '',
+                'type' : 'staff'
+            }),
+            User(**{
+                'username' : 'test2',
+                'id' : '2',
+                'hash' : '',
+                'type' : 'staff'
+            }),
+            User(**{
+                'username' : '5',
+                'id' : '',
+                'hash' : '',
+                'type' : 'guest'
+            }),
+            User(**{
+                'username' : '6',
+                'id' : '',
+                'hash' : '',
+                'type' : 'guest'
+            })
+        ]
+        staff_to_delete = User(
+            **{
+                'username' : 'test3',
+                'id' : '3',
+                'hash' : '',
+                'type' : 'staff'
+            }
+        )
+
+        guest_to_delete = User(
+            **{
+                'username' : '7',
+                'id' : '',
+                'hash' : '',
+                'type' : 'guest'
+            }
+        )
+        self.assertIsNone(self.us.delete_user(User(**{})))
+        self.assertTrue(self.us.delete_user(guest_to_delete))
+        self.assertCountEqual(
+            self.database_controller.get_users(),
+            [*remaining_valid_users, staff_to_delete]
+            )
+
+        self.assertTrue(self.us.delete_user(staff_to_delete))
+        self.assertCountEqual(
+            self.database_controller.get_users(),
+            remaining_valid_users
+            )

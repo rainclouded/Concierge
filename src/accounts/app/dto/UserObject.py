@@ -11,6 +11,7 @@ class UserObject:
             else:
                 setattr(self, key, None)
 
+
     def __eq__(self, comparable)->bool:
         return (
             type(comparable) is type(self)

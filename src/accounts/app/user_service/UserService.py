@@ -24,7 +24,6 @@ class UserService():
         Returns:
             The newly created user
         """
-        print('huh')
         new_guest.password = randbelow(cfg.MAX_GUEST_PASSWORD)
         new_guest.hash = \
             self.auth.get_hash(new_guest.username,new_guest.password)
@@ -43,7 +42,7 @@ class UserService():
         return self.db.delete_user(user)
 
 
-    def create_new_staff(self, new_user:User)->User:
+    def create_new_staff(self, new_user:User, password:str)->User:
         """Attempt to create a new staff in the database
 
             Args:
@@ -52,8 +51,8 @@ class UserService():
             Returns:
                 If the staff was successfully created
         """
-        if self.validation.validate_new_staff(new_user):
-            new_user.id = self.db.getLargestId()+1
-            new_user.hash = self.auth.get_hash(new_user.id, new_user.password)
+        if self.validation.validate_new_staff(new_user, password):
+            new_user.id = self.db.get_largest_id()+1
+            new_user.hash = self.auth.get_hash(new_user.id, password)
             return self.db.create_staff(new_user)
         return None

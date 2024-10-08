@@ -7,19 +7,21 @@ from app.authentication.AuthenticationManager import AuthenticationManager
 from app.database.DatabaseController import DatabaseController
 from app.user_service.UserService import UserService
 
+
 app = Flask(__name__)
-auth = user_service = None
+database = DatabaseController(cfg.create_database())
+auth = AuthenticationManager(database)
+user_service = UserService(database)
 
 DEFAULT_PORT = 8080
 ENVIRONMENT_VAR_NAME_PORT = "ACCOUNTS_PORT"
 
 
-def start_service(database:DatabaseController):
+def start_service():
     port = get_port()
     print(f"Starting server on port {port}...")
     app.run(host="0.0.0.0", port=port)
-    auth = AuthenticationManager(database)
-    user_service = UserService(database)
+
 
 
 def get_port():
@@ -47,7 +49,7 @@ def get_port():
     return DEFAULT_PORT
 
 
-@app.route("/accounts/", methods=['GET'])
+@app.route("/accounts", methods=['GET'])
 def index():
     """
     Route the index page
@@ -72,14 +74,17 @@ def create():
     data = request.get_json()
     new_user  = User(**{
         'username' : data["username"],
-        'password' : data["password"],
         'type' : data['type']
     })
-    created_user = new_password = None
+
+    created_user = None
+    new_password = None
     if data['type'] == cfg.GUEST_TYPE:
-        created_user, newPassword = user_service.create_new_guest(new_user)
+        created_user, new_password = user_service.create_new_guest(new_user)
     else:
-        created_user = user_service.create_new_staff(new_user)
+        new_password = data["password"]
+
+        created_user = user_service.create_new_staff(new_user, new_password)
 
     if (created_user):
         return jsonify({
@@ -95,7 +100,6 @@ def login():
     Route to login
     """
     response = {
-        "username": None,
         "message": "Login Fail - Invalid Credentials",
         "status": "error",
     }

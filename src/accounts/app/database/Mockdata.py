@@ -7,10 +7,10 @@ class Mockdata(DatabaseInterface):
     """
     def __init__(self):
         self._users = [
-        {
+        {#password: testPassword1
             'username' : 'test1',
             'id' : '1',
-            'hash' : '',
+            'hash' : '2ab34e3ec1de9d16996e303582da30758f88712c5196212d7e07914a859cc21b',
             'type' : 'staff'
         },
         {
@@ -25,10 +25,10 @@ class Mockdata(DatabaseInterface):
             'hash' : '',
             'type' : 'staff'
         },
-        {
+        {#password: 44444444
             'username' : '5',
             'id' : '',
-            'hash' : '',
+            'hash' : 'fb86d0f8ce24539b550e58c8398343cea6c09836614deefa06db7a460822d78c',
             'type' : 'guest'
         },
         {
@@ -81,5 +81,5 @@ class Mockdata(DatabaseInterface):
     def delete_user(self, username):
         for idx, user in enumerate(self.users):
             if user['username'] == username:
-                self.users.pop(idx)
-                break
+                return self.users.pop(idx)
+        return None
