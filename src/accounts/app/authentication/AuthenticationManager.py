@@ -1,3 +1,6 @@
+"""
+    Module for handling the authentication of users and their passwords
+"""
 import app.Configs as cfg
 from app.dto.UserObject import UserObject as User
 

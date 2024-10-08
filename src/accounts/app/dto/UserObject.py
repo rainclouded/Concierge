@@ -1,3 +1,6 @@
+"""
+Module for the UserObject dto
+"""
 import app.Configs as cfg
 
 class UserObject:
@@ -13,6 +16,7 @@ class UserObject:
 
 
     def __eq__(self, comparable)->bool:
+        #Check equality based on dictionary values and type
         return (
             type(comparable) is type(self)
             and all(

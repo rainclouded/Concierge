@@ -1,3 +1,6 @@
+"""
+Default Configurations for the account service
+"""
 import hashlib
 from app.database.Mockdata import Mockdata
 

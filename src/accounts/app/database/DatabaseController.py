@@ -1,3 +1,6 @@
+"""
+Database controller module
+"""
 from app.dto.UserObject import UserObject as User
 from app.database.DatabaseInterface import DatabaseInterface
 
@@ -98,10 +101,10 @@ class DatabaseController:
             Args:
                 user: The User to delete
             Returns:
-                bool if the deletion was successful
+                User that was deleted if the deletion was successful
         """
         return (
-                User(**user)
-                if ( user := self.database.delete_user(user.username))
+                User(**deleted_user)
+                if ( deleted_user := self.database.delete_user(user.username))
                 else None
             )

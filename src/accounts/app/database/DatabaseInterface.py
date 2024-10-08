@@ -1,3 +1,6 @@
+"""
+Module for the database interface
+"""
 from abc import ABC, abstractmethod
 
 class DatabaseInterface(ABC):

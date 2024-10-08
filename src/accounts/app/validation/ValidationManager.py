@@ -1,3 +1,6 @@
+"""
+Module for account VerificationManager
+"""
 import re
 import app.Configs as cfg
 from app.database.DatabaseController import DatabaseController

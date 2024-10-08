@@ -1,3 +1,6 @@
+"""
+Module for the account server
+"""
 import argparse
 import os
 import app.Configs as cfg
@@ -18,13 +21,16 @@ ENVIRONMENT_VAR_NAME_PORT = "ACCOUNTS_PORT"
 
 
 def start_service():
+    """Run the service"""
     port = get_port()
     print(f"Starting server on port {port}...")
     app.run(host="0.0.0.0", port=port)
 
 
-
-def get_port():
+def get_port()->int:
+    """Get the port the server should run on
+        Returns: port number
+    """
     parser = argparse.ArgumentParser(
         description="The authorization microservice"
     )
@@ -52,7 +58,7 @@ def get_port():
 @app.route("/accounts", methods=['GET'])
 def index():
     """
-    Route the index page
+    Route to the index page
     """
     response = {
         "message": "You have contacted the accounts", 
@@ -86,13 +92,14 @@ def create():
 
         created_user = user_service.create_new_staff(new_user, new_password)
 
-    if (created_user):
+    if created_user:
         return jsonify({
             "message" : f"User created successfully. password: {new_password}",
             "status" : "success",
 
         })
     return jsonify(response)
+
 
 @app.route("/accounts/login_attempt", methods=["POST"])
 def login():

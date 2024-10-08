@@ -1,3 +1,6 @@
+"""
+Module for the mock database
+"""
 from app.database.DatabaseInterface import DatabaseInterface
 
 class Mockdata(DatabaseInterface):
@@ -6,6 +9,7 @@ class Mockdata(DatabaseInterface):
     provide mock data; just for testing
     """
     def __init__(self):
+        #Set test data
         self._users = [
         {#password: testPassword1
             'username' : 'test1',
@@ -56,29 +60,59 @@ class Mockdata(DatabaseInterface):
         self._users = new_list
 
 
-    def get_all_users(self):
+    def get_all_users(self)->list[dict]:
+        """Get the entire user base
+        
+            Returns:
+                List of dictionaries corresponding to User objects
+        """
         return self.users
 
 
-    def get_all_staff(self):
+    def get_all_staff(self)->list[dict]:
+        """Get the entire user base of staff users
+        
+            Returns:
+                List of dictionaries corresponding to User objects
+        """
         return list(filter(lambda x : x['type'] == 'staff', self.users))
 
 
-    def get_all_guests(self):
+    def get_all_guests(self)->list[dict]:
+        """Get the entire user base of guest users
+        
+            Returns:
+                List of dictionaries corresponding to User objects
+        """
         return list(filter(lambda x : x['type'] == 'guest', self.users))
 
 
-    def add_staff(self, new_staff:dict):
+    def add_staff(self, new_staff:dict)->True:
+        """Add a staff user to the userbase
+        
+            Returns:
+                True
+        """
         self.users.append(new_staff)
         return True
 
 
-    def add_guest(self, new_guest:dict):
+    def add_guest(self, new_guest:dict)->True:
+        """Add a guest user to the userbase
+        
+            Returns:
+                True
+        """
         self.users.append(new_guest)
         return True
 
 
-    def delete_user(self, username):
+    def delete_user(self, username)->dict:
+        """Delete user from the userbase
+        
+            Returns:
+                Dictionary corresponding to the user deleted
+        """
         for idx, user in enumerate(self.users):
             if user['username'] == username:
                 return self.users.pop(idx)

@@ -1,3 +1,7 @@
+
+"""
+Testing module for FlaskApp
+"""
 import unittest
 import json
 import re
@@ -6,7 +10,9 @@ from app import app
 
 
 class TestFlaskApp(unittest.TestCase):
-
+    """
+    Tests for FlaskApp
+    """
 
     def setUp(self):
         self.client = app.test_client()
@@ -41,19 +47,34 @@ class TestFlaskApp(unittest.TestCase):
 
         response = self.client.post(
             '/accounts',
-            data=json.dumps({'username': 'newUser1', 'type' : 'staff', 'password' : 'newPassword1'}),
+            data=json.dumps(
+                {
+                    'username': 'newUser1', 
+                    'type' : 'staff', 
+                    'password' : 'newPassword1'
+                    }
+            ),
             content_type='application/json'
             )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json,
-            {'message':'User created successfully. password: newPassword1', 'status' : 'success'}
+            {
+                'message':'User created successfully. password: newPassword1',
+                'status' : 'success'
+            }
         )
         self.assertEqual(response.status_code, 200)
 
         response = self.client.post(
             '/accounts',
-            data=json.dumps({'username': '', 'type' : 'staff', 'password' : 'newPassword1'}),
+            data=json.dumps(
+                {
+                    'username': '',
+                    'type' : 'staff',
+                    'password' : 'newPassword1'
+                }
+            ),
             content_type='application/json'
             )
         self.assertEqual(response.status_code, 200)
@@ -105,11 +126,10 @@ class TestFlaskApp(unittest.TestCase):
                 'status': 'error',
             },
         )
-            
+
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json['message'].startswith('Login Fail'))
         self.assertEqual(response.json['status'], 'error')
-
 
 
 if __name__ == '__main__':

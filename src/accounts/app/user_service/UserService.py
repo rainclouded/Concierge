@@ -1,3 +1,6 @@
+"""
+Module for UserService account service
+"""
 from secrets import randbelow
 import app.Configs as cfg
 from app.authentication.AuthenticationManager import AuthenticationManager
