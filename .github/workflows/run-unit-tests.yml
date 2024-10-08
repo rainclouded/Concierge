@@ -79,4 +79,4 @@ jobs:
       run: dotnet build --no-restore /home/runner/work/Concierge/Concierge/src/amenities/amenities_server/amenities_server.csproj
     - name: Test
       run: |
-        dotnet test --no-build --verbosity normal /home/runner/work/Concierge/Concierge/src/amenities/amenities_test/amenities_test.csproj
+        dotnet test --verbosity normal /home/runner/work/Concierge/Concierge/src/amenities/amenities_test/amenities_test.csproj
