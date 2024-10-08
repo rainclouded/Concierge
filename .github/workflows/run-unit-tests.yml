@@ -75,7 +75,7 @@ jobs:
         dotnet-version: 8.0.x
     - name: Select Directory
       run: |
-        cd /home/runner/work/Concierge/Concierge/src/amenities/amenities_test
+        cd /home/runner/work/Concierge/Concierge/src/amenities/
     - name: Build
       run: dotnet build
     - name: Test
