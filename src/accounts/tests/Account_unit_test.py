@@ -7,6 +7,7 @@ import json
 import re
 from unittest.mock import MagicMock, patch
 from app import app
+from app.server.Accounts import get_port
 
 
 class TestFlaskApp(unittest.TestCase):
@@ -130,6 +131,9 @@ class TestFlaskApp(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json['message'].startswith('Login Fail'))
         self.assertEqual(response.json['status'], 'error')
+
+    def test_get_port(self):
+        self.assertEqual(8080,get_port())
 
 
 if __name__ == '__main__':
