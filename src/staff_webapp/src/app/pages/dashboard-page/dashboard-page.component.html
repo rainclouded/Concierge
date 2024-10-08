@@ -1,0 +1,13 @@
+<h3 class="text-xl">Concierge Admin Dashboard</h3>
+<div class="flex">
+	<div class="w-96">
+		<ul>
+			<li><a routerLink="/dashboard/home" routerLinkActive="active" ariaCurrentWhenActive="page">Home</a></li>
+			<li><a routerLink="/dashboard/amenities" routerLinkActive="active" ariaCurrentWhenActive="page">Amenities</a></li>
+			<li><a routerLink="/login">Log out</a></li>
+		</ul>
+	</div>
+	<div class="flex-grow">
+		<router-outlet></router-outlet>
+	</div>
+</div>
