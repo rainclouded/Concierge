@@ -51,15 +51,19 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
     def get_incident_reports(self, severities=None, statuses=None, beforeDate=None, afterDate=None) -> List[IncidentReport]:
         filtered_reports = self._incident_reports
         
+        #filter the list of incident reports based on severity
         if severities:
             filtered_reports = [report for report in filtered_reports if report.severity in severities]
-        
+
+        #filter the list of incident reports based on status
         if statuses:
             filtered_reports = [report for report in filtered_reports if report.status in statuses]
-        
+
+        #filter the list of incident reports based on created date
         if beforeDate:
             filtered_reports = [report for report in filtered_reports if report.created_at <= beforeDate]
-        
+
+        #filter the list of incident reports based on created date        
         if afterDate:
             filtered_reports = [report for report in filtered_reports if report.created_at >= afterDate]
         
@@ -74,7 +78,7 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
     
     def create_incident_report(self, incident_report: IncidentReport) -> IncidentReport:
         incident_report.set_id(self._nextId)
-        self._nextId += 1
+        self._nextId += 1 
 
         self._incident_reports.append(incident_report)
         return incident_report
