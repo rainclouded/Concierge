@@ -76,11 +76,9 @@ jobs:
     - name: Select Directory
       run: |
         cd /home/runner/work/Concierge/Concierge/src/amenities
-    - name: Restore dependencies
-      run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build
     - name: Test
       run: |
         cd ./amenities_test
-        dotnet test --no-build --verbosity normal
+        dotnet test
