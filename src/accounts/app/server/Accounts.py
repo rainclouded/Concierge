@@ -5,6 +5,7 @@ import argparse
 import os
 import app.Configs as cfg
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from app.dto.UserObject import UserObject as User
 from app.authentication.AuthenticationManager import AuthenticationManager
 from app.database.DatabaseController import DatabaseController
@@ -12,6 +13,7 @@ from app.user_service.UserService import UserService
 
 
 app = Flask(__name__)
+CORS(app)
 database = DatabaseController(cfg.create_database())
 auth = AuthenticationManager(database)
 user_service = UserService(database)
