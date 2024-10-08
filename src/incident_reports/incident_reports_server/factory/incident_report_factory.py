@@ -29,9 +29,13 @@ class IncidentReportFactory:
         )
         
         #if id was passed, set id to report
-        if "id" in incident_report_JSON:
+        if "id" in incident_report_JSON and incident_report_JSON["id"]:
             result.set_id(incident_report_JSON["id"])
         
+        #if id was passed, set id to report
+        if "created_at" in incident_report_JSON and incident_report_JSON["created_at"]:
+            result.set_created_at(datetime.strptime(incident_report_JSON["created_at"], '%Y-%m-%dT%H:%M:%S.%f'))
+            
         return result
     
     #convert status string into status enum. can pass multiple by separating values with comma

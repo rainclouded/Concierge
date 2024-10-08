@@ -98,6 +98,8 @@ class incident_report_unit_test(unittest.TestCase):
     def test_add_incident_report_valid_incident_report_able_to_be_fetched(self):
         response = self.app.post("/incident_reports/", data=json.dumps(self.valid_incident_report.to_dict()), content_type='application/json')
         
+        self.assertEqual(response.status_code, 201) 
+        
         incident_report = IncidentReportFactory.create_incident_report(response.json['data'])
         
         response = self.app.get(f"/incident_reports/{incident_report.id}")
