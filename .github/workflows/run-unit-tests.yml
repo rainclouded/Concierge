@@ -76,9 +76,9 @@ jobs:
         dotnet-version: 8.0.x
     - name: Select Directory
       run: |
-      cd ~
-      ls
-      cd ~/src/amenities
+        cd ~
+        ls
+        cd ~/src/amenities
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
