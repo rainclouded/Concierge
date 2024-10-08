@@ -5,6 +5,7 @@ import './index.css'
 import LoginPage from './pages/LoginPage.jsx'
 import HomePage from './pages/HomePage.jsx'
 import AmenitiesPage from './pages/AmenitiesPage.jsx'
+import IncidentReportPage from "./pages/IncidentReportPage";
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
   {
     path: '/amenities',
     element: <AmenitiesPage />,
+  },,
+  {
+    path: '/incident_reports',
+    element: <IncidentReportPage />,
   },
 ]);
 
