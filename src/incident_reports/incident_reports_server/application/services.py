@@ -11,12 +11,14 @@ class Services:
     def get_incident_report_persistence() -> IIncidentReportPersistence:
         if Services._incident_report_persistence is None:
             Services._incident_report_persistence = IncidentReportPersistenceStub()
+            
         return Services._incident_report_persistence
     
     @staticmethod
     def get_permission_validator() -> IPermissionValidator:
         if Services._permission_validator is None:
             Services._permission_validator = PermissionValidator()
+            
         return Services._permission_validator
     
     @staticmethod
