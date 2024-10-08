@@ -1,33 +1,48 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
 
 const LoginPage = () => {
-	const navigate = useNavigate();
+  const [roomKey, setRoomKey] = useState("");
 
-	const handleLogin = (e) => {
-		e.preventDefault();
-		navigate('/home');
-		console.log('Logge in')
-	}
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (roomKey) {
+      window.location.href = "/home";
+    } else {
+      alert("Invalid room key");
+    }
+  };
 
-	return (
-		<div className='flex justify-center items-center h-screen flex-col'>
-			<h3 className='text-3xl mb-4'>Concierge</h3>
-			<form onSubmit={handleLogin} className='border p-5 rounded-xl'>
-				<div className='mb-3'>
-					<label htmlFor="room-num-input" className='block'>Room Number</label>
-					<input id='room-num-input' type="text" placeholder='Your Room Number' className='px-3 py-2 w-full rounded-lg border border-neutral-200'/>
-				</div>
-				<div className='mb-3'>
-					<label htmlFor="pass-code-input" className='block'>Passcode</label>
-					<input id='pass-code-input' type="password" placeholder='Your Room Number' className='px-3 py-2 w-full rounded-lg border border-neutral-200'/>
-				</div>
-				<div className='grid place-content-center'>
-					<button type='submit' className='px-3 py-2 bg-neutral-200 rounded-lg'>Sign In</button>
-				</div>
-			</form>
-		</div>
-	)
-}
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-beige-200 to-beige-500 p-4">
+      <div className="bg-white p-6 sm:p-8 lg:p-10 rounded-lg shadow-xl max-w-md w-full">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-center text-gray-800 mb-4 sm:mb-6">
+          Welcome
+        </h1>
+        <form onSubmit={handleSubmit}>
+          <label
+            htmlFor="roomKey"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Enter Your Room Key:
+          </label>
+          <input
+            type="text"
+            id="roomKey"
+            value={roomKey}
+            onChange={(e) => setRoomKey(e.target.value)}
+            className="block w-full p-2 sm:p-3 border border-gray-300 rounded-md mb-3 sm:mb-4 focus:ring-2 focus:ring-blue-500 shadow-sm hover:shadow-md transition duration-200"
+            placeholder="Room Key"
+          />
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 sm:py-3 rounded-md hover:bg-blue-700 transition duration-200"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
 
-export default LoginPage
+export default LoginPage;
