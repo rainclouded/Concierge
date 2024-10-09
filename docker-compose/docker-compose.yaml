@@ -14,21 +14,6 @@ services:
     build: ../src/accounts
     ports:
       - 50001:8080
-      
-  permissions:
-    build: ../src/permissions
-    ports:
-      - 50002:8080
-      
-  sessions:
-    build: ../src/sessions
-    ports:
-      - 50003:8080
-
-  webapp:
-    build: ../src/webapp
-    ports:
-      - 50000:8080
 
   incident_reports: #uses port 50005
     extends:

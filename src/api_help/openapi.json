@@ -1314,57 +1314,51 @@
          "summary": "View or add incident reports",
          "get": {
             "summary": "View Incident Reports",
-            "description": "Requests /permissions/{permission-name-or-id}/sessions/{session-key} for access permission",
-            "operationId": "getIncident",
+            "operationId": "getIncidentReports",
             "tags": [
                "Incident Reports"
             ],
             "parameters": [
                {
-                  "name": "session_key",
-                  "in": "cookie",
-                  "description": "A session key, associated to an account with the necessary permissions for authenticating user",
-                  "required": true,
+                  "name": "severities",
+                  "in": "query",
+                  "description": "A comma-separated list of severity values to filter the reports. Valid values: LOW, MEDIUM, HIGH, CRITICAL.",
+                  "required": false,
                   "schema": {
-                     "type": "string"
+                     "type": "string",
+                     "example": "LOW,HIGH"
                   }
                },
                {
-                  "name": "start",
+                  "name": "statuses",
                   "in": "query",
-                  "description": "Filter reports to incidents that occured after start date.",
-                  "example": "01-01-2012",
+                  "description": "A comma-separated list of status values to filter the reports. Valid values: OPEN, CLOSED, RESOLVED, IN_PROGRESS.",
                   "required": false,
                   "schema": {
-                     "type": "string"
+                     "type": "string",
+                     "example": "OPEN,CLOSED"
                   }
                },
                {
-                  "name": "end",
+                  "name": "beforeDate",
                   "in": "query",
-                  "description": "Filter reports to incidents that occured before end date.",
-                  "example": "01-01-2012",
+                  "description": "A date string to filter reports created before this date (format: YYYY-MM-DD).",
                   "required": false,
                   "schema": {
-                     "type": "string"
+                     "type": "string",
+                     "format": "date",
+                     "example": "2023-10-01"
                   }
                },
                {
-                  "name": "type",
+                  "name": "afterDate",
                   "in": "query",
-                  "description": "Filter reports by type",
+                  "description": "A date string to filter reports created after this date (format: YYYY-MM-DD).",
                   "required": false,
                   "schema": {
-                     "type": "string"
-                  }
-               },
-               {
-                  "name": "status",
-                  "in": "query",
-                  "description": "Filter reports by status",
-                  "required": false,
-                  "schema": {
-                     "type": "string"
+                     "type": "string",
+                     "format": "date",
+                     "example": "2023-09-01"
                   }
                }
             ],
@@ -1381,23 +1375,42 @@
                                  "items": {
                                     "type": "object",
                                     "properties": {
-                                       "report-id": {
+                                       "id": {
                                           "type": "integer",
-                                          "description": "report's id",
-                                          "example": "123"
+                                          "description": "Unique value that identifies the incident report",
+                                          "example": 123
                                        },
-                                       "filing-person": {
+                                       "title": {
                                           "type": "string",
-                                          "description": "Name of the account",
-                                          "example": "John Doe"
+                                          "description": "Title of the incident report",
+                                          "example": "Power Outage"
                                        },
-                                       "incident-date": {
+                                       "description": {
                                           "type": "string",
-                                          "description": "Date of incident"
+                                          "description": "Detailed description of the incident",
+                                          "example": "A power outage occurred due to a storm"
                                        },
-                                       "reviewer": {
+                                       "created_at": {
                                           "type": "string",
-                                          "description": "Person who reviewed the incident report. Blank if not yet reviewed"
+                                          "format": "date-time",
+                                          "description": "Timestamp when the incident report was created",
+                                          "example": "2024-10-06T12:34:56Z"
+                                       },
+                                       "updated_at": {
+                                          "type": "string",
+                                          "format": "date-time",
+                                          "description": "Timestamp when the incident report was last updated",
+                                          "example": "2024-10-07T14:22:30Z"
+                                       },
+                                       "filing_person_id": {
+                                          "type": "integer",
+                                          "description": "Account ID of the person filing the report",
+                                          "example": 456
+                                       },
+                                       "reviewer_id": {
+                                          "type": "integer",
+                                          "description": "Account ID of the person reviewing the report.",
+                                          "example": 789
                                        }
                                     }
                                  }
@@ -1408,10 +1421,7 @@
                   }
                },
                "400": {
-                  "description": "Bad request"
-               },
-               "401": {
-                  "description": "Unauthorized"
+                  "description": "We had trouble fetching your incident reports"
                }
             }
          },
@@ -1420,7 +1430,7 @@
             "description": "Requests GET /sessions/{sessionId} to get accountID associated to current session.",
             "operationId": "postIncident",
             "tags": [
-               "Permissions"
+               "Incident Reports"
             ],
             "parameters": [
                {
@@ -1440,23 +1450,42 @@
                      "schema": {
                         "type": "object",
                         "properties": {
-                           "report-id": {
+                           "id": {
                               "type": "integer",
-                              "description": "report's id",
-                              "example": "123"
+                              "description": "Unique value that identifies the incident report",
+                              "example": 123
                            },
-                           "filing-person": {
+                           "title": {
                               "type": "string",
-                              "description": "Name of the account",
-                              "example": "John Doe"
+                              "description": "Title of the incident report",
+                              "example": "Power Outage"
                            },
-                           "incident-date": {
+                           "description": {
                               "type": "string",
-                              "description": "Date of incident"
+                              "description": "Detailed description of the incident",
+                              "example": "A power outage occurred due to a storm"
                            },
-                           "reviewer": {
+                           "created_at": {
                               "type": "string",
-                              "description": "Person who reviewed the incident report. Blank if not yet reviewed"
+                              "format": "date-time",
+                              "description": "Timestamp when the incident report was created",
+                              "example": "2024-10-06T12:34:56Z"
+                           },
+                           "updated_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "Timestamp when the incident report was last updated",
+                              "example": "2024-10-07T14:22:30Z"
+                           },
+                           "filing_person_id": {
+                              "type": "integer",
+                              "description": "Account ID of the person filing the report",
+                              "example": 456
+                           },
+                           "reviewer_id": {
+                              "type": "integer",
+                              "description": "Account ID of the person reviewing the report.",
+                              "example": 789
                            }
                         }
                      }
@@ -1489,6 +1518,220 @@
             }
          }
       },
+      "/incident_reports/{id}": {
+         "get": {
+            "summary": "View Specified Incident Report",
+            "operationId": "getIncidentReportById",
+            "tags": [
+               "Incident Reports"
+            ],
+            "parameters": [
+               {
+                  "name": "id",
+                  "in": "path",
+                  "description": "Id of incident report to adjust",
+                  "required": true,
+                  "schema": {
+                     "type": "integer"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "An incident report",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object",
+                           "properties": {
+                              "id": {
+                                 "type": "integer",
+                                 "description": "Unique value that identifies the incident report",
+                                 "example": 123
+                              },
+                              "title": {
+                                 "type": "string",
+                                 "description": "Title of the incident report",
+                                 "example": "Power Outage"
+                              },
+                              "description": {
+                                 "type": "string",
+                                 "description": "Detailed description of the incident",
+                                 "example": "A power outage occurred due to a storm"
+                              },
+                              "created_at": {
+                                 "type": "string",
+                                 "format": "date-time",
+                                 "description": "Timestamp when the incident report was created",
+                                 "example": "2024-10-06T12:34:56Z"
+                              },
+                              "updated_at": {
+                                 "type": "string",
+                                 "format": "date-time",
+                                 "description": "Timestamp when the incident report was last updated",
+                                 "example": "2024-10-07T14:22:30Z"
+                              },
+                              "filing_person_id": {
+                                 "type": "integer",
+                                 "description": "Account ID of the person filing the report",
+                                 "example": 456
+                              },
+                              "reviewer_id": {
+                                 "type": "integer",
+                                 "description": "Account ID of the person reviewing the report.",
+                                 "example": 789
+                              }
+                           }
+                        }
+                     }
+                  }
+               },
+               "404": {
+                  "description": "Incident report with specified id not found."
+               }
+            }
+         },
+         "put": {
+            "summary": "Update Incident Report",
+            "description": "Requests GET /sessions/{sessionId} to get accountID associated to current session.",
+            "operationId": "putIncidentReport",
+            "tags": [
+               "Incident Reports"
+            ],
+            "parameters": [
+               {
+                  "name": "session_key",
+                  "in": "cookie",
+                  "description": "A session key, associated to an account with the necessary permissions for authenticating user",
+                  "required": true,
+                  "schema": {
+                     "type": "string"
+                  }
+               },
+               {
+                  "name": "id",
+                  "in": "path",
+                  "description": "Id of incident report to adjust",
+                  "required": true,
+                  "schema": {
+                     "type": "integer"
+                  }
+               }
+            ],
+            "requestBody": {
+               "required": true,
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "type": "object",
+                        "properties": {
+                           "id": {
+                              "type": "integer",
+                              "description": "Unique value that identifies the incident report",
+                              "example": 123
+                           },
+                           "title": {
+                              "type": "string",
+                              "description": "Title of the incident report",
+                              "example": "Power Outage"
+                           },
+                           "description": {
+                              "type": "string",
+                              "description": "Detailed description of the incident",
+                              "example": "A power outage occurred due to a storm"
+                           },
+                           "created_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "Timestamp when the incident report was created",
+                              "example": "2024-10-06T12:34:56Z"
+                           },
+                           "updated_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "Timestamp when the incident report was last updated",
+                              "example": "2024-10-07T14:22:30Z"
+                           },
+                           "filing_person_id": {
+                              "type": "integer",
+                              "description": "Account ID of the person filing the report",
+                              "example": 456
+                           },
+                           "reviewer_id": {
+                              "type": "integer",
+                              "description": "Account ID of the person reviewing the report.",
+                              "example": 789
+                           }
+                        }
+                     }
+                  }
+               }
+            },
+            "responses": {
+               "201": {
+                  "description": "Incident Report updated successfully"
+               },
+               "400": {
+                  "description": "Bad request",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object",
+                           "properties": {
+                              "error": {
+                                 "type": "string",
+                                 "example": "The 'title' field is required"
+                              }
+                           }
+                        }
+                     }
+                  }
+               },
+               "401": {
+                  "description": "Unauthorized"
+               }
+            }
+         },
+         "delete": {
+            "summary": "Delete Incident Report",
+            "description": "Requests GET /sessions/{sessionId} to get accountID associated to current session.",
+            "operationId": "deleteAmenities",
+            "tags": [
+               "Incident Reports"
+            ],
+            "parameters": [
+               {
+                  "name": "session_key",
+                  "in": "cookie",
+                  "description": "A session key, associated to an account with the necessary permissions for authenticating user",
+                  "required": true,
+                  "schema": {
+                     "type": "string"
+                  }
+               },
+               {
+                  "name": "id",
+                  "in": "path",
+                  "description": "Id of incident report to adjust",
+                  "required": true,
+                  "schema": {
+                     "type": "integer"
+                  }
+               }
+            ],
+            "responses": {
+               "201": {
+                  "description": "Amenity deleted successfully"
+               },
+               "400": {
+                  "description": "Amenity not found"
+               },
+               "401": {
+                  "description": "Unauthorized"
+               }
+            }
+         }
+      },
       "/amenities": {
          "summary": "View, add or modify hotel amenities",
          "get": {
@@ -1507,16 +1750,6 @@
                   "schema": {
                      "type": "string"
                   }
-               },
-               {
-                  "name": "name",
-                  "in": "query",
-                  "description": "Filter amenities by name.",
-                  "example": "01-01-2012",
-                  "required": false,
-                  "schema": {
-                     "type": "string"
-                  }
                }
             ],
             "responses": {
@@ -1532,22 +1765,26 @@
                                  "items": {
                                     "type": "object",
                                     "properties": {
-                                       "amenity-id": {
+                                       "Id": {
                                           "type": "integer",
                                           "description": "amenity's id",
                                           "example": "123"
                                        },
-                                       "name": {
+                                       "Name": {
                                           "type": "string",
                                           "description": "Name of the amenity"
                                        },
-                                       "hours": {
+                                       "Description": {
                                           "type": "string",
-                                          "description": "hours available"
+                                          "description": "Description of the amenity"
                                        },
-                                       "description": {
+                                       "StartTime": {
                                           "type": "string",
-                                          "description": "description of amenity"
+                                          "description": "Opening time of amenity"
+                                       },
+                                       "EndTime": {
+                                          "type": "string",
+                                          "description": "Closing time of amenity"
                                        }
                                     }
                                  }
@@ -1557,11 +1794,8 @@
                      }
                   }
                },
-               "400": {
-                  "description": "Bad request"
-               },
-               "401": {
-                  "description": "Unauthorized"
+               "404": {
+                  "description": "Amenities not found."
                }
             }
          },
@@ -1590,17 +1824,26 @@
                      "schema": {
                         "type": "object",
                         "properties": {
-                           "name": {
+                           "Id": {
+                              "type": "integer",
+                              "description": "amenity's id",
+                              "example": "123"
+                           },
+                           "Name": {
                               "type": "string",
                               "description": "Name of the amenity"
                            },
-                           "hours": {
+                           "Description": {
                               "type": "string",
-                              "description": "hours available"
+                              "description": "Description of the amenity"
                            },
-                           "description": {
+                           "StartTime": {
                               "type": "string",
-                              "description": "description of amenity"
+                              "description": "Opening time of amenity"
+                           },
+                           "EndTime": {
+                              "type": "string",
+                              "description": "Closing time of amenity"
                            }
                         }
                      }
@@ -1633,7 +1876,65 @@
             }
          }
       },
-      "/amenities/{amenity-id}": {
+      "/amenities/{id}": {
+         "get": {
+            "summary": "View hotel amenity",
+            "operationId": "getAmenityById",
+            "tags": [
+               "Amenities"
+            ],
+            "parameters": [
+               {
+                  "name": "amenity-id",
+                  "in": "path",
+                  "description": "Id of amenity to adjust",
+                  "required": true,
+                  "schema": {
+                     "type": "string"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "An amenity",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "schema": {
+                              "type": "object",
+                              "properties": {
+                                 "Id": {
+                                    "type": "integer",
+                                    "description": "amenity's id",
+                                    "example": "123"
+                                 },
+                                 "Name": {
+                                    "type": "string",
+                                    "description": "Name of the amenity"
+                                 },
+                                 "Description": {
+                                    "type": "string",
+                                    "description": "Description of the amenity"
+                                 },
+                                 "StartTime": {
+                                    "type": "string",
+                                    "description": "Opening time of amenity"
+                                 },
+                                 "EndTime": {
+                                    "type": "string",
+                                    "description": "Closing time of amenity"
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               },
+               "404": {
+                  "description": "Amenity with specified not found."
+               }
+            }
+         },
          "put": {
             "summary": "Update Amenity",
             "description": "Requests GET /sessions/{sessionId} to get accountID associated to current session.",
@@ -1668,17 +1969,26 @@
                      "schema": {
                         "type": "object",
                         "properties": {
-                           "name": {
+                           "Id": {
+                              "type": "integer",
+                              "description": "amenity's id",
+                              "example": "123"
+                           },
+                           "Name": {
                               "type": "string",
                               "description": "Name of the amenity"
                            },
-                           "hours": {
+                           "Description": {
                               "type": "string",
-                              "description": "hours available"
+                              "description": "Description of the amenity"
                            },
-                           "description": {
+                           "StartTime": {
                               "type": "string",
-                              "description": "description of amenity"
+                              "description": "Opening time of amenity"
+                           },
+                           "EndTime": {
+                              "type": "string",
+                              "description": "Closing time of amenity"
                            }
                         }
                      }
@@ -1704,6 +2014,45 @@
                         }
                      }
                   }
+               },
+               "401": {
+                  "description": "Unauthorized"
+               }
+            }
+         },
+         "delete": {
+            "summary": "Delete Amenity",
+            "description": "Requests GET /sessions/{sessionId} to get accountID associated to current session.",
+            "operationId": "deleteAmenities",
+            "tags": [
+               "Amenities"
+            ],
+            "parameters": [
+               {
+                  "name": "session_key",
+                  "in": "cookie",
+                  "description": "A session key, associated to an account with the necessary permissions for authenticating user",
+                  "required": true,
+                  "schema": {
+                     "type": "string"
+                  }
+               },
+               {
+                  "name": "amenity-id",
+                  "in": "path",
+                  "description": "Id of amenity to adjust",
+                  "required": true,
+                  "schema": {
+                     "type": "string"
+                  }
+               }
+            ],
+            "responses": {
+               "201": {
+                  "description": "Amenity deleted successfully"
+               },
+               "400": {
+                  "description": "Amenity not found"
                },
                "401": {
                   "description": "Unauthorized"
