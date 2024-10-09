@@ -72,7 +72,7 @@ Run the entire app from the root directory using:
 ```
 docker compose -f ./docker-compose/docker-compose.yaml up --build
 ```
-then cd into the staff_webapp directory. To open cypress and run the integration tests run:
+then cd into the staff_webapp directory. To open the Cypress UI and run the integration tests run:
 ```
 npx cypress open
 ```
@@ -91,7 +91,7 @@ Run the entire app from the root directory using
 ```
 docker compose -f ./docker-compose/docker-compose.yaml up --build
 ```
-then cd into the staff_webapp directory. To open cypress and run the integration tests run:
+then cd into the staff_webapp directory. To open run the integration tests use:
 ```
 npx cypress run
 ```
