@@ -8,7 +8,7 @@ describe('AmenityFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AmenityFormComponent, HttpClientTestingModule]
+      imports: [AmenityFormComponent, HttpClientTestingModule],
     })
     .compileComponents();
     

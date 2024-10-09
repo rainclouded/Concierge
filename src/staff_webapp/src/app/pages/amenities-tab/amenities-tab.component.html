@@ -16,7 +16,7 @@
     <tbody>
       @if (amenities.length > 0) {
         @for(amenity of amenities; track amenity.id) {
-          <tr class="bg-white border-b">
+          <tr class="bg-white border-b amenity-item">
             <th scope="row" class="px-6 py-6 font-semibold text-2xl whitespace-nowrap">
               {{amenity.name}}
             </th>
