@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AmenityFormComponent } from './amenity-form.component';
 
 describe('AmenityFormComponent', () => {
@@ -8,7 +8,7 @@ describe('AmenityFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AmenityFormComponent]
+      imports: [AmenityFormComponent, HttpClientTestingModule]
     })
     .compileComponents();
     
