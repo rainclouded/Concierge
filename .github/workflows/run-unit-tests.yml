@@ -60,7 +60,7 @@ jobs:
     - name: Test with unittest
       run: |
         cd /home/runner/work/Concierge/Concierge/src/incident_reports/
-        python3 -m unittest discover -s .\incident_reports_tests\ -p "*.py"
+        python3 -m unittest discover -s ./incident_reports_tests/ -p "*.py"
 
 # This action will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
