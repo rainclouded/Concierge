@@ -1,0 +1,5 @@
+services:
+  incident_reports:
+    build: .
+    ports:
+      - 50005:8080

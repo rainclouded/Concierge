@@ -1,0 +1,103 @@
+<h3 class="font-semibold text-5xl mb-5">Incident Reports</h3>
+<p class="mb-5 font-bold text-xl">Manage Incident Reports</p>
+<button (click)="openWindow()" type="button" class="bg-blue-500 text-white p-2 rounded-lg mb-4">
+  Report an incident
+</button>
+<div class="flex gap-2">
+	<!-- To do -->
+	<div class="w-1/4 border rounded-lg">
+		<div class="w-full bg-slate-300 p-3 uppercase font-semibold text-xl flex items-center justify-center text-center">
+			To do
+		</div>
+		<div class="p-2">
+			@if(todoReports.length > 0){
+				@for(report of todoReports; track report.id){
+					<div class="w-full h-full p-2 border rounded-lg">
+						<div class="flex justify-between mb-1">
+							<p class="text-xl font-semibold">{{report.title}}</p>
+							<div class="flex gap-1">
+								<button type="button" (click)="report.id && loadAmenity(report)" class="bg-slate-300 p-1 rounded-md">Edit</button>
+								<button type="button" (click)="report.id && deleteReport(report.id)" class="bg-red-700 text-white p-1 rounded-md">Delete</button>
+							</div>
+						</div>
+						<p>{{report.description}}</p>
+						<p class="text-xs mt-4 font-semibold">{{report.severity}}</p>
+					</div>
+				}
+			}
+		</div>
+	</div>
+	<!-- In progress -->
+	<div class="w-1/4 border rounded-lg">
+		<div class="w-full bg-slate-300 p-3 uppercase font-semibold text-xl flex items-center justify-center text-center">
+			In progress
+		</div>
+		<div class="p-2">
+			@if(inProgressReports.length > 0){
+				@for(report of inProgressReports; track report.id){
+					<div class="w-full h-full p-2 border rounded-lg">
+						<div class="flex justify-between mb-1">
+							<p class="text-xl font-semibold">{{report.title}}</p>
+							<div class="flex gap-1">
+								<button type="button" (click)="report.id && loadAmenity(report)" class="bg-slate-300 p-1 rounded-md">Edit</button>
+								<button type="button" (click)="report.id && deleteReport(report.id)" class="bg-red-700 text-white p-1 rounded-md">Delete</button>
+							</div>
+						</div>
+						<p>{{report.description}}</p>
+						<p class="text-xs mt-4 font-semibold">{{report.severity}}</p>
+					</div>
+				}
+			}
+		</div>
+	</div>
+	<!-- Resolved -->
+	<div class="w-1/4 border rounded-lg">
+		<div class="w-full bg-slate-300 p-3 uppercase font-semibold text-xl flex items-center justify-center text-center">
+			Resolved
+		</div>
+		<div class="p-2">
+			@if(resolvedReports.length > 0){
+				@for(report of resolvedReports; track report.id){
+					<div class="w-full h-full p-2 border rounded-lg">
+						<div class="flex justify-between mb-1">
+							<p class="text-xl font-semibold">{{report.title}}</p>
+							<div class="flex gap-1">
+								<button type="button" (click)="report.id && loadAmenity(report)" class="bg-slate-300 p-1 rounded-md">Edit</button>
+								<button type="button" (click)="report.id && deleteReport(report.id)" class="bg-red-700 text-white p-1 rounded-md">Delete</button>
+							</div>
+						</div>
+						<p>{{report.description}}</p>
+						<p class="text-xs mt-4 font-semibold">{{report.severity}}</p>
+					</div>
+				}
+			}
+		</div>
+	</div>
+	<!-- Closed -->
+	<div class="w-1/4 border rounded-lg">
+		<div class="w-full bg-slate-300 p-3 uppercase font-semibold text-xl flex items-center justify-center text-center">
+			Closed
+		</div>
+		<div class="p-2">
+			@if(closedReports.length > 0){
+				@for(report of closedReports; track report.id){
+					<div class="w-full h-full p-2 border rounded-lg">
+						<div class="flex justify-between mb-1">
+							<p class="text-xl font-semibold">{{report.title}}</p>
+							<div class="flex gap-1">
+								<button type="button" (click)="report.id && loadAmenity(report)" class="bg-slate-300 p-1 rounded-md">Edit</button>
+								<button type="button" (click)="report.id && deleteReport(report.id)" class="bg-red-700 text-white p-1 rounded-md">Delete</button>
+							</div>
+						</div>
+						<p>{{report.description}}</p>
+						<p class="text-xs mt-4 font-semibold">{{report.severity}}</p>
+					</div>
+				}
+			}
+		</div>
+	</div>
+</div>
+
+<app-window [isOpen]="isOpenWindow" (closeWindow)="closeWindow()">
+	<app-incident-report-form (onCloseWindow)="closeWindow()" [data]="incidentReport"></app-incident-report-form>
+</app-window>
