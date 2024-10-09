@@ -17,5 +17,9 @@ export class SidebarComponent {
       routerLink: 'amenities',
       label: 'Amenities'
     },
+    {
+      routerLink: 'incident_reports',
+      label: 'Incident Reports'
+    },
   ]
 }

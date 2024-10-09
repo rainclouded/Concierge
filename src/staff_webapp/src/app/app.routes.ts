@@ -3,6 +3,8 @@ import { DashboardPageComponent } from './pages/dashboard-page/dashboard-page.co
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { HomeTabComponent } from './pages/home-tab/home-tab.component';
 import { AmenitiesTabComponent } from './pages/amenities-tab/amenities-tab.component';
+import { IncidentReportsTabComponent } from './pages/incident-reports-tab/incident-reports-tab.component';
+
 
 export const routes: Routes = [
 	{
@@ -25,6 +27,10 @@ export const routes: Routes = [
 			{
 				path: 'amenities',
 				component: AmenitiesTabComponent
+			},
+			{
+				path: 'incident_reports',
+				component: IncidentReportsTabComponent
 			},
 			{ path: '',
 				redirectTo: 'home',

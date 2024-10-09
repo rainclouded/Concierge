@@ -5,9 +5,10 @@ __pycache__
 
 bin/
 obj/
+.coverage
 
 Debug/
 Release/
 net8.0/
 
-.coverage
+**/.coverage
