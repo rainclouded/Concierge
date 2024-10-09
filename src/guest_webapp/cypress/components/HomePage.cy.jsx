@@ -1,5 +1,5 @@
 import HomePage from '../../src/pages/HomePage';
-import { MemoryRouter } from 'react-router-dom';  // Import MemoryRouter for testing
+import { MemoryRouter } from 'react-router-dom'; 
 
 describe('HomePage Component Tests', () => {
   it('should render the HomePage component and display Quick Service', () => {
