@@ -13,5 +13,6 @@ public static class ResponseMessages
         public const string GET_AMENITIES_FAILED = "We had trouble fetching your amenities.";
 
         public const string GET_AMENITY_FAILED = "Amenity with specified id not found.";
+        
         public const string INVALID_AMENITY_PASSED = "Bad Request. Amenity with invalid parameters was passed.";
 }

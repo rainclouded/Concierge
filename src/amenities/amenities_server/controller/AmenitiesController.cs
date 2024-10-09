@@ -11,7 +11,7 @@ public class AmenitiesController : ControllerBase
     public AmenitiesController()
     {
         _amenityPersistence = Services.GetAmenityPersistence();
-        //IPermissionValidator = Services.GetPermissionValidator();
+        //_permissionValidator = Services.GetPermissionValidator();
     }
 
     //get: /amenities
@@ -34,7 +34,7 @@ public class AmenitiesController : ControllerBase
     {
         var amenity = _amenityPersistence.GetAmenityByID(id);
 
-        if (amenity == null)
+        if (_amenityPersistence.GetAmenityByID(id) == null)
         {
             return NotFound(new AmenityResponse<int>(ResponseMessages.GET_AMENITY_FAILED, id));
         }
@@ -46,12 +46,12 @@ public class AmenitiesController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult DeleteAmenity(int id)
     {
-        //TODO:  validate session call
+        //TODO: validate session call
         //if(_permissionValidator.ValidatePermissions(permission,sessionKey))
 
-        //validate passed amenity
-        var amenity = _amenityPersistence.GetAmenityByID(id);
-        if(amenity == null){
+        //validate if id is valid
+        if(_amenityPersistence.GetAmenityByID(id) == null)
+        {
             return NotFound(new AmenityResponse<int>(ResponseMessages.GET_AMENITY_FAILED, id));
         }
 
@@ -74,10 +74,11 @@ public class AmenitiesController : ControllerBase
 
         _amenityPersistence.AddAmenity(newAmenity);
 
+        //return a 201 with location to newly created amenity
         return CreatedAtAction(
-            nameof(GetAmenityByID),  // The action to get the newly created amenity
-            new { id = newAmenity.Id },  // The route values (e.g., the ID of the created amenity)
-            new AmenityResponse<Amenity>(ResponseMessages.CREATE_AMENITY_SUCCESS, newAmenity)  // The response body
+            nameof(GetAmenityByID),  
+            new { id = newAmenity.Id },  
+            new AmenityResponse<Amenity>(ResponseMessages.CREATE_AMENITY_SUCCESS, newAmenity)
         );
     }
 

@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AmenitiesTabComponent } from './amenities-tab.component';
+import { WindowComponent } from '../../components/window/window.component';
+import { AmenityFormComponent } from '../../components/amenity-form/amenity-form.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('AmenitiesTabComponent', () => {
   let component: AmenitiesTabComponent;
@@ -8,7 +11,7 @@ describe('AmenitiesTabComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AmenitiesTabComponent]
+      imports: [WindowComponent, AmenityFormComponent, HttpClientTestingModule],
     })
     .compileComponents();
     
