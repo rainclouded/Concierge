@@ -26,9 +26,8 @@ class IncidentReportFactory:
             reviewer_id=incident_report_JSON['reviewer_id']  
         )
         
-        #if id was passed, set id to report
-        if "created_at" in incident_report_JSON and incident_report_JSON["created_at"]:
-            result.set_created_at(datetime.strptime(incident_report_JSON["created_at"], '%Y-%m-%dT%H:%M:%S.%f'))
+        if "id" in incident_report_JSON:
+            result.set_id(incident_report_JSON["id"])
         
         return result
     
