@@ -1,0 +1,35 @@
+<h3 class="mb-5 text-lg font-bold tracking-tight">Incident Details</h3>
+<form (ngSubmit)="onSubmit()" [formGroup]="reportForm" autocomplete="off" novalidate>
+	<div class="mb-6">
+		<label for="title" class="font-semibold">Title</label>
+		<input type="text" id="title" placeholder="Title" formControlName="title" class="p-2 border rounded-lg w-full h-10">
+		@if (reportForm.get('title')?.hasError('required') && reportForm.get('title')?.touched) {
+			<div class="absolute text-xs text-red-700">ⓘ Title is required</div>
+		}
+	</div>
+	<div class="mb-6">
+		<label for="description" class="font-semibold">Description</label>
+		<input type="text" id="description" placeholder="Description" formControlName="description" class="p-2 border rounded-lg w-full h-10">
+		@if (reportForm.get('description')?.hasError('required') && reportForm.get('description')?.touched) {
+			<div class="absolute text-xs text-red-700">ⓘ Description is required</div>
+		}
+	</div>
+	<div class="mb-6">
+		<label for="severity" class="font-semibold">Severity</label>
+		<input type="text" id="severity" placeholder="LOW, MEDIUM, HIGH or CRITICAL" formControlName="severity" class="p-2 border rounded-lg w-full h-10">
+		@if (reportForm.get('severity')?.hasError('required') && reportForm.get('severity')?.touched) {
+			<div class="absolute text-xs text-red-700">ⓘ Severity is required</div>
+		}
+	</div>
+	<div class="mb-6">
+		<label for="status" class="font-semibold">Status</label>
+		<input type="text" id="status" placeholder="OPEN, IN_PROGRESS, RESOLVED or CLOSED" formControlName="status" class="p-2 border rounded-lg w-full h-10">
+		@if (reportForm.get('status')?.hasError('required') && reportForm.get('status')?.touched) {
+			<div class="absolute text-xs text-red-700">ⓘ Status is required</div>
+		}
+	</div>
+	<div class="flex justify-center gap-3">
+		<button type="submit" class="bg-slate-200 p-3 rounded-lg">Submit</button>
+		<button type="button" (click)="onClose()" class="bg-red-700 text-white p-3 rounded-lg">Cancel</button>
+	</div>
+</form>
