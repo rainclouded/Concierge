@@ -13,12 +13,10 @@ class IncidentReportFactory:
         if incident_report_JSON is None:
             raise ValueError("No JSON object was passed!")
         
-        #check if all required keys are present
         missing_keys = [key for key in required_keys if key not in incident_report_JSON]
         if missing_keys:
             raise KeyError(f"Values are missing in incident report: {','.join(missing_keys)}")
         
-        #create report instance with added incident report
         result = IncidentReport(
             severity=Severity[incident_report_JSON['severity'].upper()], 
             status=Status[incident_report_JSON['status'].upper()],        
@@ -28,14 +26,9 @@ class IncidentReportFactory:
             reviewer_id=incident_report_JSON['reviewer_id']  
         )
         
-        #if id was passed, set id to report
-        if "id" in incident_report_JSON and incident_report_JSON["id"]:
+        if "id" in incident_report_JSON:
             result.set_id(incident_report_JSON["id"])
         
-        #if id was passed, set id to report
-        if "created_at" in incident_report_JSON and incident_report_JSON["created_at"]:
-            result.set_created_at(datetime.strptime(incident_report_JSON["created_at"], '%Y-%m-%dT%H:%M:%S.%f'))
-            
         return result
     
     #convert status string into status enum. can pass multiple by separating values with comma
