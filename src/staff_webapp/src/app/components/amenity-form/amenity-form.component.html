@@ -1,0 +1,35 @@
+<h3 class="mb-5 text-lg font-bold tracking-tight">Amenity Details</h3>
+<form (ngSubmit)="onSubmit()" [formGroup]="amenityForm" autocomplete="off" novalidate>
+	<div class="mb-6">
+		<label for="name" class="font-semibold">Name</label>
+		<input type="text" id="name" placeholder="Title" formControlName="name" class="p-2 border rounded-lg w-full h-10">
+		@if (amenityForm.get('name')?.hasError('required') && amenityForm.get('name')?.touched) {
+			<div class="absolute text-xs text-red-700">ⓘ Title is required</div>
+		}
+	</div>
+	<div class="mb-6">
+		<label for="description" class="font-semibold">Description</label>
+		<input type="text" id="description" placeholder="Description" formControlName="description" class="p-2 border rounded-lg w-full h-10">
+		@if (amenityForm.get('description')?.hasError('required') && amenityForm.get('description')?.touched) {
+			<div class="absolute text-xs text-red-700">ⓘ Description is required</div>
+		}
+	</div>
+	<div class="mb-6">
+		<label for="startTime" class="font-semibold">Start at</label>
+		<input type="text" id="startTime" placeholder="eg. 05:15:00" formControlName="startTime" class="p-2 border rounded-lg w-full h-10">
+		@if (amenityForm.get('startTime')?.hasError('required') && amenityForm.get('startTime')?.touched) {
+			<div class="absolute text-xs text-red-700">ⓘ Starting Time is required</div>
+		}
+	</div>
+	<div class="mb-6">
+		<label for="endTime" class="font-semibold">End at</label>
+		<input type="text" id="endTime" placeholder="eg. 18:30:00" formControlName="endTime" class="p-2 border rounded-lg w-full h-10">
+		@if (amenityForm.get('endTime')?.hasError('required') && amenityForm.get('endTime')?.touched) {
+			<div class="absolute text-xs text-red-700">ⓘ Ending Time is required</div>
+		}
+	</div>
+	<div class="flex justify-center gap-3">
+		<button type="submit" class="bg-slate-200 p-3 rounded-lg">Submit</button>
+		<button type="button" (click)="onClose()" class="bg-red-700 text-white p-3 rounded-lg">Cancel</button>
+	</div>
+</form>

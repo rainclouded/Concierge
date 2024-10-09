@@ -12,7 +12,6 @@ namespace amenities_test
         private Amenity _testUpdatedValidAmenity;
         private Amenity _testInvalidAmenity;
 
-
         [SetUp]
         public void Setup()
         {
