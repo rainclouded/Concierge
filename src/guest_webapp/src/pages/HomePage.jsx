@@ -41,7 +41,7 @@ const HomePage = () => {
       </header>
 
       {/* Light Brown Section */}
-      <div className="p-4 bg-[#ECD8C8] rounded-t-xl">
+      <div className="p-4 bg-[#ECD8C8] rounded-t-xl text-center mx-auto max-w-full md:max-w-[75%]">
         <div className="text-[#8F613C] text-2xl font-bold">
           {roomInfo.roomNumber}
         </div>
@@ -51,7 +51,7 @@ const HomePage = () => {
       </div>
 
       {/* Service Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 mx-auto justify-items-center">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 mx-auto justify-items-center max-w-full md:max-w-[75%]">
         <ServiceCard
           icon={faConciergeBell}
           text="Amenities"
@@ -95,7 +95,7 @@ const HomePage = () => {
           >
             <ul>
               <li>
-                <a href="/settings">Settings</a>
+                <a href="/home">Settings</a>
               </li>
               <li>
                 <a href="/">Log Out</a>
