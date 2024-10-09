@@ -9,7 +9,6 @@ import { IncidentReportFormComponent } from '../../components/incident-report-fo
   standalone: true,
   imports: [WindowComponent, IncidentReportFormComponent],
   templateUrl: './incident-reports-tab.component.html',
-  styleUrl: './incident-reports-tab.component.css'
 })
 export class IncidentReportsTabComponent {
   isOpenWindow = false;

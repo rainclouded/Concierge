@@ -28,6 +28,8 @@ export class AmenityFormComponent implements OnChanges {
   }
 
   onClose() {
+    this.amenityForm.reset();
+    this.data = null;
     this.onCloseWindow.emit(false);
   }
 
@@ -39,6 +41,8 @@ export class AmenityFormComponent implements OnChanges {
         startTime: this.data.startTime,
         endTime: this.data.endTime,
       });
+    } else {
+      this.amenityForm.reset();
     }
   }
 
@@ -49,7 +53,7 @@ export class AmenityFormComponent implements OnChanges {
           .updateAmenity(this.data.id as number, this.amenityForm.value)
           .subscribe({
             next: (response: any) => {
-              this.resetAmenityForm();
+              this.onClose();
               console.log(response.message);
             }
           })
@@ -57,7 +61,7 @@ export class AmenityFormComponent implements OnChanges {
         this.amenityService.addAmenity(this.amenityForm.value)
           .subscribe({
             next: (response: any) => {
-              this.resetAmenityForm();
+              this.onClose();
               console.log(response.message);
             }
           });
@@ -65,10 +69,5 @@ export class AmenityFormComponent implements OnChanges {
     } else {
       this.amenityForm.markAllAsTouched(); // determine wether or not to display validation errors when users "touched"
     }
-  }
-
-  resetAmenityForm() {
-    this.amenityForm.reset();
-    this.onClose();
   }
 }
