@@ -42,7 +42,7 @@ const AmenitiesPage = () => {
           </thead>
           <tbody>
             {amenities.map((amenity) => (
-              <tr key={amenity.id}>
+              <tr key={amenity.id} class="amenity-row-item">
                 <td className="border border-gray-300 px-4 py-2">
                   {amenity.name}
                 </td>
