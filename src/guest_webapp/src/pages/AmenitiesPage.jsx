@@ -9,7 +9,9 @@ const AmenitiesPage = () => {
   useEffect(() => {
     const fetchAmenities = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/amenities/`);
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/amenities/`
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch amenities");
         }

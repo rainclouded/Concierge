@@ -12,20 +12,23 @@ const IncidentReportPage = () => {
     const requestBody = {
       title: title,
       description: description,
-      filing_person_id: 1234,  // Replace with actual person ID
-      reviewer_id: 5678,       // Add reviewer_id, replace with actual logic
-      severity: "LOW",         // Default value for severity
-      status: "OPEN",          // Default value for status
+      filing_person_id: 1234, // Replace with actual person ID
+      reviewer_id: 5678, // Add reviewer_id, replace with actual logic
+      severity: "LOW", // Default value for severity
+      status: "OPEN", // Default value for status
     };
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/incident_reports/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/incident_reports/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
       if (!response.ok) throw new Error("Failed to submit report");
       setMessage("Incident report submitted successfully");
       setTitle("");
@@ -38,7 +41,9 @@ const IncidentReportPage = () => {
   return (
     <div className="p-6 flex justify-center">
       <div className="w-full max-w-full md:max-w-[50%] mx-auto">
-        <h1 className="text-2xl font-bold mb-4 text-center">Report an Incident</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center">
+          Report an Incident
+        </h1>
         {message && <p className="text-center">{message}</p>}
         <form onSubmit={handleSubmit}>
           <input
