@@ -35,9 +35,6 @@ class IncidentReport:
     def set_id(self, id : int) -> None:
         self.id = id
         
-    def set_created_at(self, created_at : datetime) -> None:
-        self.created_at = created_at
-        
     def to_dict(self): 
         return {
             "id": getattr(self, 'id', None),
