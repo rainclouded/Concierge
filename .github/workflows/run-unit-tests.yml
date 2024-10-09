@@ -33,6 +33,7 @@ jobs:
 
     - name: Test with unittest
       run: |
+        cd /home/runner/work/Concierge/Concierge/src/accounts/
         python3 -m tests
 
   test_amenities:
@@ -58,6 +59,7 @@ jobs:
 
     - name: Test with unittest
       run: |
+        cd /home/runner/work/Concierge/Concierge/src/incident_reports/
         python3 -m unittest discover -s .\incident_reports_tests\ -p "*.py"
 
 # This action will build a .NET project
