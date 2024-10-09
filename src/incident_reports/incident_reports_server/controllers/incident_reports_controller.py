@@ -36,9 +36,11 @@ def create_app(persistence=None):
             if afterDate:
                 afterDate = IncidentReportFactory.create_date(afterDate)
         except ValueError:
+            #if invalid parameters were passed, return bad request
             response = IncidentReportResponse(ResponseMessages.INVALID_PARAMETERS_PASSED, None).to_dict()
             return jsonify(response), 400
                         
+        #get incident reports with added filters(if any)
         incident_reports = _incident_report_persistence.get_incident_reports(severities=severity_list, statuses=status_list, 
                                                                              beforeDate=beforeDate, afterDate=afterDate)
 
@@ -49,6 +51,7 @@ def create_app(persistence=None):
         #convert list to JSON object
         incident_reports_data = [report.to_dict() for report in incident_reports]
         
+        #return incident report list with 200        
         response = IncidentReportResponse(ResponseMessages.GET_INCIDENT_REPORTS_SUCCESS, incident_reports_data).to_dict()
         return jsonify(response), 200
     
@@ -56,7 +59,9 @@ def create_app(persistence=None):
     def get_incident_report_by_id(id: int) -> IncidentReportResponse:
         incident_report = _incident_report_persistence.get_incident_report_by_id(id)
 
+        #check if report with passed id exists
         if incident_report is None:
+            #if not found, return not found
             incident_response = IncidentReportResponse(ResponseMessages.GET_INCIDENT_REPORT_FAILED, None).to_dict()
             return jsonify(incident_response), 404
 
@@ -75,10 +80,12 @@ def create_app(persistence=None):
             response = IncidentReportResponse(ResponseMessages.INVALID_INCIDENT_REPORT_PASSED,None).to_dict()
             return jsonify(response), 400
 
+        #validate incident report
         if not IncidentReportValidator.validate_incident_report_parameters(incident_report):
             response = IncidentReportResponse(ResponseMessages.INVALID_INCIDENT_REPORT_PASSED,None).to_dict()
             return jsonify(response), 400
 
+        #add incident report to database
         incident_report = _incident_report_persistence.create_incident_report(incident_report)
 
         #create URI that points to the newly created report
@@ -102,14 +109,17 @@ def create_app(persistence=None):
             incident_response = IncidentReportResponse(str(e), None).to_dict()
             return jsonify(incident_response), 400
 
+        #validate incident report
         if not IncidentReportValidator.validate_incident_report_parameters(incident_report):
             incident_response = IncidentReportResponse(ResponseMessages.INVALID_INCIDENT_REPORT_PASSED, None).to_dict()
             return jsonify(incident_response), 400
 
+        #find if incident report with passed id exists
         if _incident_report_persistence.get_incident_report_by_id(id) is None:
             incident_response = IncidentReportResponse(ResponseMessages.GET_INCIDENT_REPORT_FAILED, None).to_dict()
             return jsonify(incident_response), 404
         
+        #make call to database to update incident report
         incident_report = _incident_report_persistence.update_incident_report(id, incident_report)
 
         incident_response = IncidentReportResponse(ResponseMessages.UPDATE_INCIDENT_REPORT_SUCCESS, incident_report.to_dict()).to_dict()
@@ -120,10 +130,12 @@ def create_app(persistence=None):
         #TODO: validate session call
         #if not _permission_validator.validate_permissions(permission, sessionKey)
 
+        #find if incident report with passed id exists
         if _incident_report_persistence.get_incident_report_by_id(id) is None:
             incident_response = IncidentReportResponse(ResponseMessages.GET_INCIDENT_REPORT_FAILED, None).to_dict()
             return jsonify(incident_response), 404
 
+        #make call to database to delete incident report
         _incident_report_persistence.delete_incident_report(id)
 
         incident_response = IncidentReportResponse(ResponseMessages.DELETE_INCIDENT_REPORT_SUCCESS, None).to_dict()

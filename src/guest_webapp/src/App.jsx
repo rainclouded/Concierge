@@ -6,6 +6,7 @@ import AmenitiesPage from "./pages/AmenitiesPage";
 import IncidentReportPage from "./pages/IncidentReportPage";
 import "./App.css";
 
+
 const App = () => {
   return (
     <Router>
@@ -20,3 +21,4 @@ const App = () => {
 };
 
 export default App;
+
