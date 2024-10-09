@@ -63,9 +63,11 @@ To run the angular spec tests cd into /staff_webapp and run:
 ng test
 ```
 
-### Integration tests
+### Integration tests - GUI
 
-run the entire app from the root directory using:
+The integration tests rely on a fresh environment using stub API data
+
+Run the entire app from the root directory using:
 
 ```
 docker compose -f ./docker-compose/docker-compose.yaml up --build
@@ -73,4 +75,23 @@ docker compose -f ./docker-compose/docker-compose.yaml up --build
 then cd into the staff_webapp directory. To open cypress and run the integration tests run:
 ```
 npx cypress open
+```
+
+If you get a "Cannot find package 'cypress'" error, run 
+```
+npm install cypress --save-dev
+```
+
+### Integration tests - Headless
+
+The integration tests rely on a fresh environment using stub API data
+
+Run the entire app from the root directory using
+
+```
+docker compose -f ./docker-compose/docker-compose.yaml up --build
+```
+then cd into the staff_webapp directory. To open cypress and run the integration tests run:
+```
+npx cypress run
 ```
