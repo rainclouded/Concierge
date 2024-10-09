@@ -43,8 +43,11 @@ To get the app up and running follow these instructions below:
     `docker compose -f ./docker-compose/docker-compose.yaml up`
 
 4. Open browser and head to:
-
-    `localhost:8089`
+    #### Guest UI:
+    [localhost:8089](localhost:8089)
+    
+    #### Staff UI
+    [localhost:8082](localhost:8082)
 
 5. Once finished, run this command to halt project:
 
