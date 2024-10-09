@@ -1,15 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DashboardPageComponent } from './dashboard-page.component';
 import { ActivatedRoute } from '@angular/router';
+import { SidebarComponent } from './sidebar.component';
 
-describe('DashboardPageComponent', () => {
-  let component: DashboardPageComponent;
-  let fixture: ComponentFixture<DashboardPageComponent>;
+describe('SidebarComponent', () => {
+  let component: SidebarComponent;
+  let fixture: ComponentFixture<SidebarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DashboardPageComponent],
+      imports: [SidebarComponent],
       providers: [
         {
           provide : ActivatedRoute,
@@ -19,7 +19,7 @@ describe('DashboardPageComponent', () => {
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(DashboardPageComponent);
+    fixture = TestBed.createComponent(SidebarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,0 +1,8 @@
+<div class="flex-col items-center p-5">
+  @for (item of items; track $index) {
+    <div class="flex items-center w-full cursor-pointer rounded-lg hover:bg-slate-300 h-12" [routerLink]="item.routerLink"
+      routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      <span class="ml-5">{{ item.label }}</span>
+    </div>
+  }
+</div>
