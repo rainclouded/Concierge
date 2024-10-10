@@ -32,5 +32,32 @@
 
 ## Running team 7's project:
 
+Was the documentation clear enough to run their software locally (dev environment)? Did you get it running? Now long did it take, was it hard?
 
+The documentation was clear enough to run the software. The desktop front end and the back end (ignoring download times) were set up within 10 minutes. However, the flutter front end required a Mac (this was indicated in the documentation) in order to run the front end. Due to the architecture restriction, I was unable to view this front end environment. Overall, the components which were successfullly run was quick and easy. 
+
+Below is an image of the working front end:
+
+![Working home page](/docs/sprint_1/images/rh_home.png)
+
+Could you run the unit tests (images helpful!)? Did they all work? What about integration tests and other tests?
+
+There was an attempt to run the unit and integraton tests. The front end unit test ran successfully.There were no integration tests but the Readme referred to manual testing, this was successful. Screenshots of such tests are below:
+
+![Working front-end](/docs/sprint_1/images/rh_page.png)
+
+
+For the back end, the unit tests failed. After retrying the ```npm install```. The tests still failed with the error below:
+
+![Unit test cli](/docs/sprint_1/images/rh_unit.png)
+
+For the back end integration tests, these failed as well. The error message was similar as seen here:
+
+![Integration test cli](/docs/sprint_1/images/rh_integration.png)
+
+
+
+There was no attempt to run the flutter front end tests, due to the architecture restriction mentioned above.
+
+Was there any issues you found when running the software? Connection issues, other problems, especially with it being a distributed system.
 
