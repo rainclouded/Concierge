@@ -44,11 +44,16 @@ To get the app up and running follow these instructions below:
 
 4. Open browser and head to:
     #### Guest UI:
-    [localhost:8089](localhost:8089)
+    [localhost:8081](localhost:8081)
     
+   * Any three digit integer is valid for a room code
+   
     #### Staff UI
     [localhost:8082](localhost:8082)
-
-5. Once finished, run this command to halt project:
+   
+   * Use these details to login
+      * Username: admin
+      * Password: admin
+6. Once finished, run this command to halt project:
 
     `docker compose -f ./docker-compose/docker-compose.yaml down`
