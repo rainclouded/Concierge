@@ -32,7 +32,7 @@
 
 ## Running team 7's project:
 
-Was the documentation clear enough to run their software locally (dev environment)? Did you get it running? Now long did it take, was it hard?
+1. Was the documentation clear enough to run their software locally (dev environment)? Did you get it running? Now long did it take, was it hard?
 
 The documentation was clear enough to run the software. The desktop front end and the back end (ignoring download times) were set up within 10 minutes. However, the flutter front end required a Mac (this was indicated in the documentation) in order to run the front end. Due to the architecture restriction, I was unable to view this front end environment. Overall, the components which were successfullly run was quick and easy. 
 
@@ -40,7 +40,7 @@ Below is an image of the working front end:
 
 ![Working home page](/docs/sprint_1/images/rh_home.png)
 
-Could you run the unit tests (images helpful!)? Did they all work? What about integration tests and other tests?
+2. Could you run the unit tests ? Did they all work? What about integration tests and other tests?
 
 There was an attempt to run the unit and integraton tests. The front end unit test ran successfully.There were no integration tests but the Readme referred to manual testing, this was successful. Screenshots of such tests are below:
 
@@ -59,5 +59,7 @@ For the back end integration tests, these failed as well. The error message was 
 
 There was no attempt to run the flutter front end tests, due to the architecture restriction mentioned above.
 
-Was there any issues you found when running the software? Connection issues, other problems, especially with it being a distributed system.
+3. Was there any issues you found when running the software? Connection issues, other problems, especially with it being a distributed system.
+
+There were no connection issues as everything was run locally. The main issue as identified is the mobile front end required specific architecture as well as proprietary software and large downloads. This was definitley an issue in fully testing the software. However the backend was very easy to set up (as long as npm is already installed) and the front end was very easy to set  up and was very easy to use. The implemented features were nicely presented and the non-implemented features presented the user with a nice messageinstead of breaking. Very nice work and design.
 
