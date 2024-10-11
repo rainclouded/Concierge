@@ -8,8 +8,10 @@
 ![Account Service coverage report. ](images/account-coverage.png)
 
 ### Amenities Service
+![Amenities Service Service coverage report. ](images/amenities_test_coverage.png)
 
 ### Incident Report Service
+![Incident Report Service coverage report. ](images/incident_reports_coverage.png)
 
 ### Guest WebApp Service
 
@@ -23,12 +25,15 @@
 [Unit Test 2](https://github.com/rainclouded/Concierge/blob/658552c30cd19159889297f31fc4a4a50e678359/src/accounts/tests/AuthenticationManager_unit_test.py#L163)
  - This test verifies that correct username, password pairs are authenticated successfully. This is important as user accounts need to be secure and this ensures the integrity.
 
+[Unit Test 3](https://vscode.dev/github/rainclouded/Concierge/blob/documentation/sprint1worksheet/82950190/src/amenities/amenities_test/UnitTest1.cs#L158)
+ - This test verifies that upon amenity deletion, it is not able to be fetched again for the user. In the context of hotel management, this helps prevent guests from being misled by outdated information, reducing the likelihood of dissatisfaction towards our precious hotel.
+
 ## Most important integration tests:
 [Integration tests 1](https://github.com/rainclouded/Concierge/blob/main/src/guest_webapp/cypress/e2e/amenities_integration.cy.js)
-- This tests the integration between the guest front end and the amenities service
-[Integration test 2](https://github.com/rainclouded/Concierge/blob/main/src/staff_webapp/cypress/e2e/amenities_integration.cy.ts)
-- This tests the integration between the staff front end and the amenities service
+- This tests the integration between the guest front end and the amenities service. Ensuring that both components work together seamlessly and with no issues.
 
+[Integration test 2](https://github.com/rainclouded/Concierge/blob/main/src/staff_webapp/cypress/e2e/amenities_integration.cy.ts)
+- This tests the integration between the guest front end and the amenities service. Ensuring that both components work together seamlessly and with no issues.
 
 ## Running team 7's project:
 
