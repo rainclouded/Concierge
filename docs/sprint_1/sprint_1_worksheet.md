@@ -32,8 +32,14 @@
 [Integration tests 1](https://github.com/rainclouded/Concierge/blob/main/src/guest_webapp/cypress/e2e/amenities_integration.cy.js)
 - This tests the integration between the guest front end and the amenities service. Ensuring that both components work together seamlessly and with no issues.
 
-[Integration test 2](https://github.com/rainclouded/Concierge/blob/main/src/staff_webapp/cypress/e2e/amenities_integration.cy.ts)
-- This tests the integration between the guest front end and the amenities service. Ensuring that both components work together seamlessly and with no issues.
+[Integration tests 2](https://github.com/rainclouded/Concierge/blob/main/src/guest_webapp/cypress/e2e/incident_reports_integration.cy.js)
+- This tests the integration between the guest front end and the incident reports service. Ensuring that both components work together seamlessly and with no issues.
+
+[Integration test 3](https://github.com/rainclouded/Concierge/blob/main/src/staff_webapp/cypress/e2e/amenities_integration.cy.ts)
+- This tests the integration between the staff front end and the amenities service. Ensuring that both components work together seamlessly and with no issues.
+
+[Integration test 4](https://github.com/rainclouded/Concierge/blob/main/src/staff_webapp/cypress/e2e/incident_reports_integration.cy.ts)
+- This tests the integration between the staff front end and the incident reports service. Ensuring that both components work together seamlessly and with no issues.
 
 ## Running team 7's project:
 
