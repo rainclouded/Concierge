@@ -17,3 +17,10 @@
 
 ### Accounts
 * Provides secure access for both staff and guests to the hotel management system. Users log in with their room code and gain access to request services. While staff can create accounts and manage permissions of each accounts, while users have the option to customize their settings.
+
+### Staff UI
+* This diagram represents the interaction flow of the staff UI. It shows how the staff logs in, navigates between different dashboard tabs (Amenities and Incident Report), and interacts with services that handle data fetching and CRUD operations via Nginx.
+
+#### Staff interacts with Amenities and Incident Reports
+
+![](/docs/sprint_1/images/Staff_UI_Sequence_Diagram.svg)
