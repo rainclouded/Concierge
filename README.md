@@ -1,5 +1,35 @@
-# Concierge
+# Team 6: Concierge
+
 ![Concierge Logo](/docs/images/logo.png)
+
+## Vision Statement:
+
+Concierge is an easy to use hotel administration system which allows guests to communicate with hotel operators from anywhere and provide comprehensive administration tools for hotel employees.
+
+### More detailed summary: 
+
+To enhance the hotel stay experience, providing a platform that allows guests to request and inquire services and amenities and for employees to manage such services and hotel operations, ensuring convenience and consolidation for all members.
+
+ 
+
+Concierge is a platform that is catered to both hotel guests and employees. We will provide hotel management suite that provides both hotel administration and guests with a cohesive and easy to use interface for requesting and inquiring hotel services. Additionally, Concierge includes features tailored for employees, such as dashboards to create and manage incident reports, and tools for efficiently assigning and tracking tasks to ensure smooth hotel operations.
+
+ 
+
+Concierge stands out by modernizing the hotel experience, aligning it with today’s mobile-driven world. While most of our daily needs can be easily managed through smartphones, many hotels still rely on outdated systems like landline phones for service requests and inquiries. Concierge transforms this process, making it simple and seamless for both guests and employees to request and manage services through their mobile devices. By streamlining operations and minimizing frustrations, the platform not only enhances guest satisfaction but also drives increased sales through a more efficient, user-friendly experience.
+
+## Core Features
+### Task System 
+* Allows for hotel guests to create and manage hotel service requests through a user-friendly dashboard. Guests can track the status of their requests, while staff can view incomplete tasks, claim responsibility, and process them in real time.
+
+### Accounts
+* Provides secure access for both staff and guests to the hotel management system. Users log in with their room code and gain access to request services. While staff can create accounts and manage permissions of each accounts, while users have the option to customize their settings.
+
+### Amenities: 
+* Offers guests detailed information about available hotel amenities, including operating hours and description, displayed on a dashboard. Staff can create, update, or delete amenity listings to ensure that guests have up-to-date information.
+
+### Incident Reports 
+* Enables hotel managers to monitor past and current incidents through a dedicated dashboard that displays details such as severity, status and description. Managers can update reports in real time, ensuring accurate information is displayed as an incident case progresses.
 
 # Team 6
 Databases: MongoDB and MySQL\
