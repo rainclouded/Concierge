@@ -88,7 +88,6 @@ ex. feature/account_server/9354093
 - [Sprint 0 Worksheet](/docs/sprint_0/sprint_0_worksheet.md)
 ### Sprint 1:
 - [Sprint 1 Worksheet](/docs/sprint_1/sprint_1_worksheet.md)
-(In progress)
 
 ### Project:
 - [Getting Started (Docker Compose)](docs/project_docs/getting_started.md)
