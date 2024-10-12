@@ -38,8 +38,16 @@
 [Integration test 3](https://github.com/rainclouded/Concierge/blob/main/src/staff_webapp/cypress/e2e/amenities_integration.cy.ts)
 - This tests the integration between the staff front end and the amenities service. Ensuring that both components work together seamlessly and with no issues.
 
-[Integration test 4](https://github.com/rainclouded/Concierge/blob/main/src/staff_webapp/cypress/e2e/incident_reports_integration.cy.ts)
-- This tests the integration between the staff front end and the incident reports service. Ensuring that both components work together seamlessly and with no issues.
+## Most important acceptance tests:
+[Acceptance Test 1](https://github.com/rainclouded/Concierge/blob/main/src/guest_webapp/cypress/e2e/amenities_integration.cy.js)
+- This tests that users are able to view all amenities that the hotel has to offer. Contributing to our vision that guests should have an easy way to access up-to-date hotel information.
+
+[Acceptance Test 2](https://github.com/rainclouded/Concierge/blob/main/src/guest_webapp/cypress/e2e/incident_reports_integration.cy.js)
+- This tests that users are able to submit a incident report to our system. Satisfying our requirement that guests can report to staff when they see something worth reporting in our hotel property.
+
+[Acceptance Test 3](https://github.com/rainclouded/Concierge/blob/main/src/staff_webapp/cypress/e2e/amenities_integration.cy.ts)
+- This tests that staff are able to create,update,delete hotel amenities. Satisfying our requirement that staff should be able to keep guests updated on changes to our amenity services whenever it happens.
+
 
 ## Running team 7's project:
 
