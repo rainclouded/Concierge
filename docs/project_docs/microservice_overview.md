@@ -3,7 +3,7 @@
 [API Documentation (Open in a browser)](/src/api_help/redoc-static.html)
 
 ## Architecture Diagram
-![](/docs/images/arch.png)
+![](/docs/project_docs/images/sprint1_arch_diag.drawio.svg)
 
 ### Description
 The database will be MongoDB and MySQL.\
