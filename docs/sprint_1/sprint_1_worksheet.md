@@ -13,9 +13,6 @@
 ### Incident Report Service
 ![Incident Report Service coverage report. ](images/incident_reports_coverage.png)
 
-### Guest WebApp Service
-
-### Staff WebApp Service
 
 ## Most important unit tests:
 
