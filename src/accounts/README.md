@@ -65,3 +65,16 @@ Handles all /accounts endpoints
     /accounts/login_attempt - Create a new user
      body: {'username' : '<username>', 'password' : '<password>'}
      returns: a message containing if the login was successful else error
+
+
+## Architecture
+
+-   The server/account module runs the api server which manages http requests.
+-   The authentication module handles authentication of user credentials (ensures username, password pairs match existing accounts).
+-   The database module maintains interfaces/controllers to the database
+-   The user_service module facilitates the creation/deletion of user accounts
+-   The validation manager provides data validation for user credentials
+
+Below is an image of the interactions between the modules.
+
+![account_architecture](/src/accounts/images/account_diagram.png)
