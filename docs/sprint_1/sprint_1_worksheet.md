@@ -1,6 +1,6 @@
 ## Testing Plan
 
-[Link to our testing plan](Concierge/docs/testing_plan.md)
+[Link to our testing plan](testing_plan.pdf)
 
 ## Coverage:
 
