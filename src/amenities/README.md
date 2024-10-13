@@ -49,7 +49,17 @@ update amenity with changed information
 delete specified amenity from database
 
 ## Environment Variables
- * `forProduction_DB`
+* `DB_IMPLEMENTATION`
 	* used to determine whether a stub or real implementation of a data layer is returned
- * `forProduction_Auth`
+	* Value: `POSTGRES`, Attempts to connect to a POSTGRESQL database
+	* Value: `STUB`, Uses in-memory storage
+* `DB_HOST`
+   * Configure Postgress Connection string
+* `DB_PORT`
+   * Configure Postgress Connection string
+* `DB_USERNAME`
+   * Configure Postgress Connection string
+* `DB_PASSWORD`
+   * Configure Postgress Connection string
+* `forProduction_Auth`
 	* used to determine whether a fake or real implementation of a permission validator is returned
