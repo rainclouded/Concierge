@@ -1,6 +1,6 @@
 public static class Services
 {
-    private static IAmenityPersistence _amenityPersistence = null;
+    private static IAmenityPersistence? _amenityPersistence = null;
 
     public static IAmenityPersistence GetAmenityPersistence()
     {
@@ -15,17 +15,11 @@ public static class Services
 
     private static IAmenityPersistence ConstructAmenityPersistence()
     {
-        string? dbImplementation = Environment.GetEnvironmentVariable("DB_IMPLEMENTATION");
-        return ConstructAmenityPersistence(dbImplementation ?? "");
-    }
-
-    private static IAmenityPersistence ConstructAmenityPersistence(string dbImplementation)
-    {
+        string? dbImplementation = Environment.GetEnvironmentVariable("DB_IMPLEMENTATION") ?? String.Empty;
         IAmenityPersistence? amenityPersistence = null;
         if (dbImplementation == "POSTGRES")
         {
             Console.WriteLine("Attempting to connect to Postgres");
-
             try
             {
                 amenityPersistence = new PostgresAmenityPersistence(PostgresConnectionString());
@@ -33,7 +27,7 @@ public static class Services
             }
             catch (InvalidOperationException)
             {
-                amenityPersistence = null; //use stub if connection failed
+                amenityPersistence = null;
                 Console.WriteLine("Postgress Failed");
             }
         }
@@ -43,10 +37,10 @@ public static class Services
 
     private static string PostgresConnectionString()
     {
-        string? dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "";
-        string? dbPort = Environment.GetEnvironmentVariable("DB_PORT") ?? "";
-        string? dbUsername = Environment.GetEnvironmentVariable("DB_USERNAME") ?? "";
-        string? dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "";
+        string? dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? String.Empty;
+        string? dbPort = Environment.GetEnvironmentVariable("DB_PORT") ?? String.Empty;
+        string? dbUsername = Environment.GetEnvironmentVariable("DB_USERNAME") ?? String.Empty;
+        string? dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? String.Empty;
         return $"Host={dbHost}; Port={dbPort}; Username={dbUsername}; Password={dbPassword}";
     }
 }
