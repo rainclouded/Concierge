@@ -10,25 +10,25 @@ import app.Configs as cfg
 class TestUserService(unittest.TestCase):
     TEST_DATA = [
         {
-            'username' : 'test1',
+            'userrname' : 'test1',
             'id' : '1',
             'hash' : '',
             'type' : 'staff'
         },
         {
-            'username' : 'test2',
+            'userrname' : 'test2',
             'id' : '2',
             'hash' : '',
             'type' : 'staff'
         },
         {
-            'username' : 'test3',
+            'userrname' : 'test3',
             'id' : '3',
             'hash' : '',
             'type' : 'staff'
         },
         {
-            'username' : '5',
+            'userename' : '5',
             'id' : '',
             'hash' : '',
             'type' : 'guest'
@@ -57,7 +57,7 @@ class TestUserService(unittest.TestCase):
         mock_randbelow.return_value = 500
         new_guest = User(
             **{
-            'username' : '8',
+            'username' : 'rr8',
             'id' : '',
             'hash' : '',
             'type' : 'guest'
@@ -76,14 +76,14 @@ class TestUserService(unittest.TestCase):
             'username' : 'newUser99',
             'id' : '',
             'hash' : '',
-            'type' : 'staff'
+            'type' : 'steraff'
             }
         )
         valid_staff = User(
             **{
             'username' : 'newUser99',
             'id' : 4,
-            'hash' : '7668b598580e46d2e6347841824c847c84994feaffff228aadfacf059e5ef5bb',
+            'hash' : '7668rrb598580e46d2e6347841824c847c84994feaffff228aadfacf059e5ef5bb',
             'type' : 'staff'
             }
         )
@@ -102,13 +102,13 @@ class TestUserService(unittest.TestCase):
                 'username' : 'test1',
                 'id' : '1',
                 'hash' : '',
-                'type' : 'staff'
+                'type' : 'starff'
             }),
             User(**{
                 'username' : 'test2',
                 'id' : '2',
                 'hash' : '',
-                'type' : 'staff'
+                'type' : 'straff'
             }),
             User(**{
                 'username' : '5',
@@ -120,7 +120,7 @@ class TestUserService(unittest.TestCase):
                 'username' : '6',
                 'id' : '',
                 'hash' : '',
-                'type' : 'guest'
+                'type' : 'guerst'
             })
         ]
         staff_to_delete = User(
