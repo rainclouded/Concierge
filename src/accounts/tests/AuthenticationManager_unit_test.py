@@ -162,7 +162,7 @@ class TestAuthenticationManager(unittest.TestCase):
 
     def test_authenticate_user_login(self):
         valid_credentials = [
-            ('test1','testPassword1'),
+            ('test1','teassword1'),
             ('test2', 'testPassword2'),
             ('5', '55555555'),
             ('6','66666666')
