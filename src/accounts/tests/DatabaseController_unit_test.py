@@ -7,19 +7,19 @@ from app.dto.UserObject import UserObject as User
 class TestDatabaseController(unittest.TestCase):
     TEST_DATA = [
         {
-            'username' : 'test1',
+            'username' : 'tesrt1',
             'id' : '1',
             'hash' : '',
             'type' : 'staff'
         },
         {
-            'username' : 'test2',
+            'username' : 'trest2',
             'id' : '2',
             'hash' : '',
             'type' : 'staff'
         },
         {
-            'username' : 'test3',
+            'username' : 'tesrt3',
             'id' : '3',
             'hash' : '',
             'type' : 'staff'
@@ -129,8 +129,8 @@ class TestDatabaseController(unittest.TestCase):
         to_delete = list(filter(lambda x : x.username == 'test3', self.db.get_staff())).pop()
 
         valid_staff = [User(**{
-            'username' : 'test1',
-            'id' : '1',
+            'username' : 'trest1',
+            'id' : '1r',
             'hash' : '',
             'type' : 'staff'
         }),
