@@ -22,7 +22,7 @@ jobs:
           cache-dependency-path: '/home/runner/work/Concierge/Concierge/src/guest_webapp/'
 
       - name: Node dependencies
-        run: npm install /home/runner/work/Concierge/Concierge/src/guest_webapp/package-lock.json
+        run: npm install /home/runner/work/Concierge/Concierge/src/guest_webapp/
         
       - name: Run Cypress integration test
         uses: cypress-io/github-action@v6
