@@ -1,5 +1,23 @@
 services:
   incident_reports:
     build: .
+    depends_on:
+      - mongodb
     ports:
       - 50005:8080
+    environment:
+      - DB_IMPLEMENTATION=MONGODB 
+      - DB_HOST=mongodb
+      - DB_PORT=8080
+      - DB_USERNAME=mongodb 
+      - DB_PASSWORD=password 
+    volumes:
+      - .:/app
+  mongodb:
+    image: mongo:3.0.2
+    ports: 50006:8080
+    environment:
+      - MONGODB_PASSWORD=password 
+volumes:
+  mongodb:
+    driver: local 
