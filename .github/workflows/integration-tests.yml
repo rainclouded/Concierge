@@ -21,11 +21,11 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '22'
+          cache: 'npm'
 
       - name: Node dependencies
         run: npm install
-        cache: 'npm'
-
+        
       - name: Run Cypress integration test
         uses: cypress-io/github-action@v6
 
