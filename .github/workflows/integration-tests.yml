@@ -24,9 +24,11 @@ jobs:
           cache: 'npm'
 
       - name: Node dependencies
-        run: npm install
+        run: npm install /home/runner/work/Concierge/Concierge/src/guest_webapp/package-lock.json
         
       - name: Run Cypress integration test
         uses: cypress-io/github-action@v6
+        with: 
+          run-tests: '/home/runner/work/Concierge/Concierge/src/guest_webapp/cypress/e2e/*.cy.js'
 
 
