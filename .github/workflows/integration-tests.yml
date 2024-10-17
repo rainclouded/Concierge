@@ -13,15 +13,13 @@ jobs:
       
       - name: Build the Docker image
         run: docker compose -f ./docker-compose/docker-compose.yaml up --build --wait --wait-timeout 300 -d
-        
-      - name: set directory
-        run: cd /home/runner/work/Concierge/Concierge/src/guest_webapp/
 
       - name: Set up Node
         uses: actions/setup-node@v2
         with:
           node-version: '22'
           cache: 'npm'
+          cache-dependency-path: '/home/runner/work/Concierge/Concierge/src/guest_webapp/package-lock.json'
 
       - name: Node dependencies
         run: npm install /home/runner/work/Concierge/Concierge/src/guest_webapp/package-lock.json
