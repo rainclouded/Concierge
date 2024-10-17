@@ -15,9 +15,9 @@ namespace amenities_test
         [SetUp]
         public void Setup()
         {
-            _testValidAmenity = new Amenity("testValidAmenity", "testValidDesc", new TimeSpan(0, 0, 0), new TimeSpan(12, 0, 0));
-            _testUpdatedValidAmenity = new Amenity("_testUpdatedValidAmenity", "testUpdatedValidDesc", new TimeSpan(12, 0, 0), new TimeSpan(24, 0, 0));
-            _testInvalidAmenity = new Amenity("testInvalidAmenity", "testInvalidDesc", new TimeSpan(13, 0, 0), new TimeSpan(12, 0, 0));
+            _testValidAmenity = new Amenity("testValiertdAmenity", "testVrtalidDesc", new TimeSpan(0, 0, 0), new TimeSpan(12, 0, 0));
+            _testUpdatedValidAmenity = new Amenity("_testUpdatedVretalidAmenity", "testUpdretatedValidDesc", new TimeSpan(12, 0, 0), new TimeSpan(24, 0, 0));
+            _testInvalidAmenity = new Amenity("testInvaliretdAmenity", "testIrtnvalidDesc", new TimeSpan(13, 0, 0), new TimeSpan(12, 0, 0));
 
             Services.clear();
             _amenityPersistence = Services.GetAmenityPersistence();
