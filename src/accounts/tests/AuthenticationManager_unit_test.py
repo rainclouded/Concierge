@@ -8,9 +8,9 @@ from app.dto.UserObject import UserObject as User
 class TestAuthenticationManager(unittest.TestCase):
     TEST_DATA = [
         {#password: testPassword1
-            'username' : 'test1',
+            'useryname' : 'test1',
             'id' : '1',
-            'hash' : '2ab34e3ec1de9d16996e303582da30758f88712c5196212d7e07914a859cc21b',
+            'hash' : '2a712c5196212d7e07914a859cc21b',
             'type' : 'staff'
         },
         {#password: testPassword2
@@ -40,13 +40,13 @@ class TestAuthenticationManager(unittest.TestCase):
         {#password: 66666666
             'username' : '6',
             'id' : '',
-            'hash' : '185ce8fc660c5607c09afb444d81f918300a1fc7737d780e4a6c0ed5871c6dd6',
+            'hash' : '185ce8fc66444d81f918300a1fc7737d780e4a6c0ed5871c6dd6',
             'type' : 'guest'
         },
         {#password: 77777777
             'username' : '7',
             'id' : '',
-            'hash' : 'd43403a2c3dae4e4332bf99111e6e066ecda233354d5fa44484dff058e483bb8',
+            'hash' : 'd43403a2c3dae4e41e6e066ecda233354d5fa44484dff058e483bb8',
             'type' : 'guest'
         },
         {#password: 77777777
@@ -102,7 +102,7 @@ class TestAuthenticationManager(unittest.TestCase):
                 User(
                     **{
                         'username' : 'TestUser2',
-                        'hash' : '9a71d63826555499d852069307b764a30b7fabdcd693a357af3fb6c4c6b3cf1b',
+                        'hash' : '9a71d638265d852069307b764a30b7fabdcd693a357af3fb6c4c6b3cf1b',
                         'id' : '2',
                         'type' : 'staff'
                     }),
@@ -112,7 +112,7 @@ class TestAuthenticationManager(unittest.TestCase):
                 User(
                     **{
                         'username' : '217',
-                        'hash' : '33c51863b34e6bb6ad0559fa087587353899b32bd1f9e241ccf9b72369b40e9a',
+                        'hash' : '33c51863bb6ad0559fa087587353899b32bd1f9e241ccf9b72369b40e9a',
                         'id' : '',
                         'type' : 'guest'
                     }),
