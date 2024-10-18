@@ -30,6 +30,10 @@ public static class Services
                 amenityPersistence = null;
                 Console.WriteLine("Postgress Failed");
             }
+        } 
+        else if (dbImplementation == "MOCK") 
+        {
+            amenityPersistence = new StubAmenityPersistence();
         }
 
         return amenityPersistence ?? new StubAmenityPersistence();

@@ -2,6 +2,7 @@
 Microservice to access and manage hotel amenities.
 
 ## How to Run Server
+
 ### Locally
 1. Go to directory: `./src/amenities`
 2. run command: `dotnet run`
@@ -52,7 +53,7 @@ delete specified amenity from database
 * `DB_IMPLEMENTATION`
 	* used to determine whether a stub or real implementation of a data layer is returned
 	* Value: `POSTGRES`, Attempts to connect to a POSTGRESQL database
-	* Value: `STUB`, Uses in-memory storage
+	* Value: `MOCK`, Uses in-memory storage
 * `DB_HOST`
    * Configure Postgress Connection string
 * `DB_PORT`
@@ -61,5 +62,8 @@ delete specified amenity from database
    * Configure Postgress Connection string
 * `DB_PASSWORD`
    * Configure Postgress Connection string
-* `forProduction_Auth`
-	* used to determine whether a fake or real implementation of a permission validator is returned
+
+
+## Unexpected behaviour
+- If the server cannot connect to the postgres database when first initialized, it assumes there was a configuration error and uses the default mock database.
+  - If the server loses connection to the postgres server after at least 1 success connection, it will return 500 errors until the database is restored
