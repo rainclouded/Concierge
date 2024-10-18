@@ -4,4 +4,28 @@ services:
     ports:
       - 50004:8080
     environment:
-      - forProduction=test
+      - DB_IMPLEMENTATION=POSTGRES
+      - DB_HOST=amenities-postgres
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=sa
+  amenities-postgres:
+    image: postgres:latest
+    container_name: amenities-postgres-container
+    ports:
+      - 50014:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - PGUSER=postgres
+      - POSTGRES_PASSWORD=sa
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - ./configs:/docker-entrypoint-initdb.d
+      - amenities_db:/var/lib/postgresql/data
+volumes:
+  amenities_db:
+    driver: local
