@@ -43,3 +43,21 @@ func LoadPermissionPerIndex() int {
 
 	return 30
 }
+
+func LoadSessionKeyHeader() string {
+	valueStr := os.Getenv("SESSION_KEY_HEADER")
+	if valueStr == "" {
+		valueStr = "X-API-Key"
+	}
+
+	return valueStr
+}
+
+func LoadSessionKeyCookie() string {
+	valueStr := os.Getenv("SESSION_KEY_COOKIE_NAME")
+	if valueStr == "" {
+		valueStr = "session-key"
+	}
+
+	return valueStr
+}

@@ -5,6 +5,7 @@ import (
 	"concierge/permissions/internal/database"
 	"concierge/permissions/internal/handlers"
 	"concierge/permissions/internal/middleware"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,8 +21,11 @@ func NewRouter(db database.Database) *gin.Engine {
 
 	router.Use(middleware.SetDb(db))
 
-	router.POST("/access-keys", handlers.PostAccessKey)
+	router.POST("/sessions", handlers.PostSessionKey)
+	router.GET("/sessions/", handlers.ParseSessionKey)
+	router.GET("/sessions/public-key", handlers.GetPublicKey)
 
+	router.GET("/permissions/healthcheck", func(ctx *gin.Context) { ctx.JSON(http.StatusOK, gin.H{"status": "ok"}) })
 	router.GET("/permissions", handlers.GetPermissions)
 	router.GET("/permissions/:id", handlers.GetPermissionById)
 	router.POST("/permissions", handlers.PostPermission)

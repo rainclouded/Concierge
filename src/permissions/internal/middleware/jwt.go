@@ -3,29 +3,63 @@ package middleware
 import (
 	"concierge/permissions/internal/config"
 	"concierge/permissions/internal/models"
-	"crypto/ecdsa"
 	"crypto/x509"
+	"encoding/json"
 	"encoding/pem"
 	"fmt"
 	"math"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func SignMessage(accountID int, accountName string, permissionVersion int, permissionString []int) (string, error) {
+func ParseSignedMessage(sessionKey string) (*models.SessionKeyData, error) {
+	publicKey, err := config.LoadPublicKey()
+	if err != nil {
+		return nil, err
+	}
+
+	token, err := jwt.Parse(sessionKey, func(t *jwt.Token) (interface{}, error) {
+		return publicKey, nil
+	}, jwt.WithValidMethods([]string{"ES384"}))
+
+	if err != nil {
+		fmt.Printf("Invalid key: %s", sessionKey)
+		return nil, fmt.Errorf("failed to parse sessionKey0: %s", err.Error())
+	}
+
+	if !token.Valid {
+		return nil, fmt.Errorf("session-key signature was not valid")
+	}
+	claims := token.Claims.(jwt.MapClaims)
+	var sessionData models.SessionKeyData
+	data, err := json.Marshal(claims)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse sessionKey1: %s", err.Error())
+	}
+
+	err = json.Unmarshal(data, &sessionData)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse sessionKey2: %s", err.Error())
+	}
+
+	return &sessionData, nil
+}
+
+func SignMessage(sessionData *models.SessionKeyData) (string, error) {
 	signingMethod := config.LoadEncrypAlgo()
 	claims := jwt.MapClaims{
-		"account-id":         accountID,
-		"account-name":       accountName,
-		"permission-version": permissionVersion,
-		"permission-string":  permissionString,
+		"account-id":         sessionData.AccountID,
+		"account-name":       sessionData.AccountName,
+		"permission-version": sessionData.PermissionVersion,
+		"permission-string":  sessionData.PermissionString,
 		"exp":                jwt.NewNumericDate(time.Now().Add(time.Minute * time.Duration(config.LoadSessionExp()))),
 	}
 
 	token := jwt.NewWithClaims(signingMethod, claims)
 
-	pk, err := ParseECDSAPrivateKeyFromPEM(config.LoadPrivateKey())
+	pk, err := config.LoadPrivateKey()
 	if err != nil {
 		return "", err
 	}
@@ -36,20 +70,6 @@ func SignMessage(accountID int, accountName string, permissionVersion int, permi
 	}
 
 	return signedToken, nil
-}
-
-func ParseECDSAPrivateKeyFromPEM(pemStr string) (*ecdsa.PrivateKey, error) {
-	block, _ := pem.Decode([]byte(pemStr))
-	if block == nil || block.Type != "EC PRIVATE KEY" {
-		return nil, fmt.Errorf("failed to decode PEM block containing the private key")
-	}
-
-	privateKey, err := x509.ParseECPrivateKey(block.Bytes)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse EC private key: %v", err)
-	}
-
-	return privateKey, nil
 }
 
 func PermissionSliceToPermissionString(permissions []*models.Permission) []int {
@@ -64,4 +84,31 @@ func PermissionSliceToPermissionString(permissions []*models.Permission) []int {
 		slice[index] += value
 	}
 	return slice
+}
+
+func GetPublicKeyPEM() (string, error) {
+	publicKey, err := config.LoadPublicKey()
+	if err != nil {
+		return "", err
+	}
+
+	derKey, err := x509.MarshalPKIXPublicKey(publicKey)
+	if err != nil {
+		return "", err
+	}
+
+	block := &pem.Block{
+		Type:  "PUBLIC KEY",
+		Bytes: derKey,
+	}
+
+	return string(pem.EncodeToMemory(block)), nil
+}
+
+func GetSessionKey(ctx *gin.Context) string {
+	header, err := ctx.Cookie(config.LoadSessionKeyCookie())
+	if err != nil || header == "" {
+		header = ctx.GetHeader(config.LoadSessionKeyHeader())
+	}
+	return header
 }
