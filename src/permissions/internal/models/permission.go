@@ -11,3 +11,11 @@ type Permission struct {
 	Name  string `json:"permission-name" binding:"required"`
 	Value bool   `json:"permission-state" binding:"required"`
 }
+
+func (permission *Permission) DeepCopy() *Permission {
+	return &Permission{
+		ID:    permission.ID,
+		Name:  permission.Name,
+		Value: permission.Value,
+	}
+}

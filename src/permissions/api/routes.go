@@ -29,10 +29,15 @@ func NewRouter(db database.Database) *gin.Engine {
 	router.GET("/permissions", handlers.GetPermissions)
 	router.GET("/permissions/:id", handlers.GetPermissionById)
 	router.POST("/permissions", handlers.PostPermission)
+	router.PATCH("/permissions/:id", handlers.PatchPermission)
 
 	router.GET("/permission-groups", handlers.GetPermissionGroups)
 	router.GET("/permission-groups/:id", handlers.GetPermissionById)
 	router.POST("/permission-groups", handlers.PostPermissionGroups)
+	router.PATCH("/permission-groups", handlers.PatchPermissionGroups)
+
+	router.GET("/permission-groups/:id/accounts", handlers.GetPermissionGroupAccount)
+	router.PUT("/permission-groups/:id/accounts", handlers.PutPermissionGroupAccount)
 
 	return router
 }
