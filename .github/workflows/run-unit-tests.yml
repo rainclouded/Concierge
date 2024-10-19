@@ -32,9 +32,7 @@ jobs:
        
 
     - name: Test with unittest
-      run: |
-        set -e
-        python3 -m tests
+      run: python3 -m tests
       working-directory: /home/runner/work/Concierge/Concierge/src/accounts/
 
 
@@ -60,9 +58,7 @@ jobs:
        
 
     - name: Test with unittest
-      run: |
-        set -e
-        python3 -m unittest discover -s ./incident_reports_tests/ -p "*.py"
+      run: python3 -m unittest discover -s ./incident_reports_tests/ -p "*.py"
       working-directory: /home/runner/work/Concierge/Concierge/src/incident_reports/
 
 
