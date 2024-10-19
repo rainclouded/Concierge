@@ -36,7 +36,7 @@ jobs:
       working-directory: /home/runner/work/Concierge/Concierge/src/accounts/
 
 
-  test_amenities:
+  test_incident_reports:
 
     runs-on: ubuntu-latest
     strategy:
@@ -65,7 +65,7 @@ jobs:
 # This action will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-  build:
+  build_and_test_amenities:
 
     runs-on: ubuntu-latest
 
@@ -80,5 +80,4 @@ jobs:
     - name: Build
       run: dotnet build --no-restore /home/runner/work/Concierge/Concierge/src/amenities/amenities_server/amenities_server.csproj
     - name: Test
-      run: |
-        dotnet test --verbosity normal /home/runner/work/Concierge/Concierge/src/amenities/amenities_test/amenities_test.csproj
+      run: dotnet test --verbosity normal /home/runner/work/Concierge/Concierge/src/amenities/amenities_test/amenities_test.csproj
