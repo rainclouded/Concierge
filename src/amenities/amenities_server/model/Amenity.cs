@@ -9,6 +9,7 @@ public class Amenity
     public Amenity(){}
     public Amenity(int id, string name, string description, TimeSpan startTime, TimeSpan endTime)
     {
+        Id = id;
         Name = name;
         Description = description;
         StartTime = startTime;

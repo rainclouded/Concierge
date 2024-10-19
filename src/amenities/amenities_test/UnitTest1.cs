@@ -12,6 +12,12 @@ namespace amenities_test
         private Amenity _testUpdatedValidAmenity;
         private Amenity _testInvalidAmenity;
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            Services.SetAmenityPersistence(new StubAmenityPersistence());
+        }
+
         [SetUp]
         public void Setup()
         {

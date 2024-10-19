@@ -8,6 +8,11 @@ public static class Services
         return _amenityPersistence;
     }
 
+    public static void SetAmenityPersistence(IAmenityPersistence amenityPersistence)
+    {
+        _amenityPersistence = amenityPersistence;
+    }
+
     public static void clear()
     {
         _amenityPersistence = null;
