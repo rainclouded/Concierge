@@ -179,5 +179,6 @@ class TestAuthenticationManager(unittest.TestCase):
         for username, password in invalid_credentials:
             self.assertFalse(self.am.authenticate_user_login(username,password))
             
-    def broken_test(self):
+    def test_broken_test(self):
         self.assertFalse(True);
+        self.assertFalse( 1 == 1)
