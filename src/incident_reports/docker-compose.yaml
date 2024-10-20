@@ -9,6 +9,11 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=password
     volumes:
       - mongo:/data/db 
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   incident_reports:
     build: .
