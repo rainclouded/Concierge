@@ -1,16 +1,58 @@
 import pymongo
-
+import os 
 from typing import List
 
 from incident_reports_server.models.models import IncidentReport, Severity, Status
 from incident_reports_server.persistence.i_incident_report_persistence import IIncidentReportPersistence
-from incident_reports_server.factory.incident_report_factory import IncidentReportFactory
 
 class IncidentReportPersistenceMongo(IIncidentReportPersistence):
-    def __init__(self, db_connection_string: str):
+    def __init__(self, db_connection_string: str, db_name: str):
         self.db_client = pymongo.MongoClient(db_connection_string)
-        self.concierge_db = self.db_client["concierge"]
+        self.db_client.admin.command('ping')  # This will ping the server)
+        self.concierge_db = self.db_client[db_name]
         self.ir_collection = self.concierge_db["incident_reports"]
+        
+        if self.ir_collection.count_documents({}) == 0:
+            self.create_incident_report(
+                IncidentReport(
+                    severity=Severity.LOW,
+                    status=Status.OPEN,
+                    title="Room Maintenance Request",
+                    description="Guest reported a leaky faucet in Room 203.",
+                    filing_person_id=301,
+                    reviewer_id=401
+                )
+            )
+            self.create_incident_report(
+                IncidentReport(
+                    severity=Severity.MEDIUM,
+                    status=Status.IN_PROGRESS,
+                    title="Lost Property",
+                    description="A guest has reported a lost wallet in the lobby area.",
+                    filing_person_id=302,
+                    reviewer_id=402
+                )
+            )
+            self.create_incident_report(
+                IncidentReport(
+                    severity=Severity.HIGH,
+                    status=Status.RESOLVED,
+                    title="Fire Alarm Malfunction",
+                    description="The fire alarm went off during dinner service; it was a false alarm.",
+                    filing_person_id=303,
+                    reviewer_id=403
+                )
+            )
+            self.create_incident_report(
+                IncidentReport(
+                    severity=Severity.CRITICAL,
+                    status=Status.CLOSED,
+                    title="Food Poisoning Incident",
+                    description="Multiple guests reported food poisoning after dining at the hotel restaurant.",
+                    filing_person_id=304,
+                    reviewer_id=404
+                )
+            )
         
     def get_incident_reports(self, severities=None, statuses=None, beforeDate=None, afterDate=None) -> List[IncidentReport]:
         query = {}
@@ -30,24 +72,30 @@ class IncidentReportPersistenceMongo(IIncidentReportPersistence):
 
         incident_reports = list(self.ir_collection.find(query))
 
-        return [IncidentReportFactory.create_incident_report(report) for report in incident_reports]
+        return [IncidentReport.from_dict(report) for report in incident_reports]
 
     
     def get_incident_report_by_id(self, id:int) -> IncidentReport:
         incident_report = self.ir_collection.find_one({"id" : id})
         
         if incident_report:
-            return IncidentReportFactory.create_incident_report(incident_report)
+            return IncidentReport.from_dict(incident_report)
         else:
             return None
     
     def create_incident_report(self, incident_report: IncidentReport) -> IncidentReport:
-        result = self.ir_collection.insert_one(incident_report.to_dict())
-        incident_report.set_id(result.inserted_id)
+        #get highest id in collection
+        max_id_document = self.ir_collection.find_one(sort=[("id", -1)])
+        next_id = (max_id_document["id"] + 1) if max_id_document else 1
         
-        return incident_report 
+        incident_report.set_id(next_id) 
+        
+        result = self.ir_collection.insert_one(incident_report.to_dict())
+        
+        return incident_report
     
     def update_incident_report(self, id: int, incident_report: IncidentReport) -> IncidentReport:
+        incident_report.set_id(id)
         result = self.ir_collection.update_one({"id" : id}, {"$set": incident_report.to_dict()})
         
         if result.matched_count > 0:
@@ -61,3 +109,6 @@ class IncidentReportPersistenceMongo(IIncidentReportPersistence):
         if result.deleted_count == 0:
             raise ValueError("Incident Report not found!")
     
+    def clear(self) -> None:
+        self.ir_collection.delete_many({})
+        self.db_client.close()

@@ -1,19 +1,22 @@
 import unittest
-import os 
+import os
+from pymongo import MongoClient
 from flask import json
+
 from incident_reports_server.factory.incident_report_factory import IncidentReportFactory
 from incident_reports_server.application.services import Services
 from incident_reports_server.controllers.incident_reports_controller import create_app
 from incident_reports_server.models.models import Severity, Status, IncidentReport
 
-class incident_report_unit_test(unittest.TestCase):    
-    @staticmethod
-    def from_byte_string(byte_string):
-        return json.loads(byte_string.decode('utf-8'))[0]['data']
-    
+class TestIntegration(unittest.TestCase):
     def setUp(self):
-        os.environ['DB_IMPLEMENTATION'] = 'MOCK' 
-        
+        os.environ['DB_NAME'] = 'test_concierge'
+        os.environ['DB_IMPLEMENTATION'] = 'MONGODB' 
+        os.environ['DB_HOST'] = 'mongo' 
+        os.environ['DB_PORT'] = '27017' 
+        os.environ['DB_USERNAME'] = 'mongo_db_user' 
+        os.environ['DB_PASSWORD'] = 'password' 
+
         self.valid_incident_report = IncidentReport(
             severity=Severity.HIGH,  
             status=Status.OPEN,       
@@ -41,9 +44,9 @@ class incident_report_unit_test(unittest.TestCase):
             "reviewer_id": 403
         }
         
-        Services.clear()
+        self._incident_report_persistence = Services.clear()
         self._incident_report_persistence = Services.get_incident_report_persistence()
-
+        
         self.app = create_app(self._incident_report_persistence).test_client()
         self.app.testing = True
 
@@ -192,6 +195,6 @@ class incident_report_unit_test(unittest.TestCase):
         
         response = self.app.get(f"/incident_reports/{999}")        
         self.assertEqual(response.status_code, 404) 
-
-if __name__ == '__main__':
+        
+if __name__ == "__main__":
     unittest.main()

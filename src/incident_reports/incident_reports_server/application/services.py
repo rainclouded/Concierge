@@ -17,12 +17,15 @@ class Services:
         db_implementation = os.getenv("DB_IMPLEMENTATION")
         
         if(db_implementation == "MONGODB"):
-            print("Attempting to connect to MongoDB")
+            print(f"Attempting to connect to MongoDB with connection string: {Services.db_connection_string()}")
             try:
-                db_implementation = IncidentReportPersistenceMongo(Services.db_connection_string())
+                db_implementation = IncidentReportPersistenceMongo(Services.db_connection_string(), os.getenv("DB_NAME", "test_concierge"))
+                print("Successfully connected to MongoDB")
             except Exception as e:
                 db_implementation = None
-                print("MongoDB Failed!")
+                print(f'MongoDB failed to connect: {e}')
+        elif(db_implementation == "MOCK"):
+            db_implementation = IncidentReportPersistenceStub()
         
         if(not db_implementation):
             db_implementation = IncidentReportPersistenceStub()
@@ -31,14 +34,17 @@ class Services:
     
     @staticmethod
     def db_connection_string() -> str:
-        db_host = os.getenv("DB_HOST")
-        db_port = os.getenv("DB_PORT")
-        db_username = os.getenv("DB_USERNAME")
-        db_password = os.getenv("DB_PASSWORD")
+        mongo_host = os.getenv('DB_HOST', 'mongo')
+        mongo_db_name = os.getenv("DB_NAME", "test_concierge")
+        mongo_port = int(os.getenv('DB_PORT', 27017))
+        mongo_username = os.getenv('DB_USERNAME', 'mongo_db_user')
+        mongo_password = os.getenv('DB_PASSWORD', 'password')
         
-        return f"mongodb://{db_username}:{db_password}@{db_host}:{db_port}"
+        return f'mongodb://{mongo_username}:{mongo_password}@{mongo_host}:{mongo_port}/{mongo_db_name}'
 
     @staticmethod
     def clear() -> None:
-        Services._incident_report_persistence = None
+        if Services._incident_report_persistence:
+            Services._incident_report_persistence.clear()
+            Services._incident_report_persistence = None
         
