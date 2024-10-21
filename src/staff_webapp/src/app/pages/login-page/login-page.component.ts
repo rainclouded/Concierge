@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule , FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { SessionService } from '../../services/session.service';
+import { ApiKeyService } from '../../services/api-key.service';
 
 @Component({
   selector: 'app-login-page',
@@ -11,15 +13,31 @@ import { Router } from '@angular/router';
 export class LoginPageComponent {
   loginForm: FormGroup;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private sessionService: SessionService,
+    private apiKeyService: ApiKeyService
+  ) {
     this.loginForm = new FormGroup({
-      name: new FormControl(''),
-      password: new FormControl('')
-    })
+      username: new FormControl(''),
+      password: new FormControl(''),
+    });
   }
 
   handleLogin() {
     console.log(this.loginForm.value);
-    this.router.navigate(['/dashboard']);
+    this.sessionService.postSession(this.loginForm.value).subscribe({
+      next: (response: any) => {
+        console.log(response)
+        console.log(`Session key: ${response.sessionKey}`)
+        this.apiKeyService.setSession(response.sessionKey)
+      },
+      error: (response: any) => {
+        console.log(response.error.error);
+        console.log(response.status);
+        alert(`Login Failed: \n${response.error.error}`);
+      }
+    });
+    // this.router.navigate(['/dashboard']);
   }
 }

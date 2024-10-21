@@ -3,7 +3,7 @@
 - Project Structure: https://github.com/golang-standards/project-layout
 
 ## Run locally
-
+- go run ./src/permissions/cmd/server/main.go
 
 ## Environmnet Variables
 - `JWT_SIGNING_METHOD`
@@ -43,9 +43,6 @@ qpxDzZdl4T0dNvWeRMCGLZGAPVz6zOD4
 - `SESSION_KEY_HEADER`
     - The name of the header containing the session key
     - default to `X-API-Key`
-- `SESSION_KEY_COOKIE_NAME`
-    - name of the cookie containing the session key
-    - default to `session-key`
 
 ### THIS SHOULD BE FOR TESTING ONLY!!!
 - failure to set this value will enable unverified users to spoof as super admins

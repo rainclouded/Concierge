@@ -20,9 +20,10 @@ func NewRouter(db database.Database) *gin.Engine {
 	router := gin.Default()
 
 	router.Use(middleware.SetDb(db))
+	router.Use(middleware.EnableCORS())
 
 	router.POST("/sessions", handlers.PostSessionKey)
-	router.GET("/sessions/", handlers.ParseSessionKey)
+	router.GET("/sessions", handlers.ParseSessionKey)
 	router.GET("/sessions/public-key", handlers.GetPublicKey)
 
 	router.GET("/permissions/healthcheck", func(ctx *gin.Context) { ctx.JSON(http.StatusOK, gin.H{"status": "ok"}) })

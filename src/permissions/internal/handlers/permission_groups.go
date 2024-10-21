@@ -141,7 +141,7 @@ func GetPermissionGroupAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("permission group %d not found", id)})
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"permission-group-id": group, "accounts": members})
+	ctx.JSON(http.StatusOK, gin.H{"permissionGroupId": group, "accounts": members})
 }
 
 func PutPermissionGroupAccount(ctx *gin.Context) {

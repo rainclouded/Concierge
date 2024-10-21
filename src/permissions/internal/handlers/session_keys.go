@@ -5,6 +5,7 @@ import (
 	"concierge/permissions/internal/middleware"
 	"concierge/permissions/internal/models"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 
@@ -27,19 +28,22 @@ func PostSessionKey(ctx *gin.Context) {
 
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		fmt.Printf("HERESS1")
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error!"})
 		return
 	}
 
 	accCli := config.LoadAccountEndpoint()
 	account, err := accCli.PostLoginAttempt(loginRequest)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		fmt.Printf("HERES2S")
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
 	permissions, err := db.GetPermissionForAccountId(account.ID)
 	if err != nil {
+		fmt.Printf("HERESS4")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -53,28 +57,27 @@ func PostSessionKey(ctx *gin.Context) {
 		},
 	)
 	if err != nil {
+		fmt.Printf("HERESS5")
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.SetCookie("session-key", sessionKey, config.LoadSessionExp()*60, "/", "", false, true)
-	ctx.JSON(http.StatusOK, gin.H{"session-key": sessionKey})
+	ctx.JSON(http.StatusOK, gin.H{"sessionKey": sessionKey})
 }
 
 func ParseSessionKey(ctx *gin.Context) {
-	sessionKey := middleware.GetSessionKey(ctx)
+	sessionKey := middleware.GetAPIKeyFromCtx(ctx)
 	if sessionKey == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Missing session key"})
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Not logged in!"})
 		return
 	}
-
 	data, err := middleware.ParseSignedMessage(sessionKey)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"session-data": data})
+	ctx.JSON(http.StatusOK, gin.H{"sessionData": data})
 }
 
 func GetPublicKey(ctx *gin.Context) {
@@ -82,5 +85,5 @@ func GetPublicKey(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
 	}
-	ctx.JSON(http.StatusOK, gin.H{"public-key": pem})
+	ctx.JSON(http.StatusOK, gin.H{"publicKey": pem})
 }

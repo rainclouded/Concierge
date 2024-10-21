@@ -1,24 +1,24 @@
 package models
 
 type PermissionGroup struct {
-	ID          int           `json:"group-id"`
-	Name        string        `json:"group-name" binding:"required"`
-	Description string        `json:"group-description" binding:"required"`
-	Permissions []*Permission `json:"group-permissions"`
-	Members     []int         `json:"group-members"`
+	ID          int           `json:"groupId"`
+	Name        string        `json:"groupName" binding:"required"`
+	Description string        `json:"groupDescription" binding:"required"`
+	Permissions []*Permission `json:"groupPermissions"`
+	Members     []int         `json:"groupMembers"`
 }
 
 type PermissionGroupRequest struct {
-	TemplateID    int             `json:"template-id"`
-	Name          string          `json:"group-name"`
-	Description   string          `json:"group-description"`
-	Permissions   []*PermissionId `json:"group-permissions"`
-	Members       []int           `json:"group-members"`
-	MembersRemove []int           `json:"remove-group-members"`
+	TemplateID    int             `json:"templateId"`
+	Name          string          `json:"groupName"`
+	Description   string          `json:"groupDescription"`
+	Permissions   []*PermissionId `json:"groupPermissions"`
+	Members       []int           `json:"groupMembers"`
+	MembersRemove []int           `json:"removeGroupMembers"`
 }
 
 type PermissionId struct {
-	ID    int  `json:"permission-id"`
+	ID    int  `json:"permissionId"`
 	State bool `json:"state"`
 }
 

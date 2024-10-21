@@ -1,8 +1,8 @@
 package models
 
 type Account struct {
-	ID   int    `json:"account-id" binding:"required"`
-	Name string `json:"account-name"`
+	ID   int    `json:"accountId" binding:"required"`
+	Name string `json:"accountName"`
 }
 
 type LoginAttempt struct {

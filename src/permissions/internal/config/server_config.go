@@ -52,12 +52,3 @@ func LoadSessionKeyHeader() string {
 
 	return valueStr
 }
-
-func LoadSessionKeyCookie() string {
-	valueStr := os.Getenv("SESSION_KEY_COOKIE_NAME")
-	if valueStr == "" {
-		valueStr = "session-key"
-	}
-
-	return valueStr
-}

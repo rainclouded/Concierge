@@ -26,22 +26,22 @@ func ParseSignedMessage(sessionKey string) (*models.SessionKeyData, error) {
 
 	if err != nil {
 		fmt.Printf("Invalid key: %s", sessionKey)
-		return nil, fmt.Errorf("failed to parse sessionKey0: %s", err.Error())
+		return nil, fmt.Errorf("failed to parse sessionKey: %s", err.Error())
 	}
 
 	if !token.Valid {
-		return nil, fmt.Errorf("session-key signature was not valid")
+		return nil, fmt.Errorf("sessionKey signature was not valid")
 	}
 	claims := token.Claims.(jwt.MapClaims)
 	var sessionData models.SessionKeyData
 	data, err := json.Marshal(claims)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse sessionKey1: %s", err.Error())
+		return nil, fmt.Errorf("failed to parse sessionKey: %s", err.Error())
 	}
 
 	err = json.Unmarshal(data, &sessionData)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse sessionKey2: %s", err.Error())
+		return nil, fmt.Errorf("failed to parse sessionKey: %s", err.Error())
 	}
 
 	return &sessionData, nil
@@ -50,11 +50,11 @@ func ParseSignedMessage(sessionKey string) (*models.SessionKeyData, error) {
 func SignMessage(sessionData *models.SessionKeyData) (string, error) {
 	signingMethod := config.LoadEncrypAlgo()
 	claims := jwt.MapClaims{
-		"account-id":         sessionData.AccountID,
-		"account-name":       sessionData.AccountName,
-		"permission-version": sessionData.PermissionVersion,
-		"permission-string":  sessionData.PermissionString,
-		"exp":                jwt.NewNumericDate(time.Now().Add(time.Minute * time.Duration(config.LoadSessionExp()))),
+		"accountId":         sessionData.AccountID,
+		"accountName":       sessionData.AccountName,
+		"permissionVersion": sessionData.PermissionVersion,
+		"permissionString":  sessionData.PermissionString,
+		"exp":               jwt.NewNumericDate(time.Now().Add(time.Minute * time.Duration(config.LoadSessionExp()))),
 	}
 
 	token := jwt.NewWithClaims(signingMethod, claims)
@@ -105,10 +105,10 @@ func GetPublicKeyPEM() (string, error) {
 	return string(pem.EncodeToMemory(block)), nil
 }
 
-func GetSessionKey(ctx *gin.Context) string {
-	header, err := ctx.Cookie(config.LoadSessionKeyCookie())
-	if err != nil || header == "" {
-		header = ctx.GetHeader(config.LoadSessionKeyHeader())
+func GetAPIKeyFromCtx(ctx *gin.Context) string {
+	value := ctx.Request.Header[config.LoadSessionKeyHeader()]
+	if len(value) == 0 {
+		return ""
 	}
-	return header
+	return value[0]
 }
