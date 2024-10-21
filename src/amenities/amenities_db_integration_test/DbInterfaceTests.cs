@@ -15,12 +15,6 @@ namespace amenities_db_integration_test
         [OneTimeSetUp]
         public void OneTimeSetUp() 
         {   
-            //For containerized testing
-            //string dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? String.Empty;
-            //string dbPort = Environment.GetEnvironmentVariable("DB_PORT") ?? String.Empty;
-            //string dbUsername = Environment.GetEnvironmentVariable("DB_USERNAME") ?? String.Empty;
-            //string dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? String.Empty;
-            //string connnectionString = $"Host={dbHost}; Port={dbPort}; Username={dbUsername}; Password={dbPassword}";
             _connectionString = "Host=127.0.0.1; Port=50014; Username=postgres; Password=sa";
 
             _persistence = new PostgresAmenityPersistence(_connectionString);
