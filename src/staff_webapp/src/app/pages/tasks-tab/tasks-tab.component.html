@@ -1,0 +1,26 @@
+<h1 class="text-2xl font-bold mb-5">Task Manager</h1>
+<button (click)="addTask()" class="bg-blue-500 text-white p-2 rounded-lg mb-4">Add Task</button>
+
+<table class="w-full text-left table-auto border-collapse">
+  <thead class="bg-gray-50">
+    <tr>
+      <th class="border-b p-2">Task Title</th>
+      <th class="border-b p-2">Room Number</th>
+      <th class="border-b p-2">Priority</th>
+      <th class="border-b p-2">Status</th>
+      <th class="border-b p-2">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let task of tasks">
+      <td class="border-b p-2">{{ task.title }}</td>
+      <td class="border-b p-2">{{ task.roomNumber }}</td>
+      <td class="border-b p-2">{{ task.priority }}</td>
+      <td class="border-b p-2">{{ task.status }}</td>
+      <td class="border-b p-2">
+        <button (click)="editTask(task)" class="text-blue-500 mr-2">Edit</button>
+        <button (click)="claimUnclaimTask(task)" class="text-green-500">{{ task.assignee ? 'Unclaim' : 'Claim' }}</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
