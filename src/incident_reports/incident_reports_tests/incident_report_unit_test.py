@@ -190,8 +190,5 @@ class incident_report_unit_test(unittest.TestCase):
         response = self.app.get(f"/incident_reports/{999}")        
         self.assertEqual(response.status_code, 404) 
 
-    def test_break_test(self):
-        self.assertFalse(True)
-
 if __name__ == '__main__':
     unittest.main()
