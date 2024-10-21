@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import ServiceCard from "../components/ServiceCard";
+import { removeSessionKey } from "../utils/auth";
 
 const HomePage = () => {
   // State for side drawers
@@ -23,6 +24,11 @@ const HomePage = () => {
   const closeProfile = () => setProfileOpen(false);
 
   const roomInfo = getRoomInfo();
+
+  const handleLogout = () => {
+    removeSessionKey();
+    window.location.href = '/';
+  }
 
   return (
     <div className="h-screen bg-[#ECD8C8] relative">
@@ -98,7 +104,7 @@ const HomePage = () => {
                 <a href="/home">Settings</a>
               </li>
               <li>
-                <a href="/">Log Out</a>
+                <a href="#" onClick={handleLogout}>Log Out</a>
               </li>
             </ul>
           </div>

@@ -28,7 +28,7 @@ func (cl *LiveAccountClient) Get(path string) ([]byte, error) {
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("Could not read response")
+		return nil, fmt.Errorf("could not read response")
 	}
 
 	defer resp.Body.Close()
@@ -50,7 +50,7 @@ func (cl *LiveAccountClient) Post(path string, body any) ([]byte, error) {
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("Could not read response")
+		return nil, fmt.Errorf("could not read response")
 	}
 
 	defer resp.Body.Close()
@@ -66,7 +66,7 @@ func (cl *LiveAccountClient) PostLoginAttempt(request models.LoginAttempt) (*mod
 
 	err = json.Unmarshal(respBody, &loginResponse)
 	if err != nil {
-		return nil, fmt.Errorf("Could not parse response from json")
+		return nil, fmt.Errorf("could not parse response from json")
 	}
 
 	return &loginResponse, nil

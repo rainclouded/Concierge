@@ -25,15 +25,22 @@ func (cl *MockAccountClient) PostLoginAttempt(loginRequest models.LoginAttempt) 
 				return acc, nil
 			}
 		}
+	} else if loginRequest.Password == "" {
+		if loginRequest.Username == "404" {
+			return &models.Account{
+				ID:   5,
+				Name: "Guest #404",
+			}, nil
+		}
 	}
 
-	return nil, fmt.Errorf("Invalid username or password")
+	return nil, fmt.Errorf("invalid username or password")
 }
 
 func (cl *MockAccountClient) Get(path string) ([]byte, error) {
-	return nil, fmt.Errorf("Cannot make arbitrary GET requests to Mock clients")
+	return nil, fmt.Errorf("cannot make arbitrary GET requests to Mock clients")
 }
 
 func (cl *MockAccountClient) Post(path string, body interface{}) ([]byte, error) {
-	return nil, fmt.Errorf("Cannot make arbitrary GET requests to Mock clients")
+	return nil, fmt.Errorf("cannot make arbitrary GET requests to Mock clients")
 }
