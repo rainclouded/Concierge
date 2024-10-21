@@ -31,6 +31,7 @@ export class LoginPageComponent {
         console.log(response)
         console.log(`Session key: ${response.sessionKey}`)
         this.apiKeyService.setSession(response.sessionKey)
+        this.router.navigate(['/dashboard']);
       },
       error: (response: any) => {
         console.log(response.error.error);
@@ -38,6 +39,5 @@ export class LoginPageComponent {
         alert(`Login Failed: \n${response.error.error}`);
       }
     });
-    // this.router.navigate(['/dashboard']);
   }
 }

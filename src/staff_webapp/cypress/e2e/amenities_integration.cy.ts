@@ -1,15 +1,16 @@
 describe('integration test for amenities', () => {
   //Integration test that tests the connectin between the staff ui and amenities
-  
+
   beforeEach(()=> {
     cy.visit('localhost:8082/login')
-    //When permissions are added should have to login here
+    cy.get('#room-num-input').clear().type('admin');
+    cy.get('#pass-code-input').clear().type('admin');
     cy.get('button').click()
     cy.url().should('include', '/dashboard/home')
     cy.get('.sidebar-item')
       .contains('Amenities')
       .click()
-    
+
     //We cannot reset the system for each test
     //Instead we ensure initial state is okay
     cy.get('.amenity-item')
@@ -21,7 +22,7 @@ describe('integration test for amenities', () => {
         expect($items[3]).to.contain.text('Bar')
       })
   });
-  
+
   it('Get and view all amenities', () => {
       cy.get('.amenity-item')
       .should(($items) => {
@@ -30,9 +31,9 @@ describe('integration test for amenities', () => {
         expect($items[1]).to.contain.text('Gym')
         expect($items[2]).to.contain.text('Breakfast')
         expect($items[3]).to.contain.text('Bar')
-      }) 
+      })
   });
-  
+
   it('Create new amenity', () => {
     cy.contains('Add Amenity').click();
     cy.get('#name').clear().type('testAmenity');
@@ -52,7 +53,7 @@ describe('integration test for amenities', () => {
       .contains('Delete')
       .click()
   });
-  
+
   it('Delete amenity', () => {
     cy.contains('th', 'Bar')
       .parents('tr')
@@ -71,7 +72,7 @@ describe('integration test for amenities', () => {
     cy.get('#endTime').clear().type('03:00:00');
     cy.contains('Submit').click();
   });
-  
+
   it('Edit amenity', ()=>{
     cy.contains('th', 'Bar')
       .parents('tr')
@@ -83,7 +84,7 @@ describe('integration test for amenities', () => {
     cy.get('#startTime').clear().type('12:34:00');
     cy.get('#endTime').clear().type('13:57:00');
     cy.contains('Submit').click();
-    
+
     cy.contains('th', 'Test')
       .parents('tr')
       .find('td')
@@ -91,7 +92,7 @@ describe('integration test for amenities', () => {
         expect($tds[0]).to.contain.text('This is a test');
         expect($tds[1]).to.contain.text('12:34:00 - 13:57:00');
       })
-      
+
     //cleanup
     cy.contains('th', 'Test')
       .parents('tr')
@@ -104,9 +105,9 @@ describe('integration test for amenities', () => {
     cy.get('#endTime').clear().type('03:00:00');
     cy.contains('Submit').click();
   })
-  
+
   afterEach(()=>{
-    cy.get('a[href="/login"]')
+    cy.get('#logout')
       .click()
   });
 })

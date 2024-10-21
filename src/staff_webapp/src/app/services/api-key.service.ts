@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 // See https://chintanonweb.medium.com/mastering-angular-session-security-a-deep-dive-into-sessionmanagementservice-ad24e71b86ed
 @Injectable({
@@ -26,9 +27,22 @@ export class ApiKeyService {
     return this.getSession() != null;
   }
 
-  isSessionKeyValid(): boolean {
-    //TODO : validate JWT token
-    return true;
+  isKeyExpired(): boolean {
+    const sessionKey = this.getSession();
+    if (!sessionKey || sessionKey == "") {
+      return true;
+    }
+    try {
+      const decoded = jwtDecode(sessionKey);
+      console.log(decoded)
+      console.log(
+        `Key expired: ${(decoded.exp ?? 0) < Math.floor(Date.now() / 1000)}`
+      );
+      return (decoded.exp ?? 0) < Math.floor(Date.now() / 1000);
+    } catch (error) {
+      console.log("Failed to decode session key")
+      return true;
+    }
   }
 
   getRemainingSessionTime(): bigint {
