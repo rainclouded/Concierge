@@ -32,10 +32,13 @@ const HomePage = () => {
   const roomInfo = getRoomInfo();
 
   return (
-    <div className="h-screen bg-[#ECD8C8] relative">
+    <div className="min-h-screen bg-[#ECD8C8] relative">
       {/* Sticky Header */}
       <header className="sticky top-0 bg-white p-4 shadow-md flex justify-between items-center z-40">
-        <button onClick={toggleMenu}>
+        <button 
+          className="p-2 h-10 w-10 flex items-center justify-center"
+          onClick={toggleMenu}
+        >
           <FontAwesomeIcon icon={faBars} className="text-xl" />
         </button>
         <h1 className="text-2xl font-extrabold">Quick Service</h1>
@@ -69,7 +72,7 @@ const HomePage = () => {
           <input
             type="text"
             className="border rounded p-2 mb-4 w-full"
-            placeholder=""
+            placeholder="Your instructions here..."
           />
         </RequestCard>          
         <RequestCard
@@ -168,7 +171,7 @@ const HomePage = () => {
           <input
             type="text"
             className="border rounded p-2 mb-4 w-full"
-            placeholder=""
+            placeholder="Your instructions here..."
           />
         </RequestCard>   
         <RequestCard
@@ -181,7 +184,7 @@ const HomePage = () => {
           <input
             type="text"
             className="border rounded p-2 mb-4 w-full"
-            placeholder=""
+            placeholder="Your instructions here..."
           />
         </RequestCard>   
         <RequestCard
@@ -194,7 +197,7 @@ const HomePage = () => {
           <input
             type="text"
             className="border rounded p-2 mb-4 w-full"
-            placeholder=""
+            placeholder="Your instructions here..."
           />
         </RequestCard>   
         <ServiceCard
