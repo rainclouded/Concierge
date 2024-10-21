@@ -1,4 +1,7 @@
+using amenities_server.application;
 using amenities_server.Controllers;
+using amenities_server.model;
+using amenities_server.persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +28,7 @@ namespace amenities_test
             _testUpdatedValidAmenity = new Amenity("_testUpdatedValidAmenity", "testUpdatedValidDesc", new TimeSpan(12, 0, 0), new TimeSpan(24, 0, 0));
             _testInvalidAmenity = new Amenity("testInvalidAmenity", "testInvalidDesc", new TimeSpan(13, 0, 0), new TimeSpan(12, 0, 0));
 
-            Services.clear();
+            Services.Clear();
             _amenityPersistence = Services.GetAmenityPersistence();
   
             _controller = new AmenitiesController();

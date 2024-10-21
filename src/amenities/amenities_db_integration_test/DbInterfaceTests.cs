@@ -1,4 +1,7 @@
 using amenities_server;
+using amenities_server.application;
+using amenities_server.model;
+using amenities_server.persistence;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Npgsql;
 
