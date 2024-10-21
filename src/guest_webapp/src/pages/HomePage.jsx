@@ -5,9 +5,16 @@ import {
   faBars,
   faUser,
   faExclamationTriangle,
+  faBroom,
+  faClock,
+  faHamburger,
+  faShirt,
+  faSpa,
+  faWrench
 } from "@fortawesome/free-solid-svg-icons";
 
 import ServiceCard from "../components/ServiceCard";
+import RequestCard from "../components/RequestCard";
 
 const HomePage = () => {
   // State for side drawers
@@ -52,6 +59,144 @@ const HomePage = () => {
 
       {/* Service Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 mx-auto justify-items-center max-w-full md:max-w-[75%]">
+        <RequestCard
+          icon={faBroom}
+          text="Room Service"
+        >
+          <label htmlFor="roomNumber" className="block mb-2">
+            Special Instructions:
+          </label>
+          <input
+            type="text"
+            className="border rounded p-2 mb-4 w-full"
+            placeholder=""
+          />
+        </RequestCard>          
+        <RequestCard
+          icon={faHamburger}
+          text="Food Delivery"
+        >
+          <label htmlFor="roomNumber" className="block mb-2">
+            Choose from our selection:
+          </label>
+          {/* Main Dish Selection */}
+          <div className="flex items-center mb-4">
+            <select className="border rounded p-2 mr-2 w-48"> {/* Fixed width */}
+              <option value="">Select a Main Dish</option>
+              <option value="grilledChicken">Grilled Chicken</option>
+              <option value="steak">Steak</option>
+              <option value="pasta">Pasta Primavera</option>
+              <option value="salmon">Grilled Salmon</option>
+            </select>
+
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                className="mr-2 w-5 h-5"
+              />
+              <span>Main</span>
+            </label>
+          </div>
+
+          {/* Side Dish Selection */}
+          <div className="flex items-center mb-4">
+            <select className="border rounded p-2 mr-2 w-48"> {/* Fixed width */}
+              <option value="">Select a Side Dish</option>
+              <option value="fries">French Fries</option>
+              <option value="salad">Caesar Salad</option>
+              <option value="vegetables">Steamed Vegetables</option>
+              <option value="rice">Garlic Rice</option>
+            </select>
+
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                className="mr-2 w-5 h-5"
+              />
+              <span>Side</span>
+            </label>
+          </div>
+
+          {/* Drink Selection */}
+          <div className="flex items-center mb-4">
+            <select className="border rounded p-2 mr-2 w-48"> {/* Fixed width */}
+              <option value="">Select a Drink</option>
+              <option value="soda">Soda</option>
+              <option value="wine">Red Wine</option>
+              <option value="cocktail">Cocktail</option>
+              <option value="water">Sparkling Water</option>
+            </select>
+
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                className="mr-2 w-5 h-5"
+              />
+              <span>Drink</span>
+            </label>
+          </div>
+        </RequestCard>
+        <RequestCard
+          icon={faClock}
+          text="Wake Up Call"
+        >
+          <label htmlFor="roomNumber" className="block mb-2">
+            What time do we wake you up?
+          </label>
+          <select
+            className="border rounded p-2 mb-4 w-full"
+          >
+            <option value="1:00 AM">1:00 AM</option>
+            <option value="2:00 AM">2:00 AM</option>
+            <option value="3:00 AM">3:00 AM</option>
+            <option value="4:00 AM">4:00 AM</option>
+            <option value="5:00 AM">5:00 AM</option>
+            <option value="6:00 AM">6:00 AM</option>
+            <option value="7:00 AM">7:00 AM</option>
+            <option value="8:00 AM">8:00 AM</option>
+            <option value="9:00 AM">9:00 AM</option>
+            <option value="10:00 AM">10:00 AM</option>
+          </select>
+        </RequestCard>
+        <RequestCard
+          icon={faShirt}
+          text="Laundry Service"
+        >
+          <label htmlFor="roomNumber" className="block mb-2">
+            Special Instructions:
+          </label>
+          <input
+            type="text"
+            className="border rounded p-2 mb-4 w-full"
+            placeholder=""
+          />
+        </RequestCard>   
+        <RequestCard
+          icon={faSpa}
+          text="Spa & Massage"
+        >
+          <label htmlFor="roomNumber" className="block mb-2">
+            Special Instructions:
+          </label>
+          <input
+            type="text"
+            className="border rounded p-2 mb-4 w-full"
+            placeholder=""
+          />
+        </RequestCard>   
+        <RequestCard
+          icon={faWrench}
+          text="Maintenance"
+        >
+          <label htmlFor="roomNumber" className="block mb-2">
+            Special Instructions:
+          </label>
+          <input
+            type="text"
+            className="border rounded p-2 mb-4 w-full"
+            placeholder=""
+          />
+        </RequestCard>   
         <ServiceCard
           icon={faConciergeBell}
           text="Amenities"
@@ -59,11 +204,11 @@ const HomePage = () => {
         />
         <ServiceCard
           icon={faExclamationTriangle}
-          text="Incident Report"
+          text="Report an Incident"
           link="/incident_reports"
         />
       </div>
-
+      
       {/* Left Side Drawer (Menu) */}
       {isMenuOpen && (
         <div
@@ -106,6 +251,7 @@ const HomePage = () => {
       )}
     </div>
   );
+  
 };
 
 // hardcoded, change later
