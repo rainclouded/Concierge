@@ -1,10 +1,10 @@
 export interface ITask {
-    id?: number;  // Optional, can be used for database or unique identification
-    title: string;
+    id?: number;  
     roomNumber: string;
+    typeOfService: string;
     description: string;
-    priority: 'Low' | 'Medium' | 'High';
+    timeCreated: Date;
+    assignee: string | null;  // null if unassigned
     status: 'Pending' | 'In Progress' | 'Completed';
-    assignee: string | null;  // Name of the assignee or null if unassigned
   }
   
