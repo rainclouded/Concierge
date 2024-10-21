@@ -9,6 +9,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=password
     volumes:
       - mongo:/data/db 
+      - ./configs/init_mongo_prod.js:/docker-entrypoint-initdb.d/init_mongo_prod.js
     healthcheck:
       test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
       interval: 30s
