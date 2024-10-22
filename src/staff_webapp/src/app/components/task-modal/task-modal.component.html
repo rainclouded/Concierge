@@ -25,8 +25,8 @@
         <div *ngIf="isEditing; else viewMode">
           <textarea [(ngModel)]="editedDescription" class="w-full mt-1 p-2 border rounded h-32"></textarea>
           <div class="flex justify-end mt-2">
-            <button (click)="saveDescription()" class="bg-green-500 text-white p-2 rounded-lg mr-2">Save</button>
-            <button (click)="cancelEdit()" class="bg-red-500 text-white p-2 rounded-lg">Cancel</button>
+            <button (click)="cancelEdit()" class="bg-white text-blue-500 border border-blue-500 p-2 rounded-lg w-20 mr-2">Cancel</button>
+            <button (click)="saveDescription()" class="bg-white text-blue-500 border border-blue-500 p-2 rounded-lg w-20">Save</button>
           </div>
         </div>
         <ng-template #viewMode>

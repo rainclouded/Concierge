@@ -15,7 +15,7 @@ export class TasksTabComponent {
 
   // Pagination variables
   currentPage = 1;
-  tasksPerPage = 10; // Show 10 tasks per page
+  tasksPerPage = 15; // Show 10 tasks per page
 
   get totalPages(): number {
     return Math.ceil(this.tasks.length / this.tasksPerPage);

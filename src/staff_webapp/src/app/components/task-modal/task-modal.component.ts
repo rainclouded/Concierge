@@ -19,6 +19,8 @@ export class TaskModalComponent {
 
   // Close modal
   closeModal() {
+    this.isEditing = false;  // Reset editing mode
+    this.editedDescription = '';  // Clear edited description
     this.close.emit();
   }
 
