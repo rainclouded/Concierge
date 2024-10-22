@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ITask } from '../../models/tasks.model';
 import { TaskModalComponent } from '../../components/task-modal/task-modal.component';
+import { mockTasks } from './mock-tasks';  // mock data
 
 @Component({
   selector: 'app-tasks-tab',
@@ -10,78 +11,45 @@ import { TaskModalComponent } from '../../components/task-modal/task-modal.compo
   templateUrl: './tasks-tab.component.html'
 })
 export class TasksTabComponent {
-  tasks: ITask[] = [
-    {
-      id: 1,
-      roomNumber: '102',
-      typeOfService: 'Room Cleaning',
-      description: 'Guest requested a quick clean of the entire room.',
-      timeCreated: new Date('2024-10-21T08:00:00'),
-      assignee: null,
-      status: 'Pending'
-    },
-    {
-      id: 2,
-      roomNumber: '104',
-      typeOfService: 'Extra Towels',
-      description: 'Request for additional towels for the room.',
-      timeCreated: new Date('2024-10-20T09:30:00'),
-      assignee: 'John Doe',
-      status: 'Completed'
-    },
-    {
-      id: 3,
-      roomNumber: '104',
-      typeOfService: 'Food Service',
-      description: 'Dinner requested to be served at 7 PM in the room.',
-      timeCreated: new Date('2024-10-21T11:00:00'),
-      assignee: 'Jane Smith',
-      status: 'In Progress'
-    },
-    {
-      id: 4,
-      roomNumber: '106',
-      typeOfService: 'Maintenance Request',
-      description: 'Issue with bathroom faucet leaking since yesterday.',
-      timeCreated: new Date('2024-10-20T15:45:00'),
-      assignee: null,
-      status: 'Pending'
-    },
-    {
-      id: 5,
-      roomNumber: '204',
-      typeOfService: 'Room Cleaning',
-      description: 'Deep clean requested for the carpets and furniture.',
-      timeCreated: new Date('2024-10-21T09:15:00'),
-      assignee: 'Sarah Lee',
-      status: 'In Progress'
-    },
-    {
-      id: 6,
-      roomNumber: '207',
-      typeOfService: 'Food Service',
-      description: 'Guest requested a vegan meal to be served in the room.',
-      timeCreated: new Date('2024-10-21T10:30:00'),
-      assignee: 'Alex K.',
-      status: 'In Progress'
-    },
-    {
-      id: 7,
-      roomNumber: '207',
-      typeOfService: 'Wake-up Call',
-      description: 'Set wake-up call for 7 AM, guest wants to be notified.',
-      timeCreated: new Date('2024-10-21T08:30:00'),
-      assignee: null,
-      status: 'Pending'
-    }
-  ];
+  tasks: ITask[] = mockTasks;
 
+  // Pagination variables
+  currentPage = 1;
+  tasksPerPage = 10; // Show 10 tasks per page
+
+  get totalPages(): number {
+    return Math.ceil(this.tasks.length / this.tasksPerPage);
+  }
+
+  get paginatedTasks(): ITask[] {
+    const start = (this.currentPage - 1) * this.tasksPerPage;
+    const end = start + this.tasksPerPage;
+    return this.tasks.slice(start, end);
+  }
+
+  // Modal control
   isModalOpen = false;
-  selectedTask: ITask | null = null;  // Store selected task to pass to modal
+  selectedTask: ITask | null = null;
+
+  // Method to limit description length in table
+  getDescriptionPreview(description: string, maxLength: number = 100): string {
+    if (description.length <= maxLength) {
+      return description;  // Return full description if it's short enough
+    }
+    // Trim trailing spaces
+    let trimmedDescription = description.slice(0, maxLength).trimEnd();  
+    
+    // Check if the last character is a punctuation mark and remove it
+    const lastChar = trimmedDescription.charAt(trimmedDescription.length - 1);
+    if (['.', ',', ';', ':'].includes(lastChar)) {
+      trimmedDescription = trimmedDescription.slice(0, -1);  // Remove the punctuation
+    }
+  
+    return trimmedDescription + '...';
+  }
 
   openModal(task: ITask) {
-    console.log('Task clicked:', task); 
-    this.selectedTask = task;  // Set the selected task when opening modal
+    this.selectedTask = task;
     this.isModalOpen = true;
   }
 
@@ -89,6 +57,20 @@ export class TasksTabComponent {
     this.isModalOpen = false;
   }
 
+  // Pagination controls
+  goToPreviousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+
+  goToNextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  // Task Actions
   addTask() {
     console.log('Add Task clicked');
   }

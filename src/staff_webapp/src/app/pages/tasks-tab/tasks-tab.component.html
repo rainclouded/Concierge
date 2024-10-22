@@ -2,27 +2,34 @@
 <button (click)="addTask()" class="bg-blue-500 text-white p-2 rounded-lg mb-4">Add Task</button>
 
 <table class="w-full text-left table-auto border-collapse">
-  <thead class="bg-gray-50">
+  <thead class="bg-gray-100">
     <tr>
-      <th class="border-b p-2">Room No</th>
-      <th class="border-b p-2">Type of Service</th>
-      <th class="border-b p-2">Description</th>
-      <th class="border-b p-2">Time Created</th>
-      <th class="border-b p-2">Assignee</th>
-      <th class="border-b p-2">Status</th>
+      <th class="border-b p-2 w-[10%]">Room No</th>
+      <th class="border-b p-2 w-[15%]">Type of Service</th>
+      <th class="border-b p-2 w-[45%]">Description</th>
+      <th class="border-b p-2 w-[12%]">Time Created</th>
+      <th class="border-b p-2 w-[10%]">Assignee</th>
+      <th class="border-b p-2 w-[8%]">Status</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let task of tasks" (click)="openModal(task)">
+    <tr *ngFor="let task of paginatedTasks; let i = index" [ngClass]="i % 2 === 0 ? 'bg-white' : 'bg-gray-100'" (click)="openModal(task)" class="cursor-pointer hover:bg-gray-300">
       <td class="border-b p-2">{{ task.roomNumber }}</td>  
       <td class="border-b p-2">{{ task.typeOfService }}</td>  
-      <td class="border-b p-2">{{ task.description }}</td>  
+      <td class="border-b p-2">{{ getDescriptionPreview(task.description) }}</td>  
       <td class="border-b p-2">{{ task.timeCreated | date:'short' }}</td>  
       <td class="border-b p-2">{{ task.assignee || 'Unassigned' }}</td>  
       <td class="border-b p-2">{{ task.status }}</td>  
     </tr>
   </tbody>
 </table>
+
+<!-- Pagination controls -->
+<div class="flex justify-end items-center mt-4">
+  <button (click)="goToPreviousPage()" class="bg-gray-300 p-2 rounded w-20" [disabled]="currentPage === 1">Previous</button>
+  <p class="mx-4">Page {{currentPage}} of {{totalPages}}</p>
+  <button (click)="goToNextPage()" class="bg-gray-300 p-2 rounded w-20" [disabled]="currentPage === totalPages">Next</button>
+</div>
 
 <!-- Modal Component -->
 <app-task-modal [isOpen]="isModalOpen" (close)="closeModal()" [task]="selectedTask"></app-task-modal>
