@@ -32,21 +32,32 @@ export class TasksTabComponent {
   selectedTask: ITask | null = null;
 
   // Method to limit description length in table
-  getDescriptionPreview(description: string, maxLength: number = 100): string {
+  getDescriptionPreview(description: string, maxLength: number = 70): string {
     if (description.length <= maxLength) {
       return description;  // Return full description if it's short enough
     }
-    // Trim trailing spaces
-    let trimmedDescription = description.slice(0, maxLength).trimEnd();  
-    
-    // Check if the last character is a punctuation mark and remove it
+
+    // Trim the description to the maxLength
+    let trimmedDescription = description.slice(0, maxLength).trimEnd();
+
+    // If the last word is too long (the description was cut in the middle of a word)
+    if (description.charAt(maxLength) !== ' ' && description.charAt(maxLength - 1) !== ' ') {
+      // Find the last space before the maxLength
+      const lastSpaceIndex = trimmedDescription.lastIndexOf(' ');
+      if (lastSpaceIndex > 0) {
+        trimmedDescription = trimmedDescription.slice(0, lastSpaceIndex).trimEnd();
+      }
+    }
+
+    // Check if the last character is punctuation and remove it
     const lastChar = trimmedDescription.charAt(trimmedDescription.length - 1);
     if (['.', ',', ';', ':'].includes(lastChar)) {
       trimmedDescription = trimmedDescription.slice(0, -1);  // Remove the punctuation
     }
-  
+
     return trimmedDescription + '...';
   }
+
 
   openModal(task: ITask) {
     this.selectedTask = task;

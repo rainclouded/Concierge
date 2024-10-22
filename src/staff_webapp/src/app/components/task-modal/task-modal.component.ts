@@ -1,34 +1,55 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ITask } from '../../models/tasks.model';
+import { FormsModule } from '@angular/forms'; 
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-task-modal',
   templateUrl: './task-modal.component.html',
   standalone: true,
-  imports: [CommonModule]
+  imports: [FormsModule, CommonModule]
 })
 export class TaskModalComponent {
   @Input() isOpen = false;
   @Input() task: ITask | null = null;
   @Output() close = new EventEmitter<void>();
 
+  isEditing = false;  // To toggle between edit and view mode
+  editedDescription: string = '';  // For holding the description in edit mode
+
+  // Close modal
   closeModal() {
     this.close.emit();
   }
 
-  // Mock user data
-  currentUser = { firstName: 'John', lastName: 'Doe' };
+  // Toggle edit mode
+  toggleEdit() {
+    if (this.task) {
+      this.isEditing = true;  // Enable editing mode
+      this.editedDescription = this.task.description;  // Set initial value
+    }
+  }
 
-  // Function to assign the task to the current user
+  // Save the edited description
+  saveDescription() {
+    if (this.task) {
+      this.task.description = this.editedDescription;  // Update the task description
+      this.isEditing = false;  // Exit edit mode
+    }
+  }
+
+  // Cancel the edit and revert to original description
+  cancelEdit() {
+    this.isEditing = false;  // Exit edit mode without saving
+  }
+
   assignTask() {
     if (this.task) {
-      this.task.assignee = `${this.currentUser.firstName} ${this.currentUser.lastName}`;
+      this.task.assignee = "John Doe";  // Mock user for assignment
       this.task.status = 'In Progress';
     }
   }
 
-  // Function to unassign the task
   unassignTask() {
     if (this.task) {
       this.task.assignee = null;
@@ -36,14 +57,9 @@ export class TaskModalComponent {
     }
   }
 
-  // Function to toggle task completion status
   toggleComplete() {
     if (this.task) {
-      if (this.task.status === 'Completed') {
-        this.task.status = 'In Progress';
-      } else {
-        this.task.status = 'Completed';
-      }
+      this.task.status = this.task.status === 'Completed' ? 'In Progress' : 'Completed';
     }
   }
 }
