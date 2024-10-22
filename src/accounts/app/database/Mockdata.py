@@ -117,3 +117,16 @@ class Mockdata(DatabaseInterface):
             if user['username'] == username:
                 return self.users.pop(idx)
         return None
+
+    def update_user(self, update_user:dict)->bool:
+        """Update user from in the userbase
+
+            Returns:
+                True if the user was successfully updated
+                False otherwise
+        """
+        for idx, user in enumerate(self.users):
+            if user['username'] == update_user['username']:
+                self.users[idx] = update_user
+                return True
+        return False      

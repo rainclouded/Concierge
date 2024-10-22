@@ -1,0 +1,27 @@
+services:
+  accounts:
+    build: .
+    ports:
+      - 50001:8080
+    environment:
+      - DB_IMPLEMENTATION=MONGO
+      - DB_HOST=accounts-mongo
+      - DB_PORT=27017
+      - DB_USERNAME=test
+      - DB_PASSWORD=test
+      - DB_URI = mongodb://test:test@mongodb:27017/accounts_data
+
+  accounts-mongo:
+    image: mongo:4.4.18
+    container_name: accounts-mongo-container
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_USERNAME: test
+      MONGO_PASSWORD: test
+    volumes:
+      - mongo_data:/accounts_data/db
+
+volumes:
+  mongo_data:
+    driver: local
