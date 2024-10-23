@@ -35,7 +35,6 @@ class Services:
     @staticmethod
     def db_connection_string() -> str:
         mongo_host = os.getenv('DB_HOST', 'mongo')
-        mongo_db_name = os.getenv("DB_NAME", "test_concierge")
         mongo_port = int(os.getenv('DB_PORT', 27017))
         mongo_username = os.getenv('DB_USERNAME', 'mongo_db_user')
         mongo_password = os.getenv('DB_PASSWORD', 'password')

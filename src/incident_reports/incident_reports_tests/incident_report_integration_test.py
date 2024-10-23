@@ -10,13 +10,6 @@ from incident_reports_server.models.models import Severity, Status, IncidentRepo
 
 class TestIntegration(unittest.TestCase):
     def setUp(self):
-        os.environ['DB_NAME'] = 'test_concierge'
-        os.environ['DB_IMPLEMENTATION'] = 'MONGODB' 
-        os.environ['DB_HOST'] = 'mongo' 
-        os.environ['DB_PORT'] = '27017' 
-        os.environ['DB_USERNAME'] = 'mongo_db_user' 
-        os.environ['DB_PASSWORD'] = 'password' 
-
         self.valid_incident_report = IncidentReport(
             severity=Severity.HIGH,  
             status=Status.OPEN,       
