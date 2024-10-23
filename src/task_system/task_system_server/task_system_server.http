@@ -1,0 +1,30 @@
+### Create a new task
+POST http://localhost:50006/tasks
+Content-Type: application/json
+
+{
+  "title": "Install new office chairs",
+  "description": "Install the new office chairs in the conference room.",
+  "roomId": 301,
+  "requesterId": 6,
+}
+
+### Get all tasks
+GET http://localhost:50006/tasks
+
+### Get a specific task by Id
+GET http://localhost:50006/tasks/1
+
+### Update an existing task
+PUT http://localhost:50006/tasks/1
+Content-Type: application/json
+
+{
+  "title": "Install new office chairs",
+  "description": "Install the new office chairs in the conference room.",
+  "assigneeId": 7,
+  "status": "In Progress",
+}
+
+### Delete a task
+DELETE http://localhost:50006/tasks/1
