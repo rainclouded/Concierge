@@ -4,12 +4,27 @@
 <table class="w-full text-left table-auto border-collapse">
   <thead class="bg-gray-100">
     <tr>
-      <th class="border-b p-2 w-[10%]">Room No</th>
-      <th class="border-b p-2 w-[15%]">Type of Service</th>
+      <th class="border-b p-2 w-[10%] cursor-pointer" (click)="toggleSort('roomNumber')">
+        Room No 
+        <span *ngIf="currentSortField === 'roomNumber'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+      </th>
+      <th class="border-b p-2 w-[15%] cursor-pointer" (click)="toggleSort('typeOfService')">
+        Type of Service 
+        <span *ngIf="currentSortField === 'typeOfService'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+      </th>
       <th class="border-b p-2 w-[45%]">Description</th>
-      <th class="border-b p-2 w-[12%]">Time Created</th>
-      <th class="border-b p-2 w-[10%]">Assignee</th>
-      <th class="border-b p-2 w-[8%]">Status</th>
+      <th class="border-b p-2 w-[12%] cursor-pointer" (click)="toggleSort('timeCreated')">
+        Time Created
+        <span *ngIf="currentSortField === 'timeCreated'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+      </th>
+      <th class="border-b p-2 w-[10%] cursor-pointer" (click)="toggleSort('assignee')">
+        Assignee
+        <span *ngIf="currentSortField === 'assignee'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+      </th>
+      <th class="border-b p-2 w-[8%] cursor-pointer" (click)="toggleSort('status')">
+        Status
+        <span *ngIf="currentSortField === 'status'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+      </th>
     </tr>
   </thead>
   <tbody>

@@ -15,49 +15,75 @@ export class TasksTabComponent {
 
   // Pagination variables
   currentPage = 1;
-  tasksPerPage = 15; // Show 10 tasks per page
+  tasksPerPage = 15;
+
+  // Sorting state
+  currentSortField: string = 'roomNumber'; // Default sorting field
+  sortDirection: 'asc' | 'desc' = 'asc';  // Default sorting direction
 
   get totalPages(): number {
     return Math.ceil(this.tasks.length / this.tasksPerPage);
   }
 
   get paginatedTasks(): ITask[] {
+    let sortedTasks = this.sortTasks(this.tasks, this.currentSortField, this.sortDirection);
     const start = (this.currentPage - 1) * this.tasksPerPage;
     const end = start + this.tasksPerPage;
-    return this.tasks.slice(start, end);
+    return sortedTasks.slice(start, end);
+  }
+
+  // Sorting logic
+  sortTasks(tasks: ITask[], field: string, direction: 'asc' | 'desc'): ITask[] {
+    return tasks.slice().sort((a, b) => {
+      let valueA = a[field as keyof ITask];
+      let valueB = b[field as keyof ITask];
+  
+      // Handle date comparison (for the timeCreated field)
+      if (field === 'timeCreated') {
+        valueA = new Date(a.timeCreated).getTime();
+        valueB = new Date(b.timeCreated).getTime();
+      }
+
+      // Convert roomNumber to number for sorting if the field is 'roomNumber'
+      if (field === 'roomNumber') {
+        valueA = parseInt(valueA as unknown as string, 10);
+        valueB = parseInt(valueB as unknown as string, 10);
+      }
+  
+      // Check for null or undefined values and treat them as lowest possible values
+      if (valueA == null) return direction === 'asc' ? -1 : 1;
+      if (valueB == null) return direction === 'asc' ? 1 : -1;
+  
+      // Perform the actual comparison
+      if (valueA < valueB) {
+        return direction === 'asc' ? -1 : 1;
+      } else if (valueA > valueB) {
+        return direction === 'asc' ? 1 : -1;
+      } else {
+        return 0;
+      }
+    });
+  }
+
+  toggleSort(field: string) {
+    if (this.currentSortField === field) {
+      // Toggle sort direction if already sorting by this field
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      // Set new sort field and default to ascending order
+      this.currentSortField = field;
+      this.sortDirection = 'asc';
+    }
   }
 
   // Modal control
   isModalOpen = false;
   selectedTask: ITask | null = null;
-
+  
   // Method to limit description length in table
   getDescriptionPreview(description: string, maxLength: number = 70): string {
-    if (description.length <= maxLength) {
-      return description;  // Return full description if it's short enough
-    }
-
-    // Trim the description to the maxLength
-    let trimmedDescription = description.slice(0, maxLength).trimEnd();
-
-    // If the last word is too long (the description was cut in the middle of a word)
-    if (description.charAt(maxLength) !== ' ' && description.charAt(maxLength - 1) !== ' ') {
-      // Find the last space before the maxLength
-      const lastSpaceIndex = trimmedDescription.lastIndexOf(' ');
-      if (lastSpaceIndex > 0) {
-        trimmedDescription = trimmedDescription.slice(0, lastSpaceIndex).trimEnd();
-      }
-    }
-
-    // Check if the last character is punctuation and remove it
-    const lastChar = trimmedDescription.charAt(trimmedDescription.length - 1);
-    if (['.', ',', ';', ':'].includes(lastChar)) {
-      trimmedDescription = trimmedDescription.slice(0, -1);  // Remove the punctuation
-    }
-
-    return trimmedDescription + '...';
+    return description.length <= maxLength ? description : description.slice(0, maxLength).trimEnd() + '...';
   }
-
 
   openModal(task: ITask) {
     this.selectedTask = task;
@@ -66,6 +92,7 @@ export class TasksTabComponent {
 
   closeModal() {
     this.isModalOpen = false;
+    this.selectedTask = null;
   }
 
   // Pagination controls
