@@ -88,9 +88,8 @@ const HomePage = () => {
     const requestBody = {
       title: tag, 
       description: tag === FoodDeliveryTag ? items.trim() : inputValue,
-      room_id: roomInfo.roomNumber,
-      requester_account_id: 100,
-      status: "OPEN"
+      roomId: roomInfo.roomNumber,
+      requesterId: 100,
     };
     
     setInputValue("");
