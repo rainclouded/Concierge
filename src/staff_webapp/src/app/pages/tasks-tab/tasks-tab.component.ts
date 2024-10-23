@@ -2,13 +2,14 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ITask } from '../../models/tasks.model';
 import { TaskModalComponent } from '../../components/task-modal/task-modal.component';
-import { mockTasks } from './mock-tasks';  // mock data
+import { AddTaskModalComponent } from '../../components/task-modal/add-task-modal.component'; // Import the new modal
+import { mockTasks } from './mock-tasks'; // mock data
 
 @Component({
   selector: 'app-tasks-tab',
   standalone: true,
-  imports: [CommonModule, TaskModalComponent],  
-  templateUrl: './tasks-tab.component.html'
+  imports: [CommonModule, TaskModalComponent, AddTaskModalComponent],
+  templateUrl: './tasks-tab.component.html',
 })
 export class TasksTabComponent {
   tasks: ITask[] = mockTasks;
@@ -19,14 +20,21 @@ export class TasksTabComponent {
 
   // Sorting state
   currentSortField: string = 'roomNumber'; // Default sorting field
-  sortDirection: 'asc' | 'desc' = 'asc';  // Default sorting direction
+  sortDirection: 'asc' | 'desc' = 'asc'; // Default sorting direction
+
+  // Modal control
+  isAddTaskModalOpen = false; // Control for the Add Task modal
 
   get totalPages(): number {
     return Math.ceil(this.tasks.length / this.tasksPerPage);
   }
 
   get paginatedTasks(): ITask[] {
-    let sortedTasks = this.sortTasks(this.tasks, this.currentSortField, this.sortDirection);
+    let sortedTasks = this.sortTasks(
+      this.tasks,
+      this.currentSortField,
+      this.sortDirection
+    );
     const start = (this.currentPage - 1) * this.tasksPerPage;
     const end = start + this.tasksPerPage;
     return sortedTasks.slice(start, end);
@@ -37,7 +45,7 @@ export class TasksTabComponent {
     return tasks.slice().sort((a, b) => {
       let valueA = a[field as keyof ITask];
       let valueB = b[field as keyof ITask];
-  
+
       // Handle date comparison (for the timeCreated field)
       if (field === 'timeCreated') {
         valueA = new Date(a.timeCreated).getTime();
@@ -49,11 +57,11 @@ export class TasksTabComponent {
         valueA = parseInt(valueA as unknown as string, 10);
         valueB = parseInt(valueB as unknown as string, 10);
       }
-  
+
       // Check for null or undefined values and treat them as lowest possible values
       if (valueA == null) return direction === 'asc' ? -1 : 1;
       if (valueB == null) return direction === 'asc' ? 1 : -1;
-  
+
       // Perform the actual comparison
       if (valueA < valueB) {
         return direction === 'asc' ? -1 : 1;
@@ -79,12 +87,15 @@ export class TasksTabComponent {
   // Modal control
   isModalOpen = false;
   selectedTask: ITask | null = null;
-  
+
   // Method to limit description length in table
   getDescriptionPreview(description: string, maxLength: number = 70): string {
-    return description.length <= maxLength ? description : description.slice(0, maxLength).trimEnd() + '...';
+    return description.length <= maxLength
+      ? description
+      : description.slice(0, maxLength).trimEnd() + '...';
   }
 
+  // Open and close View + Edit task Task modal
   openModal(task: ITask) {
     this.selectedTask = task;
     this.isModalOpen = true;
@@ -93,6 +104,35 @@ export class TasksTabComponent {
   closeModal() {
     this.isModalOpen = false;
     this.selectedTask = null;
+  }
+
+  // Open and close Add Task modal
+  openAddTaskModal() {
+    this.isAddTaskModalOpen = true;
+  }
+
+  closeAddTaskModal() {
+    this.isAddTaskModalOpen = false;
+  }
+
+  // Handle saving a new task
+  saveNewTask(data: {
+    roomNumber: string;
+    typeOfService: string;
+    description: string;
+  }) {
+    const newTask: ITask = {
+      id: this.tasks.length + 1,
+      roomNumber: data.roomNumber,
+      typeOfService: data.typeOfService,
+      description: data.description,
+      status: 'Pending',
+      assignee: null, // Default unassigned
+      timeCreated: new Date(), // Date object
+    };
+
+    this.tasks.push(newTask); // Add new task to the list
+    this.closeAddTaskModal(); // Close the modal
   }
 
   // Pagination controls
@@ -113,11 +153,7 @@ export class TasksTabComponent {
     console.log('Add Task clicked');
   }
 
-  editTask(task: ITask) { 
-    console.log('Edit Task:', task);
-  }
-
-  claimUnclaimTask(task: ITask) { 
+  claimUnclaimTask(task: ITask) {
     if (task.assignee) {
       task.assignee = null;
       task.status = 'Pending';

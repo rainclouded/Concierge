@@ -1,50 +1,110 @@
 <h1 class="text-2xl font-bold mb-5">Task Manager</h1>
-<button (click)="addTask()" class="bg-blue-500 text-white p-2 rounded-lg mb-4">Add Task</button>
+<button
+  (click)="openAddTaskModal()"
+  class="bg-blue-500 text-white p-2 rounded-lg mb-4"
+>
+  Add Task
+</button>
 
 <table class="w-full text-left table-auto border-collapse">
   <thead class="bg-gray-100">
     <tr>
-      <th class="border-b p-2 w-[10%] cursor-pointer" (click)="toggleSort('roomNumber')">
-        Room No 
-        <span *ngIf="currentSortField === 'roomNumber'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+      <th
+        class="border-b p-2 w-[10%] cursor-pointer"
+        (click)="toggleSort('roomNumber')"
+      >
+        Room No
+        <span *ngIf="currentSortField === 'roomNumber'">{{
+          sortDirection === "asc" ? "▲" : "▼"
+        }}</span>
       </th>
-      <th class="border-b p-2 w-[15%] cursor-pointer" (click)="toggleSort('typeOfService')">
-        Type of Service 
-        <span *ngIf="currentSortField === 'typeOfService'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+      <th
+        class="border-b p-2 w-[15%] cursor-pointer"
+        (click)="toggleSort('typeOfService')"
+      >
+        Type of Service
+        <span *ngIf="currentSortField === 'typeOfService'">{{
+          sortDirection === "asc" ? "▲" : "▼"
+        }}</span>
       </th>
       <th class="border-b p-2 w-[45%]">Description</th>
-      <th class="border-b p-2 w-[12%] cursor-pointer" (click)="toggleSort('timeCreated')">
+      <th
+        class="border-b p-2 w-[12%] cursor-pointer"
+        (click)="toggleSort('timeCreated')"
+      >
         Time Created
-        <span *ngIf="currentSortField === 'timeCreated'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+        <span *ngIf="currentSortField === 'timeCreated'">{{
+          sortDirection === "asc" ? "▲" : "▼"
+        }}</span>
       </th>
-      <th class="border-b p-2 w-[10%] cursor-pointer" (click)="toggleSort('assignee')">
+      <th
+        class="border-b p-2 w-[10%] cursor-pointer"
+        (click)="toggleSort('assignee')"
+      >
         Assignee
-        <span *ngIf="currentSortField === 'assignee'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+        <span *ngIf="currentSortField === 'assignee'">{{
+          sortDirection === "asc" ? "▲" : "▼"
+        }}</span>
       </th>
-      <th class="border-b p-2 w-[8%] cursor-pointer" (click)="toggleSort('status')">
+      <th
+        class="border-b p-2 w-[8%] cursor-pointer"
+        (click)="toggleSort('status')"
+      >
         Status
-        <span *ngIf="currentSortField === 'status'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+        <span *ngIf="currentSortField === 'status'">{{
+          sortDirection === "asc" ? "▲" : "▼"
+        }}</span>
       </th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let task of paginatedTasks; let i = index" [ngClass]="i % 2 === 0 ? 'bg-white' : 'bg-gray-100'" (click)="openModal(task)" class="cursor-pointer hover:bg-gray-300">
-      <td class="border-b p-2">{{ task.roomNumber }}</td>  
-      <td class="border-b p-2">{{ task.typeOfService }}</td>  
-      <td class="border-b p-2">{{ getDescriptionPreview(task.description) }}</td>  
-      <td class="border-b p-2">{{ task.timeCreated | date:'short' }}</td>  
-      <td class="border-b p-2">{{ task.assignee || 'Unassigned' }}</td>  
-      <td class="border-b p-2">{{ task.status }}</td>  
+    <tr
+      *ngFor="let task of paginatedTasks; let i = index"
+      [ngClass]="i % 2 === 0 ? 'bg-white' : 'bg-gray-100'"
+      (click)="openModal(task)"
+      class="cursor-pointer hover:bg-gray-300"
+    >
+      <td class="border-b p-2">{{ task.roomNumber }}</td>
+      <td class="border-b p-2">{{ task.typeOfService }}</td>
+      <td class="border-b p-2">
+        {{ getDescriptionPreview(task.description) }}
+      </td>
+      <td class="border-b p-2">{{ task.timeCreated | date : "short" }}</td>
+      <td class="border-b p-2">{{ task.assignee || "Unassigned" }}</td>
+      <td class="border-b p-2">{{ task.status }}</td>
     </tr>
   </tbody>
 </table>
 
 <!-- Pagination controls -->
 <div class="flex justify-end items-center mt-4">
-  <button (click)="goToPreviousPage()" class="bg-gray-300 p-2 rounded w-20" [disabled]="currentPage === 1">Previous</button>
-  <p class="mx-4">Page {{currentPage}} of {{totalPages}}</p>
-  <button (click)="goToNextPage()" class="bg-gray-300 p-2 rounded w-20" [disabled]="currentPage === totalPages">Next</button>
+  <button
+    (click)="goToPreviousPage()"
+    class="bg-gray-300 p-2 rounded w-20"
+    [disabled]="currentPage === 1"
+  >
+    Previous
+  </button>
+  <p class="mx-4">Page {{ currentPage }} of {{ totalPages }}</p>
+  <button
+    (click)="goToNextPage()"
+    class="bg-gray-300 p-2 rounded w-20"
+    [disabled]="currentPage === totalPages"
+  >
+    Next
+  </button>
 </div>
 
-<!-- Modal Component -->
-<app-task-modal [isOpen]="isModalOpen" (close)="closeModal()" [task]="selectedTask"></app-task-modal>
+<!-- Add Task Modal Component -->
+<app-add-task-modal
+  *ngIf="isAddTaskModalOpen"
+  (close)="closeAddTaskModal()"
+  (save)="saveNewTask($event)"
+></app-add-task-modal>
+
+<!-- Task Modal for editing existing tasks -->
+<app-task-modal
+  [isOpen]="isModalOpen"
+  (close)="closeModal()"
+  [task]="selectedTask"
+></app-task-modal>
