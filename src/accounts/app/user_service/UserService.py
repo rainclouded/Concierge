@@ -33,7 +33,7 @@ class UserService():
         return (self.db.create_guest(new_guest), f'{new_guest.password}')
 
 
-    def delete_user(self, user:User)->bool:
+    def delete_user(self, username:str)->bool:
         """Remove a user from the database
 
             Args:
@@ -42,7 +42,7 @@ class UserService():
             Returns:
                 If the user was successfully deleted
         """
-        return self.db.delete_user(user)
+        return self.db.delete_user(username)
 
 
     def create_new_staff(self, new_user:User, password:str)->User:
@@ -59,3 +59,14 @@ class UserService():
             new_user.hash = self.auth.get_hash(new_user.id, password)
             return self.db.create_staff(new_user)
         return None
+
+    def update_user(self, username:str)->tuple[User, str]:
+        """
+            Update the account associated with a username
+            Args
+        """
+        return (
+            self.create_new_guest(username) 
+            if self.delete_user(username) 
+            else (None, None)
+        )

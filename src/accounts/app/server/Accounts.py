@@ -118,3 +118,43 @@ def login():
         response["status"] = "ok"
 
     return response
+
+
+
+@app.route("/accounts/delete", methods=["POST"])
+def delete():
+    """
+    Route to delete a user
+    """
+    response = {
+        "message": "Deletion could not be completed.",
+        "status": "error",
+    }
+    data = request.get_json()
+    
+    if user_service.delete_user(data['change_request']):
+        response["message"] = f"{data['change_request']} Successfully deleted!"
+        response["status"] = "ok"
+
+    return response
+
+@app.route("/accounts/update", methods=["PUT"])
+def update():
+    """
+    Route to update a guest user account
+    """
+    response = {
+        "message": "Update could not be completed.",
+        "status": "error",
+    }
+    data = request.get_json()
+    _, new_password = user_service.update_user(data['change_request'])
+    if new_password:
+        response["message"] =\
+        (
+            f"{data['change_request']} Successfully updated.!" +
+            f"{new_password}"
+        )
+        response["status"] = "ok"
+
+    return response

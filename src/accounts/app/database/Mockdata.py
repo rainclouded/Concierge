@@ -129,4 +129,5 @@ class Mockdata(DatabaseInterface):
             if user['username'] == update_user['username']:
                 self.users[idx] = update_user
                 return True
-        return False      
+        return False  
+    
