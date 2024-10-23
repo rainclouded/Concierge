@@ -8,7 +8,7 @@ from incident_reports_server.persistence.i_incident_report_persistence import II
 class IncidentReportPersistenceMongo(IIncidentReportPersistence):
     def __init__(self, db_connection_string: str, db_name: str):
         self.db_client = pymongo.MongoClient(db_connection_string)
-        self.db_client.admin.command('ping')  # This will ping the server)
+
         self.concierge_db = self.db_client[db_name]
         self.ir_collection = self.concierge_db["incident_reports"]
         

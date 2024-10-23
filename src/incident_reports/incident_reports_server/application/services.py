@@ -40,7 +40,7 @@ class Services:
         mongo_username = os.getenv('DB_USERNAME', 'mongo_db_user')
         mongo_password = os.getenv('DB_PASSWORD', 'password')
         
-        return f'mongodb://{mongo_username}:{mongo_password}@{mongo_host}:{mongo_port}/{mongo_db_name}'
+        return f'mongodb://{mongo_username}:{mongo_password}@{mongo_host}:{mongo_port}'
 
     @staticmethod
     def clear() -> None:
