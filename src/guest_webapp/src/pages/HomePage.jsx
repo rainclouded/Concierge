@@ -114,10 +114,11 @@ const HomePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#ECD8C8] relative">
+    <div className="h-screen bg-[#ECD8C8] relative flex flex-col">
+    <div className="flex-grow overflow-y-auto">
       {/* Sticky Header */}
       <header className="sticky top-0 bg-white p-4 shadow-md flex justify-between items-center z-40">
-        <button 
+        <button           
           className="p-2 h-10 w-10 flex items-center justify-center"
           onClick={toggleMenu}
         >
@@ -143,36 +144,46 @@ const HomePage = () => {
       </div>
 
       {/* Service Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 mx-auto justify-items-center max-w-full md:max-w-[75%]">
-        <RequestCard
-          icon={faBroom}
-          text="Room Service"
-        >
-          <label htmlFor="roomNumber" className="block mb-2">
-            Special Instructions:
-          </label>
-          <input
-            type="text"
-            className="border rounded p-2 mb-4 w-full"
-            placeholder="Your instructions here..."
-          />
-        </RequestCard>          
-        <RequestCard
-          icon={faHamburger}
-          text="Food Delivery"
-        >
-          <label htmlFor="roomNumber" className="block mb-2">
-            Choose from our selection:
-          </label>
-          {/* Main Dish Selection */}
-          <div className="flex items-center mb-4">
-            <select className="border rounded p-2 mr-2 w-48"> {/* Fixed width */}
-              <option value="">Select a Main Dish</option>
-              <option value="grilledChicken">Grilled Chicken</option>
-              <option value="steak">Steak</option>
-              <option value="pasta">Pasta Primavera</option>
-              <option value="salmon">Grilled Salmon</option>
-            </select>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 mx-auto justify-items-center max-w-full md:max-w-[75%]">
+          <RequestCard
+            icon={faBroom}
+            text={RoomServiceTag}
+            onSubmit={handleSubmit}
+            onClose={handleModalClose}
+          >
+            <label htmlFor="request" className="block mb-2">
+              Special Instructions:
+            </label>
+            <input
+              placeholder="Enter special instructions"
+              value={inputValue}
+              onChange={handleInputChange}
+              className="border rounded p-2 mb-4 w-full"
+            />
+          </RequestCard>
+
+          <RequestCard
+            icon={faHamburger}
+            text={FoodDeliveryTag}
+            onSubmit={handleSubmit}
+            onClose={handleModalClose}
+          >
+            <label htmlFor="request" className="block mb-2">
+              Choose from our selection:
+            </label>
+            {/* Main Dish Selection */}
+            <div className="flex items-center mb-4">
+              <select 
+                value={mainDish}
+                onChange={(e) => setMainDish(e.target.value)}
+                className="border rounded p-2 mr-2 w-48"
+              > 
+                <option value="">Select a Main Dish</option>
+                <option value="Grilled Chicken">Grilled Chicken</option>
+                <option value="Steak">Steak</option>
+                <option value="Pasta Primavera">Pasta Primavera</option>
+                <option value="Grilled Salmon">Grilled Salmon</option>
+              </select>
 
               <label className="flex items-center">
                 <input
