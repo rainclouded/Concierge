@@ -16,6 +16,12 @@ Microservice to access and manage hotel amenities.
 1. Go to directory: `./src/amenities/amenities_test`
 2. run command: `dotnet test`
 
+## How to Run Integration Tests
+1. Go to directory: `./src/amenities/`
+2. Run `docker compose -f docker-compose.test.yaml up -d`
+3. Go to `src/amenities/amenities_db_integration_test`
+4. Run command: `dotnet test`
+
 ## Model
 
 ### Id
