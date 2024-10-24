@@ -2,12 +2,13 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ITask } from '../../models/tasks.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ConfirmDeletionModalComponent } from './confirm-deletion-modal.component';  // Make sure the path is correct
 
 @Component({
   selector: 'app-task-modal',
   templateUrl: './task-modal.component.html',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, ConfirmDeletionModalComponent],
 })
 export class TaskModalComponent {
   @Input() isOpen = false;
@@ -16,6 +17,7 @@ export class TaskModalComponent {
 
   isEditing = false; // To toggle between edit and view mode
   editedDescription: string = ''; // For holding the description in edit mode
+  isDeleteConfirmModalOpen = false;  // Control for the confirm deletion modal
 
   // Close modal
   closeModal() {
@@ -64,5 +66,22 @@ export class TaskModalComponent {
       this.task.status =
         this.task.status === 'Completed' ? 'In Progress' : 'Completed';
     }
+  }
+
+  // Open the confirm deletion modal
+  openDeleteConfirmModal() {
+    this.isDeleteConfirmModalOpen = true;
+  }
+
+  // Close the confirm deletion modal
+  closeDeleteConfirmModal() {
+    this.isDeleteConfirmModalOpen = false;
+  }
+
+  // Simulate task deletion
+  deleteTask() {
+    console.log(`Task with ID ${this.task?.id} has been deleted.`);
+    this.isDeleteConfirmModalOpen = false;  // Close the confirm modal
+    this.close.emit();  // Also close the task details modal
   }
 }
