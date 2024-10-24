@@ -21,7 +21,11 @@
 							</div>
 						</div>
 						<p>{{report.description}}</p>
-						<p class="text-xs mt-4 font-semibold">{{report.severity}}</p>
+						<div class="flex gap-1">
+							<p class="text-xs mt-4 font-semibold">{{report.severity}}</p>
+							<button type="button" (click)="report.id && loadAmenity(report)" class="bg-slate-300 p-1 rounded-md">Edit</button>
+							<button type="button" (click)="report.id && deleteReport(report.id)" class="bg-red-700 text-white p-1 rounded-md">Delete</button>
+						</div>
 					</div>
 				}
 			}

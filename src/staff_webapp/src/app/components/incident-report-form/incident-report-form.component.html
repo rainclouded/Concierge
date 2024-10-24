@@ -16,14 +16,24 @@
 	</div>
 	<div class="mb-6">
 		<label for="severity" class="font-semibold">Severity</label>
-		<input type="text" id="severity" placeholder="LOW, MEDIUM, HIGH or CRITICAL" formControlName="severity" class="p-2 border rounded-lg w-full h-10">
+		<select id="severity" formControlName="severity" class="p-2 border rounded-lg w-full h-10">
+			<option value="LOW">LOW</option>
+			<option value="MEDIUM">MEDIUM</option>
+			<option value="HIGH">HIGH</option>
+			<option value="CRITICAL">CRITICAL</option>
+		</select>
 		@if (reportForm.get('severity')?.hasError('required') && reportForm.get('severity')?.touched) {
 			<div class="absolute text-xs text-red-700">ⓘ Severity is required</div>
 		}
 	</div>
 	<div class="mb-6">
 		<label for="status" class="font-semibold">Status</label>
-		<input type="text" id="status" placeholder="OPEN, IN_PROGRESS, RESOLVED or CLOSED" formControlName="status" class="p-2 border rounded-lg w-full h-10">
+		<select id="status" formControlName="status" class="p-2 border rounded-lg w-full h-10">
+			<option value="OPEN">OPEN</option>
+			<option value="IN_PROGRESS">IN_PROGRESS</option>
+			<option value="RESOLVED">RESOLVED</option>
+			<option value="CLOSED">CLOSED</option>
+		</select>
 		@if (reportForm.get('status')?.hasError('required') && reportForm.get('status')?.touched) {
 			<div class="absolute text-xs text-red-700">ⓘ Status is required</div>
 		}
