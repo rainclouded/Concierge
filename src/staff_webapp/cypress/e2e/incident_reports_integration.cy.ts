@@ -33,15 +33,15 @@ describe('integration test for amenities', () => {
   });
   
   it('Edit', () => {
-    getReportCard('To do', 'Room Maintenance Request')
+    getReportCard('To do', 'LOW')
       .parent()
       .children()
       .contains('Edit')
       .click()
     cy.get('#title').clear().type('Test');
     cy.get('#description').clear().type('TEST');
-    cy.get('#severity').clear().type('HIGH');
-    cy.get('#status').clear().type('CLOSED');
+    cy.get('#severity').select('HIGH');
+    cy.get('#status').select('CLOSED');
     cy.contains('Submit').click();
     
     getReportCard('Closed', 'TEST')
@@ -49,24 +49,23 @@ describe('integration test for amenities', () => {
       .children('p')
       .should(($ps)=>{
         expect($ps[0]).to.contain.text('TEST')
-        expect($ps[1]).to.contain.text('HIGH')
       })
     
     //Cleanup
-    getReportCard('Closed', 'TEST')
+    getReportCard('Closed', 'HIGH')
       .parent()
       .children()
       .contains('Edit')
       .click()
     cy.get('#title').clear().type('Room Maintenance Request');
     cy.get('#description').clear().type('Guest reported a leaky faucet in Room 203.');
-    cy.get('#severity').clear().type('LOW');
-    cy.get('#status').clear().type('OPEN');
+    cy.get('#severity').select('LOW');
+    cy.get('#status').select('OPEN');
     cy.contains('Submit').click();
   });
   
   it('Delete', () => {
-    getReportCard('To do', 'Room Maintenance Request')
+    getReportCard('To do', 'LOW')
       .parent()
       .children()
       .contains('Delete')
@@ -78,8 +77,8 @@ describe('integration test for amenities', () => {
     cy.contains('button', 'Report an incident').click();
     cy.get('#title').clear().type('Room Maintenance Request');
     cy.get('#description').clear().type('Guest reported a leaky faucet in Room 203.');
-    cy.get('#severity').clear().type('LOW');
-    cy.get('#status').clear().type('OPEN');
+    cy.get('#severity').select('LOW');
+    cy.get('#status').select('OPEN');
     cy.contains('Submit').click();
   });
   
