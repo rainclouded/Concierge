@@ -22,7 +22,7 @@ func GetPermissionGroups(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"groups": permissions})
+	ctx.JSON(http.StatusOK, middleware.Format("Permission groups retreived successfully", permissions))
 }
 
 func GetPermissionGroupById(ctx *gin.Context) {
