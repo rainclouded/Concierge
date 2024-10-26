@@ -148,6 +148,34 @@ class TestFlaskApp(unittest.TestCase):
     def test_get_port(self):
         self.assertEqual(8080,get_port())
 
+    def test_delete(self):
+        response = self.client.post(
+            '/accounts/login_attempt',
+            data=json.dumps({'username': 'test1', 'password': 'testPassword1'}),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json,
+            {
+                'message': 'Welcome, test1!',
+                'status': 'ok',
+            },
+        )
+        response = self.client.post(
+            '/accounts/login_attempt',
+            data=json.dumps({'username': '5', 'password': '44444444'}),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json,
+            {
+                'message': 'Welcome, 5!',
+                'status': 'ok',
+            },
+        )
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -33,20 +33,6 @@ class Services():
             )
         cls._permissions = PermissionController(cfg.create_permissions())
     
-    @classmethod
-    def inject_set_up(cls, database=None, authentication=None, validation=None, permissions=None):
-        """
-        Set up the class' services
-        """
-        cls._database = database
-        cls._authentication = authentication
-        cls._validation = validation
-        cls._user_service = UserService(
-            cls._database,
-            cls._authentication,
-            cls._validation
-            )
-        cls._permissions = permissions
 
     @classmethod
     def get_database(cls)->DatabaseController:

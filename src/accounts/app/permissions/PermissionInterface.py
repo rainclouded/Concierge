@@ -8,11 +8,22 @@ class PermissionInterface(ABC):
 
 
     @abstractmethod
-    def can_delete_user(self, token:str):
-        """Verify if the token permits user deletion
+    def can_delete_guest(self, token:str, public_key:str, algorithm:str):
+        """Verify if the token permits guest deletion
         
             Returns:
-                Boolean indicationg permission
+                Boolean indicating permission
+            Raises:
+                NotImplementedError if the method is not implemented
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def can_delete_staff(self, token:str, public_key:str, algorithm:str):
+        """Verify if the token permits staff deletion
+        
+            Returns:
+                Boolean indicating permission
             Raises:
                 NotImplementedError if the method is not implemented
         """
@@ -20,16 +31,28 @@ class PermissionInterface(ABC):
 
 
     @abstractmethod
-    def can_update_user(self, token:str):
-        """Verify if the token permits user update
+    def can_update_guest(self, token:str, public_key:str, algorithm:str):
+        """Verify if the token permits guest update
         
             Returns:
-                Boolean indicationg permission
+                Boolean indicating permission
             Raises:
                 NotImplementedError if the method is not implemented
         """
         raise NotImplementedError
 
+    @abstractmethod
+    def can_update_staff(self, token:str, public_key:str, algorithm:str):
+        """Verify if the token permits staff update
+        
+            Returns:
+                Boolean indicating permission
+            Raises:
+                NotImplementedError if the method is not implemented
+        """
+        raise NotImplementedError
+
+    @abstractmethod
     def decode_token(self, token:str, public_key:str, algorithm:str):
         """Decode a jwt token
         

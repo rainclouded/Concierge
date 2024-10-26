@@ -65,8 +65,8 @@ class DatabaseInterface(ABC):
 
     @abstractmethod
     def update_user(self, update_user:dict):
-        """Update the account info od the user whos username mathches
-            update_user['username']. If the user does not exist, add them
+        """Update the account info of the user whos username mathches
+            update_user['username']. 
         
             Raises:
                 NotImplementedError if the method is not implemented
