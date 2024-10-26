@@ -5,6 +5,8 @@ import app.Configs as cfg
 from app.authentication.AuthenticationManager import AuthenticationManager
 from app.database.DatabaseController import DatabaseController
 from app.user_service.UserService import UserService
+from app.validation.ValidationManager import ValidationManager
+from app.permissions.PermissionController import PermissionController
 
 class Services():
     """
@@ -23,8 +25,28 @@ class Services():
         """
         cls._database = DatabaseController(cfg.create_database())
         cls._authentication = AuthenticationManager(cls._database)
-        cls._user_service = UserService(cls._database)
+        cls._validation = ValidationManager(cls._database)
+        cls._user_service = UserService(
+            cls._database,
+            cls._authentication,
+            cls._validation
+            )
         cls._permissions = PermissionController(cfg.create_permissions())
+    
+    @classmethod
+    def inject_set_up(cls, database=None, authentication=None, validation=None, permissions=None):
+        """
+        Set up the class' services
+        """
+        cls._database = database
+        cls._authentication = authentication
+        cls._validation = validation
+        cls._user_service = UserService(
+            cls._database,
+            cls._authentication,
+            cls._validation
+            )
+        cls._permissions = PermissionController(permissions)
 
     @classmethod
     def get_database(cls)->DatabaseController:
@@ -51,7 +73,7 @@ class Services():
             Returns:
                 UserService instance
         """
-        return cls.get_user_service
+        return cls._user_service
 
     @classmethod
     def get_permissions(cls)->PermissionController:
@@ -62,3 +84,11 @@ class Services():
         """
         return cls._permissions
 
+    @classmethod
+    def get_validation(cls)->ValidationManager:
+        """Get the validation singleton
+        
+            Returns:
+                ValidationManager instance
+        """
+        return cls._validation

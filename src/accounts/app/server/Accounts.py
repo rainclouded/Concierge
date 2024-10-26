@@ -4,19 +4,19 @@ Module for the account server
 import argparse
 import os
 import app.Configs as cfg
+from app.core.Services import Services
+from app.dto.UserObject import UserObject as User
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from app.dto.UserObject import UserObject as User
-from app.authentication.AuthenticationManager import AuthenticationManager
-from app.database.DatabaseController import DatabaseController
-from app.user_service.UserService import UserService
+
 
 
 app = Flask(__name__)
 CORS(app)
-database = DatabaseController(cfg.create_database())
-auth = AuthenticationManager(database)
-user_service = UserService(database)
+database = Services.get_database()
+auth = Services.get_authentication()
+user_service = Services.get_user_service()
+permissions = Services.get_permissions()
 
 DEFAULT_PORT = 8080
 ENVIRONMENT_VAR_NAME_PORT = "ACCOUNTS_PORT"
@@ -87,6 +87,7 @@ def create():
 
     created_user = None
     new_password = None
+
     if data['type'] == cfg.GUEST_TYPE:
         created_user, new_password = user_service.create_new_guest(new_user)
     else:
@@ -120,7 +121,6 @@ def login():
     return response
 
 
-
 @app.route("/accounts/delete", methods=["POST"])
 def delete():
     """
@@ -131,12 +131,20 @@ def delete():
         "status": "error",
     }
     data = request.get_json()
-    
-    if user_service.delete_user(data['change_request']):
-        response["message"] = f"{data['change_request']} Successfully deleted!"
-        response["status"] = "ok"
+    permisson_key = request.headers.get('X-Api-Key')
+    user_to_delete = data['change_request']
 
+    if permissions.can_delete_user(permisson_key, permissions.get_user_type(user_to_delete)):
+        if user_service.delete_user(data['change_request']):
+            response["message"] = f"{data['change_request']} Successfully deleted!"
+            response["status"] = "ok"
+    else:
+        response = {
+            "message": "Action not permitted",
+            "status": "forbidden"
+        }
     return response
+
 
 @app.route("/accounts/update", methods=["PUT"])
 def update():
@@ -148,13 +156,32 @@ def update():
         "status": "error",
     }
     data = request.get_json()
-    _, new_password = user_service.update_user(data['change_request'])
-    if new_password:
-        response["message"] =\
-        (
-            f"{data['change_request']} Successfully updated.!" +
-            f"{new_password}"
-        )
-        response["status"] = "ok"
+    permisson_key = request.headers.get('X-Api-Key')
+    user_to_change = data['change_request']
+
+    try:
+        match user_service.get_user_type(user_to_change):
+            case cfg.GUEST_TYPE:
+                if permissions.can_update_user(permisson_key, cfg.GUEST_TYPE):
+                    _, new_password = user_service.update_user(data['change_request'])
+                    if new_password:
+                        response["message"] =\
+                        (
+                            f"{data['change_request']} Successfully updated.!" +
+                            f"{new_password}"
+                        )
+                        response["status"] = "ok"
+            case cfg.STAFF_TYPE:
+                response = {
+                    "message": "Cannot delete user",
+                    "status": "error",
+                }
+
+    except LookupError:
+        response = {
+            "message": "User not found",
+            "status": "error",
+        }
+
 
     return response

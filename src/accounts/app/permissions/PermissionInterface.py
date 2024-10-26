@@ -8,11 +8,11 @@ class PermissionInterface(ABC):
 
 
     @abstractmethod
-    def can_delete_guest(self):
-        """Get all of the guests and staff from the database
+    def can_delete_user(self, token:str):
+        """Verify if the token permits user deletion
         
             Returns:
-                List of all users
+                Boolean indicationg permission
             Raises:
                 NotImplementedError if the method is not implemented
         """
@@ -20,27 +20,22 @@ class PermissionInterface(ABC):
 
 
     @abstractmethod
-    def can_delete_staff(self):
-        """Get all staff from the database
+    def can_update_user(self, token:str):
+        """Verify if the token permits user update
         
             Returns:
-                List of all staff
+                Boolean indicationg permission
             Raises:
                 NotImplementedError if the method is not implemented
         """
         raise NotImplementedError
 
-
-    @abstractmethod
-    def can_update_guest(self):
-        """Get all of the guests from the database
+    def decode_token(self, token:str, public_key:str, algorithm:str):
+        """Decode a jwt token
         
             Returns:
-                List of all guests
+                Decoded token value
             Raises:
                 NotImplementedError if the method is not implemented
         """
         raise NotImplementedError
-
-
-

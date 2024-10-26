@@ -4,7 +4,7 @@ services:
     ports:
       - 50001:8080
     env_file:
-      - .env.prod
+      - .env.dev
 
   accounts-mongo:
     image: mongo:4.4.18
@@ -12,10 +12,6 @@ services:
     ports:
       - "27017:27017"
     env_file:
-      - .env.prod
+      - .env.dev
     volumes:
       - mongo_data:/accounts_data/db
-
-volumes:
-  mongo_data:
-    driver: local

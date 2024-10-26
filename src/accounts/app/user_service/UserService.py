@@ -3,9 +3,6 @@ Module for UserService account service
 """
 from secrets import randbelow
 import app.Configs as cfg
-from app.authentication.AuthenticationManager import AuthenticationManager
-from app.validation.ValidationManager import ValidationManager
-from app.database.DatabaseController import DatabaseController
 from app.dto.UserObject import UserObject as User
 
 class UserService():
@@ -13,10 +10,22 @@ class UserService():
     Class for handling maintnance of user accounts
     """
 
-    def __init__(self, database:DatabaseController):
+    def __init__(self, database, authentication, validation):
         self.db = database
-        self.auth = AuthenticationManager(database)
-        self.validation = ValidationManager(database)
+        self.auth = authentication
+        self.validation = validation
+
+    def get_user_type(self, username:str)->str:
+        """Find the 'type' of a user
+        """
+        return next(
+            (
+                user['type'] for user in self.db.get_all_users()
+                if user['username'] == username
+            ),
+            self._raise_user_not_found()
+        )
+
 
     def create_new_guest(self, new_guest:User)->tuple[User, str]:
         """Adds a new guest user
@@ -71,3 +80,11 @@ class UserService():
             else (None, None)
         )
     
+    
+    def _raise_user_not_found(self):
+        """Method to raise a Lookup Error
+
+            Raises:
+                LookupError
+        """
+        raise LookupError("User could not be found")
