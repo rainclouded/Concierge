@@ -18,9 +18,5 @@ func LoadAccountEndpoint() client.AccountClient {
 
 func TestAccountEndpoint(client client.AccountClient) bool {
 	_, err := client.Get("/healthcheck")
-	if err != nil {
-		return false
-	}
-
-	return true
+	return err == nil
 }

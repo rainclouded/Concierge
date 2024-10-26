@@ -12,103 +12,61 @@ import (
 func GetPermissions(ctx *gin.Context) {
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
 		return
 	}
 
 	permissions, err := db.GetPermissions()
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, middleware.Format(err.Error(), nil))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"permissions": permissions})
+	ctx.JSON(http.StatusOK, middleware.Format("Permissions retreived successfully", permissions))
 }
 
 // expects router.GET("/permissions/:id", GetPermission)
 func GetPermissionById(ctx *gin.Context) {
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
 		return
 	}
 
 	id, ok := getPathParam(ctx, "id")
 	if !ok {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id parameter"})
+		ctx.JSON(http.StatusBadRequest, middleware.Format("Invalid id parameter", nil))
 		return
 	}
 
 	permissions, err := db.GetPermissionById(id)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusNotFound, middleware.Format(err.Error(), nil))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"permission": permissions})
+	ctx.JSON(http.StatusOK, middleware.Format("Permission found successfully", permissions))
 }
 
 func PostPermission(ctx *gin.Context) {
-	var permission models.Permission
+	var permission models.PermissionPostRequest
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
 		return
 	}
 
 	//https://gin-gonic.com/docs/examples/binding-and-validation/
 	if err := ctx.ShouldBindJSON(&permission); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		ctx.JSON(http.StatusBadRequest, middleware.Format("Invalid input", nil))
 		return
 	}
 
-	if permission.Name == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Permission name is required"})
-		return
-	}
-
-	if err := db.CreatePermission(&permission); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add permission"})
-		return
-	}
-
-	ctx.JSON(http.StatusCreated, permission)
-}
-
-func PatchPermission(ctx *gin.Context) {
-	var permReq models.Permission
-	db, ok := middleware.GetDb(ctx)
-	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
-		return
-	}
-
-	id, ok := getPathParam(ctx, "id")
-	if !ok {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id parameter"})
-		return
-	}
-
-	if err := ctx.ShouldBindJSON(&permReq); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
-		return
-	}
-
-	permission, err := db.GetPermissionById(id)
+	newPerm, err := db.CreatePermission(permission.Name)
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("permission %d not found", id)})
+		ctx.JSON(http.StatusConflict, middleware.Format(fmt.Sprintf("Cannot create permission '%s' already exists", permission.Name), nil))
+		return
 	}
 
-	if permReq.Name != "" {
-		permission.Name = permReq.Name
-	}
-
-	permission.Value = permReq.Value
-
-	db.UpdatePermission(permission)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	}
-
-	ctx.JSON(http.StatusOK, permission)
+	ctx.JSON(http.StatusCreated, middleware.Format("Permission created successfully", newPerm))
 }

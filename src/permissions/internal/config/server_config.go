@@ -22,7 +22,7 @@ func LoadDB() (db database.Database) {
 	dbImplementation := os.Getenv("DB_IMPLEMENTATION")
 
 	if dbImplementation == "MARIADB" {
-		newDb = database.NewMariaDB()
+		// newDb = database.NewMariaDB()
 	}
 
 	//fallback on newMock if maria fails

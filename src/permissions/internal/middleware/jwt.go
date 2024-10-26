@@ -3,29 +3,70 @@ package middleware
 import (
 	"concierge/permissions/internal/config"
 	"concierge/permissions/internal/models"
+	"crypto/ecdsa"
 	"crypto/x509"
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
 	"math"
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func ParseSignedMessage(sessionKey string) (*models.SessionKeyData, error) {
-	publicKey, err := config.LoadPublicKey()
-	if err != nil {
-		return nil, err
+type JWT_Context struct {
+	privateKey         *ecdsa.PrivateKey
+	publicKey          *ecdsa.PublicKey
+	encryptionAlgo     jwt.SigningMethod
+	PermissionPerIndex int
+	sessionHeader      string
+}
+
+func NewJWT() *JWT_Context {
+	publicKey := config.LoadPublicKey() //TODO handle public key is nil
+	pk := config.LoadPrivateKey()       //TODO handle private key is nil
+	signingMethod := config.LoadEncrypAlgo()
+	N := config.LoadPermissionPerIndex()
+	sessionKeyHeaderName := config.LoadSessionKeyHeader()
+
+	return &JWT_Context{
+		privateKey:         pk,
+		publicKey:          publicKey,
+		encryptionAlgo:     signingMethod,
+		PermissionPerIndex: N,
+		sessionHeader:      sessionKeyHeaderName,
+	}
+}
+
+func SetJWTContex(jwtCtx *JWT_Context) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		if jwtCtx == nil {
+			ctx.JSON(http.StatusInternalServerError, Format("System cannot connect to JWT module", nil))
+			return
+		}
+		ctx.Set("jwt_ctx", jwtCtx)
+		ctx.Next()
+	}
+}
+
+func GetJWTContext(ctx *gin.Context) (*JWT_Context, bool) {
+	jwtCtxInterface, exists := ctx.Get("jwt_ctx")
+	if !exists {
+		return nil, false
 	}
 
+	jwtCtx, ok := jwtCtxInterface.(*JWT_Context)
+	return jwtCtx, ok
+}
+
+func (jwtCtx *JWT_Context) ParseSignedMessage(sessionKey string) (*models.SessionKeyData, error) {
 	token, err := jwt.Parse(sessionKey, func(t *jwt.Token) (interface{}, error) {
-		return publicKey, nil
+		return jwtCtx.publicKey, nil
 	}, jwt.WithValidMethods([]string{"ES384"}))
 
 	if err != nil {
-		fmt.Printf("Invalid key: %s", sessionKey)
 		return nil, fmt.Errorf("failed to parse sessionKey: %s", err.Error())
 	}
 
@@ -47,8 +88,7 @@ func ParseSignedMessage(sessionKey string) (*models.SessionKeyData, error) {
 	return &sessionData, nil
 }
 
-func SignMessage(sessionData *models.SessionKeyData) (string, error) {
-	signingMethod := config.LoadEncrypAlgo()
+func (jwtCtx *JWT_Context) SignMessage(sessionData *models.SessionKeyData) (string, error) {
 	claims := jwt.MapClaims{
 		"accountId":         sessionData.AccountID,
 		"accountName":       sessionData.AccountName,
@@ -57,14 +97,9 @@ func SignMessage(sessionData *models.SessionKeyData) (string, error) {
 		"exp":               jwt.NewNumericDate(time.Now().Add(time.Minute * time.Duration(config.LoadSessionExp()))),
 	}
 
-	token := jwt.NewWithClaims(signingMethod, claims)
+	token := jwt.NewWithClaims(jwtCtx.encryptionAlgo, claims)
 
-	pk, err := config.LoadPrivateKey()
-	if err != nil {
-		return "", err
-	}
-
-	signedToken, err := token.SignedString(pk)
+	signedToken, err := token.SignedString(jwtCtx.privateKey)
 	if err != nil {
 		return "", err
 	}
@@ -72,12 +107,11 @@ func SignMessage(sessionData *models.SessionKeyData) (string, error) {
 	return signedToken, nil
 }
 
-func PermissionSliceToPermissionString(permissions []*models.Permission) []int {
-	N := config.LoadPermissionPerIndex() //Controls # of permissions per list element
+func (jwtCtx *JWT_Context) PermissionSliceToPermissionString(permissions []*models.Permission) []int {
 	slice := []int{0}
 	for _, permission := range permissions {
-		index := permission.ID / N
-		value := int(math.Pow(2, float64(permission.ID%N)))
+		index := permission.ID / jwtCtx.PermissionPerIndex
+		value := int(math.Pow(2, float64(permission.ID%jwtCtx.PermissionPerIndex)))
 		for i := len(slice); i < index+1; i++ {
 			slice = append(slice, 0)
 		}
@@ -86,13 +120,8 @@ func PermissionSliceToPermissionString(permissions []*models.Permission) []int {
 	return slice
 }
 
-func GetPublicKeyPEM() (string, error) {
-	publicKey, err := config.LoadPublicKey()
-	if err != nil {
-		return "", err
-	}
-
-	derKey, err := x509.MarshalPKIXPublicKey(publicKey)
+func (jwtCtx *JWT_Context) GetPublicKeyPEM() (string, error) {
+	derKey, err := x509.MarshalPKIXPublicKey(jwtCtx.publicKey)
 	if err != nil {
 		return "", err
 	}
@@ -105,10 +134,6 @@ func GetPublicKeyPEM() (string, error) {
 	return string(pem.EncodeToMemory(block)), nil
 }
 
-func GetAPIKeyFromCtx(ctx *gin.Context) string {
-	value := ctx.Request.Header[config.LoadSessionKeyHeader()]
-	if len(value) == 0 {
-		return ""
-	}
-	return value[0]
+func (jwtCtx *JWT_Context) GetAPIKeyFromCtx(ctx *gin.Context) string {
+	return ctx.GetHeader(jwtCtx.sessionHeader)
 }

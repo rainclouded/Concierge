@@ -1,5 +1,10 @@
 package models
 
+import (
+	"fmt"
+	"strings"
+)
+
 type PermissionGroup struct {
 	ID          int           `json:"groupId"`
 	Name        string        `json:"groupName" binding:"required"`
@@ -9,7 +14,6 @@ type PermissionGroup struct {
 }
 
 type PermissionGroupRequest struct {
-	TemplateID    int             `json:"templateId"`
 	Name          string          `json:"groupName"`
 	Description   string          `json:"groupDescription"`
 	Permissions   []*PermissionId `json:"groupPermissions"`
@@ -38,43 +42,18 @@ func (group *PermissionGroup) DeepCopy() *PermissionGroup {
 	return newGroup
 }
 
-func (group *PermissionGroup) Merge(groupReq *PermissionGroupRequest) {
-	if groupReq.Name != "" {
-		group.Name = groupReq.Name
+func (pg PermissionGroup) String() string {
+	var permissions []string
+	for _, perm := range pg.Permissions {
+		permissions = append(permissions, perm.String())
 	}
 
-	if groupReq.Description != "" {
-		group.Description = groupReq.Description
-	}
-
-	if groupReq.Permissions != nil {
-		for _, permission := range groupReq.Permissions {
-			found := false
-			for _, p := range group.Permissions {
-				if p.ID == permission.ID {
-					p.Value = permission.State
-				}
-			}
-			if !found {
-				group.Permissions = append(group.Permissions, &Permission{
-					ID:    permission.ID,
-					Value: permission.State,
-				})
-			}
-		}
-	}
-
-	if groupReq.Members != nil {
-		group.Members = groupReq.Members
-	}
-
-	if groupReq.MembersRemove != nil {
-		for _, removeId := range groupReq.MembersRemove {
-			for i, memberId := range group.Members {
-				if memberId == removeId {
-					group.Members = append(group.Members[:i], group.Members[i+1:]...)
-				}
-			}
-		}
-	}
+	return fmt.Sprintf(
+		"PermissionGroup{ID: %d, Name: %s, Description: %s, Permissions: [%s], Members: %v}",
+		pg.ID,
+		pg.Name,
+		pg.Description,
+		strings.Join(permissions, ", "),
+		pg.Members,
+	)
 }

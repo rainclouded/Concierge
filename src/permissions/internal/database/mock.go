@@ -12,9 +12,9 @@ type MockDatabase struct {
 
 func NewMockDB() *MockDatabase {
 	var permissions = []*models.Permission{
-		{ID: 0, Name: "canEditAll", Value: false},
-		{ID: 1, Name: "canViewAll", Value: false},
-		{ID: 2, Name: "canDelete", Value: false},
+		{ID: 0, Name: "canEditAll", Value: true},
+		{ID: 1, Name: "canViewAll", Value: true},
+		{ID: 2, Name: "canDelete", Value: true},
 		{ID: 3, Name: "canCreate", Value: true},
 	}
 	db := &MockDatabase{
@@ -24,16 +24,21 @@ func NewMockDB() *MockDatabase {
 				ID:          1,
 				Name:        "admin",
 				Description: "Has all permissions",
-				Permissions: permissions,
-				Members:     []int{0, 1, 2},
+				Permissions: []*models.Permission{
+					permissions[0].DeepCopy(),
+					permissions[1].DeepCopy(),
+					permissions[2].DeepCopy(),
+					permissions[3].DeepCopy(),
+				},
+				Members: []int{0, 1, 2},
 			},
 			{
 				ID:          2,
 				Name:        "editor",
 				Description: "Can edit and view",
 				Permissions: []*models.Permission{
-					permissions[0],
-					permissions[1],
+					permissions[0].DeepCopy(),
+					permissions[1].DeepCopy(),
 				},
 				Members: []int{3},
 			},
@@ -42,7 +47,7 @@ func NewMockDB() *MockDatabase {
 				Name:        "viewer",
 				Description: "Can only view",
 				Permissions: []*models.Permission{
-					permissions[1],
+					permissions[1].DeepCopy(),
 				},
 				Members: []int{-1, 4, 5},
 			},
@@ -59,17 +64,23 @@ func (db *MockDatabase) GetPermissions() ([]*models.Permission, error) {
 func (db *MockDatabase) GetPermissionById(permissionId int) (*models.Permission, error) {
 	for _, permission := range db.permissions {
 		if permission.ID == permissionId {
-			return permission, nil
+			return permission.DeepCopy(), nil
 		}
 	}
 
-	return nil, fmt.Errorf("Permission with ID %d not found", permissionId)
+	return nil, fmt.Errorf("permission with ID %d not found", permissionId)
 }
 
-func (db *MockDatabase) CreatePermission(newPermission *models.Permission) error {
-	newPermission.ID = db.getMaxPermissoinId()
-	db.permissions = append(db.permissions, newPermission)
-	return nil
+func (db *MockDatabase) CreatePermission(permissionName string) (*models.Permission, error) {
+	permission := &models.Permission{ID: db.getMaxPermissoinId(), Name: permissionName, Value: true}
+	for _, p := range db.permissions {
+		if p.Name == permissionName {
+			return nil, fmt.Errorf("conflict")
+		}
+	}
+
+	db.permissions = append(db.permissions, permission)
+	return permission, nil
 }
 
 func (db *MockDatabase) UpdatePermission(updatedPermission *models.Permission) error {
@@ -80,7 +91,7 @@ func (db *MockDatabase) UpdatePermission(updatedPermission *models.Permission) e
 		}
 	}
 
-	return fmt.Errorf("Update failed, permission not found with ID %d", updatedPermission.ID)
+	return fmt.Errorf("update failed, permission not found with ID %d", updatedPermission.ID)
 }
 
 func (db *MockDatabase) GetPermissionGroups() ([]*models.PermissionGroup, error) {
@@ -94,24 +105,118 @@ func (db *MockDatabase) GetPermissionGroupById(groupId int) (*models.PermissionG
 		}
 	}
 
-	return nil, fmt.Errorf("Permission Group with ID %d not found", groupId)
+	return nil, fmt.Errorf("permission Group with ID %d not found", groupId)
 }
 
-func (db *MockDatabase) CreatePermissionGroup(newGroup *models.PermissionGroup) error {
-	newGroup.ID = db.getMaxGroupId()
-	db.groups = append(db.groups, newGroup)
+func (db *MockDatabase) CreatePermissionGroup(newGroup *models.PermissionGroupRequest) error {
+	newGroupObj := models.PermissionGroup{
+		ID:          db.getMaxGroupId(),
+		Name:        newGroup.Name,
+		Description: newGroup.Description,
+	}
+
+	for _, p := range newGroup.Permissions {
+		permRef, err := db.GetPermissionById(p.ID)
+		if err != nil {
+			return fmt.Errorf("could not find permission %d", p.ID)
+		}
+		permRef = permRef.DeepCopy()
+		permRef.Value = p.State
+
+		newGroupObj.Permissions = append(newGroupObj.Permissions, permRef)
+	}
+
+	newGroupObj.Members = append(newGroupObj.Members, newGroup.Members...)
+
+	db.groups = append(db.groups, &newGroupObj)
 	return nil
 }
 
-func (db *MockDatabase) UpdatePermissionGroup(updatedGroup *models.PermissionGroup) error {
-	for i, group := range db.groups {
-		if group.ID == updatedGroup.ID {
-			db.groups[i] = updatedGroup
-			return nil
+func (db *MockDatabase) UpdatePermissionGroup(id int, groupReq *models.PermissionGroupRequest) error {
+	group, err := db.GetPermissionGroupById(id)
+	if err != nil {
+		return err
+	}
+	group = group.DeepCopy()
+
+	if groupReq.Name != "" {
+		group.Name = groupReq.Name
+	}
+
+	if groupReq.Description != "" {
+		group.Description = groupReq.Description
+	}
+
+	if groupReq.Name != "" {
+		group.Name = groupReq.Name
+	}
+
+	if groupReq.Permissions != nil {
+		newPermSlice := []*models.Permission{}
+		for _, newPermission := range groupReq.Permissions {
+			newPermObj, err := db.GetPermissionById(newPermission.ID)
+			if err != nil {
+				return err
+			}
+			newPermObj.Value = newPermission.State
+			newPermSlice = append(newPermSlice, newPermObj.DeepCopy())
+		}
+
+		for _, newPerm := range newPermSlice {
+			found := false
+			for _, p := range group.Permissions {
+				if p.ID == newPerm.ID {
+					p.Value = newPerm.Value
+					found = true
+				}
+			}
+			if !found {
+				group.Permissions = append(group.Permissions, newPerm)
+			}
 		}
 	}
 
-	return fmt.Errorf("Update failed, permission group not found with ID %d", updatedGroup.ID)
+	if groupReq.Members != nil && groupReq.MembersRemove != nil {
+		for _, addM := range groupReq.Members {
+			for _, removeM := range groupReq.MembersRemove {
+				if addM == removeM {
+					return fmt.Errorf("cannot add and remove the same group member: %d", addM)
+				}
+			}
+		}
+	}
+
+	if groupReq.Members != nil {
+		for _, addM := range groupReq.Members {
+			found := false
+			for _, m := range group.Members {
+				if m == addM {
+					found = true
+				}
+			}
+
+			if !found {
+				group.Members = append(group.Members, addM)
+			}
+		}
+	}
+
+	if groupReq.MembersRemove != nil {
+		for _, removeM := range groupReq.MembersRemove {
+			for index, m := range group.Members {
+				if m == removeM {
+					group.Members = append(group.Members[:index], group.Members[index+1:]...)
+				}
+			}
+		}
+	}
+
+	for i, v := range db.groups {
+		if v.ID == group.ID {
+			db.groups[i] = group
+		}
+	}
+	return nil
 }
 
 func (db *MockDatabase) GetGroupMembers(groupId int) ([]int, error) {
@@ -146,7 +251,7 @@ func (db *MockDatabase) RemoveMemberFromGroup(groupId int, accountId int) error 
 		}
 	}
 
-	return fmt.Errorf("Remove Failed, Account %d is not a member of group %d", groupId, accountId)
+	return fmt.Errorf("remove Failed, Account %d is not a member of group %d", groupId, accountId)
 }
 
 func (db *MockDatabase) getMaxPermissoinId() int {
@@ -210,4 +315,9 @@ func (db *MockDatabase) GetGroupPermissionState(group *models.PermissionGroup, p
 		}
 	}
 	return false
+}
+
+// Testing setup methods
+func (db *MockDatabase) ClearPermissions() {
+	db.permissions = []*models.Permission{}
 }

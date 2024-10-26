@@ -43,29 +43,32 @@ func LoadSessionExp() int {
 }
 
 // default publicKey := "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE61z8KkG7BfsioUcmMMTTbZ0hHR8kzIXIPYcpoLnqbOPHXPSM4PYCsLbhaTzuw0sASDMcdSEZqwFw3krnXwHKEp3ID5ol2vj4qpxDzZdl4T0dNvWeRMCGLZGAPVz6zOD4"
-func LoadPrivateKey() (*ecdsa.PrivateKey, error) {
+func LoadPrivateKey() *ecdsa.PrivateKey {
 	pkStr := os.Getenv("JWT_PRIVATE_KEY")
 	if pkStr == "" {
 		pkStr = `-----BEGIN EC PRIVATE KEY-----
 MIGkAgEBBDC4czoxahGqOAy2eCbsNjyEfFCsRItQ+G00whfrCbJQfsEDFN3HiSO5InXH8ZqjfmGgBwYFK4EEACKhZANiAATrXPwqQbsF+yKhRyYwxNNtnSEdHyTMhcg9hymgueps48dc9Izg9gKwtuFpPO7DSwBIMxx1IRmrAXDeSudfAcoSncgPmiXa+PiqnEPNl2XhPR029Z5EwIYtkYA9XPrM4Pg=
 -----END EC PRIVATE KEY-----`
 	}
-
-	return ParseECDSAPrivateKeyFromPEM(pkStr)
+	pk, err := ParseECDSAPrivateKeyFromPEM(pkStr)
+	if err != nil {
+		return nil
+	}
+	return pk
 }
 
-func LoadPublicKey() (*ecdsa.PublicKey, error) {
+func LoadPublicKey() *ecdsa.PublicKey {
 	publicKeyString := os.Getenv("JWT_PUBLIC_KEY")
 	if publicKeyString == "" {
-		privateKey, err := LoadPrivateKey()
-		if err != nil {
-			return nil, err
-		}
+		privateKey := LoadPrivateKey()
 
-		return &privateKey.PublicKey, nil
+		return &privateKey.PublicKey
 	}
-
-	return ParseECDSAPublicKeyFromPEM(publicKeyString)
+	key, err := ParseECDSAPublicKeyFromPEM(publicKeyString)
+	if err != nil {
+		return nil
+	}
+	return key
 }
 
 func ParseECDSAPrivateKeyFromPEM(pemStr string) (*ecdsa.PrivateKey, error) {

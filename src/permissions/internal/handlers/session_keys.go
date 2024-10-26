@@ -1,12 +1,8 @@
 package handlers
 
 import (
-	"concierge/permissions/internal/config"
 	"concierge/permissions/internal/middleware"
 	"concierge/permissions/internal/models"
-	"encoding/json"
-	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,76 +10,87 @@ import (
 
 func PostSessionKey(ctx *gin.Context) {
 	var loginRequest models.LoginAttempt
-	requestBody, err := io.ReadAll(ctx.Request.Body)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Bad Request"})
-		return
-	}
-
-	err = json.Unmarshal(requestBody, &loginRequest)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Bad Request"})
+	if err := ctx.ShouldBindJSON(&loginRequest); err != nil {
+		ctx.JSON(http.StatusBadRequest, middleware.Format("Invalid input", nil))
 		return
 	}
 
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
-		fmt.Printf("HERESS1")
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error!"})
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error!", nil))
 		return
 	}
 
-	accCli := config.LoadAccountEndpoint()
+	accCli, ok := middleware.GetAccountClient(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error!", nil))
+		return
+	}
+
+	jwtCtx, ok := middleware.GetJWTContext(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error!", nil))
+	}
+
 	account, err := accCli.PostLoginAttempt(loginRequest)
 	if err != nil {
-		fmt.Printf("HERES2S")
-		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusNotFound, middleware.Format(err.Error(), nil))
 		return
 	}
 
 	permissions, err := db.GetPermissionForAccountId(account.ID)
 	if err != nil {
-		fmt.Printf("HERESS4")
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, middleware.Format(err.Error(), nil))
 		return
 	}
 
-	sessionKey, err := middleware.SignMessage(
+	sessionKey, err := jwtCtx.SignMessage(
 		&models.SessionKeyData{
 			AccountID:         account.ID,
 			AccountName:       account.Name,
 			PermissionVersion: 1,
-			PermissionString:  middleware.PermissionSliceToPermissionString(permissions),
+			PermissionString:  jwtCtx.PermissionSliceToPermissionString(permissions),
 		},
 	)
 	if err != nil {
-		fmt.Printf("HERESS5")
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, middleware.Format(err.Error(), nil))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"sessionKey": sessionKey})
+	ctx.JSON(http.StatusOK, middleware.Format("Session key successfully created", gin.H{"sessionKey": sessionKey}))
 }
 
 func ParseSessionKey(ctx *gin.Context) {
-	sessionKey := middleware.GetAPIKeyFromCtx(ctx)
+	jwtCtx, ok := middleware.GetJWTContext(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error!", nil))
+	}
+
+	sessionKey := jwtCtx.GetAPIKeyFromCtx(ctx)
 	if sessionKey == "" {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Not logged in!"})
+		ctx.JSON(http.StatusUnauthorized, middleware.Format("Not logged in!", nil))
 		return
 	}
-	data, err := middleware.ParseSignedMessage(sessionKey)
+	data, err := jwtCtx.ParseSignedMessage(sessionKey)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, middleware.Format(err.Error(), nil))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"sessionData": data})
+	ctx.JSON(http.StatusOK, middleware.Format("Session key successfully read", gin.H{"sessionData": data}))
 }
 
 func GetPublicKey(ctx *gin.Context) {
-	pem, err := middleware.GetPublicKeyPEM()
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+	jwtCtx, ok := middleware.GetJWTContext(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error!", nil))
+		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"publicKey": pem})
+
+	pem, err := jwtCtx.GetPublicKeyPEM()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
+		return
+	}
+	ctx.JSON(http.StatusOK, middleware.Format("Public key fetched", gin.H{"publicKey": pem}))
 }

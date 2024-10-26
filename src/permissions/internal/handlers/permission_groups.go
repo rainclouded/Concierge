@@ -12,13 +12,13 @@ import (
 func GetPermissionGroups(ctx *gin.Context) {
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
 		return
 	}
 
 	permissions, err := db.GetPermissionGroups()
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, middleware.Format(err.Error(), nil))
 		return
 	}
 
@@ -28,23 +28,23 @@ func GetPermissionGroups(ctx *gin.Context) {
 func GetPermissionGroupById(ctx *gin.Context) {
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
 		return
 	}
 
 	id, ok := getPathParam(ctx, "id")
 	if !ok {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id parameter"})
+		ctx.JSON(http.StatusBadRequest, middleware.Format("Invalid id parameter", nil))
 		return
 	}
 
 	group, err := db.GetPermissionGroupById(id)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusNotFound, middleware.Format(err.Error(), nil))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"group": group})
+	ctx.JSON(http.StatusOK, middleware.Format("Permission group retreived successfully", group))
 }
 
 func PostPermissionGroups(ctx *gin.Context) {
@@ -52,34 +52,27 @@ func PostPermissionGroups(ctx *gin.Context) {
 	var group = &models.PermissionGroup{}
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
 		return
 	}
 
 	if err := ctx.ShouldBindJSON(&groupReq); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		ctx.JSON(http.StatusBadRequest, middleware.Format("Invalid input", nil))
 		return
 	}
 
 	if groupReq.Name == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Permission name is required"})
+		ctx.JSON(http.StatusBadRequest, middleware.Format("Permission name is required", nil))
 		return
 	}
 
-	if groupReq.TemplateID > 0 {
-		template, err := db.GetPermissionGroupById(groupReq.TemplateID)
-		if err != nil {
-			ctx.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("could not find template group %d", groupReq.TemplateID)})
-			return
-		}
-
-		group = template.DeepCopy()
+	if len(groupReq.MembersRemove) > 0 {
+		ctx.JSON(http.StatusBadRequest, middleware.Format("cannot remove members when creating a new group", nil))
+		return
 	}
 
-	group.Merge(&groupReq)
-
-	if err := db.CreatePermissionGroup(group); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add permission"})
+	if err := db.CreatePermissionGroup(&groupReq); err != nil {
+		ctx.JSON(http.StatusBadRequest, middleware.Format(err.Error(), nil))
 		return
 	}
 
@@ -91,89 +84,32 @@ func PatchPermissionGroups(ctx *gin.Context) {
 
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
 		return
 	}
 
 	if err := ctx.ShouldBindJSON(&groupReq); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
-		return
-	}
-
-	group, err := db.GetPermissionGroupById(groupReq.TemplateID)
-	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("permission group %d not found", groupReq.TemplateID)})
-		return
-	}
-
-	group.Merge(&groupReq)
-
-	err = db.UpdatePermissionGroup(group)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	ctx.JSON(http.StatusCreated, group)
-}
-
-func GetPermissionGroupAccount(ctx *gin.Context) {
-	db, ok := middleware.GetDb(ctx)
-	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		ctx.JSON(http.StatusBadRequest, middleware.Format("Invalid input", nil))
 		return
 	}
 
 	id, ok := getPathParam(ctx, "id")
 	if !ok {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id parameter"})
-		return
-	}
-
-	members, err := db.GetGroupMembers(id)
-	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("permission group %d not found", id)})
+		ctx.JSON(http.StatusBadRequest, middleware.Format("Invalid id parameter", nil))
 		return
 	}
 
 	group, err := db.GetPermissionGroupById(id)
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("permission group %d not found", id)})
-	}
-
-	ctx.JSON(http.StatusOK, gin.H{"permissionGroupId": group, "accounts": members})
-}
-
-func PutPermissionGroupAccount(ctx *gin.Context) {
-	var groupReq models.PermissionGroupRequest
-
-	db, ok := middleware.GetDb(ctx)
-	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		ctx.JSON(http.StatusNotFound, middleware.Format(fmt.Sprintf("permission group %d not found", id), nil))
 		return
 	}
 
-	id, ok := getPathParam(ctx, "id")
-	if !ok {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id parameter"})
-		return
-	}
-
-	if err := ctx.ShouldBindJSON(&groupReq); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
-		return
-	}
-
-	group, err := db.GetPermissionGroupById(id)
+	err = db.UpdatePermissionGroup(id, &groupReq)
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("permission group %d not found", id)})
+		ctx.JSON(http.StatusInternalServerError, middleware.Format(err.Error(), nil))
 		return
 	}
 
-	groupReq.TemplateID = -1
-	groupReq.Name = ""
-	groupReq.Description = ""
-	groupReq.Permissions = nil
-
-	group.Merge(&groupReq)
+	ctx.JSON(http.StatusOK, group)
 }

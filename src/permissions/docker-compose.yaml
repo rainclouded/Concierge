@@ -3,3 +3,8 @@ services:
     build: .
     ports:
       - 50003:8080
+  # permissions-db:
+  #   image: mariadb:11.6.1-ubi9-rc
+  #   restart: always
+  #   environment:
+  #     MARIADB_ROOT_PASSWORD: sa

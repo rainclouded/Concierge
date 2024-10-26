@@ -1,16 +1,16 @@
-FROM golang:1.23.2-alpine3.20 AS builder
+FROM golang:1.23.2-alpine3.20
+
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
-COPY . ./
-RUN CGO_ENABLED=0 GOOS=linux go build -o /docker-permissions ./cmd/server
 
-FROM alpine:latest
-WORKDIR /app
-COPY --from=builder /docker-permissions ./
-EXPOSE 8080
+COPY ./api ./api
+COPY ./cmd ./cmd
+COPY ./internal ./internal
+COPY ./tests ./tests
 
-# https://lumigo.io/container-monitoring/docker-health-check-a-practical-guide/
-HEALTHCHECK --interval=30s --timeout=10s CMD busybox wget -qO- http://localhost:8080/permissions/healthcheck || exit 1
+# Build the Go application
+RUN CGO_ENABLED=0 GOOS=linux go build -o server ./cmd/server
 
-CMD ["./docker-permissions"]
+# Command to run the binary
+CMD ["./server"]

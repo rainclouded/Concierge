@@ -15,8 +15,8 @@ func main() {
 		log.Fatalf("Error loading config: %v", err)
 	}
 
-	// Initialize router and define routes
-	router := api.DefaultNewRouter()
+	// Initialize router and default options
+	router := api.NewRouter()
 
 	// Start the server
 	log.Printf("Starting server on port %s", cfg.ServerPort)
