@@ -1,0 +1,7 @@
+services:
+  task_system:
+    build: .
+    ports:
+      - 50006:8080
+    environment:
+      - forProduction=test
