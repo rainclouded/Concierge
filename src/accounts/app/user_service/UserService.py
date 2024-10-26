@@ -66,7 +66,8 @@ class UserService():
             Args
         """
         return (
-            self.create_new_guest(username) 
-            if self.delete_user(username) 
+            self.create_new_guest(username)
+            if self.delete_user(username)
             else (None, None)
         )
+    
