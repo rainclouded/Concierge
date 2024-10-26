@@ -28,6 +28,18 @@ def start_service():
     print(f"Starting server on port {port}...")
     app.run(host="0.0.0.0", port=port)
 
+def set_services(new_database = None, new_authentication = None,\
+                 new_user_service = None, new_permissions = None):
+    # pylint: disable=global-statement
+    global database, auth, user_service, permissions 
+    if new_database:
+        database = new_database
+    if new_authentication:
+        auth = new_authentication
+    if new_user_service:
+        user_service = new_user_service
+    if new_permissions:
+        permissions = new_permissions
 
 def get_port()->int:
     """Get the port the server should run on

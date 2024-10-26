@@ -102,7 +102,7 @@ class TestDatabaseController(unittest.TestCase):
         self.assertTrue(len(newly_added_guest) == 1)
         self.assertEqual(newly_added_guest.pop(), new_user)
         self.assertTrue(len(staff) == 4)
-        pass
+
 
     def test_gest_largest_id(self):
         self.assertEqual(3, self.db.get_largest_id())
@@ -128,22 +128,24 @@ class TestDatabaseController(unittest.TestCase):
     def test_delete_user(self):
         to_delete = list(filter(lambda x : x.username == 'test3', self.db.get_staff())).pop()
 
-        valid_staff = [User(**{
+        valid_staff = [
+            User(**{
             'username' : 'test1',
             'id' : '1',
             'hash' : '',
             'type' : 'staff'
-        }),
-        User(**{
+            }),
+            User(**{
             'username' : 'test2',
             'id' : '2',
             'hash' : '',
             'type' : 'staff'
-        })]
+            })
+        ]
 
-        self.db.delete_user(to_delete)
+        deleted_user = self.db.delete_user(to_delete.username)
         resultant_staff = self.db.get_staff()
-
+        self.assertEqual(deleted_user, to_delete)
         self.assertCountEqual(resultant_staff, valid_staff)
         self.assertEqual(len(resultant_staff), 2)
         self.assertEqual(self.db.get_largest_id(), 2)

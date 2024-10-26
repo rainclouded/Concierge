@@ -7,8 +7,14 @@ import json
 import re
 from unittest.mock import MagicMock, patch
 from app import app
-from app.server.Accounts import get_port
-
+from app.server.Accounts import get_port, set_services
+from app.authentication.AuthenticationManager import AuthenticationManager
+from app.database.DatabaseController import DatabaseController
+from app.user_service.UserService import UserService
+from app.validation.ValidationManager import ValidationManager
+from app.permissions.PermissionController import PermissionController
+from app.database.Mockdata import Mockdata
+from app.permissions.MockPermissions import MockPermissions
 
 class TestFlaskApp(unittest.TestCase):
     """
@@ -16,6 +22,13 @@ class TestFlaskApp(unittest.TestCase):
     """
 
     def setUp(self):
+        database = DatabaseController(Mockdata())
+        authenticaion = AuthenticationManager(database)
+        validation = ValidationManager(database)
+        permissions = PermissionController(MockPermissions())
+        user_service = UserService(database,  authenticaion, validation)
+        set_services(database, authenticaion, user_service, permissions)
+
         self.client = app.test_client()
         self.client.testing = True
         self.app = app

@@ -46,7 +46,7 @@ class Services():
             cls._authentication,
             cls._validation
             )
-        cls._permissions = PermissionController(permissions)
+        cls._permissions = permissions
 
     @classmethod
     def get_database(cls)->DatabaseController:
