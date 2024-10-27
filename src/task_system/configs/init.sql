@@ -1,14 +1,15 @@
-CREATE TABLE IF NOT EXISTS tasks (
-    id SERIAL PRIMARY KEY,
-    title VARCHAR(100),
-    description TEXT,
-    roomId NUMERIC,
-    assigneeId NUMERIC,
-    status VARCHAR(100),
-    createdAt DATETIME
+CREATE TABLE IF NOT EXISTS "Tasks" (
+    "Id" SERIAL PRIMARY KEY,
+    "Title" VARCHAR(100),
+    "Description" TEXT,
+    "RoomId" NUMERIC,
+    "RequesterId" NUMERIC,
+    "AssigneeId" NUMERIC,
+    "Status" VARCHAR(100),
+    "CreatedAt" TIMESTAMP
 );
 
-INSERT INTO tasks (title, description, description, roomId, assigneeId, status, createdAt) VALUES
+INSERT INTO "Tasks" ("Title", "Description", "RoomId", "RequesterId", "AssigneeId", "Status", "CreatedAt") VALUES
 ('Maintenance', 'There is a leak in the bathroom sink that needs urgent attention.', 101, 1, 2, 'In Progress', '2024-10-10 10:30:00'),
 ('Maintenance', 'Some light bulbs are out in the hallway. Please replace them.', 102, 3, 2, 'Pending', '2024-10-12 09:00:00'),
 ('Maintenance', 'The conference room needs to be cleaned before the meeting.', 201, 4, 5, 'Completed', '2024-10-13 15:00:00'),
