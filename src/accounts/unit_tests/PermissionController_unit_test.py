@@ -80,10 +80,14 @@ class TestPermissionController(unittest.TestCase):
                 self.test_private_key,
                 algorithm='ES256'
             )
-            self.assertFalse(self.permissions.can_delete_staff(token, self.test_public_key))
+            self.assertFalse(
+                self.permissions.can_delete_staff(token, self.test_public_key)
+            )
+
         for token, error in zip(self.invalid_tokens, errors):
             with self.assertRaises(error):
                 self.permissions.can_delete_staff(token, self.test_public_key)
+
 
     def test_can_delete_guest(self):
         errors = [
@@ -106,10 +110,14 @@ class TestPermissionController(unittest.TestCase):
                 self.test_private_key,
                 algorithm='ES256'
             )
-            self.assertFalse(self.permissions.can_delete_guest(token, self.test_public_key))
+            self.assertFalse(
+                self.permissions.can_delete_guest(token, self.test_public_key)
+            )
+
         for token, error in zip(self.invalid_tokens, errors):
             with self.assertRaises(error):
                 self.permissions.can_delete_guest(token, self.test_public_key)
+
 
     def test_can_update_guest(self):
         errors = [
@@ -131,7 +139,10 @@ class TestPermissionController(unittest.TestCase):
                 self.test_private_key,
                 algorithm='ES256'
             )
-            self.assertFalse(self.permissions.can_update_guest(token, self.test_public_key))
+            self.assertFalse(
+                self.permissions.can_update_guest(token, self.test_public_key)
+            )
+
         for token, error in zip(self.invalid_tokens, errors):
             with self.assertRaises(error):
                 self.permissions.can_update_guest(token, self.test_public_key)
@@ -158,8 +169,10 @@ class TestPermissionController(unittest.TestCase):
                 self.test_private_key,
                 algorithm='ES256'
             )
-            self.assertFalse(self.permissions.can_update_staff(token, self.test_public_key))
+            self.assertFalse(
+                self.permissions.can_update_staff(token, self.test_public_key)
+            )
+
         for token, error in zip(self.invalid_tokens, errors):
             with self.assertRaises(error):
                 self.permissions.can_update_staff(token, self.test_public_key)
-

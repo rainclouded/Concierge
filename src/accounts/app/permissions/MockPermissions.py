@@ -49,7 +49,7 @@ class MockPermissions(PermissionInterface):
 
 
     def can_update_staff(self, token: str, public_key:str)->bool:
-        """Verifies 
+        """Verifies if the token permits staff update
         
             Args:            
                 token is the jwt Token to be verified

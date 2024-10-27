@@ -48,8 +48,8 @@ class TestDatabaseController(unittest.TestCase):
         self.data = Mockdata()
         self.data.users = [*self.TEST_DATA]#Deepcopy hack
         self.db = DatabaseController(self.data)
-        self.maxDiff = None
-        
+
+
     def test_get_users(self):
         test_users = [User(**user) for user in self.TEST_DATA]
         retrieved_users = self.db.get_users()
@@ -63,13 +63,15 @@ class TestDatabaseController(unittest.TestCase):
 
         self.assertTrue(all([type(staff) == User for staff in retrieved_staff]))
         self.assertCountEqual(retrieved_staff, test_staff)
-        
+ 
 
     def test_get_guests(self):
         test_guests = [User(**guest) for guest in self.TEST_DATA[3:6]]
         retrieved_guests = self.db.get_guests()
 
-        self.assertTrue(all([type(guest) == User for guest in retrieved_guests]))
+        self.assertTrue(
+            all([type(guest) == User for guest in retrieved_guests])
+        )
         self.assertCountEqual(retrieved_guests, test_guests)
 
 
@@ -127,7 +129,12 @@ class TestDatabaseController(unittest.TestCase):
 
 
     def test_delete_user(self):
-        to_delete = list(filter(lambda x : x.username == 'test3', self.db.get_staff())).pop()
+        to_delete = list(
+            filter(
+                lambda x : x.username == 'test3',
+                self.db.get_staff()
+            )
+        ).pop()
 
         valid_staff = [
             User(**{

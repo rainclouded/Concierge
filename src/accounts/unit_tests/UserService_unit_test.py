@@ -58,6 +58,7 @@ class TestUserService(unittest.TestCase):
             ValidationManager(self.database_controller)
             )
 
+
     @patch('app.user_service.UserService.randbelow')
     def test_create_new_guest(self, mock_randbelow):
         mock_randbelow.return_value = 500
@@ -71,10 +72,10 @@ class TestUserService(unittest.TestCase):
         )
 
         user, _ = self.us.create_new_guest(new_guest)
-        
+
         mock_randbelow.assert_called_with(cfg.MAX_GUEST_PASSWORD)
         self.assertEqual(user, new_guest)
-        
+
 
     def test_create_new_staff(self):
         new_user = User(
@@ -101,7 +102,7 @@ class TestUserService(unittest.TestCase):
 
         self.assertTrue(valid_staff, user)
 
-        
+
     def test_delete_user(self):
         remaining_valid_users = [
             User(**{

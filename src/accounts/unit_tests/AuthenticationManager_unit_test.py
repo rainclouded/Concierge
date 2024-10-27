@@ -57,11 +57,13 @@ class TestAuthenticationManager(unittest.TestCase):
         }
     ]
 
+
     def setUp(self):
         self.database = Mockdata()
         self.database.users = self.TEST_DATA
         self.database_controller = DatabaseController(self.database)
         self.am = AuthenticationManager(self.database_controller)
+
 
     def test_get_hash(self):
         test_values = [

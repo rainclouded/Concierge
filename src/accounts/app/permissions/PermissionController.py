@@ -58,6 +58,7 @@ class PermissionController():
         except Exception as e:
             raise e
 
+
     def can_update_guest(self, token:str, public_key:str=None)->bool:
         """Verifies if the token permits guest update
 
@@ -74,6 +75,7 @@ class PermissionController():
         except Exception as e:
             raise e
 
+
     def can_update_staff(self, token:str, public_key:str=None)->bool:
         """Verifies if the token permits staff update
         
@@ -89,6 +91,7 @@ class PermissionController():
             return self._permission_handler.can_update_staff(token, public_key)
         except Exception as e:
             raise e
+
 
     def get_public_key(self)->str:
         """Get the current active public key
