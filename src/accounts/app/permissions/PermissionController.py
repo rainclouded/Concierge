@@ -37,7 +37,6 @@ class PermissionController():
         """
         public_key = self.get_public_key() if not public_key else public_key
         try:
-            print(f"the token is {token[:20]}")
             return self._permission_handler.can_delete_guest(token, public_key)
         except Exception as e:
             raise e

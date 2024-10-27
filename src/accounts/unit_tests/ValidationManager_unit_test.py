@@ -216,3 +216,92 @@ class TestAuthenticationManager(unittest.TestCase):
             self.assertTrue(self.validation.validate_new_staff(user, password))
         for user, password in invalid_users:
             self.assertFalse(self.validation.validate_new_staff(user, password))
+
+
+    def test_validate_guest_username(self):
+        invalid_names = [
+            'username',
+            'shor',
+            None,
+            '',
+            '@#$%^',
+           'validUsername1',
+            '9999999u',
+            '!@#$%^&*()0P',
+            '        9p',
+            '-1'
+        ]
+
+        valid_names = [
+            '100',
+            '0',
+            '888',
+            '9999999'
+        ]
+
+        for username in valid_names:
+            self.assertTrue(self.validation.validate_guest_username(username))
+        for username in invalid_names:
+            self.assertFalse(self.validation.validate_guest_username(username))
+
+
+
+    def test_validate_new_guest(self):
+        valid_users = [
+            User(
+                **{
+                    'username' : '888',
+                    'id' : '',
+                    'hash' : '',
+                    'type' : 'guest'
+                }
+            ),
+            User(
+                **{
+                    'username' : '100',
+                    'id' : '',
+                    'hash' : '',
+                    'type' : 'guest'
+                }
+            )
+        ]
+
+        invalid_users = [
+            User(
+                **{
+                    'username' : '',
+                    'id' : '',
+                    'hash' : '',
+                    'type' : 'guest'
+                }
+            ),
+            User(
+                **{
+                    'username' : 'newUser1',
+                    'id' : '',
+                    'hash' : '',
+                    'type' : 'guest'
+                }
+            ),            
+            User(
+                **{
+                    'username' : '0-09',
+                    'id' : '',
+                    'hash' : '',
+                    'type' : 'guest'
+                }
+            ),            
+            User(
+                **{
+                    'username' : '3456%4567',
+                    'id' : '',
+                    'hash' : '',
+                    'type' : 'guest'
+                }
+            )            
+        ]
+
+        for user in valid_users:
+            self.assertTrue(self.validation.validate_new_guest(user))
+        for user in invalid_users:
+            self.assertFalse(self.validation.validate_new_guest(user))
