@@ -1,12 +1,13 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using task_system_server.Models;
 
 namespace task_system_server.Dtos;
 
 public class AddTaskDto
 {
     [Required]
-	public string Title { get; set; } = string.Empty;
+	public TaskItemType TaskType { get; set; }
 
     [Required]
     [MaxLength(400, ErrorMessage = "Description cannot be over 400 over characters")]

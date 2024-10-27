@@ -16,7 +16,7 @@ Microservice to access and manage hotel tasks.
 | Field Name   | Description|
 |--------------|---------------------------------------|
 | **Id**       | Unique value that identifies the task.|
-| **Title**    | Type of service/task.|
+| **TaskType**    | Type of service/task.|
 | **Description** | Detailed description of the task, outlining what needs to be done.|
 | **RoomId**   | Unique identifier of the room associated with the task.|
 | **AssigneeId** | Unique identifier of the user assigned to the task.|
