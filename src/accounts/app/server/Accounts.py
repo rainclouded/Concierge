@@ -113,7 +113,7 @@ def create():
             "status" : "success",
 
         })
-    return jsonify(response)
+    return jsonify(response), 401
 
 
 @app.route("/accounts/login_attempt", methods=["POST"])
@@ -129,8 +129,9 @@ def login():
     if auth.authenticate_user_login(data["username"], data["password"]):
         response["message"] = f"Welcome, {data['username']}!"
         response["status"] = "ok"
+        return response
 
-    return response
+    return response, 401
 
 
 @app.route("/accounts/delete", methods=["POST"])
@@ -144,17 +145,19 @@ def delete():
     }
     data = request.get_json()
     permisson_key = request.headers.get('X-Api-Key')
-    user_to_delete = data['change_request']
+    user_to_delete = data['username']
 
     if permissions.can_delete_user(permisson_key, permissions.get_user_type(user_to_delete)):
-        if user_service.delete_user(data['change_request']):
-            response["message"] = f"{data['change_request']} Successfully deleted!"
+        if user_service.delete_user(data['username']):
+            response["message"] = f"{data['username']} Successfully deleted!"
             response["status"] = "ok"
+        else:
+            return jsonify(response), 401
     else:
-        response = {
+        return jsonify({
             "message": "Action not permitted",
             "status": "forbidden"
-        }
+        }), 403
     return response
 
 
@@ -169,31 +172,29 @@ def update():
     }
     data = request.get_json()
     permisson_key = request.headers.get('X-Api-Key')
-    user_to_change = data['change_request']
+    user_to_change = data['username']
 
     try:
         match user_service.get_user_type(user_to_change):
             case cfg.GUEST_TYPE:
                 if permissions.can_update_user(permisson_key, cfg.GUEST_TYPE):
-                    _, new_password = user_service.update_user(data['change_request'])
+                    _, new_password = user_service.update_user(data['username'])
                     if new_password:
                         response["message"] =\
                         (
-                            f"{data['change_request']} Successfully updated.!" +
-                            f"{new_password}"
+                            f"{data['username']} Successfully updated!" +
+                            f"password: {new_password}"
                         )
                         response["status"] = "ok"
+                return response
             case cfg.STAFF_TYPE:
-                response = {
-                    "message": "Cannot delete user",
-                    "status": "error",
-                }
+                return jsonify(response), 401
 
     except LookupError:
-        response = {
+        return jsonify({
             "message": "User not found",
             "status": "error",
-        }
+        }), 404
 
 
-    return response
+    return response, 401

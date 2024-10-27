@@ -57,8 +57,8 @@ class MongoConnection(DatabaseInterface):
         """
         try:
             self.collection.insert_one(new_staff)
-        except Exception as e:
-            raise e
+        except Exception as e: raise e
+
         return True
 
 
@@ -70,8 +70,8 @@ class MongoConnection(DatabaseInterface):
         """
         try:
             self.collection.insert_one(new_guest)
-        except Exception as e:
-            raise e
+        except Exception as e: raise e
+
         return True
 
 
@@ -89,8 +89,8 @@ class MongoConnection(DatabaseInterface):
                 update_user,
                 upsert = False #Do not error if the user does not exist
             )
-        except Exception as e:
-            raise e
+        except Exception as e: raise e
+
         return bool(num_results)
 
 
@@ -103,8 +103,7 @@ class MongoConnection(DatabaseInterface):
         deleted_user = None
         try:
             deleted_user = self.collection.find_one_and_delete({'username':username})
-        except Exception as e:
-            raise e
+        except Exception as e: raise e
 
         return deleted_user
     

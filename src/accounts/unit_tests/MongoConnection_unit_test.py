@@ -48,7 +48,7 @@ class TestMongoConnection(unittest.TestCase):
         self.collection.replace_one.return_value = True
         self.Connection.update_user(staff_dict)
         self.collection.replace_one.assert_called_once_with(
-            staff_dict, 
+            staff_dict,
             staff_dict, 
             upsert=False
             )

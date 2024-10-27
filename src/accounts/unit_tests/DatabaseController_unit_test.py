@@ -87,7 +87,8 @@ class TestDatabaseController(unittest.TestCase):
         self.assertTrue(len(newly_added_guest) == 1)
         self.assertEqual(newly_added_guest.pop(), new_user)
         self.assertTrue(len(guests) == 4)
-        
+
+
     def test_create_staff(self):
         new_user = User(**{
             'username' : 'new',

@@ -74,7 +74,7 @@ class TestAuthenticationManager(unittest.TestCase):
             self.assertFalse(self.validation.validate_staff_password(password))
 
 
-    def validate_staff_username(self):
+    def test_validate_staff_username(self):
         invalid_names = [
             'username',
             '8888888',
