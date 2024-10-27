@@ -17,7 +17,7 @@ services:
 
   incident_reports: #uses port 50005
     extends:
-      file: ../src/incident_reports/docker-compose.yaml
+      file: ../src/incident_reports/docker-compose.dev.yaml
       service: incident_reports
       
   amenities: #uses port 50004

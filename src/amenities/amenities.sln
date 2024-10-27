@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "amenities_server", "amenities_server\amenities_server.csproj", "{81B757AF-CC34-4AD3-8C25-CCA06029DFBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "amenities_server", "amenities_server\amenities_server.csproj", "{81B757AF-CC34-4AD3-8C25-CCA06029DFBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "amenities_test", "amenities_test\amenities_test.csproj", "{87B13DFA-33E1-4AE2-85B4-DD121DE32C17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "amenities_test", "amenities_test\amenities_test.csproj", "{87B13DFA-33E1-4AE2-85B4-DD121DE32C17}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "amenities_db_integration_test", "amenities_db_integration_test\amenities_db_integration_test.csproj", "{733691C6-D8D3-47D1-8A90-C8AFF985CF30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{87B13DFA-33E1-4AE2-85B4-DD121DE32C17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87B13DFA-33E1-4AE2-85B4-DD121DE32C17}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87B13DFA-33E1-4AE2-85B4-DD121DE32C17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{733691C6-D8D3-47D1-8A90-C8AFF985CF30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{733691C6-D8D3-47D1-8A90-C8AFF985CF30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{733691C6-D8D3-47D1-8A90-C8AFF985CF30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{733691C6-D8D3-47D1-8A90-C8AFF985CF30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
