@@ -3,9 +3,6 @@ Module for UserService account service
 """
 from secrets import randbelow
 import app.Configs as cfg
-from app.authentication.AuthenticationManager import AuthenticationManager
-from app.validation.ValidationManager import ValidationManager
-from app.database.DatabaseController import DatabaseController
 from app.dto.UserObject import UserObject as User
 
 class UserService():
@@ -13,10 +10,22 @@ class UserService():
     Class for handling maintnance of user accounts
     """
 
-    def __init__(self, database:DatabaseController):
+    def __init__(self, database, authentication, validation):
         self.db = database
-        self.auth = AuthenticationManager(database)
-        self.validation = ValidationManager(database)
+        self.auth = authentication
+        self.validation = validation
+
+    def get_user_type(self, username:str)->str:
+        """Find the 'type' of a user
+        """
+        return next(
+            (
+                user.type for user in self.db.get_users()
+                if user.username == username
+            ),
+            None
+        )
+
 
     def create_new_guest(self, new_guest:User)->tuple[User, str]:
         """Adds a new guest user
@@ -27,13 +36,15 @@ class UserService():
         Returns:
             The newly created user
         """
-        new_guest.password = randbelow(cfg.MAX_GUEST_PASSWORD)
-        new_guest.hash = \
-            self.auth.get_hash(new_guest.username,new_guest.password)
-        return (self.db.create_guest(new_guest), f'{new_guest.password}')
+        if self.validation.validate_new_guest(new_guest):
+            new_guest.password = randbelow(cfg.MAX_GUEST_PASSWORD)
+            new_guest.hash = \
+                self.auth.get_hash(new_guest.username,new_guest.password)
+            return (self.db.create_guest(new_guest), f'{new_guest.password}')
+        return None
 
 
-    def delete_user(self, user:User)->bool:
+    def delete_user(self, username:str)->bool:
         """Remove a user from the database
 
             Args:
@@ -42,7 +53,7 @@ class UserService():
             Returns:
                 If the user was successfully deleted
         """
-        return self.db.delete_user(user)
+        return self.db.delete_user(username)
 
 
     def create_new_staff(self, new_user:User, password:str)->User:
@@ -59,3 +70,14 @@ class UserService():
             new_user.hash = self.auth.get_hash(new_user.id, password)
             return self.db.create_staff(new_user)
         return None
+
+    def update_user(self, user:User)->tuple[User, str]:
+        """
+            Update the account associated with a username
+            Args
+        """
+        return (
+            self.create_new_guest(user)
+            if self.delete_user(user.username)
+            else (None, None)
+        )
