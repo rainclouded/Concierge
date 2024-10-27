@@ -34,7 +34,7 @@ if getenv('deployent') == 'testing':
 else:
     DATABASE = MongoConnection()
     PERMISSIONS = MockPermissions()
-print(DATABASE)
+
 def create_database():
     return DATABASE
 

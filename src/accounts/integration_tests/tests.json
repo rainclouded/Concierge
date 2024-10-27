@@ -12,6 +12,17 @@
         "desc": "Successfully create a staff"
       },
       {
+        "response_number": 200,
+        "response_data": "{\"message\":\"User created successfully. password: LongPassword99\",\"status\":\"success\"}",
+        "request_message": {
+            "username" : "staffman2",
+            "type" : "staff",
+            "password" : "LongPassword99"
+        },
+        "request_type": "post",
+        "desc": "Successfully create a staff"
+      },
+      {
         "response_number": 401,
         "response_data": "{\"message\":\"Could not create user\",\"status\":\"error\"}",
         "request_message": {
@@ -33,6 +44,16 @@
         "desc": "Successfully create a guest"
       },
       {
+        "response_number": 200,
+        "response_data": "{\"message\":\"User created successfully. password: *\",\"status\":\"success\"}",
+        "request_message": {
+            "username" : "101",
+            "type" : "guest"
+        },
+        "request_type": "post",
+        "desc": "Successfully create a guest"
+      },
+      {
         "response_number": 401,
         "response_data": "{\"message\":\"Could not create user\",\"status\":\"error\"}",
         "request_message": {
@@ -42,6 +63,155 @@
         "request_type": "post",
         "desc":"Unsuccesfully try to re create the same guest"
 
+      },
+      {
+        "response_number": 200,
+        "endpoint":"/login_attempt",
+        "response_data": "{\"message\":\"Welcome, staffman1!\",\"status\":\"ok\"}",
+        "request_message": {
+          "username" : "staffman1",
+          "type" : "staff",
+          "password" : "LongPassword99"
+        },
+        "request_type": "post",
+        "desc": "Successfully login"
+      },
+      {
+        "response_number": 401,
+        "endpoint":"/login_attempt",
+        "response_data": "{\"message\":\"Login Fail - Invalid Credentials\",\"status\":\"error\"}",
+        "request_message": {
+            "username" : "100",
+            "type" : "guest"
+        },
+        "request_type": "post",
+        "desc":"Unsuccesfully try to login with no password"
+
+      },
+      {
+        "response_number": 401,
+        "endpoint":"/login_attempt",
+        "response_data": "{\"message\":\"Login Fail - Invalid Credentials\",\"status\":\"error\"}",
+        "request_message": {
+            "username" : "100",
+            "type" : "guest",
+            "password":"incorrect"
+        },
+        "request_type": "post",
+        "desc":"Unsuccesfully try to login with incorrect password"
+
+      },
+      {
+        "response_number": 200,
+        "endpoint": "/delete",
+        "response_data": "{\"message\":\"101 Successfully deleted!\",\"status\":\"ok\"}",
+        "request_message": {
+            "username" : "101"
+        },
+        "request_type": "post",
+        "desc":"Successfully delete a user",
+        "headers": [
+          {
+            "name": "X-Api-Key",
+            "value": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcnkiOjE4MTYzNzk3NzIuODE1MjQ3fQ.uFq-3UXz2tk-cciqQSDMw855uDHrzHKB63ceTqzMK0nh_jl6ujCZ1rQBn0gqdPVSisS23uAJwfN88CPC-CHc5Q"
+          }
+        ]
+      },
+      {
+        "response_number": 403,
+        "endpoint": "/delete",
+        "response_data": "{\"message\":\"Action not permitted\",\"status\":\"forbidden\"}",
+        "request_message": {
+            "username" : "100"
+        },
+        "request_type": "post",
+        "desc":"Unsuccessfully try to delete a use with an expired token",
+        "headers": [
+          {
+            "name": "X-Api-Key",
+            "value": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcnkiOjE2NDM3NTYyMjAuMTM1OTkyfQ.4XODf35GQWP-fTlN4kGl58OWC1K4zAsVOCSo7vquVsB1ExdpaDMf-TbfJFd_OdeoAdTJP_9AWvWIW4k43dAYDA"
+          }
+        ]
+      },
+      {
+        "response_number": 403,
+        "endpoint": "/delete",
+        "response_data": "{\"message\":\"Deletion could not be completed.\",\"status\":\"error\"}",
+        "request_message": {
+            "username" : "100"
+        },
+        "request_type": "post",
+        "desc":"Unsuccessfully try to delete a use with an invalid token",
+        "headers": [
+          {
+            "name": "X-Api-Key",
+            "value": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.ey00eHB00nkiOjE2NDM3NTYyMjAuMTM1OTkyfQ.4XODf35GQWP-fTlN4kGl58OWC1K4zAsVOCSo7vquVsB1ExdpaDMf-TbfJFd_OdeoAdTJP_9AWvWIW4k43dAYDA"
+          }
+        ]
+      },
+      {
+        "response_number": 200,
+        "endpoint": "/update",
+        "response_data": "{\"message\":\"100 Successfully updated! password: *\",\"status\":\"ok\"}",
+        "request_message": {
+            "username" : "100"
+        },
+        "request_type": "put",
+        "desc":"Successfully update a user",
+        "headers": [
+          {
+            "name": "X-Api-Key",
+            "value": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcnkiOjE4MTYzNzk3NzIuODE1MjQ3fQ.uFq-3UXz2tk-cciqQSDMw855uDHrzHKB63ceTqzMK0nh_jl6ujCZ1rQBn0gqdPVSisS23uAJwfN88CPC-CHc5Q"
+          }
+        ]
+      },
+      {
+        "response_number": 401,
+        "endpoint": "/update",
+        "response_data": "{\"message\":\"Update could not be completed.\",\"status\":\"error\"}",
+        "request_message": {
+            "username" : "100"
+        },
+        "request_type": "put",
+        "desc":"Unsuccessfully try to update a use with an expired token",
+        "headers": [
+          {
+            "name": "X-Api-Key",
+            "value": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcnkiOjE2NDM3NTYyMjAuMTM1OTkyfQ.4XODf35GQWP-fTlN4kGl58OWC1K4zAsVOCSo7vquVsB1ExdpaDMf-TbfJFd_OdeoAdTJP_9AWvWIW4k43dAYDA"
+          }
+        ]
+      },
+      {
+        "response_number": 401,
+        "endpoint": "/update",
+        "response_data": "{\"message\":\"Update could not be completed.\",\"status\":\"error\"}",
+        "request_message": {
+            "username" : "100"
+        },
+        "request_type": "put",
+        "desc":"Unsuccessfully try to update a use with an invalid token",
+        "headers": [
+          {
+            "name": "X-Api-Key",
+            "value": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.ey00eHB00nkiOjE2NDM3NTYyMjAuMTM1OTkyfQ.4XODf35GQWP-fTlN4kGl58OWC1K4zAsVOCSo7vquVsB1ExdpaDMf-TbfJFd_OdeoAdTJP_9AWvWIW4k43dAYDA"
+          }
+        ]
+      },
+      {
+        "response_number": 401,
+        "endpoint": "/update",
+        "response_data": "{\"message\":\"Update could not be completed.\",\"status\":\"error\"}",
+        "request_message": {
+            "username" : "staffman2"
+        },
+        "request_type": "put",
+        "desc":"Unsuccessfully try to update a staff user",
+        "headers": [
+          {
+            "name": "X-Api-Key",
+            "value": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcnkiOjE4MTYzNzk3NzIuODE1MjQ3fQ.uFq-3UXz2tk-cciqQSDMw855uDHrzHKB63ceTqzMK0nh_jl6ujCZ1rQBn0gqdPVSisS23uAJwfN88CPC-CHc5Q"
+          }
+        ]
       }
     ]
   }

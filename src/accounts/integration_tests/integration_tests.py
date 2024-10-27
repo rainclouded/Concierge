@@ -44,9 +44,11 @@ class IntegrationTests():
             else 0
         )
         print(
+            "*******************************\n"+
             f"Tests ran: {self.tests_run}\n"+
             f"Tests passed: {self.tests_passed}\n"+
-            f"Pass percentage: {percentage}%\n"
+            f"Pass percentage: {percentage}%\n"+
+            "*******************************"
             )
         exit(0 if percentage == 100 else 1)
 
@@ -96,33 +98,15 @@ class IntegrationTests():
             test_data = json.load(test_file)
             for test_package in test_data['test_packages']:
                 self.update_stats(self.call_test(test_package))
-        #create
-        staff_data = {
-            'username' : 'staffman1',
-            'type' : 'staff',
-            'password' : 'LongPassword99'
-        }
-        guest_data = {
-            'username' : '409',
-            'type' : 'guest'
-        }
-        #response = requests.post(self.service_url, json=staff_data, timeout=10)
-        #print(response.text)
-        #login
-        #delete
-        #create
-        #update
+
+
+
     def validate(self, response, expected_data, expected_code):
         
-        expected_data = expected_data.replace('*', '.*')    
+        expected_data = expected_data.replace('*', '.*') 
         regex_data = re.compile(expected_data)
         match_found = regex_data.search(response.text)
 
-        print(f"""
-            regex data: {regex_data}
-            compare: {response.text}
-            match found: {match_found}\n
-            """)
         return bool(match_found) and expected_code == response.status_code
             
             
@@ -139,11 +123,11 @@ class IntegrationTests():
         if 'headers' in test_data:
             for header in test_data['headers']:
                 headers[header['name']] = header['value']
-        
+
         response = None
         match request_type:
             case 'get':
-                response = requests.get(request_endpoint, headers=headers)
+                response = requests.get(request_endpoint, json=request_message, headers=headers)
             case 'post':
                 response = requests.post(request_endpoint, json=request_message, headers=headers)
             case 'put':
@@ -151,6 +135,7 @@ class IntegrationTests():
             case _:
                 pass
         print(f"Testing: {description}")
-
-        return self.validate(response, expected_response_data, expected_response_number)
+        valid = self.validate(response, expected_response_data, expected_response_number)
+        print("Test passed." if valid else "Test Failed.")
+        return valid
         

@@ -104,12 +104,6 @@ class ValidationManager():
                 If the password meets all criteria
         """
         usernames = [user.username for user in self.db.get_guests()]
-        print(usernames)
-        print(f"""testing user thing {(
-            new_user is not None
-            and self.validate_guest_username(new_user.username)
-            and new_user.username not in usernames
-            )}""")
         return (
             new_user is not None
             and self.validate_guest_username(new_user.username)

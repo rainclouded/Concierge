@@ -97,7 +97,7 @@ class MockPermissions(PermissionInterface):
         """
         try:
             return jwt.decode(
-                token,
+                token.encode(),
                 serialization.load_pem_public_key(public_key.encode()),
                 [algorithm]
                 )

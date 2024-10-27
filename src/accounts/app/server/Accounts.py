@@ -94,8 +94,6 @@ def create():
     """
     Route to the account_creation
     """
-    print(user_service)
-    print("huh")
     try:
         response = {
             "message": "Could not create user",
@@ -110,25 +108,23 @@ def create():
 
         created_user = None
         new_password = None
-        print(data)
+
         if data['type'] == cfg.GUEST_TYPE:
             created_user, new_password = user_service.create_new_guest(new_user)
-            print(0)
         else:
             new_password = data["password"]
 
             created_user = user_service.create_new_staff(new_user, new_password)
-            print(1)
+
         if created_user:
             return jsonify({
                 "message": f"User created successfully. password: {new_password}",
                 "status": "success",
 
             })
-        print(created_user)
+
         return jsonify(response), 401
-    except Exception as e:
-        print(e)
+    except Exception:
         return jsonify(response), 401
 
 
@@ -142,11 +138,13 @@ def login():
         "status": "error",
     }
     data = request.get_json()
-    if auth.authenticate_user_login(data["username"], data["password"]):
-        response["message"] = f"Welcome, {data['username']}!"
-        response["status"] = "ok"
-        return response
-
+    try:
+        if auth.authenticate_user_login(data["username"], data["password"]):
+            response["message"] = f"Welcome, {data['username']}!"
+            response["status"] = "ok"
+            return response
+    except Exception:#If there is an issus, throw a 401
+        pass
     return response, 401
 
 
@@ -161,33 +159,36 @@ def delete():
     }
     data = request.get_json()
     token = request.headers.get('X-Api-Key')
-
     user_to_delete = data['username']
     user_type = user_service.get_user_type(user_to_delete)
 
-    if (
-        user_type == cfg.GUEST_TYPE
-        and permissions.can_delete_guest(
-            token
-        )
-    ) or (
-        user_type == cfg.STAFF_TYPE
-        and permissions.can_delete_staff(
-            token
-        )
-    ):
-        if user_service.delete_user(data['username']):
-            response["message"] = f"{data['username']} Successfully deleted!"
-            response["status"] = "ok"
+    try:
+        if (
+            token and((
+                user_type == cfg.GUEST_TYPE
+                and permissions.can_delete_guest(
+                    token
+                )
+            ) or (
+                user_type == cfg.STAFF_TYPE
+                and permissions.can_delete_staff(
+                    token
+                )
+            ))
+        ):
+            if user_service.delete_user(data['username']):
+                response["message"] = f"{data['username']} Successfully deleted!"
+                response["status"] = "ok"
+            else:
+                return jsonify(response), 401
         else:
-            return jsonify(response), 401
-    else:
-        return jsonify({
-            "message": "Action not permitted",
-            "status": "forbidden"
-        }), 403
-    
-    return response
+            return jsonify({
+                "message": "Action not permitted",
+                "status": "forbidden"
+            }), 403
+    except Exception:
+        return jsonify(response), 403
+    return jsonify(response)
 
 
 @app.route("/accounts/update", methods=["PUT"])
@@ -203,24 +204,26 @@ def update():
     data = request.get_json()
     token = request.headers.get('X-Api-Key')
     user_to_change = data['username']
-
-    if (
-        user_service.get_user_type(user_to_change) == cfg.GUEST_TYPE
-        and permissions.can_update_guest(token)
-    ):
-        _, new_password = user_service.update_user(
-            User(**{
-                'username': data["username"],
-                'type': cfg.GUEST_TYPE
-                }
+    try:
+        if (
+            user_service.get_user_type(user_to_change) == cfg.GUEST_TYPE
+            and token
+            and permissions.can_update_guest(token)
+        ):
+            _, new_password = user_service.update_user(
+                User(**{
+                    'username': data["username"],
+                    'type': cfg.GUEST_TYPE
+                    }
+                )
             )
-        )
-        if new_password:
-            response["message"] = (
-                f"{data['username']} Successfully updated!" +
-                f" password: {new_password}"
-            )
-            response["status"] = "ok"
-        return jsonify(response), 200
-
+            if new_password:
+                response["message"] = (
+                    f"{data['username']} Successfully updated!" +
+                    f" password: {new_password}"
+                )
+                response["status"] = "ok"
+            return jsonify(response), 200
+    except Exception:
+        pass
     return jsonify(response), 401
