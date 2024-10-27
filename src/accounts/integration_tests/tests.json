@@ -1,0 +1,48 @@
+{
+    "test_packages": [
+      {
+        "response_number": 200,
+        "response_data": "{\"message\":\"User created successfully. password: LongPassword99\",\"status\":\"success\"}",
+        "request_message": {
+            "username" : "staffman1",
+            "type" : "staff",
+            "password" : "LongPassword99"
+        },
+        "request_type": "post",
+        "desc": "Successfully create a staff"
+      },
+      {
+        "response_number": 401,
+        "response_data": "{\"message\":\"Could not create user\",\"status\":\"error\"}",
+        "request_message": {
+            "username" : "staffman1",
+            "type" : "staff",
+            "password" : "LongPassword99"
+        },
+        "request_type": "post",
+        "desc":"Unsuccesfully try to re create the same staff"
+      },
+      {
+        "response_number": 200,
+        "response_data": "{\"message\":\"User created successfully. password: *\",\"status\":\"success\"}",
+        "request_message": {
+            "username" : "100",
+            "type" : "guest"
+        },
+        "request_type": "post",
+        "desc": "Successfully create a guest"
+      },
+      {
+        "response_number": 401,
+        "response_data": "{\"message\":\"Could not create user\",\"status\":\"error\"}",
+        "request_message": {
+            "username" : "100",
+            "type" : "guest"
+        },
+        "request_type": "post",
+        "desc":"Unsuccesfully try to re create the same guest"
+
+      }
+    ]
+  }
+  

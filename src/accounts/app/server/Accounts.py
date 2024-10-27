@@ -95,6 +95,7 @@ def create():
     Route to the account_creation
     """
     print(user_service)
+    print("huh")
     try:
         response = {
             "message": "Could not create user",
@@ -106,28 +107,28 @@ def create():
             'username': data["username"],
             'type': data['type']
         })
-        print(1)
+
         created_user = None
         new_password = None
         print(data)
         if data['type'] == cfg.GUEST_TYPE:
             created_user, new_password = user_service.create_new_guest(new_user)
+            print(0)
         else:
             new_password = data["password"]
 
             created_user = user_service.create_new_staff(new_user, new_password)
-        print(44)
-        print(created_user)
-        print(2)
+            print(1)
         if created_user:
-            print(3)
             return jsonify({
                 "message": f"User created successfully. password: {new_password}",
                 "status": "success",
 
             })
+        print(created_user)
         return jsonify(response), 401
     except Exception as e:
+        print(e)
         return jsonify(response), 401
 
 
