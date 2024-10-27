@@ -4,4 +4,4 @@ services:
     ports:
       - 50006:8080
     environment:
-      - forProduction=test
+      - DB_IMPLEMENTATION=MOCK
