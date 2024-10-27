@@ -63,6 +63,7 @@ class UserService():
             Returns:
                 If the staff was successfully created
         """
+        print('us1')
         if self.validation.validate_new_staff(new_user, password):
             new_user.id = self.db.get_largest_id()+1
             new_user.hash = self.auth.get_hash(new_user.id, password)

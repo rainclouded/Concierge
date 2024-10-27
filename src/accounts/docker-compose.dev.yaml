@@ -1,10 +1,11 @@
 services:
   accounts:
     build: .
-    ports:
-      - 50001:8080
     env_file:
       - .env.dev
+    ports:
+      - 50001:8080
+
 
   accounts-mongo:
     image: mongo:4.4.18
@@ -13,5 +14,4 @@ services:
       - "27017:27017"
     env_file:
       - .env.dev
-    volumes:
-      - mongo_data:/accounts_data/db
+

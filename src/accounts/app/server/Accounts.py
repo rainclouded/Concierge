@@ -9,13 +9,12 @@ from app.dto.UserObject import UserObject as User
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-
 app = Flask(__name__)
 CORS(app)
-database = Services.get_database()
-auth = Services.get_authentication()
-user_service = Services.get_user_service()
-permissions = Services.get_permissions()
+database = None
+auth = None
+user_service = None
+permissions = None
 
 DEFAULT_PORT = 8080
 ENVIRONMENT_VAR_NAME_PORT = "ACCOUNTS_PORT"
@@ -23,6 +22,12 @@ ENVIRONMENT_VAR_NAME_PORT = "ACCOUNTS_PORT"
 
 def start_service():
     """Run the service"""
+    #pylint: disable=global-statement
+    global database, auth, user_service, permissions
+    database = Services.get_database()
+    auth = Services.get_authentication()
+    user_service = Services.get_user_service()
+    permissions = Services.get_permissions()
     port = get_port()
     print(f"Starting server on port {port}...")
     app.run(host="0.0.0.0", port=port)
@@ -89,34 +94,41 @@ def create():
     """
     Route to the account_creation
     """
-    response = {
-        "message": "Could not create user",
-        "status": "error"
-    }
+    print(user_service)
+    try:
+        response = {
+            "message": "Could not create user",
+            "status": "error"
+        }
 
-    data = request.get_json()
-    new_user = User(**{
-        'username': data["username"],
-        'type': data['type']
-    })
-
-    created_user = None
-    new_password = None
-
-    if data['type'] == cfg.GUEST_TYPE:
-        created_user, new_password = user_service.create_new_guest(new_user)
-    else:
-        new_password = data["password"]
-
-        created_user = user_service.create_new_staff(new_user, new_password)
-
-    if created_user:
-        return jsonify({
-            "message": f"User created successfully. password: {new_password}",
-            "status": "success",
-
+        data = request.get_json()
+        new_user = User(**{
+            'username': data["username"],
+            'type': data['type']
         })
-    return jsonify(response), 401
+        print(1)
+        created_user = None
+        new_password = None
+        print(data)
+        if data['type'] == cfg.GUEST_TYPE:
+            created_user, new_password = user_service.create_new_guest(new_user)
+        else:
+            new_password = data["password"]
+
+            created_user = user_service.create_new_staff(new_user, new_password)
+        print(44)
+        print(created_user)
+        print(2)
+        if created_user:
+            print(3)
+            return jsonify({
+                "message": f"User created successfully. password: {new_password}",
+                "status": "success",
+
+            })
+        return jsonify(response), 401
+    except Exception as e:
+        return jsonify(response), 401
 
 
 @app.route("/accounts/login_attempt", methods=["POST"])
