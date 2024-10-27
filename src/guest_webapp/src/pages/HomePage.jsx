@@ -105,7 +105,8 @@ const HomePage = () => {
           body: JSON.stringify(requestBody),
         }
       );
-      if (!response.ok) throw new Error("Failed to submit request")
+      if (response.ok) alert("Successfully submitted request!");
+      else throw new Error("Failed to submit request");
     } catch (error) {
       alert("Couldn't submit your request at this time! ");
       console.log(error);
