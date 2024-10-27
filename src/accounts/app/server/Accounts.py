@@ -30,6 +30,8 @@ def start_service():
 
 def set_services(new_database=None, new_authentication=None,
                  new_user_service=None, new_permissions=None):
+    """Inject various services into the Server
+    """
     # pylint: disable=global-statement
     global database, auth, user_service, permissions
     if new_database:
@@ -171,6 +173,7 @@ def delete():
             "message": "Action not permitted",
             "status": "forbidden"
         }), 403
+    
     return response
 
 
@@ -183,6 +186,7 @@ def update():
         "message": "Update could not be completed.",
         "status": "error",
     }
+
     data = request.get_json()
     token = request.headers.get('X-Api-Key')
     user_to_change = data['username']
