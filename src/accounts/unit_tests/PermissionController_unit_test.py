@@ -15,7 +15,7 @@ class TestPermissionController(unittest.TestCase):
         )
 
         self.test_public_key= (
-            """-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE+tognnc+cFv4SK9KTuw7BIAVkZKr ET7NVlEYW+n+4XMSlK8ZOlUTuYw35b6aJsT7GWrGGsOBE7I+g3x6nikmxg==\n-----END PUBLIC KEY-----"""
+            """-----BEGIN PUBLIC KEY-----MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE+tognnc+cFv4SK9KTuw7BIAVkZKr ET7NVlEYW+n+4XMSlK8ZOlUTuYw35b6aJsT7GWrGGsOBE7I+g3x6nikmxg==-----END PUBLIC KEY-----"""
         )
 
         self.valid_tokens = [
@@ -54,7 +54,7 @@ class TestPermissionController(unittest.TestCase):
                 },
                 self.test_private_key,
                 algorithm='ES256'
-            )[:-2]+'00'
+            )[:-5]+'00000'
         ]
         self.permissions = PermissionController(MockPermissions())
 

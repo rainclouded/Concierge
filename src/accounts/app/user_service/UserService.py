@@ -20,10 +20,10 @@ class UserService():
         """
         return next(
             (
-                user['type'] for user in self.db.get_all_users()
-                if user['username'] == username
+                user.type for user in self.db.get_users()
+                if user.username == username
             ),
-            self._raise_user_not_found()
+            None
         )
 
 
@@ -69,22 +69,13 @@ class UserService():
             return self.db.create_staff(new_user)
         return None
 
-    def update_user(self, username:str)->tuple[User, str]:
+    def update_user(self, user:User)->tuple[User, str]:
         """
             Update the account associated with a username
             Args
         """
         return (
-            self.create_new_guest(username)
-            if self.delete_user(username)
+            self.create_new_guest(user)
+            if self.delete_user(user.username)
             else (None, None)
         )
-    
-    
-    def _raise_user_not_found(self):
-        """Method to raise a Lookup Error
-
-            Raises:
-                LookupError
-        """
-        raise LookupError("User could not be found")

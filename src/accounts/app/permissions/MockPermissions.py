@@ -52,3 +52,7 @@ class MockPermissions(PermissionInterface):
         except jwt.PyJWTError as e:
             raise e
     
+    def get_public_key(self):
+        return (
+            """-----BEGIN PUBLIC KEY-----MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE+tognnc+cFv4SK9KTuw7BIAVkZKr ET7NVlEYW+n+4XMSlK8ZOlUTuYw35b6aJsT7GWrGGsOBE7I+g3x6nikmxg==-----END PUBLIC KEY-----"""
+        )

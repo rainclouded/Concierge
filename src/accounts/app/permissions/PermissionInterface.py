@@ -62,3 +62,14 @@ class PermissionInterface(ABC):
                 NotImplementedError if the method is not implemented
         """
         raise NotImplementedError
+
+    @abstractmethod
+    def get_public_key(self):        
+        """Get the valid public key
+        
+            Returns:
+                Public key string
+            Raises:
+                NotImplementedError if the method is not implemented
+        """
+        raise NotImplementedError

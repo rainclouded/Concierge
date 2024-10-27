@@ -5,7 +5,10 @@ Testing module for FlaskApp
 import unittest
 import json
 import re
+import jwt
+import datetime
 from unittest.mock import MagicMock, patch
+from cryptography.hazmat.primitives import serialization
 from app import app
 from app.server.Accounts import get_port, set_services
 from app.authentication.AuthenticationManager import AuthenticationManager
@@ -33,7 +36,6 @@ class TestFlaskApp(unittest.TestCase):
         self.client.testing = True
         self.app = app
 
-
     def test_index_get(self):
         response = self.client.get('/accounts')
         self.assertEqual(response.status_code, 200)
@@ -44,7 +46,6 @@ class TestFlaskApp(unittest.TestCase):
                 'status': 'success'
             }
         )
-
 
     def test_index_post(self):
         response = self.client.post(
@@ -91,13 +92,11 @@ class TestFlaskApp(unittest.TestCase):
             ),
             content_type='application/json'
             )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 401)
         self.assertEqual(
             response.json,
             {'message':'Could not create user', 'status' : 'error'}
         )
-        self.assertEqual(response.status_code, 200)
-
 
     def test_login_success(self):
         response = self.client.post(
@@ -141,39 +140,110 @@ class TestFlaskApp(unittest.TestCase):
             },
         )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 401)
         self.assertTrue(response.json['message'].startswith('Login Fail'))
         self.assertEqual(response.json['status'], 'error')
-
+    
     def test_get_port(self):
         self.assertEqual(8080,get_port())
 
     def test_delete(self):
+        test_private_key= serialization.load_pem_private_key(
+            """-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIPzzVpfUDwUXOc+rF3o/FUdACe7hhv7dl5hgmFIJoR3ooAoGCCqGSM49 AwEHoUQDQgAE+tognnc+cFv4SK9KTuw7BIAVkZKrET7NVlEYW+n+4XMSlK8ZOlUT uYw35b6aJsT7GWrGGsOBE7I+g3x6nikmxg==\n-----END EC PRIVATE KEY-----""".encode('utf-8'),
+            password = None
+        )
+        token = jwt.encode(
+                {
+                    'expiry':(
+                        datetime.datetime.now()
+                        +datetime.timedelta(days=999)
+                        ).timestamp()
+                },
+                test_private_key,
+                algorithm='ES256'
+            )
+
         response = self.client.post(
-            '/accounts/login_attempt',
-            data=json.dumps({'username': 'test1', 'password': 'testPassword1'}),
+            '/accounts/delete',
+            headers={'X-Api-Key':token},
+            data=json.dumps({'username': 'test1'}),
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json,
             {
-                'message': 'Welcome, test1!',
+                'message': 'test1 Successfully deleted!',
                 'status': 'ok',
             },
         )
         response = self.client.post(
-            '/accounts/login_attempt',
-            data=json.dumps({'username': '5', 'password': '44444444'}),
+            '/accounts/delete',
+            headers={'X-Api-Key':token},
+            data=json.dumps({'username': 'not_real'}),
             content_type='application/json',
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(
             response.json,
             {
-                'message': 'Welcome, 5!',
-                'status': 'ok',
+                'message': 'Action not permitted',
+                'status': 'forbidden',
             },
         )
 
+        token = jwt.encode(
+                {
+                    'expiry':(
+                        datetime.datetime.now()
+                        -datetime.timedelta(days=999)
+                        ).timestamp()
+                },
+                test_private_key,
+                algorithm='ES256'
+            )
 
+
+    def test_update(self):
+        test_private_key= serialization.load_pem_private_key(
+            """-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIPzzVpfUDwUXOc+rF3o/FUdACe7hhv7dl5hgmFIJoR3ooAoGCCqGSM49 AwEHoUQDQgAE+tognnc+cFv4SK9KTuw7BIAVkZKrET7NVlEYW+n+4XMSlK8ZOlUT uYw35b6aJsT7GWrGGsOBE7I+g3x6nikmxg==\n-----END EC PRIVATE KEY-----""".encode('utf-8'),
+            password = None
+        )
+        token = jwt.encode(
+                {
+                    'expiry':(
+                        datetime.datetime.now()
+                        +datetime.timedelta(days=999)
+                        ).timestamp()
+                },
+                test_private_key,
+                algorithm='ES256'
+            )
+
+        response = self.client.put(
+            '/accounts/update',
+            headers={'X-Api-Key':token},
+            data=json.dumps({'username': '5'}),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertRegex(
+            response.json['message'],
+            r'5 Successfully updated! password: \d+'
+        )
+
+        response = self.client.put(
+            '/accounts/update',
+            headers={'X-Api-Key':token},
+            data=json.dumps({'username': '99'}),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(
+            response.json,
+            {
+                'message': 'Update could not be completed.',
+                'status': 'error',
+            },
+        )
+        

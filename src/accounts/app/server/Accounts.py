@@ -10,7 +10,6 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 
-
 app = Flask(__name__)
 CORS(app)
 database = Services.get_database()
@@ -28,10 +27,11 @@ def start_service():
     print(f"Starting server on port {port}...")
     app.run(host="0.0.0.0", port=port)
 
-def set_services(new_database = None, new_authentication = None,\
-                 new_user_service = None, new_permissions = None):
+
+def set_services(new_database=None, new_authentication=None,
+                 new_user_service=None, new_permissions=None):
     # pylint: disable=global-statement
-    global database, auth, user_service, permissions 
+    global database, auth, user_service, permissions
     if new_database:
         database = new_database
     if new_authentication:
@@ -41,7 +41,8 @@ def set_services(new_database = None, new_authentication = None,\
     if new_permissions:
         permissions = new_permissions
 
-def get_port()->int:
+
+def get_port() -> int:
     """Get the port the server should run on
         Returns: port number
     """
@@ -75,9 +76,9 @@ def index():
     Route to the index page
     """
     response = {
-        "message": "You have contacted the accounts", 
+        "message": "You have contacted the accounts",
         "status": "success"
-        }
+    }
     return jsonify(response)
 
 
@@ -87,14 +88,14 @@ def create():
     Route to the account_creation
     """
     response = {
-        "message" : "Could not create user",
-        "status" : "error"
+        "message": "Could not create user",
+        "status": "error"
     }
 
     data = request.get_json()
-    new_user  = User(**{
-        'username' : data["username"],
-        'type' : data['type']
+    new_user = User(**{
+        'username': data["username"],
+        'type': data['type']
     })
 
     created_user = None
@@ -109,8 +110,8 @@ def create():
 
     if created_user:
         return jsonify({
-            "message" : f"User created successfully. password: {new_password}",
-            "status" : "success",
+            "message": f"User created successfully. password: {new_password}",
+            "status": "success",
 
         })
     return jsonify(response), 401
@@ -144,10 +145,22 @@ def delete():
         "status": "error",
     }
     data = request.get_json()
-    permisson_key = request.headers.get('X-Api-Key')
-    user_to_delete = data['username']
+    token = request.headers.get('X-Api-Key')
 
-    if permissions.can_delete_user(permisson_key, permissions.get_user_type(user_to_delete)):
+    user_to_delete = data['username']
+    user_type = user_service.get_user_type(user_to_delete)
+
+    if (
+        user_type == cfg.GUEST_TYPE
+        and permissions.can_delete_guest(
+            token
+        )
+    ) or (
+        user_type == cfg.STAFF_TYPE
+        and permissions.can_delete_staff(
+            token
+        )
+    ):
         if user_service.delete_user(data['username']):
             response["message"] = f"{data['username']} Successfully deleted!"
             response["status"] = "ok"
@@ -171,30 +184,26 @@ def update():
         "status": "error",
     }
     data = request.get_json()
-    permisson_key = request.headers.get('X-Api-Key')
+    token = request.headers.get('X-Api-Key')
     user_to_change = data['username']
 
-    try:
-        match user_service.get_user_type(user_to_change):
-            case cfg.GUEST_TYPE:
-                if permissions.can_update_user(permisson_key, cfg.GUEST_TYPE):
-                    _, new_password = user_service.update_user(data['username'])
-                    if new_password:
-                        response["message"] =\
-                        (
-                            f"{data['username']} Successfully updated!" +
-                            f"password: {new_password}"
-                        )
-                        response["status"] = "ok"
-                return response
-            case cfg.STAFF_TYPE:
-                return jsonify(response), 401
+    if (
+        user_service.get_user_type(user_to_change) == cfg.GUEST_TYPE
+        and permissions.can_update_guest(token)
+    ):
+        _, new_password = user_service.update_user(
+            User(**{
+                'username': data["username"],
+                'type': cfg.GUEST_TYPE
+                }
+            )
+        )
+        if new_password:
+            response["message"] = (
+                f"{data['username']} Successfully updated!" +
+                f" password: {new_password}"
+            )
+            response["status"] = "ok"
+        return jsonify(response), 200
 
-    except LookupError:
-        return jsonify({
-            "message": "User not found",
-            "status": "error",
-        }), 404
-
-
-    return response, 401
+    return jsonify(response), 401
