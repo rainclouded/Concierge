@@ -1,0 +1,7 @@
+services:
+  incident_reports:
+    build: .
+    environment:
+      - DB_IMPLEMENTATION=MOCK 
+    ports:
+      - 50005:8080

@@ -25,7 +25,3 @@ services:
       retries: 10
     volumes:
       - ./configs:/docker-entrypoint-initdb.d
-      - amenities_db:/var/lib/postgresql/data
-volumes:
-  amenities_db:
-    driver: local
