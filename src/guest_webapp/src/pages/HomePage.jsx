@@ -86,7 +86,7 @@ const HomePage = () => {
     }
 
     const requestBody = {
-      title: tag, 
+      taskType: tag.replace(/\s+/g, ''), 
       description: tag === FoodDeliveryTag ? items.trim() : inputValue,
       roomId: roomInfo.roomNumber,
       requesterId: 100,
