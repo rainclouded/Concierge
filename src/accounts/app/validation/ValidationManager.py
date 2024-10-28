@@ -65,6 +65,16 @@ class ValidationManager():
             )
         )
 
+    def validate_guest_username(self, username:str)->bool:
+        """Validate if a password can be used
+
+            Args:
+                password: string of the password to validate
+
+            Returns:
+                If the password meets all criteria
+        """
+        return username is not None and username.isdigit()
 
     def validate_new_staff(self, new_user:User, password:str)->bool:
         """Validate if the credentials can be used
@@ -82,4 +92,20 @@ class ValidationManager():
             and self.validate_staff_username(new_user.username)
             and new_user.username not in usernames
             )
-    
+
+
+    def validate_new_guest(self, new_user:User)->bool:
+        """Validate if the credentials can be used
+
+            Args:
+                new_user: dictionary containing at least a username and password
+
+            Returns:
+                If the password meets all criteria
+        """
+        usernames = [user.username for user in self.db.get_guests()]
+        return (
+            new_user is not None
+            and self.validate_guest_username(new_user.username)
+            and new_user.username not in usernames
+            )

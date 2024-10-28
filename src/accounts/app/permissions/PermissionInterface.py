@@ -1,18 +1,18 @@
 """
-Module for the database interface
+Module for the permission interface
 """
 from abc import ABC, abstractmethod
 
-class DatabaseInterface(ABC):
-    """Interface to decouple the database from the server"""
+class PermissionInterface(ABC):
+    """Interface to decouple the permission validation"""
 
 
     @abstractmethod
-    def get_all_users(self):
-        """Get all of the guests and staff from the database
+    def can_delete_guest(self, token:str, public_key:str):
+        """Verify if the token permits guest deletion
         
             Returns:
-                List of all users
+                Boolean indicating permission
             Raises:
                 NotImplementedError if the method is not implemented
         """
@@ -20,11 +20,11 @@ class DatabaseInterface(ABC):
 
 
     @abstractmethod
-    def get_all_staff(self):
-        """Get all staff from the database
+    def can_delete_staff(self, token:str, public_key:str):
+        """Verify if the token permits staff deletion
         
             Returns:
-                List of all staff
+                Boolean indicating permission
             Raises:
                 NotImplementedError if the method is not implemented
         """
@@ -32,11 +32,11 @@ class DatabaseInterface(ABC):
 
 
     @abstractmethod
-    def get_all_guests(self):
-        """Get all of the guests from the database
+    def can_update_guest(self, token:str, public_key:str):
+        """Verify if the token permits guest update
         
             Returns:
-                List of all guests
+                Boolean indicating permission
             Raises:
                 NotImplementedError if the method is not implemented
         """
@@ -44,9 +44,11 @@ class DatabaseInterface(ABC):
 
 
     @abstractmethod
-    def add_staff(self, new_staff:dict):
-        """Add a staff to the database
+    def can_update_staff(self, token:str, public_key:str):
+        """Verify if the token permits staff update
         
+            Returns:
+                Boolean indicating permission
             Raises:
                 NotImplementedError if the method is not implemented
         """
@@ -54,9 +56,11 @@ class DatabaseInterface(ABC):
 
 
     @abstractmethod
-    def add_guest(self, new_guest:dict):
-        """Add a guest to the database
+    def decode_token(self, token:str, public_key:str):
+        """Decode a jwt token
         
+            Returns:
+                Decoded token value
             Raises:
                 NotImplementedError if the method is not implemented
         """
@@ -64,19 +68,13 @@ class DatabaseInterface(ABC):
 
 
     @abstractmethod
-    def update_user(self, update_user:dict):
-        """Update the account info of the user whos username mathches
-            update_user['username']. 
+    def get_public_key(self):
+        """Get the valid public key
         
+            Returns:
+                Public key string
             Raises:
                 NotImplementedError if the method is not implemented
         """
         raise NotImplementedError
-
-
-    @abstractmethod
-    def delete_user(self, username:str):
-        """
-            Delete the user with the specified username
-        """
-        raise NotImplementedError
+    

@@ -215,9 +215,9 @@
       "/accounts": {
          "summary": "Store and fetch data related to accounts",
          "get": {
-            "summary": "View All Accounts",
-            "description": "Calls GET /permisions/ to verify the user has permission to view accounts. Calls GET /permission-groups/{group-id}/accounts",
-            "operationId": "getAccouts",
+            "summary": "Create Account",
+            "description": "Calls GET /permission-groups/{group-id}/accounts",
+            "operationId": "createAccount",
             "tags": [
                "Accounts"
             ],
@@ -270,76 +270,29 @@
             ],
             "responses": {
                "200": {
-                  "description": "A list of accounts",
+                  "description": "Confirmation accounts is active",
                   "content": {
                      "application/json": {
                         "schema": {
                            "type": "object",
                            "properties": {
-                              "accounts": {
-                                 "type": "array",
-                                 "items": {
-                                    "type": "object",
-                                    "properties": {
-                                       "account-id": {
-                                          "type": "integer",
-                                          "description": "User ID"
-                                       },
-                                       "account-name": {
-                                          "type": "string",
-                                          "description": "User's name"
-                                       },
-                                       "groups": {
-                                          "type": "array",
-                                          "description": "Data stored in permissions service",
-                                          "items": {
-                                             "type": "object",
-                                             "properties": {
-                                                "group-id": {
-                                                   "type": "integer"
-                                                },
-                                                "group-name": {
-                                                   "type": "string"
-                                                }
-                                             }
-                                          }
-                                       },
-                                       "reservations": {
-                                          "type": "array",
-                                          "description": "List of reservations associated to this account",
-                                          "items": {
-                                             "type": "object",
-                                             "properties":{
-                                                "reservation-id":{
-                                                   "type":"integer",
-                                                   "description":"id of a reservation associated to this account. No other information used since it would require a request to reservations for each account"
-                                                }
-                                             }
-                                          }
-                                       }
-                                    }
-                                 }
+                              "message": {
+                                 "type": "string",
+                                 "example": "You have contacted the accounts"
                               }
                            },
                            "required": [
-                              "account-id",
-                              "account-name"
+                              "message"
                            ]
                         }
                      }
                   }
-               },
-               "400": {
-                  "description": "Bad request"
-               },
-               "401": {
-                  "description": "Unauthorized"
                }
             }
          },
          "post": {
             "summary": "Create New Account",
-            "description": "Calls GET /permisions/ to verify the user has permission to view accounts. Calls POST /permissions to create an associated permission rule for the new account",
+            "description": "Creates a new user account. Requires a username and type. If type is 'staff', a password must also be provided.",
             "operationId": "postAccounts",
             "tags": [
                "Accounts"
@@ -351,78 +304,48 @@
                      "schema": {
                         "type": "object",
                         "properties": {
-                           "name": {
+                           "username": {
                               "type": "string",
-                              "description": "The name of the resource"
+                              "description": "The username of the new account"
+                           },
+                           "type": {
+                              "type": "string",
+                              "enum": [
+                                 "guest",
+                                 "staff"
+                              ],
+                              "description": "The type of account, either 'guest' or 'staff'"
                            },
                            "password": {
                               "type": "string",
-                              "description": "Initial password for account. Creates a code if password not provided"
-                           },
-                           "associated-reservation-ids": {
-                              "type": "array",
-                              "description": "List of reservations associated to this account",
-                              "items": {
-                                 "type": "integer"
-                              }
+                              "description": "Required if type is 'staff'"
                            }
                         },
                         "required": [
-                           "name"
-                        ]
+                           "username",
+                           "type"
+                        ],
+                        "additionalProperties": false
                      }
                   }
                }
             },
             "responses": {
                "201": {
-                  "description": "Account created successfully",
-                  "requestBody": {
-                     "content": {
-                        "application/json": {
-                           "type": "object",
-                           "properties": {
-                              "account-id": {
-                                 "description": "Id of the new account",
-                                 "type": "integer"
-                              },
-                              "account-name": {
-                                 "description": "Name of the new account",
-                                 "type": "string"
-                              },
-                              "code": {
-                                 "description": "If no password is provided, this holds the code to access the account"
-                              }
-                           }
-                        }
-                     }
-                  },
+                  "description": "User created successfully",
                   "content": {
                      "application/json": {
                         "schema": {
                            "type": "object",
                            "properties": {
-                              "accounts": {
-                                 "type": "array",
-                                 "items": {
-                                    "type": "object",
-                                    "properties": {
-                                       "account-id": {
-                                          "type": "integer",
-                                          "description": "User ID"
-                                       },
-                                       "account-name": {
-                                          "type": "string",
-                                          "description": "User's name"
-                                       }
-                                    },
-                                    "required": [
-                                       "account-id",
-                                       "account-name"
-                                    ]
-                                 }
+                              "message": {
+                                 "type": "string",
+                                 "example": "User created successfully. password: {new_password}"
                               }
-                           }
+                           },
+                           "required": [
+                              "message"
+                           ]
                         }
                      }
                   }
@@ -434,17 +357,239 @@
                         "schema": {
                            "type": "object",
                            "properties": {
-                              "error": {
+                              "message": {
                                  "type": "string",
-                                 "example": "The 'name' field is required"
+                                 "example": "Could not create user"
                               }
                            }
                         }
                      }
                   }
+               }
+            }
+         }
+      },
+      "/accounts/update": {
+         "summary": "Updates the account of a user.",
+         
+         "put": {
+            "summary": "Update Account",
+            "operationId": "updateAccount",
+            "tags": [
+               "Accounts"
+            ], 
+            "requestBody": {
+               "required": true,
+               "content": {
+               "application/json": {
+                  "schema": {
+                     "type": "object",
+                     "properties": {
+                     "username": {
+                        "type": "string",
+                        "description": "The username of the user to update",
+                     }
+                     },
+                     "required": [
+                     "username"
+                     ]
+                  }
+               }
+               }
+            },
+            "parameters": [
+               {
+               "name": "x-api-key",
+               "in": "header",
+               "required": true,
+               "schema": {
+                  "type": "string",
+                  "description": "JWT token for authentication"
+               }
+               }
+            ],
+            "responses": {
+               "200": {
+               "description": "User successfully updated",
+               "content": {
+                  "application/json": {
+                     "schema": {
+                     "type": "object",
+                     "properties": {
+                        "message": {
+                           "type": "string",
+                           "example": "{username} Successfully updated!\npassword: {password}"
+                        }
+                     },
+                     "required": [
+                        "message"
+                     ]
+                     }
+                  }
+               }
                },
                "401": {
-                  "description": "Unauthorized"
+               "description": "Cannot update user",
+               "content": {
+                  "application/json": {
+                     "schema": {
+                     "type": "object",
+                     "properties": {
+                        "message": {
+                           "type": "string",
+                           "example": "Cannot delete user."
+                        },
+                        "status": {
+                           "type": "string",
+                           "example": "error"
+                        }
+                     },
+                     "required": [
+                        "message",
+                        "status"
+                     ]
+                     }
+                  }
+               }
+               },
+               "404": {
+               "description": "User not found",
+               "content": {
+                  "application/json": {
+                     "schema": {
+                     "type": "object",
+                     "properties": {
+                        "message": {
+                           "type": "string",
+                           "example": "User not found."
+                        },
+                        "status": {
+                           "type": "string",
+                           "example": "error"
+                        }
+                     },
+                     "required": [
+                        "message",
+                        "status"
+                     ]
+                     }
+                  }
+               }
+               }
+            }
+         }
+      },
+
+      "/accounts/delete": {
+         "summary": "Attempt to delete an account",
+         "post": {
+            "summary": "Account Deletion",
+            "operationId": "postDeleteAttempt",
+            "tags": [
+               "Accounts"
+            ],
+            "requestBody": {
+               "required": true,
+               "content": {
+                  "application/json": {
+                  "schema": {
+                     "type": "object",
+                     "properties": {
+                        "username": {
+                        "type": "string",
+                        "description": "The name of the user to delete"
+                        }
+                     },
+                     "required": [
+                        "username"
+                     ]
+                  }
+                  }
+               }
+            },
+            "parameters": [
+               {
+                  "name": "x-api-key",
+                  "in": "header",
+                  "required": true,
+                  "schema": {
+                  "type": "string",
+                  "description": "JWT token for authentication"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "User successfully deleted",
+                  "content": {
+                  "application/json": {
+                     "schema": {
+                        "type": "object",
+                        "properties": {
+                        "message": {
+                           "type": "string",
+                           "example": "{Username} Successfully deleted!"
+                        },
+                        "status": {
+                           "type": "string",
+                           "example": "ok"
+                        }
+                        },
+                        "required": [
+                        "message",
+                        "status"
+                        ]
+                     }
+                  }
+                  }
+               },
+               "401": {
+                  "description": "Deletion could not be completed",
+                  "content": {
+                  "application/json": {
+                     "schema": {
+                        "type": "object",
+                        "properties": {
+                        "message": {
+                           "type": "string",
+                           "example": "Deletion could not be completed"
+                        },
+                        "status": {
+                           "type": "string",
+                           "example": "error"
+                        }
+                        },
+                        "required": [
+                        "message",
+                        "status"
+                        ]
+                     }
+                  }
+                  }
+               },
+               "403": {
+                  "description": "Action not permitted",
+                  "content": {
+                  "application/json": {
+                     "schema": {
+                        "type": "object",
+                        "properties": {
+                        "message": {
+                           "type": "string",
+                           "example": "Action not permitted"
+                        },
+                        "status": {
+                           "type": "string",
+                           "example": "forbidden"
+                        }
+                        },
+                        "required": [
+                        "message",
+                        "status"
+                        ]
+                     }
+                  }
+                  }
                }
             }
          }
@@ -489,21 +634,36 @@
                         "schema": {
                            "type": "object",
                            "properties": {
-                              "account-id": {
-                                 "type": "integer",
-                                 "description": "Account ID",
-                                 "example": "123"
+                              "message": {
+                                 "type": "string",
+                                 "example": "Welcome, {username}!"
                               }
                            },
                            "required": [
-                              "account-id"
+                              "message"
                            ]
                         }
                      }
                   }
                },
-               "400": {
-                  "description": "Bad request"
+               "401": {
+                  "description": "Login Fail - Invalid Credentials",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object",
+                           "properties": {
+                              "message": {
+                                 "type": "string",
+                                 "example": "Login Fail - Invalid Credentials"
+                              }
+                           },
+                           "required": [
+                              "message"
+                           ]
+                        }
+                     }
+                  }
                }
             }
          }

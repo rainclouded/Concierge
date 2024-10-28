@@ -5,6 +5,8 @@ from app.database.DatabaseController import DatabaseController
 from app.user_service.UserService import UserService
 from app.database.Mockdata import Mockdata
 from app.dto.UserObject import UserObject as User
+from app.authentication.AuthenticationManager import AuthenticationManager
+from app.validation.ValidationManager import ValidationManager
 import app.Configs as cfg
 
 class TestUserService(unittest.TestCase):
@@ -50,7 +52,12 @@ class TestUserService(unittest.TestCase):
         self.database = Mockdata()
         self.database.users = [*self.TEST_DATA]#Deepcopy hack
         self.database_controller = DatabaseController(self.database)
-        self.us = UserService(self.database_controller)
+        self.us = UserService(
+            self.database_controller,
+            AuthenticationManager(self.database_controller),
+            ValidationManager(self.database_controller)
+            )
+
 
     @patch('app.user_service.UserService.randbelow')
     def test_create_new_guest(self, mock_randbelow):
@@ -65,10 +72,10 @@ class TestUserService(unittest.TestCase):
         )
 
         user, _ = self.us.create_new_guest(new_guest)
-        
+
         mock_randbelow.assert_called_with(cfg.MAX_GUEST_PASSWORD)
         self.assertEqual(user, new_guest)
-        
+
 
     def test_create_new_staff(self):
         new_user = User(
@@ -95,7 +102,7 @@ class TestUserService(unittest.TestCase):
 
         self.assertTrue(valid_staff, user)
 
-        
+
     def test_delete_user(self):
         remaining_valid_users = [
             User(**{
@@ -141,13 +148,19 @@ class TestUserService(unittest.TestCase):
             }
         )
         self.assertIsNone(self.us.delete_user(User(**{})))
-        self.assertTrue(self.us.delete_user(guest_to_delete))
+        self.assertEqual(
+            self.us.delete_user(guest_to_delete.username),
+            guest_to_delete
+            )
         self.assertCountEqual(
             self.database_controller.get_users(),
             [*remaining_valid_users, staff_to_delete]
             )
 
-        self.assertTrue(self.us.delete_user(staff_to_delete))
+        self.assertEqual(
+            self.us.delete_user(staff_to_delete.username),
+            staff_to_delete
+            )
         self.assertCountEqual(
             self.database_controller.get_users(),
             remaining_valid_users
