@@ -8,10 +8,12 @@ on:
 jobs:
   integration_tests:
     runs-on: ubuntu-latest
-
+    strategy:
+      fail-fast: false
+      matrix:
     steps:
       - uses: actions/checkout@v2
-      
+        python-version: ["3.9", "3.10", "3.11"]
       - name: Build the Docker image
         run: docker compose -f ./docker-compose/docker-compose.yaml up --build --wait --wait-timeout 300 -d
 
@@ -25,10 +27,19 @@ jobs:
       - name: Node dependencies
         run: npm install /home/runner/work/Concierge/Concierge/src/guest_webapp/
         
-      - name: Run Cypress integration test
-        uses: cypress-io/github-action@v6
-        with: 
-          headless: true
-          config-file: '/home/runner/work/Concierge/Concierge/src/guest_webapp/cypress.config.js'
-          run-tests: '/home/runner/work/Concierge/Concierge/src/guest_webapp/cypress/e2e/*.cy.js'
-          working-directory: /home/runner/work/Concierge/Concierge/src/guest_webapp/
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install python dependencies
+        run: |
+          cd /home/runner/work/Concierge/Concierge/src/accounts/
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+       
+
+      - name: Test account integration tests
+        run: |
+          cd /home/runner/work/Concierge/Concierge/src/accounts/
+          python3 -m integration_tests
