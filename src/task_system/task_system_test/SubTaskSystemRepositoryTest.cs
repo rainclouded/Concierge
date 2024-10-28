@@ -21,7 +21,7 @@ public class SubTaskSystemRepositoryTest
 
         var result = await _repository.GetTasksAsync(query);
 
-        Assert.Equal(5, result.Count());
+        Assert.Equal(7, result.Count());
     }
 
     [Theory]
@@ -49,10 +49,10 @@ public class SubTaskSystemRepositoryTest
     }
 
     [Theory]
-    [InlineData("Pending")]
-    [InlineData("In Progress")]
-    [InlineData("Completed")]
-    public async Task GetTaskAsync_FilterByStatus_ReturnsMatchingTasks(string status)
+    [InlineData(TaskItemStatus.Pending)]
+    [InlineData(TaskItemStatus.InProgress)]
+    [InlineData(TaskItemStatus.Completed)]
+    public async Task GetTaskAsync_FilterByStatus_ReturnsMatchingTasks(TaskItemStatus status)
     {
         var query = new QueryObject { Status = status };
 
@@ -121,12 +121,12 @@ public class SubTaskSystemRepositoryTest
     {
         var newTask = new TaskItem
         {
-            Title = "New Task",
+            TaskType = TaskItemType.Maintenance,
             Description = "Test Description",
             RoomId = 105,
             RequesterId = 1,
             AssigneeId = null,
-            Status = "Pending",
+            Status = TaskItemStatus.Pending,
             CreatedAt = DateTime.Now
         };
 
@@ -134,7 +134,7 @@ public class SubTaskSystemRepositoryTest
         var addedTask = await _repository.GetTaskByIdAsync(result.Id);
 
         Assert.NotNull(addedTask);
-        Assert.Equal(newTask.Title, addedTask.Title);
+        Assert.Equal(newTask.TaskType, addedTask.TaskType);
         Assert.Equal(newTask.Description, addedTask.Description);
         Assert.Equal(newTask.Description, addedTask.Description);
         Assert.Equal(newTask.RoomId, addedTask.RoomId);
@@ -149,7 +149,7 @@ public class SubTaskSystemRepositoryTest
         var duplicatedTask = new TaskItem
         {
             Id = 1,
-            Title = "New Task",
+            TaskType = TaskItemType.Maintenance,
             Description = "Test Description",
             RoomId = 105,
             RequesterId = 1,
@@ -164,16 +164,16 @@ public class SubTaskSystemRepositoryTest
         int taskId = 1;
         var updateDto = new UpdateTaskDto
         {
-            Title = "Updated Title",
+            TaskType = TaskItemType.Maintenance,
             Description = "Updated Description",
             AssigneeId = 3,
-            Status = "Completed"
+            Status = TaskItemStatus.Completed
         };
 
         var result = await _repository.UpdateTaskAsync(taskId, updateDto);
 
         Assert.NotNull(result);
-        Assert.Equal(updateDto.Title, result.Title);
+        Assert.Equal(updateDto.TaskType, result.TaskType);
         Assert.Equal(updateDto.Description, result.Description);
         Assert.Equal(updateDto.AssigneeId, result.AssigneeId);
         Assert.Equal(updateDto.Status, result.Status);
@@ -185,10 +185,10 @@ public class SubTaskSystemRepositoryTest
         int taskId = 999;
         var updateDto = new UpdateTaskDto
         {
-            Title = "Updated Title",
+            TaskType = TaskItemType.Maintenance,
             Description = "Updated Description",
             AssigneeId = 3,
-            Status = "Completed"
+            Status = TaskItemStatus.Completed
         };
 
         await Assert.ThrowsAsync<KeyNotFoundException>(() => _repository.UpdateTaskAsync(taskId, updateDto));
