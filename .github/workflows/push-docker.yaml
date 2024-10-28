@@ -41,29 +41,29 @@ jobs:
       - name: Account service
         working-directory: ./src/accounts
         run: |
-          docker compose -f docker compose.yaml build
-          docker compose -f docker compose.yaml push
+          docker compose -f docker-compose.yaml build
+          docker compose -f docker-compose.yaml push
 
       - name: Guest Webapp
         working-directory: ./src/guest_webapp
         run: |
-          docker compose -f docker compose.yaml build
-          docker compose -f docker compose.yaml push
+          docker compose -f docker-compose.yaml build
+          docker compose -f docker-compose.yaml push
 
       - name: Staff Webapp
         working-directory: ./src/staff_webapp
         run: |
-          docker compose -f docker compose.yaml build
-          docker compose -f docker compose.yaml push
+          docker compose -f docker-compose.yaml build
+          docker compose -f docker-compose.yaml push
 
       - name: Incident Reports
         working-directory: ./src/incident_reports
         run: |
-          docker compose -f docker compose.yaml build
-          docker compose -f docker compose.yaml push
+          docker compose -f docker-compose.yaml build
+          docker compose -f docker-compose.yaml push
 
       - name: amenities
         working-directory: ./src/amenities
         run: |
-          docker compose -f docker compose.yaml build
-          docker compose -f docker compose.yaml push
+          docker compose -f docker-compose.yaml build
+          docker compose -f docker-compose.yaml push
