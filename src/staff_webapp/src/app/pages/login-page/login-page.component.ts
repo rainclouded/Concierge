@@ -29,14 +29,14 @@ export class LoginPageComponent {
     this.sessionService.postSession(this.loginForm.value).subscribe({
       next: (response: any) => {
         console.log(response)
-        console.log(`Session key: ${response.sessionKey}`)
-        this.apiKeyService.setSession(response.sessionKey)
+        console.log(`Session key: ${response.data.sessionKey}`)
+        this.apiKeyService.setSession(response.data.sessionKey)
         this.router.navigate(['/dashboard']);
       },
       error: (response: any) => {
-        console.log(response.error.error);
+        console.log(response);
         console.log(response.status);
-        alert(`Login Failed: \n${response.error.error}`);
+        alert(`Login Failed: \n${response.error.message}`);
       }
     });
   }

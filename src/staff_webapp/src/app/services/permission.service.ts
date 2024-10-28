@@ -17,7 +17,7 @@ export class PermissionService {
 
   updatePermissionGroup(groupId: number, permissionId: number, state: boolean) {
     console.log(`Group ${groupId} permission ${permissionId} state ${state}`)
-    return this.http.patch<ApiResponse<IPermissionGroup[]>>(`${this.apiUrl}`, {
+    return this.http.patch<ApiResponse<IPermissionGroup[]>>(`${this.apiUrl}/${groupId}`, {
       templateId: groupId,
       groupPermissions:[{permissionId:permissionId, state:state}],
     });

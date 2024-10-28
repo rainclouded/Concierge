@@ -799,7 +799,3 @@ func TestPatchPermissionGroupsRemoveMemberNotFound(t *testing.T) {
 		Members: []int{0, 1, 2},
 	}, group)
 }
-
-//Permissions logic
-
-//Session logic

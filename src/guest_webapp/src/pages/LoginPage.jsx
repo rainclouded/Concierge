@@ -13,7 +13,7 @@ const LoginPage = () => {
         {
           method: "POST",
           headers: { "Content-Type":"application/json"},
-          body:JSON.stringify({"username":`${roomKey}`, "password":""})
+          body:JSON.stringify({"username":`${roomKey}`, "password":`${roomKey}`})
         }
       );
       if (!response.ok) {
@@ -22,11 +22,11 @@ const LoginPage = () => {
         return
       }
       const data = await response.json();
-      setSessionKey(data.sessionKey);
+      setSessionKey(data.data.sessionKey);
       window.location.href = "/home";
     } catch (error) {
       console.log(error);
-      setError("Login failed");
+      setError("Login Failed");
     }
   };
 

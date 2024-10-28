@@ -14,7 +14,8 @@ func NewMockAccountClient() *MockAccountClient {
 		accounts: []*models.Account{
 			{ID: 1, Name: "admin"},
 			{ID: 2, Name: "editor"},
-			{ID: 3, Name: "viewer"}},
+			{ID: 3, Name: "viewer"},
+			{ID: 4, Name: "404"}},
 	}
 }
 

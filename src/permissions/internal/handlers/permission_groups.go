@@ -49,7 +49,6 @@ func GetPermissionGroupById(ctx *gin.Context) {
 
 func PostPermissionGroups(ctx *gin.Context) {
 	var groupReq models.PermissionGroupRequest
-	var group = &models.PermissionGroup{}
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
@@ -62,7 +61,7 @@ func PostPermissionGroups(ctx *gin.Context) {
 	}
 
 	if groupReq.Name == "" {
-		ctx.JSON(http.StatusBadRequest, middleware.Format("Permission name is required", nil))
+		ctx.JSON(http.StatusBadRequest, middleware.Format("Permission group name is required", nil))
 		return
 	}
 
@@ -76,7 +75,7 @@ func PostPermissionGroups(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, group)
+	ctx.JSON(http.StatusCreated, middleware.Format("Group created successfully", nil))
 }
 
 func PatchPermissionGroups(ctx *gin.Context) {
@@ -99,7 +98,7 @@ func PatchPermissionGroups(ctx *gin.Context) {
 		return
 	}
 
-	group, err := db.GetPermissionGroupById(id)
+	_, err := db.GetPermissionGroupById(id)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, middleware.Format(fmt.Sprintf("permission group %d not found", id), nil))
 		return
@@ -111,5 +110,5 @@ func PatchPermissionGroups(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, group)
+	ctx.JSON(http.StatusOK, middleware.Format("Group updated succesfully", nil))
 }

@@ -19,7 +19,7 @@ export class PermissionsTabComponent {
   isOpenWIndow = false;
   permissionGroups: IPermissionGroup[] = [];
   flatPermissions: { [key: string]: string | boolean | number }[] = [];
-  columnNames: string[] = ['cat', 'dog'];
+  columnNames: string[] = ['No Groups Found'];
 
   constructor(private permissionService: PermissionService) {
     this.getAllPermissionGroups();
@@ -70,8 +70,12 @@ export class PermissionsTabComponent {
         const groupPermission = group.groupPermissions.find(
           (p) => p.permissionName === permission.permissionName
         );
-        permissionEntry[group.groupName] =
-          groupPermission?.permissionState ?? false;
+        let gName = group.groupName;
+        if (gName ==null || gName === "")
+        {
+          gName = "unknown"
+        }
+        permissionEntry[gName] = groupPermission?.permissionState ?? false;
       });
       flatPermissionGroups.push(permissionEntry);
     });

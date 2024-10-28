@@ -3,7 +3,6 @@ import { jwtDecode } from "jwt-decode";
 const SESSION_KEY = "sessionKey";
 
 export const setSessionKey = (key) => {
-    console.log("HEllo")
   localStorage.setItem(SESSION_KEY, key);
 };
 

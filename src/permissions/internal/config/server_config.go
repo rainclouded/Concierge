@@ -2,6 +2,7 @@ package config
 
 import (
 	"concierge/permissions/internal/database"
+	"fmt"
 	"os"
 	"strconv"
 )
@@ -19,13 +20,21 @@ func LoadConfig() (ServerConfig, error) {
 
 func LoadDB() (db database.Database) {
 	var newDb database.Database
-	dbImplementation := os.Getenv("DB_IMPLEMENTATION")
+	dbImplementation := os.Getenv("PERMISSION_DB_IMPLEMENTATION")
+
+	fmt.Printf("Loading DB")
 
 	if dbImplementation == "MARIADB" {
-		// newDb = database.NewMariaDB()
+		mariaDb, _ := database.NewMariaDB(loadConnectionString(), false)
+		if mariaDb != nil {
+			fmt.Printf("DB Connected")
+			newDb = mariaDb
+		} else {
+			fmt.Printf("Not connected")
+		}
 	}
 
-	//fallback on newMock if maria fails
+	//fallback on newMock if maria fails or db implementation is MOCK
 	if newDb == nil {
 		newDb = database.NewMockDB()
 	}
@@ -51,4 +60,14 @@ func LoadSessionKeyHeader() string {
 	}
 
 	return valueStr
+}
+
+func loadConnectionString() string {
+	un := os.Getenv("PERMISSION_DB_USERNAME")
+	pw := os.Getenv("PERMISSION_DB_PASSWORD")
+	host := os.Getenv("PERMISSION_DB_HOST")
+	port := os.Getenv("PERMISSION_DB_PORT")
+	name := os.Getenv("PERMISSION_DB_NAME")
+	cs := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", un, pw, host, port, name)
+	return cs
 }
