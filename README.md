@@ -65,7 +65,7 @@ Concierge/
 |   └──sprint_1/
 └── src/
     ├── accounts/
-    ├── api-help/
+    ├── api_help/
     ├── guest_webapp
     ├── permissions
     ├── sessions
@@ -95,7 +95,7 @@ ex. feature/account_server/9354093
 ### Technical details
 - [Project Technical Overview](/docs/README.md)
 - [Concierge Internal Meetings](docs/project_docs/meeting_agenda.md)
-- [API Roadmap](/src/api-help/redoc-static.html) (Best to open in a browser)
+- [API Roadmap](/src/api_help/redoc-static.html) (Best to open in a browser)
 - [Microservice Architecture Overview](docs/project_docs/microservice_overview.md)
 - [Testing Plan](docs/project_docs/testing_plan.md)
 
@@ -113,5 +113,5 @@ ex. feature/account_server/9354093
 - [incident_reports](src/incident_reports)
 
 #### Web Application Servers
-- [guest webapp](/src/guest_webapp/README/md)
+- [guest webapp](/src/guest_webapp/README.md)
 - [staff webapp](/src/staff_webapp/README.md)
