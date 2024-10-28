@@ -3,3 +3,4 @@ services:
     build: .
     ports:
       - 8082:80
+    image: conciergeapp/concierge:staff_webapp

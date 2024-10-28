@@ -14,6 +14,7 @@ services:
       retries: 3
 
   incident_reports:
+    image: conciergeapp/concierge:incident_reports
     build: .
     ports:
       - 50005:8080

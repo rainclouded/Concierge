@@ -5,6 +5,7 @@ services:
       - 50001:8080
     env_file:
       - .env.prod
+    image: conciergeapp/concierge:accounts
 
   accounts-mongo:
     image: mongo:4.4.18
