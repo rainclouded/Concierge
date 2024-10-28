@@ -1,4 +1,7 @@
-public interface IPermissionValidator
+namespace amenities_server.validators
 {
-    bool ValidatePermissions(string permissionName, string sessionKey);
+    public interface IPermissionValidator
+    {
+        bool ValidatePermissions(string permissionName, string sessionKey);
+    }
 }
