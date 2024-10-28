@@ -34,7 +34,7 @@ jobs:
     - name: Test with unittest
       run: |
         cd /home/runner/work/Concierge/Concierge/src/accounts/
-        python3 -m tests
+        python3 -m unit_tests
 
   test_amenities:
 

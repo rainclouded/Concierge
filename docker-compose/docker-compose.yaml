@@ -3,6 +3,8 @@ include:
   - ../src/staff_webapp/docker-compose.yaml     # uses port 8082
   - ../src/amenities/docker-compose.yaml        # uses port 50004
   - ../src/incident_reports/docker-compose.yaml # uses port 50005
+  - ../src/accounts/docker-compose.yaml         # uses port 50001
+
 services:
   nginx:
     image: nginx:stable-alpine-slim
@@ -12,7 +14,3 @@ services:
     volumes:
       - ./configs/nginx.conf:/etc/nginx/nginx.conf
 
-  accounts:
-    build: ../src/accounts
-    ports:
-      - 50001:8080
