@@ -2,7 +2,12 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ITask } from '../../models/tasks.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ConfirmDeletionModalComponent } from './confirm-deletion-modal.component';  // Make sure the path is correct
+import { ConfirmDeletionModalComponent } from './confirm-deletion-modal.component';
+import {
+  TaskStatus,
+  formatTaskType,
+  formatStatus,
+} from '../../models/task-enums';
 
 @Component({
   selector: 'app-task-modal',
@@ -17,7 +22,12 @@ export class TaskModalComponent {
 
   isEditing = false; // To toggle between edit and view mode
   editedDescription: string = ''; // For holding the description in edit mode
-  isDeleteConfirmModalOpen = false;  // Control for the confirm deletion modal
+  isDeleteConfirmModalOpen = false; // Control for the confirm deletion modal
+
+  // Method to format TaskTypey
+  formatTaskType = formatTaskType;
+  // Method to format TaskStatus
+  formatTaskStatus = formatStatus;
 
   // Close modal
   closeModal() {
@@ -50,21 +60,23 @@ export class TaskModalComponent {
   assignTask() {
     if (this.task) {
       this.task.assignee = 'John Doe'; // Mock user for assignment
-      this.task.status = 'In Progress';
+      this.task.status = TaskStatus.InProgress;
     }
   }
 
   unassignTask() {
     if (this.task) {
       this.task.assignee = null;
-      this.task.status = 'Pending';
+      this.task.status = TaskStatus.Pending;
     }
   }
 
   toggleComplete() {
     if (this.task) {
       this.task.status =
-        this.task.status === 'Completed' ? 'In Progress' : 'Completed';
+        this.task.status === TaskStatus.Completed
+          ? TaskStatus.InProgress
+          : TaskStatus.Completed;
     }
   }
 
@@ -81,7 +93,7 @@ export class TaskModalComponent {
   // Simulate task deletion
   deleteTask() {
     console.log(`Task with ID ${this.task?.id} has been deleted.`);
-    this.isDeleteConfirmModalOpen = false;  // Close the confirm modal
-    this.close.emit();  // Also close the task details modal
+    this.isDeleteConfirmModalOpen = false; // Close the confirm modal
+    this.close.emit(); // Also close the task details modal
   }
 }

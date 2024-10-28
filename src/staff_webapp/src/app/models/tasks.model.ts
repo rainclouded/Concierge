@@ -1,10 +1,11 @@
+import { TaskType, TaskStatus } from './task-enums';
+
 export interface ITask {
-    id?: number;  
-    roomNumber: string;
-    typeOfService: string;
-    description: string;
-    timeCreated: Date;
-    assignee: string | null;  // null if unassigned
-    status: 'Pending' | 'In Progress' | 'Completed';
-  }
-  
+  id?: number;
+  roomId: number;
+  taskType: TaskType;
+  description: string;
+  timeCreated: Date;
+  assignee: string | null; // null if unassigned
+  status: TaskStatus;
+}

@@ -4,7 +4,7 @@
   <div class="bg-white rounded-lg p-8 w-full max-w-2xl">
     <h2 class="text-xl font-bold mb-4">Add New Task</h2>
 
-    <!-- Room Number and Type of Service on the same line -->
+    <!-- Room Number and Type of Service -->
     <div class="grid grid-cols-2 gap-4 mb-4">
       <!-- Room Number Input with placeholder -->
       <div>
@@ -16,15 +16,19 @@
         />
       </div>
 
-      <!-- Type of Service Dropdown (no placeholder needed) -->
+      <!-- Type of Service Dropdown -->
       <div>
         <select
-          [(ngModel)]="newTypeOfService"
+          id="taskType"
+          [(ngModel)]="newTaskType"
           class="p-2 border rounded w-full"
         >
-          <option value="" disabled>Select a service</option>
-          <option *ngFor="let service of getServiceOptions()">
-            {{ service }}
+          <option [ngValue]="undefined" disabled>Select a service</option>
+          <option
+            *ngFor="let option of getServiceOptions()"
+            [ngValue]="option.value"
+          >
+            {{ option.label }}
           </option>
         </select>
       </div>

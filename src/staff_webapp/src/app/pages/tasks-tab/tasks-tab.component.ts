@@ -4,6 +4,12 @@ import { ITask } from '../../models/tasks.model';
 import { TaskModalComponent } from '../../components/task-modal/task-modal.component';
 import { AddTaskModalComponent } from '../../components/task-modal/add-task-modal.component'; // Import the new modal
 import { mockTasks } from './mock-tasks'; // mock data
+import {
+  TaskType,
+  TaskStatus,
+  formatTaskType,
+  formatStatus,
+} from '../../models/task-enums';
 
 @Component({
   selector: 'app-tasks-tab',
@@ -19,11 +25,16 @@ export class TasksTabComponent {
   tasksPerPage = 15;
 
   // Sorting state
-  currentSortField: string = 'roomNumber'; // Default sorting field
+  currentSortField: string = 'roomId'; // Default sorting field
   sortDirection: 'asc' | 'desc' = 'asc'; // Default sorting direction
 
   // Modal control
   isAddTaskModalOpen = false; // Control for the Add Task modal
+
+  // Method to format TaskTypey
+  formatTaskType = formatTaskType;
+  // Method to format TaskStatus
+  formatTaskStatus = formatStatus;
 
   get totalPages(): number {
     return Math.ceil(this.tasks.length / this.tasksPerPage);
@@ -50,12 +61,6 @@ export class TasksTabComponent {
       if (field === 'timeCreated') {
         valueA = new Date(a.timeCreated).getTime();
         valueB = new Date(b.timeCreated).getTime();
-      }
-
-      // Convert roomNumber to number for sorting if the field is 'roomNumber'
-      if (field === 'roomNumber') {
-        valueA = parseInt(valueA as unknown as string, 10);
-        valueB = parseInt(valueB as unknown as string, 10);
       }
 
       // Check for null or undefined values and treat them as lowest possible values
@@ -117,16 +122,16 @@ export class TasksTabComponent {
 
   // Handle saving a new task
   saveNewTask(data: {
-    roomNumber: string;
-    typeOfService: string;
+    roomId: number;
+    taskType: TaskType;
     description: string;
   }) {
     const newTask: ITask = {
       id: this.tasks.length + 1,
-      roomNumber: data.roomNumber,
-      typeOfService: data.typeOfService,
+      roomId: data.roomId,
+      taskType: data.taskType,
       description: data.description,
-      status: 'Pending',
+      status: TaskStatus.Pending,
       assignee: null, // Default unassigned
       timeCreated: new Date(), // Date object
     };
@@ -156,10 +161,10 @@ export class TasksTabComponent {
   claimUnclaimTask(task: ITask) {
     if (task.assignee) {
       task.assignee = null;
-      task.status = 'Pending';
+      task.status = TaskStatus.Pending;
     } else {
       task.assignee = 'Current User';
-      task.status = 'In Progress';
+      task.status = TaskStatus.InProgress;
     }
   }
 }

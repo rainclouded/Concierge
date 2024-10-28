@@ -11,19 +11,19 @@
     <tr>
       <th
         class="border-b p-2 w-[10%] cursor-pointer"
-        (click)="toggleSort('roomNumber')"
+        (click)="toggleSort('roomId')"
       >
         Room No
-        <span *ngIf="currentSortField === 'roomNumber'">{{
+        <span *ngIf="currentSortField === 'roomId'">{{
           sortDirection === "asc" ? "▲" : "▼"
         }}</span>
       </th>
       <th
         class="border-b p-2 w-[15%] cursor-pointer"
-        (click)="toggleSort('typeOfService')"
+        (click)="toggleSort('taskType')"
       >
         Type of Service
-        <span *ngIf="currentSortField === 'typeOfService'">{{
+        <span *ngIf="currentSortField === 'taskType'">{{
           sortDirection === "asc" ? "▲" : "▼"
         }}</span>
       </th>
@@ -64,14 +64,14 @@
       (click)="openModal(task)"
       class="cursor-pointer hover:bg-gray-300"
     >
-      <td class="border-b p-2">{{ task.roomNumber }}</td>
-      <td class="border-b p-2">{{ task.typeOfService }}</td>
+      <td class="border-b p-2">{{ task.roomId }}</td>
+      <td class="border-b p-2">{{ formatTaskType(task.taskType) }}</td>
       <td class="border-b p-2">
         {{ getDescriptionPreview(task.description) }}
       </td>
       <td class="border-b p-2">{{ task.timeCreated | date : "short" }}</td>
       <td class="border-b p-2">{{ task.assignee || "Unassigned" }}</td>
-      <td class="border-b p-2">{{ task.status }}</td>
+      <td class="border-b p-2">{{ formatTaskStatus(task.status) }}</td>
     </tr>
   </tbody>
 </table>

@@ -32,9 +32,9 @@
 
     <!-- Task details content -->
     <div *ngIf="task">
-      <p class="mb-1"><strong>Room Number:</strong> {{ task.roomNumber }}</p>
+      <p class="mb-1"><strong>Room Number:</strong> {{ task.roomId }}</p>
       <p class="mb-1">
-        <strong>Type of Service:</strong> {{ task.typeOfService }}
+        <strong>Type of Service:</strong> {{ formatTaskType(task.taskType) }}
       </p>
 
       <!-- Description Section -->
@@ -72,7 +72,9 @@
       <p class="mb-1">
         <strong>Assignee:</strong> {{ task.assignee || "Unassigned" }}
       </p>
-      <p class="mb-1"><strong>Status:</strong> {{ task.status }}</p>
+      <p class="mb-1">
+        <strong>Status:</strong> {{ formatTaskStatus(task.status) }}
+      </p>
 
       <!-- Button for assigning and unassigning tasks -->
       <div class="flex justify-end mt-4">
