@@ -28,7 +28,7 @@ GUEST_TYPE = 'guest'
 STAFF_TYPE = 'staff'
 
 #The database to use
-if getenv('deployent') in ['testing', None]:
+if getenv('deployent') == 'testing':
     DATABASE = Mockdata()
     PERMISSIONS = MockPermissions()
 else:
