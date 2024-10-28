@@ -13,4 +13,5 @@ services:
       - 80:80
     volumes:
       - ./configs/nginx.conf:/etc/nginx/nginx.conf
+    image: conciergeapp/concierge:latest
 
