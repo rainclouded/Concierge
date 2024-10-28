@@ -16,19 +16,9 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build the Docker image
-        run: docker compose -f ./docker-compose/docker-compose.yaml up --build --wait --wait-timeout 300 -d
-
-      - name: Set up Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: '/home/runner/work/Concierge/Concierge/src/guest_webapp/'
-
-      - name: Node dependencies
-        run: npm install /home/runner/work/Concierge/Concierge/src/guest_webapp/
+        run: docker compose -f ./src/accounts/docker-compose.yaml up --build --wait --wait-timeout 300 -d
         
-      - uses: actions/checkout@v4
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
