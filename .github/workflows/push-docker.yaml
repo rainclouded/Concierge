@@ -47,7 +47,12 @@ jobs:
         run: |
           docker compose -f ./docker-compose/docker-compose.yaml build
           docker compose -f ./docker-compose/docker-compose.yaml push
-
+          
+      - name: Get image digest
+        id: digest
+        run: |
+          echo "DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' conciergeapp/concierge:latest)" >> $GITHUB_ENV
+      
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1
         with:
