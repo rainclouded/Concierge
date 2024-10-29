@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ITask } from '../../models/tasks.model';
 import { TaskModalComponent } from '../../components/task-modal/task-modal.component';
 import { AddTaskModalComponent } from '../../components/task-modal/add-task-modal.component'; // Import the new modal
-import { mockTasks } from './mock-tasks'; // mock data
 import {
   TaskType,
   TaskStatus,
@@ -165,6 +164,11 @@ export class TasksTabComponent {
         console.error('Failed to add task:', error);
       },
     });
+  }
+
+  removeTask(deletedTaskId: number) {
+    this.tasks = this.tasks.filter(task => task.id !== deletedTaskId); // Update the tasks list
+    console.log('Task list updated after deletion');
   }
 
   // Pagination controls

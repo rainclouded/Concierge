@@ -20,6 +20,7 @@ export class TaskModalComponent {
   @Input() isOpen = false;
   @Input() task: ITask | null = null;
   @Output() close = new EventEmitter<void>();
+  @Output() taskDeleted = new EventEmitter<number>(); // Emit task ID when deleted
 
   isEditing = false; // To toggle between edit and view mode
   editedDescription: string = ''; // For holding the description in edit mode
@@ -104,10 +105,20 @@ export class TaskModalComponent {
     this.isDeleteConfirmModalOpen = false;
   }
 
-  // Simulate task deletion
+  // Delete task
   deleteTask() {
-    console.log(`Task with ID ${this.task?.id} has been deleted.`);
-    this.isDeleteConfirmModalOpen = false; // Close the confirm modal
-    this.close.emit(); // Also close the task details modal
+    if (this.task) {
+      this.taskService.deleteTask(this.task.id!).subscribe({
+        next: () => {
+          console.log(`Task with ID ${this.task?.id} has been deleted.`);
+          this.isDeleteConfirmModalOpen = false; // Close the confirm modal
+          this.taskDeleted.emit(this.task!.id); // Emit the deleted task ID
+          this.close.emit(); // Also close the task details modal
+        },
+        error: (error) => {
+          console.error('Failed to delete task:', error);
+        }
+      });
+    }
   }
 }

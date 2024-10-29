@@ -107,4 +107,5 @@
   [isOpen]="isModalOpen"
   (close)="closeModal()"
   [task]="selectedTask"
+  (taskDeleted)="removeTask($event)"
 ></app-task-modal>
