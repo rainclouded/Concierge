@@ -166,6 +166,13 @@ export class TasksTabComponent {
     });
   }
 
+  updateTaskList(updatedTask: ITask) {
+    const index = this.tasks.findIndex(task => task.id === updatedTask.id);
+    if (index !== -1) {
+      this.tasks[index] = updatedTask; // Update the task in the list
+    }
+  }
+
   removeTask(deletedTaskId: number) {
     this.tasks = this.tasks.filter(task => task.id !== deletedTaskId); // Update the tasks list
     console.log('Task list updated after deletion');

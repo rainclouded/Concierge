@@ -21,6 +21,7 @@ export class TaskModalComponent {
   @Input() task: ITask | null = null;
   @Output() close = new EventEmitter<void>();
   @Output() taskDeleted = new EventEmitter<number>(); // Emit task ID when deleted
+  @Output() taskUpdated = new EventEmitter<ITask>(); // Emit the updated task
 
   isEditing = false; // To toggle between edit and view mode
   editedDescription: string = ''; // For holding the description in edit mode
@@ -48,16 +49,16 @@ export class TaskModalComponent {
     }
   }
 
-  // Save the edited description and send update to backend
-  saveDescription() {
+   // Save the edited description and send update to backend
+   saveDescription() {
     if (this.task) {
-      // Check that this.task is not null
       const updatedTask = { ...this.task, description: this.editedDescription };
 
       this.taskService.updateTask(this.task.id!, updatedTask).subscribe({
         next: (response) => {
           this.task = response.data; // Update the task with response data
           this.isEditing = false; // Exit edit mode
+          this.taskUpdated.emit(this.task); // Emit the updated task
           console.log('Task updated successfully:', response.data);
         },
         error: (error) => {
