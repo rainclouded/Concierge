@@ -8,6 +8,7 @@ import {
   formatTaskType,
   formatStatus,
 } from '../../models/task-enums';
+import { TaskService } from '../../services/task.service';
 
 @Component({
   selector: 'app-task-modal',
@@ -29,6 +30,8 @@ export class TaskModalComponent {
   // Method to format TaskStatus
   formatTaskStatus = formatStatus;
 
+  constructor(private taskService: TaskService) {} // Inject TaskService
+
   // Close modal
   closeModal() {
     this.isEditing = false; // Reset editing mode
@@ -44,11 +47,22 @@ export class TaskModalComponent {
     }
   }
 
-  // Save the edited description
+  // Save the edited description and send update to backend
   saveDescription() {
     if (this.task) {
-      this.task.description = this.editedDescription; // Update the task description
-      this.isEditing = false; // Exit edit mode
+      // Check that this.task is not null
+      const updatedTask = { ...this.task, description: this.editedDescription };
+
+      this.taskService.updateTask(this.task.id!, updatedTask).subscribe({
+        next: (response) => {
+          this.task = response.data; // Update the task with response data
+          this.isEditing = false; // Exit edit mode
+          console.log('Task updated successfully:', response.data);
+        },
+        error: (error) => {
+          console.error('Failed to update task:', error);
+        },
+      });
     }
   }
 

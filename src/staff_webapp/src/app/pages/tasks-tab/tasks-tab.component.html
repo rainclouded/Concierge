@@ -30,10 +30,10 @@
       <th class="border-b p-2 w-[45%]">Description</th>
       <th
         class="border-b p-2 w-[12%] cursor-pointer"
-        (click)="toggleSort('timeCreated')"
+        (click)="toggleSort('createdAt')"
       >
         Time Created
-        <span *ngIf="currentSortField === 'timeCreated'">{{
+        <span *ngIf="currentSortField === 'createdAt'">{{
           sortDirection === "asc" ? "▲" : "▼"
         }}</span>
       </th>
@@ -69,7 +69,7 @@
       <td class="border-b p-2">
         {{ getDescriptionPreview(task.description) }}
       </td>
-      <td class="border-b p-2">{{ task.timeCreated | date : "short" }}</td>
+      <td class="border-b p-2">{{ task.createdAt | date : "short" }}</td>
       <td class="border-b p-2">{{ task.assignee || "Unassigned" }}</td>
       <td class="border-b p-2">{{ formatTaskStatus(task.status) }}</td>
     </tr>

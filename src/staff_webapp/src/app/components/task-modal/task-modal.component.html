@@ -67,7 +67,7 @@
       </div>
 
       <p class="mb-1">
-        <strong>Time Created:</strong> {{ task.timeCreated | date : "short" }}
+        <strong>Time Created:</strong> {{ task.createdAt | date : "short" }}
       </p>
       <p class="mb-1">
         <strong>Assignee:</strong> {{ task.assignee || "Unassigned" }}

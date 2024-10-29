@@ -10,6 +10,7 @@ import {
   formatTaskType,
   formatStatus,
 } from '../../models/task-enums';
+import { TaskService } from '../../services/task.service';
 
 @Component({
   selector: 'app-tasks-tab',
@@ -18,7 +19,7 @@ import {
   templateUrl: './tasks-tab.component.html',
 })
 export class TasksTabComponent {
-  tasks: ITask[] = mockTasks;
+  tasks: ITask[] = [];
 
   // Pagination variables
   currentPage = 1;
@@ -35,6 +36,24 @@ export class TasksTabComponent {
   formatTaskType = formatTaskType;
   // Method to format TaskStatus
   formatTaskStatus = formatStatus;
+
+  constructor(private taskService: TaskService) {}
+
+  ngOnInit(): void {
+    this.fetchTasks();
+  }
+
+  fetchTasks(): void {
+    this.taskService.getAllTasks().subscribe(
+      (response) => {
+        this.tasks = response.data;
+        console.log('Fetched tasks:', this.tasks);
+      },
+      (error) => {
+        console.error('Failed to fetch tasks:', error);
+      }
+    );
+  }
 
   get totalPages(): number {
     return Math.ceil(this.tasks.length / this.tasksPerPage);
@@ -57,10 +76,10 @@ export class TasksTabComponent {
       let valueA = a[field as keyof ITask];
       let valueB = b[field as keyof ITask];
 
-      // Handle date comparison (for the timeCreated field)
-      if (field === 'timeCreated') {
-        valueA = new Date(a.timeCreated).getTime();
-        valueB = new Date(b.timeCreated).getTime();
+      // Handle date comparison (for the createdAt field)
+      if (field === 'createdAt') {
+        valueA = new Date(a.createdAt).getTime();
+        valueB = new Date(b.createdAt).getTime();
       }
 
       // Check for null or undefined values and treat them as lowest possible values
@@ -120,24 +139,32 @@ export class TasksTabComponent {
     this.isAddTaskModalOpen = false;
   }
 
-  // Handle saving a new task
+  // Save a new task via TaskService
   saveNewTask(data: {
     roomId: number;
     taskType: TaskType;
     description: string;
   }) {
     const newTask: ITask = {
-      id: this.tasks.length + 1,
       roomId: data.roomId,
       taskType: data.taskType,
       description: data.description,
       status: TaskStatus.Pending,
-      assignee: null, // Default unassigned
-      timeCreated: new Date(), // Date object
+      assignee: null,
+      requesterId: 1, // CHANGE
+      createdAt: new Date(),
     };
 
-    this.tasks.push(newTask); // Add new task to the list
-    this.closeAddTaskModal(); // Close the modal
+    this.taskService.addTask(newTask).subscribe({
+      next: (response) => {
+        this.tasks.push(response.data); // Add the newly created task to the local list
+        this.closeAddTaskModal();
+        console.log('Task added successfully:', response.data);
+      },
+      error: (error) => {
+        console.error('Failed to add task:', error);
+      },
+    });
   }
 
   // Pagination controls
