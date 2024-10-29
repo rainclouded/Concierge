@@ -28,7 +28,7 @@ jobs:
           cd /home/runner/work/Concierge/Concierge/src/accounts/
           python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
-       
+      - name: Run App
         run: |
           cd /home/runner/work/Concierge/Concierge/src/accounts/
           python3 -m app
