@@ -143,7 +143,7 @@ const HomePage = () => {
         <p>Choose your service. We will deliver right to your door!</p>
       </div>
 
-      {/* Service Cards */}
+      {/* Requests Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 mx-auto justify-items-center max-w-full md:max-w-[75%]">
           <RequestCard
             icon={faBroom}
@@ -154,11 +154,12 @@ const HomePage = () => {
             <label htmlFor="request" className="block mb-2">
               Special Instructions:
             </label>
-            <input
+            <textarea
               placeholder="Enter special instructions"
               value={inputValue}
               onChange={handleInputChange}
               className="border rounded p-2 mb-4 w-full"
+              style={{ height: '180px', resize: 'none' }}
             />
           </RequestCard>
 
@@ -284,11 +285,12 @@ const HomePage = () => {
             <label htmlFor="request" className="block mb-2">
               Special Instructions:
             </label>
-            <input
+            <textarea
               placeholder="Enter special instructions"
               value={inputValue}
               onChange={handleInputChange}
               className="border rounded p-2 mb-4 w-full"
+              style={{ height: '180px', resize: 'none' }}
             />
           </RequestCard>    
 
@@ -301,11 +303,12 @@ const HomePage = () => {
             <label htmlFor="request" className="block mb-2">
               Special Instructions:
             </label>
-            <input
+            <textarea
               placeholder="Enter special instructions"
               value={inputValue}
               onChange={handleInputChange}
               className="border rounded p-2 mb-4 w-full"
+              style={{ height: '180px', resize: 'none' }}
             />
           </RequestCard>   
 
@@ -318,11 +321,12 @@ const HomePage = () => {
             <label htmlFor="request" className="block mb-2">
               Details:
             </label>
-            <input
-              placeholder="What needs to be fixed?"
+            <textarea
+              placeholder="Enter special instructions"
               value={inputValue}
               onChange={handleInputChange}
               className="border rounded p-2 mb-4 w-full"
+              style={{ height: '180px', resize: 'none' }}
             />
           </RequestCard>    
         </div>
