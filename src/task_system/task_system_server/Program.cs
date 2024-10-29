@@ -42,21 +42,6 @@ if(dbImplementation == "POSTGRES"){
     builder.Services.AddSingleton<ITaskSystemRepository, StubTaskSystemRepository>();
 }
 
-/*
-// Configure repository. Change to true/false in appsetting.json
-bool useStubRepository = builder.Configuration.GetValue<bool>("InDevelopment");
-
-if (useStubRepository){
-    // One instance for all requests - maintains in-memory state
-    builder.Services.AddSingleton<ITaskSystemRepository, StubTaskSystemRepository>();
-} else {
-    // New instance per request - fresh database context
-    builder.Services.AddDbContext<TaskSystemDbContext>(options =>
-        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-    builder.Services.AddScoped<ITaskSystemRepository, PostgresTaskSystemRepository>();
-}
-*/
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
