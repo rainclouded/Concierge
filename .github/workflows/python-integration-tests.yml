@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build the Docker image
-        run: docker compose -f ./src/accounts/docker-compose.yaml up --build --wait --wait-timeout 300 -d
+        run: docker compose -f ./src/accounts/docker-compose.yaml up --build --wait --wait-timeout 300 -d --build accounts-mongo
         
 
       - name: Set up Python ${{ matrix.python-version }}
@@ -29,7 +29,9 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
        
-
+        run: |
+          cd /home/runner/work/Concierge/Concierge/src/accounts/
+          python3 -m app
       - name: Test account integration tests
         run: |
           cd /home/runner/work/Concierge/Concierge/src/accounts/
