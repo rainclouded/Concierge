@@ -29,9 +29,10 @@ class IntegrationTests():
             'tests.json'
         )
         self.db_url = getenv('DB_URI')
-        #if this is not run in the docker environment use
+        #if this is not run in the docker environment with nginx routing use
         #'http://localhost:8080/accounts'
-        self.service_url = 'http://localhost:50001/accounts'
+        #else use 'http://localhost:50001/accounts'
+        self.service_url = 'http://localhost:8080/accounts'
         self.tests_passed = 0
         self.tests_run = 0
         self.timeout = 3
@@ -134,8 +135,15 @@ class IntegrationTests():
         expected_data = expected_data.replace('*', '.*')
         regex_data = re.compile(expected_data)
         match_found = regex_data.search(response.text)
+        validate = bool(match_found) and expected_code == response.status_code
 
-        return bool(match_found) and expected_code == response.status_code
+        if not validate:
+            print(
+                    f"Expected: {expected_data} - {expected_code}\n"+
+                    f"Result: {response.text} - {response.status_code}"
+                )
+
+        return validate
 
 
     def call_test(self, test_data:dict):
@@ -182,9 +190,10 @@ class IntegrationTests():
             case _:
                 pass #response will still be None
         print(f"Testing: {description}")
+ 
         valid = (
             self.validate(response, expected_response_data, expected_response_number)
-            if response
+            if response is not None
             else False
         )
         print("Test passed." if valid else "Test Failed.")
