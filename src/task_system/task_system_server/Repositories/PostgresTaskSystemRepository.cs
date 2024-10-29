@@ -21,7 +21,7 @@ public class PostgresTaskSystemRepository : ITaskSystemRepository
             (!query.RoomId.HasValue || s.RoomId == query.RoomId) &&
             (!query.RequesterId.HasValue || s.RequesterId == query.RequesterId) &&
             (!query.AssigneeId.HasValue || s.AssigneeId == query.AssigneeId) &&
-            (string.IsNullOrWhiteSpace(query.Status) || s.Status.Equals(query.Status)) &&
+            (!query.Status.HasValue || s.Status == query.Status) &&
             (!query.Year.HasValue || s.CreatedAt.Year == query.Year) &&
             (!query.Month.HasValue || s.CreatedAt.Month == query.Month) &&
             (!query.Day.HasValue || s.CreatedAt.Day == query.Day)
@@ -54,7 +54,7 @@ public class PostgresTaskSystemRepository : ITaskSystemRepository
     {
         var existingTask = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id) ?? throw new KeyNotFoundException("Task not found.");
 
-        existingTask.Title = taskDto.Title;
+        existingTask.TaskType = taskDto.TaskType;
         existingTask.Description = taskDto.Description;
         existingTask.AssigneeId = taskDto.AssigneeId;
         existingTask.Status = taskDto.Status;

@@ -7,7 +7,7 @@ public static class TaskMapper
 {
     public static TaskItem ToTaskFromAddTaskDto (this AddTaskDto taskDto) {
         return new TaskItem {
-            Title = taskDto.Title,
+            TaskType = taskDto.TaskType,
             Description = taskDto.Description,
             RoomId = taskDto.RoomId,
             RequesterId = taskDto.RequesterId,

@@ -1,12 +1,12 @@
-using System;
 using System.ComponentModel.DataAnnotations;
+using task_system_server.Models;
 
 namespace task_system_server.Dtos;
 
 public class UpdateTaskDto
 {
     [Required]
-	public string Title { get; set; } = string.Empty;
+	public TaskItemType TaskType { get; set; }
 
     [Required]
     [MaxLength(400, ErrorMessage = "Description cannot be over 400 over characters")]
@@ -17,6 +17,5 @@ public class UpdateTaskDto
 	public int AssigneeId { get; set; }
 
     [Required]
-    [RegularExpression("^(Pending|Complete|In Progress)$", ErrorMessage = "Status must be either 'Pending', 'Complete', or 'In Progress'.")]
-	public string Status { get; set; } = string.Empty;
+	public TaskItemStatus Status { get; set; }
 }
