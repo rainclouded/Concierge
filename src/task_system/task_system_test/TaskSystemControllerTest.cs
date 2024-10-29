@@ -26,57 +26,79 @@ namespace task_system_test
                 new TaskItem
                 {
                     Id = 1,
-                    Title = "Fix the bathroom leak",
+                    TaskType = TaskItemType.Maintenance,
                     Description = "There is a leak in the bathroom sink that needs urgent attention.",
                     RoomId = 101,
                     RequesterId = 1,
                     AssigneeId = 2,
-                    Status = "In Progress",
+                    Status = TaskItemStatus.InProgress,
                     CreatedAt = new DateTime(2024, 10, 10, 10, 30, 0)
                 },
                 new TaskItem
                 {
                     Id = 2,
-                    Title = "Replace light bulbs in the hallway",
+                    TaskType = TaskItemType.Maintenance,
                     Description = "Some light bulbs are out in the hallway. Please replace them.",
                     RoomId = 102,
                     RequesterId = 3,
                     AssigneeId = 2,
-                    Status = "Pending",
+                    Status = TaskItemStatus.Pending,
                     CreatedAt = new DateTime(2024, 10, 12, 9, 0, 0)
                 },
                 new TaskItem
                 {
                     Id = 3,
-                    Title = "Clean the conference room",
+                    TaskType = TaskItemType.RoomCleaning,
                     Description = "The conference room needs to be cleaned before the meeting.",
                     RoomId = 201,
                     RequesterId = 4,
                     AssigneeId = 5,
-                    Status = "Completed",
+                    Status = TaskItemStatus.Completed,
                     CreatedAt = new DateTime(2024, 10, 13, 15, 0, 0)
                 },
                 new TaskItem
                 {
                     Id = 4,
-                    Title = "Check fire alarm batteries",
-                    Description = "Ensure that all fire alarms have functioning batteries.",
-                    RoomId = 103,
-                    RequesterId = 2,
-                    AssigneeId = 3,
-                    Status = "Pending",
-                    CreatedAt = new DateTime(2024, 10, 15, 11, 0, 0)
+                    TaskType = TaskItemType.FoodDelivery,
+                    Description = "Deliver breakfast to room 203.",
+                    RoomId = 203,
+                    RequesterId = 6,
+                    AssigneeId = 7,
+                    Status = TaskItemStatus.Pending,
+                    CreatedAt = new DateTime(2024, 10, 16, 8, 0, 0)
                 },
                 new TaskItem
                 {
                     Id = 5,
-                    Title = "Organize supplies in storage",
-                    Description = "Organize the storage area to make supplies easily accessible.",
-                    RoomId = 104,
-                    RequesterId = 1,
-                    AssigneeId = 4,
-                    Status = "In Progress",
-                    CreatedAt = new DateTime(2024, 10, 18, 14, 0, 0)
+                    TaskType = TaskItemType.WakeUpCall,
+                    Description = "Provide a wake-up call at 6:00 AM for room 204.",
+                    RoomId = 204,
+                    RequesterId = 8,
+                    AssigneeId = 9,
+                    Status = TaskItemStatus.Completed,
+                    CreatedAt = new DateTime(2024, 10, 16, 6, 0, 0)
+                },
+                new TaskItem
+                {
+                    Id = 6,
+                    TaskType = TaskItemType.LaundryService,
+                    Description = "Pick up laundry from room 205 and deliver it back clean.",
+                    RoomId = 205,
+                    RequesterId = 10,
+                    AssigneeId = 11,
+                    Status = TaskItemStatus.InProgress,
+                    CreatedAt = new DateTime(2024, 10, 17, 10, 0, 0)
+                },
+                new TaskItem
+                {
+                    Id = 7,
+                    TaskType = TaskItemType.SpaAndMassage,
+                    Description = "Schedule a massage for the guest in room 206 at 3:00 PM.",
+                    RoomId = 206,
+                    RequesterId = 12,
+                    AssigneeId = 13,
+                    Status = TaskItemStatus.Pending,
+                    CreatedAt = new DateTime(2024, 10, 18, 15, 0, 0)
                 }
             };
 
@@ -112,12 +134,12 @@ namespace task_system_test
             var task = new TaskItem
             {
                 Id = 1,
-                Title = "Fix the bathroom leak",
+                TaskType = TaskItemType.Maintenance,
                 Description = "There is a leak in the bathroom sink that needs urgent attention.",
                 RoomId = 101,
                 RequesterId = 1,
                 AssigneeId = 2,
-                Status = "In Progress",
+                Status = TaskItemStatus.InProgress,
                 CreatedAt = new DateTime(2024, 10, 10, 10, 30, 0)
             };
             _mockRepo.Setup(repo => repo.GetTaskByIdAsync(taskId)).ReturnsAsync(task);
@@ -148,16 +170,16 @@ namespace task_system_test
         [Fact]
         public async Task AddTask_ReturnsCreatedAtAction_WhenTaskIsValid()
         {
-            var taskDto = new AddTaskDto { Title = "New Task", Description = "Description", RoomId = 101, RequesterId = 40 };
+            var taskDto = new AddTaskDto { TaskType = TaskItemType.RoomCleaning, Description = "Room Cleaning", RoomId = 101, RequesterId = 40 };
             var newTask = new TaskItem
             {
                 Id = 1,
-                Title = "New Task",
-                Description = "Description",
+                TaskType = TaskItemType.RoomCleaning,
+                Description = "Room Cleaning",
                 RoomId = 101,
                 RequesterId = 40,
                 AssigneeId = null,
-                Status = "In Progress",
+                Status = TaskItemStatus.Pending,
                 CreatedAt = DateTime.Now
             };
             _mockRepo.Setup(repo => repo.AddTaskAsync(It.IsAny<TaskItem>())).ReturnsAsync(newTask);
@@ -179,16 +201,16 @@ namespace task_system_test
         public async Task UpdateTask_ReturnsOkResult_WhenUpdateIsSuccessful()
         {
             int taskId = 1;
-            var taskDto = new UpdateTaskDto { Title = "New Task", Description = "Description", AssigneeId = 30, Status = "In Progress" };
+            var taskDto = new UpdateTaskDto { TaskType = TaskItemType.RoomCleaning, Description = "Room Cleaning", AssigneeId = 30, Status = TaskItemStatus.InProgress };
             var updatedTask = new TaskItem
             {
                 Id = taskId,
-                Title = "New Task",
+                TaskType = TaskItemType.RoomCleaning,
                 Description = "Description",
                 RoomId = 101,
                 RequesterId = 1,
                 AssigneeId = 30,
-                Status = "In Progress",
+                Status = TaskItemStatus.InProgress,
                 CreatedAt = new DateTime(2024, 10, 10, 10, 30, 0)
             };
 
@@ -209,12 +231,12 @@ namespace task_system_test
             var existingTask = new TaskItem
             {
                 Id = taskId,
-                Title = "New Task",
+                TaskType = TaskItemType.RoomCleaning,
                 Description = "Description",
                 RoomId = 101,
                 RequesterId = 1,
                 AssigneeId = 30,
-                Status = "In Progress",
+                Status = TaskItemStatus.InProgress,
                 CreatedAt = new DateTime(2024, 10, 10, 10, 30, 0)
             };
             _mockRepo.Setup(repo => repo.GetTaskByIdAsync(taskId)).ReturnsAsync(existingTask);

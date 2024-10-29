@@ -22,6 +22,11 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+});
+
 // Configure repository. Change to true/false in appsetting.json
 bool useStubRepository = builder.Configuration.GetValue<bool>("InDevelopment");
 
