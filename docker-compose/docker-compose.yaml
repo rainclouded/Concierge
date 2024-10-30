@@ -2,6 +2,7 @@ include:
   - ../src/guest_webapp/docker-compose.yaml     # uses port 8081
   - ../src/staff_webapp/docker-compose.yaml     # uses port 8082
   - ../src/amenities/docker-compose.yaml        # uses port 50004
+  - ../src/task_system/docker-compose.yaml      # uses port 50006
 services:
   nginx:
     image: nginx:stable-alpine-slim

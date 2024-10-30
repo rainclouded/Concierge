@@ -27,17 +27,24 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
 });
 
-// Configure repository. Change to true/false in appsetting.json
-bool useStubRepository = builder.Configuration.GetValue<bool>("InDevelopment");
 
-if (useStubRepository){
-    // One instance for all requests - maintains in-memory state
-    builder.Services.AddSingleton<ITaskSystemRepository, StubTaskSystemRepository>();
-} else {
+var dbImplementation = Environment.GetEnvironmentVariable("DB_IMPLEMENTATION");
+
+if(dbImplementation == "POSTGRES"){
+    string? dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? string.Empty;
+    string? dbPort = Environment.GetEnvironmentVariable("DB_PORT") ?? string.Empty;
+    string? dbUsername = Environment.GetEnvironmentVariable("DB_USERNAME") ?? string.Empty;
+    string? dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? string.Empty;
+
+    string connectionString = $"Host={dbHost}; Port={dbPort}; Username={dbUsername}; Password={dbPassword}";
+    
     // New instance per request - fresh database context
     builder.Services.AddDbContext<TaskSystemDbContext>(options =>
-        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+        options.UseNpgsql(connectionString));
     builder.Services.AddScoped<ITaskSystemRepository, PostgresTaskSystemRepository>();
+} else {
+    // One instance for all requests - maintains in-memory state
+    builder.Services.AddSingleton<ITaskSystemRepository, StubTaskSystemRepository>();
 }
 
 var app = builder.Build();
