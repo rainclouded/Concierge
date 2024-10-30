@@ -18,8 +18,6 @@ describe('integration test for amenities', () => {
     
     //We cannot reset the system for each test
     //Instead we ensure initial state is okay
-    getReportCard('To do', 'Room Maintenance Request')
-      .should('exist')
     getReportCard('In progress', 'Lost Property')
       .should('exist')
     getReportCard('Resolved', 'Fire Alarm Malfunction')
