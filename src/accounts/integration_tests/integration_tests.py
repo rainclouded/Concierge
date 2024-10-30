@@ -28,11 +28,11 @@ class IntegrationTests():
             os.path.dirname(os.path.abspath(__file__)),
             'tests.json'
         )
-        self.db_url = getenv('DB_URI')
-        #if this is not run in the docker environment with nginx routing use
+        self.db_uri = 'mongodb://localhost:27017/accounts_data'
+        #if this is run in the docker environment with nginx routing use
         #'http://localhost:8080/accounts'
         #else use 'http://localhost:50001/accounts'
-        self.service_url = 'http://localhost:8080/accounts'
+        self.service_url = 'http://localhost:50001/accounts'
         self.tests_passed = 0
         self.tests_run = 0
         self.timeout = 3
@@ -92,7 +92,7 @@ class IntegrationTests():
     def test_health_check(self):
         try:
             #Test the database connection and reset the database
-            database_client = MongoClient(self.db_url, serverSelectionTimeoutMS=5000)
+            database_client = MongoClient(self.db_uri, serverSelectionTimeoutMS=5000)
             database = database_client['accounts']
             database_client.server_info()
             collections = database.list_collection_names()

@@ -1,22 +1,21 @@
 services:
+  accounts_mongo:
+    image: mongo:4.4.18
+    container_name: accounts_mongo
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   accounts:
     build: .
     ports:
       - 50001:8080
-    env_file:
+    depends_on:
+      - accounts_mongo
+    env_file: 
       - .env.prod
-    image: conciergeapp/concierge:accounts
-
-  accounts-mongo:
-    image: mongo:4.4.18
-    container_name: accounts-mongo-container
-    ports:
-      - "27017:27017"
-    env_file:
-      - .env.prod
-    volumes:
-      - mongo_data:/accounts_data/db
-
 volumes:
   mongo_data:
     driver: local
