@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build the Docker image
-        run: docker compose -f ./src/accounts/docker-compose.yaml up --build --wait --wait-timeout 300 -d
+        run: docker compose -f ./src/accounts/docker-compose.dev.yaml up --build --wait --wait-timeout 300 -d
         
 
       - name: Set up Python ${{ matrix.python-version }}
