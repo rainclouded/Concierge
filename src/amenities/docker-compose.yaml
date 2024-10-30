@@ -1,5 +1,6 @@
 services:
   amenities:
+    image: conciergeapp/concierge:amenities
     build: .
     ports:
       - 50004:8080

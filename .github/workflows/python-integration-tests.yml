@@ -1,0 +1,36 @@
+name: Run Integration Tests
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+
+jobs:
+  integration_tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the Docker image
+        run: docker compose -f ./src/accounts/docker-compose.dev.yaml up --build --wait --wait-timeout 300 -d
+        
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install python dependencies
+        run: |
+          cd /home/runner/work/Concierge/Concierge/src/accounts/
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+
+      - name: Test account integration tests
+        run: |
+          cd /home/runner/work/Concierge/Concierge/src/accounts/
+          python3 -m integration_tests
