@@ -180,3 +180,4 @@ class TestAuthenticationManager(unittest.TestCase):
             self.assertTrue(self.am.authenticate_user_login(username, password))
         for username, password in invalid_credentials:
             self.assertFalse(self.am.authenticate_user_login(username,password))
+            

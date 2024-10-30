@@ -28,11 +28,14 @@ GUEST_TYPE = 'guest'
 STAFF_TYPE = 'staff'
 
 #The database to use
-if getenv('deployent') == 'testing':
-    DATABASE = Mockdata()
+if getenv('DEPLOYMENT') == 'production':
+    DATABASE = MongoConnection()
+    PERMISSIONS = MockPermissions()
+elif getenv('DEPLOYMENT') == 'development':
+    DATABASE = MongoConnection()
     PERMISSIONS = MockPermissions()
 else:
-    DATABASE = MongoConnection()
+    DATABASE = Mockdata()
     PERMISSIONS = MockPermissions()
 
 def create_database():
