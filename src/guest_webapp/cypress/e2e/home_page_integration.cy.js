@@ -7,11 +7,11 @@ describe('Home Page Integration Tests', () => {
     })
     
     it('Get Quick Service Buttons', ()=>{
-        cy.contains('button', 'Room Service').should('be.visible');
+        cy.contains('button', 'Room Cleaning').should('be.visible');
         cy.contains('button', 'Food Delivery').should('be.visible');
         cy.contains('button', 'Wake Up Call').should('be.visible');
         cy.contains('button', 'Laundry Service').should('be.visible');
-        cy.contains('button', 'Spa & Massage').should('be.visible');
+        cy.contains('button', 'Spa And Massage').should('be.visible');
         cy.contains('button', 'Maintenance').should('be.visible');
     })
     

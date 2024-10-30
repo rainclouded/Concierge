@@ -20,11 +20,11 @@ const HomePage = () => {
   //State for requests
   const [inputValue, setInputValue] = useState('');
 
-  const RoomServiceTag = "Room Service"
+  const RoomServiceTag = "Room Cleaning"
   const FoodDeliveryTag = "Food Delivery"
   const WakeUpCallTag = "Wake Up Call"
   const LaundryServiceTag = "Laundry Service"
-  const SpaMassageTag = "Spa & Massage"
+  const SpaMassageTag = "Spa And Massage"
   const Maintenance = "Maintenance"
 
   const [mainDish, setMainDish] = useState('');
