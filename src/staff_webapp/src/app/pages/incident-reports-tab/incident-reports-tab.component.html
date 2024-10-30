@@ -12,16 +12,20 @@
 		<div class="p-2">
 			@if(todoReports.length > 0){
 				@for(report of todoReports; track report.id){
-					<div class="w-full h-full p-2 border rounded-lg">
+					<div class="w-full h-[175px] flex flex-col justify-between p-2 border rounded-lg">
 						<div class="flex justify-between mb-1">
-							<p class="text-xl font-semibold">{{report.title}}</p>
-							<div class="flex gap-1">
-								<button type="button" (click)="report.id && loadAmenity(report)" class="bg-slate-300 p-1 rounded-md">Edit</button>
-								<button type="button" (click)="report.id && deleteReport(report.id)" class="bg-red-700 text-white p-1 rounded-md">Delete</button>
+							<p class="text-xl font-semibold truncate">{{report.title}}</p>
+						</div>
+						<p class="line-clamp-3 break-words">
+							{{ report.description }}
+						</p>
+						<div class="flex items-center justify-between mt-auto">
+							<p class="text-xs mt-4 font-semibold">{{report.severity}}</p>
+							<div>
+								<button type="button" (click)="report.id && loadAmenity(report)" style="width: 60px; height: 30px;" class="bg-slate-300 p-1 mr-2 rounded-md ">Edit</button>
+								<button type="button" (click)="report.id && deleteReport(report.id)" style="width: 60px; height: 30px;" class="bg-red-700 text-white p-1 rounded-md">Delete</button>
 							</div>
 						</div>
-						<p>{{report.description}}</p>
-						<p class="text-xs mt-4 font-semibold">{{report.severity}}</p>
 					</div>
 				}
 			}
@@ -35,16 +39,20 @@
 		<div class="p-2">
 			@if(inProgressReports.length > 0){
 				@for(report of inProgressReports; track report.id){
-					<div class="w-full h-full p-2 border rounded-lg">
+					<div class="w-full h-[175px] flex flex-col justify-between p-2 border rounded-lg">
 						<div class="flex justify-between mb-1">
-							<p class="text-xl font-semibold">{{report.title}}</p>
-							<div class="flex gap-1">
-								<button type="button" (click)="report.id && loadAmenity(report)" class="bg-slate-300 p-1 rounded-md">Edit</button>
-								<button type="button" (click)="report.id && deleteReport(report.id)" class="bg-red-700 text-white p-1 rounded-md">Delete</button>
+							<p class="text-xl font-semibold truncate">{{report.title}}</p>
+						</div>
+						<p class="line-clamp-3 break-words">
+							{{ report.description }}
+						</p>
+						<div class="flex items-center justify-between mt-auto">
+							<p class="text-xs mt-4 font-semibold">{{report.severity}}</p>
+							<div>
+								<button type="button" (click)="report.id && loadAmenity(report)" style="width: 60px; height: 30px;" class="bg-slate-300 p-1 mr-2 rounded-md ">Edit</button>
+								<button type="button" (click)="report.id && deleteReport(report.id)" style="width: 60px; height: 30px;" class="bg-red-700 text-white p-1 rounded-md">Delete</button>
 							</div>
 						</div>
-						<p>{{report.description}}</p>
-						<p class="text-xs mt-4 font-semibold">{{report.severity}}</p>
 					</div>
 				}
 			}
@@ -58,16 +66,20 @@
 		<div class="p-2">
 			@if(resolvedReports.length > 0){
 				@for(report of resolvedReports; track report.id){
-					<div class="w-full h-full p-2 border rounded-lg">
+					<div class="w-full h-[175px] flex flex-col justify-between p-2 border rounded-lg">
 						<div class="flex justify-between mb-1">
-							<p class="text-xl font-semibold">{{report.title}}</p>
-							<div class="flex gap-1">
-								<button type="button" (click)="report.id && loadAmenity(report)" class="bg-slate-300 p-1 rounded-md">Edit</button>
-								<button type="button" (click)="report.id && deleteReport(report.id)" class="bg-red-700 text-white p-1 rounded-md">Delete</button>
+							<p class="text-xl font-semibold truncate">{{report.title}}</p>
+						</div>
+						<p class="line-clamp-3 break-words">
+							{{ report.description }}
+						</p>
+						<div class="flex items-center justify-between mt-auto">
+							<p class="text-xs mt-4 font-semibold">{{report.severity}}</p>
+							<div>
+								<button type="button" (click)="report.id && loadAmenity(report)" style="width: 60px; height: 30px;" class="bg-slate-300 p-1 mr-2 rounded-md ">Edit</button>
+								<button type="button" (click)="report.id && deleteReport(report.id)" style="width: 60px; height: 30px;" class="bg-red-700 text-white p-1 rounded-md">Delete</button>
 							</div>
 						</div>
-						<p>{{report.description}}</p>
-						<p class="text-xs mt-4 font-semibold">{{report.severity}}</p>
 					</div>
 				}
 			}
@@ -81,16 +93,20 @@
 		<div class="p-2">
 			@if(closedReports.length > 0){
 				@for(report of closedReports; track report.id){
-					<div class="w-full h-full p-2 border rounded-lg">
+					<div class="w-full h-[175px] flex flex-col justify-between p-2 border rounded-lg">
 						<div class="flex justify-between mb-1">
-							<p class="text-xl font-semibold">{{report.title}}</p>
-							<div class="flex gap-1">
-								<button type="button" (click)="report.id && loadAmenity(report)" class="bg-slate-300 p-1 rounded-md">Edit</button>
-								<button type="button" (click)="report.id && deleteReport(report.id)" class="bg-red-700 text-white p-1 rounded-md">Delete</button>
+							<p class="text-xl font-semibold truncate">{{report.title}}</p>
+						</div>
+						<p class="line-clamp-3 break-words">
+							{{ report.description }}
+						</p>
+						<div class="flex items-center justify-between mt-auto">
+							<p class="text-xs mt-4 font-semibold">{{report.severity}}</p>
+							<div>
+								<button type="button" (click)="report.id && loadAmenity(report)" style="width: 60px; height: 30px;" class="bg-slate-300 p-1 mr-2 rounded-md ">Edit</button>
+								<button type="button" (click)="report.id && deleteReport(report.id)" style="width: 60px; height: 30px;" class="bg-red-700 text-white p-1 rounded-md">Delete</button>
 							</div>
 						</div>
-						<p>{{report.description}}</p>
-						<p class="text-xs mt-4 font-semibold">{{report.severity}}</p>
 					</div>
 				}
 			}
