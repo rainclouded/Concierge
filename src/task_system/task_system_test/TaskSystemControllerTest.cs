@@ -1,21 +1,25 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System.Security;
 using task_system_server.Controllers;
 using task_system_server.Dtos;
 using task_system_server.Interfaces;
 using task_system_server.Models;
+using task_system_server.Validators;
 
 namespace task_system_test
 {
     public class TaskSystemControllerTest
     {
         private readonly Mock<ITaskSystemRepository> _mockRepo;
+        private readonly Mock<IPermissionValidator> _mockPermValidator;
         private readonly TaskSystemController _controller;
 
         public TaskSystemControllerTest()
         {
             _mockRepo = new Mock<ITaskSystemRepository>();
-            _controller = new TaskSystemController(_mockRepo.Object);
+            _mockPermValidator = new Mock<IPermissionValidator>();
+            _controller = new TaskSystemController(_mockRepo.Object, _mockPermValidator.Object);
         }
 
         [Fact]

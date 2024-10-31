@@ -4,6 +4,9 @@ services:
     ports:
       - 50006:8080
     environment:
+      - PERMISSIONS_IMPLEMENTATION=INTEGRATED
+      - PERMISSIONS_ENDPOINT=http://permissions:8080
+      - SESSIONS_ENDPOINT=http://permissions:8080
       - DB_IMPLEMENTATION=POSTGRES
       - DB_HOST=task_system_postgres
       - DB_PORT=5432
