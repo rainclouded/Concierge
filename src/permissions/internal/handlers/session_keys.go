@@ -77,7 +77,13 @@ func ParseSessionKey(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, middleware.Format("Session key successfully read", gin.H{"sessionData": data}))
+	response := models.SessionKeyDataResponse{
+		AccountID:        data.AccountID,
+		AccountName:      data.AccountName,
+		PermissionString: jwtCtx.GetSessionPermissions(ctx),
+	}
+
+	ctx.JSON(http.StatusOK, middleware.Format("Session key successfully read", gin.H{"sessionData": response}))
 }
 
 func GetPublicKey(ctx *gin.Context) {

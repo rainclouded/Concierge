@@ -12,10 +12,11 @@ namespace amenities_server.services
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<string> GetDataFromServiceAsync(string endpoint)
+        public async Task<string> GetDataFromServiceAsync(string endpoint, string apiKey)
         {
             Console.WriteLine($"Connecting to Permissions @ {endpoint}");
             var client = _httpClientFactory.CreateClient();
+            client.DefaultRequestHeaders.Add("X-API-Key", apiKey);
             var response = await client.GetAsync(endpoint);
 
             var resp = await response.Content.ReadAsStringAsync();
@@ -23,35 +24,12 @@ namespace amenities_server.services
             return resp;
         }
 
-        public async Task<Dictionary<string, int>> GetPermissionList()
-        {
-            var endpoint = Environment.GetEnvironmentVariable("PERMISSIONS_ENDPOINT");
-            Console.WriteLine($"Endpoint: {endpoint}");
-            var response = await GetDataFromServiceAsync(endpoint+"/permissions");
-            Console.WriteLine(response.ToString());
-            var responseMessage = JsonConvert.DeserializeObject<PermissionResponse>(response);
-            var permDict = new Dictionary<string, int>();
-            if (responseMessage != null && responseMessage.Data != null)
-            { 
-                foreach (var perm in responseMessage.Data)
-                {
-                    permDict[perm.PermissionName] = perm.PermissionId;
-                }
-            }
-            return permDict;
-        }
-
-        public async Task<string> GetPublicKey()
+        public async Task<SessionData?> GetSessionData(string sessionKey)
         {
             var endpoint = Environment.GetEnvironmentVariable("SESSIONS_ENDPOINT");
-            var response = await GetDataFromServiceAsync(endpoint + "/sessions/public-key");
-            Console.WriteLine(response.ToString());
-            var responseMessage = JsonConvert.DeserializeObject<PublicKeyResponse>(response);
-            if (responseMessage != null && responseMessage.Data != null)
-            {
-                return responseMessage.Data.PublicKey;
-            }
-            return "";
+            var response = await GetDataFromServiceAsync(endpoint + "/sessions/me", sessionKey);
+            Console.WriteLine($"Response: {response}"); 
+            return JsonConvert.DeserializeObject<SessionData>(response);
         }
     }
 }

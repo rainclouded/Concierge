@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
+	"math"
 	"net/http"
 	"time"
 
@@ -65,6 +66,7 @@ func GetJWTContext(ctx *gin.Context) (*JWT_Context, bool) {
 }
 
 func (jwtCtx *JWT_Context) ParseSignedMessage(sessionKey string) (*models.SessionKeyData, error) {
+	println(`sessionKey: ` + sessionKey)
 	token, err := jwt.Parse(sessionKey, func(t *jwt.Token) (interface{}, error) {
 		return jwtCtx.publicKey, nil
 	}, jwt.WithValidMethods([]string{"ES384"}))
@@ -123,8 +125,8 @@ func (jwtCtx *JWT_Context) PermissionSliceToPermissionString(permissions []*mode
 	slice := []int{0}
 	for _, permission := range permissions {
 		index := permission.ID / jwtCtx.PermissionPerIndex
-		// value := int(math.Pow(2, float64(permission.ID%jwtCtx.PermissionPerIndex)))
-		value := int(1 << (permission.ID % jwtCtx.PermissionPerIndex))
+		value := int(math.Pow(2, float64(permission.ID%jwtCtx.PermissionPerIndex)))
+		// value := int(1 << (permission.ID % jwtCtx.PermissionPerIndex))
 		for i := len(slice); i < index+1; i++ {
 			slice = append(slice, 0)
 		}
@@ -186,4 +188,37 @@ func (jwtCtx *JWT_Context) HasPermissionByName(ctx *gin.Context, permName string
 	}
 
 	return jwtCtx.GetPermissionStateFromPermString(id, apiKey.PermissionString)
+}
+
+func (jwtCtx *JWT_Context) GetSessionPermissions(ctx *gin.Context) []string {
+	apiKey, err := jwtCtx.ParseSignedMessage(jwtCtx.GetAPIKeyFromCtx(ctx))
+	if err != nil {
+		return []string{}
+	}
+
+	permissions := []string{}
+	if time.Now().After(jwtCtx.permissionNamesCacheExp) {
+		db, ok := GetDb(ctx)
+		if !ok {
+			return permissions
+		}
+
+		permissionsVal, err := db.GetPermissions()
+		if err != nil {
+			return permissions
+		}
+
+		jwtCtx.permissionNames = make(map[string]int)
+		for _, perm := range permissionsVal {
+			jwtCtx.permissionNames[perm.Name] = perm.ID
+		}
+	}
+
+	for key, value := range jwtCtx.permissionNames {
+		if jwtCtx.GetPermissionStateFromPermString(value, apiKey.PermissionString) {
+			permissions = append(permissions, key)
+		}
+	}
+
+	return permissions
 }

@@ -13,17 +13,15 @@ public class AmenitiesController : ControllerBase
 {
     private IAmenityPersistence _amenityPersistence;
     private IPermissionValidator _permissionValidator;
-    public AmenitiesController(IServiceProvider serviceProvider)
+    public AmenitiesController(IServiceProvider? serviceProvider)
     {
         _amenityPersistence = Services.GetAmenityPersistence();
         if (serviceProvider == null)
         {
             _permissionValidator = new MockPermissionValidator();
-            Console.WriteLine("MOCK");
         }
         else
         {
-            Console.WriteLine("LIVE");
             _permissionValidator = Services.GetPermissionValidator(serviceProvider!.GetRequiredService<IHttpClientFactory>());
         }
     }
@@ -51,6 +49,11 @@ public class AmenitiesController : ControllerBase
     [HttpGet("{id}")]
     public IActionResult GetAmenityByID(int id)
     {
+        if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.VIEW_AMENITES, apiKey!))
+        {
+            return Unauthorized(new AmenityResponse<int>(ResponseMessages.UNAUTHORIZED, 0));
+        }
+
         var amenity = _amenityPersistence.GetAmenityByID(id);
 
         if (_amenityPersistence.GetAmenityByID(id) == null)
@@ -85,9 +88,11 @@ public class AmenitiesController : ControllerBase
     [HttpPost]
     public IActionResult AddAmenity(Amenity newAmenity)
     {
-        //TODO: validate session call
-        //if(_permissionValidator.ValidatePermissions(permission,sessionKey))
-        // 
+        if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.EDIT_AMENITES, apiKey!))
+        {
+            return Unauthorized(new AmenityResponse<int>(ResponseMessages.UNAUTHORIZED, 0));
+        }
+
         //validate passed amenity
         if (!AmenityValidator.ValidateNewAmenity(newAmenity))
         {
@@ -108,10 +113,12 @@ public class AmenitiesController : ControllerBase
     [HttpPut("{id}")]
     public IActionResult UpdateAmenity(int id, Amenity newAmenity)
     {
-        //TODO:  validate session call
-        //if(!Services.GetPermissionValidator().ValidatePermissions(permission,sessionKey))
+        if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.EDIT_AMENITES, apiKey!))
+        {
+            return Unauthorized(new AmenityResponse<int>(ResponseMessages.UNAUTHORIZED, 0));
+        }
 
-        if(_amenityPersistence.GetAmenityByID(id) == null)
+        if (_amenityPersistence.GetAmenityByID(id) == null)
         {
             return NotFound(new AmenityResponse<Amenity>(ResponseMessages.GET_AMENITY_FAILED, newAmenity));
         }
