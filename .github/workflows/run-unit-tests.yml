@@ -17,7 +17,8 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.9", "3.10", "3.11"]
-
+    env:   
+      deployent: testing
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
@@ -34,7 +35,7 @@ jobs:
     - name: Test with unittest
       run: |
         cd /home/runner/work/Concierge/Concierge/src/accounts/
-        python3 -m tests
+        python3 -m unit_tests
 
   test_amenities:
 
@@ -82,3 +83,20 @@ jobs:
     - name: Test
       run: |
         dotnet test --verbosity normal /home/runner/work/Concierge/Concierge/src/amenities/amenities_test/amenities_test.csproj
+
+  test_task_system:
+    name: Test Task System Service
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Restore dependencies
+        run: dotnet restore src/task_system/task_system_server/task_system_server.csproj
+      - name: Build task system service
+        run: dotnet build --no-restore src/task_system/task_system_server/task_system_server.csproj
+      - name: Run task system tests
+        run: dotnet test --verbosity normal src/task_system/task_system_test/task_system_test.csproj

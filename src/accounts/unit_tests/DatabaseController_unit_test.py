@@ -48,8 +48,8 @@ class TestDatabaseController(unittest.TestCase):
         self.data = Mockdata()
         self.data.users = [*self.TEST_DATA]#Deepcopy hack
         self.db = DatabaseController(self.data)
-        self.maxDiff = None
-        
+
+
     def test_get_users(self):
         test_users = [User(**user) for user in self.TEST_DATA]
         retrieved_users = self.db.get_users()
@@ -63,13 +63,15 @@ class TestDatabaseController(unittest.TestCase):
 
         self.assertTrue(all([type(staff) == User for staff in retrieved_staff]))
         self.assertCountEqual(retrieved_staff, test_staff)
-        
+ 
 
     def test_get_guests(self):
         test_guests = [User(**guest) for guest in self.TEST_DATA[3:6]]
         retrieved_guests = self.db.get_guests()
 
-        self.assertTrue(all([type(guest) == User for guest in retrieved_guests]))
+        self.assertTrue(
+            all([type(guest) == User for guest in retrieved_guests])
+        )
         self.assertCountEqual(retrieved_guests, test_guests)
 
 
@@ -87,7 +89,8 @@ class TestDatabaseController(unittest.TestCase):
         self.assertTrue(len(newly_added_guest) == 1)
         self.assertEqual(newly_added_guest.pop(), new_user)
         self.assertTrue(len(guests) == 4)
-        
+
+
     def test_create_staff(self):
         new_user = User(**{
             'username' : 'new',
@@ -102,7 +105,7 @@ class TestDatabaseController(unittest.TestCase):
         self.assertTrue(len(newly_added_guest) == 1)
         self.assertEqual(newly_added_guest.pop(), new_user)
         self.assertTrue(len(staff) == 4)
-        pass
+
 
     def test_gest_largest_id(self):
         self.assertEqual(3, self.db.get_largest_id())
@@ -126,24 +129,31 @@ class TestDatabaseController(unittest.TestCase):
 
 
     def test_delete_user(self):
-        to_delete = list(filter(lambda x : x.username == 'test3', self.db.get_staff())).pop()
+        to_delete = list(
+            filter(
+                lambda x : x.username == 'test3',
+                self.db.get_staff()
+            )
+        ).pop()
 
-        valid_staff = [User(**{
+        valid_staff = [
+            User(**{
             'username' : 'test1',
             'id' : '1',
             'hash' : '',
             'type' : 'staff'
-        }),
-        User(**{
+            }),
+            User(**{
             'username' : 'test2',
             'id' : '2',
             'hash' : '',
             'type' : 'staff'
-        })]
+            })
+        ]
 
-        self.db.delete_user(to_delete)
+        deleted_user = self.db.delete_user(to_delete.username)
         resultant_staff = self.db.get_staff()
-
+        self.assertEqual(deleted_user, to_delete)
         self.assertCountEqual(resultant_staff, valid_staff)
         self.assertEqual(len(resultant_staff), 2)
         self.assertEqual(self.db.get_largest_id(), 2)

@@ -22,6 +22,7 @@ class TestUserObject(unittest.TestCase):
         for test_case in test_data:
             self.assertDictEqual(test_case, User(**test_case).__dict__)
 
+
     def test_comparison(self):
         test_user_1 = {
             'username' : 'testuser',

@@ -92,10 +92,10 @@ class DatabaseController:
             Returns:
                 The largest id
         """
-        return max(int(user.id) for user in self.get_staff())
+        return max((int(user.id) for user in self.get_staff()), default=0)
 
 
-    def delete_user(self, user:User)->User:
+    def delete_user(self, username:User)->User:
         """Delete a user from the database
         
             Args:
@@ -105,6 +105,6 @@ class DatabaseController:
         """
         return (
                 User(**deleted_user)
-                if ( deleted_user := self.database.delete_user(user.username))
+                if ( deleted_user := self.database.delete_user(username))
                 else None
             )

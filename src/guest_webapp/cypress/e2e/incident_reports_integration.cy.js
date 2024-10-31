@@ -5,7 +5,7 @@ describe('HomePage Integration Tests', () => {
       .type('404')
     cy.get('button').click()
     cy.get('.tile-item')
-    .contains('Incident Report')
+    .contains('Report an Incident')
     .click()
   })
   
