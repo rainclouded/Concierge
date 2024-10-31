@@ -1,0 +1,66 @@
+<div
+  class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+>
+  <div class="bg-white rounded-lg p-8 w-full max-w-2xl">
+    <h2 class="text-xl font-bold mb-4">Add New Task</h2>
+
+    <!-- Room Number and Type of Service -->
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <!-- Room Number Input with placeholder -->
+      <div>
+        <input
+          type="number"
+          [(ngModel)]="newRoomNumber"
+          placeholder="Enter room number"
+          class="p-2 border rounded w-full"
+        />
+      </div>
+
+      <!-- Type of Service Dropdown -->
+      <div>
+        <select
+          id="taskType"
+          [(ngModel)]="newTaskType"
+          class="p-2 border rounded w-full"
+        >
+          <option [ngValue]="undefined" disabled>Select a service</option>
+          <option
+            *ngFor="let option of getServiceOptions()"
+            [ngValue]="option.value"
+          >
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Description Input with placeholder -->
+    <div class="mb-4">
+      <textarea
+        [(ngModel)]="newDescription"
+        placeholder="Enter task description"
+        class="p-2 border rounded w-full"
+        rows="4"
+      ></textarea>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="text-red-500 mb-4">{{ errorMessage }}</div>
+
+    <!-- Save and Cancel Buttons -->
+    <div class="flex justify-end space-x-4">
+      <button
+        (click)="closeModal()"
+        class="bg-gray-300 text-black px-4 py-2 rounded-lg"
+      >
+        Cancel
+      </button>
+      <button
+        (click)="saveTask()"
+        class="bg-blue-500 text-white px-4 py-2 rounded-lg"
+      >
+        Save
+      </button>
+    </div>
+  </div>
+</div>
