@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { fetchWithAuth } from "../utils/authFetch"
 
 const AmenitiesPage = () => {
   const [amenities, setAmenities] = useState([]);
@@ -9,7 +10,7 @@ const AmenitiesPage = () => {
   useEffect(() => {
     const fetchAmenities = async () => {
       try {
-        const response = await fetch(
+        const response = await fetchWithAuth(
           `${import.meta.env.VITE_API_BASE_URL}/amenities/`
         );
         if (!response.ok) {

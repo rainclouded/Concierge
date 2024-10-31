@@ -16,7 +16,7 @@ describe('Home Page Integration Tests', () => {
     })
     
     it('Submit request buttons', ()=>{
-        cy.contains('button', 'Room Service').click();
+        cy.contains('button', 'Room Cleaning').click();
         cy.contains('button', 'Submit Request').click();
     })
 

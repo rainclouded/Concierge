@@ -14,6 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import ServiceCard from "../components/ServiceCard";
+import { removeSessionKey } from "../utils/auth";
 import RequestCard from "../components/RequestCard";
 
 const HomePage = () => {
@@ -48,6 +49,11 @@ const HomePage = () => {
 
   const roomInfo = getRoomInfo();
 
+  const handleLogout = () => {
+    removeSessionKey();
+    window.location.href = '/';
+  }
+  
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   };
@@ -366,7 +372,7 @@ const HomePage = () => {
                 <a href="/home">Settings</a>
               </li>
               <li>
-                <a href="/">Log Out</a>
+                <a href="#" onClick={handleLogout}>Log Out</a>
               </li>
             </ul>
           </div>

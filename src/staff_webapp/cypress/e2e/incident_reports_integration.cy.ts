@@ -5,17 +5,18 @@ describe('integration test for amenities', () => {
       .parent()
       .contains('p', name);
   };
-  
+
   beforeEach(()=> {
     cy.viewport(1280, 720);
     cy.visit('localhost:8082/login')
-    //When permissions are added should have to login here
+    cy.get('#room-num-input').clear().type('admin');
+    cy.get('#pass-code-input').clear().type('admin');
     cy.get('button').click()
     cy.url().should('include', '/dashboard/home')
     cy.get('.sidebar-item')
       .contains('Incident Reports')
       .click()
-    
+
     //We cannot reset the system for each test
     //Instead we ensure initial state is okay
     getReportCard('In progress', 'Lost Property')
@@ -25,11 +26,11 @@ describe('integration test for amenities', () => {
     getReportCard('Closed', 'Food Poisoning Incident')
       .should('exist')
   });
-  
+
   it('Get and view all Reports', () => {
     //Relevent checks in the "beforeEach" clause
   });
-  
+
   it('Edit', () => {
     getReportCard('To do', 'LOW')
       .parent()
@@ -41,14 +42,14 @@ describe('integration test for amenities', () => {
     cy.get('#severity').select('HIGH');
     cy.get('#status').select('CLOSED');
     cy.contains('Submit').click();
-    
+
     getReportCard('Closed', 'TEST')
       .parent()
       .children('p')
       .should(($ps)=>{
         expect($ps[0]).to.contain.text('TEST')
       })
-    
+
     //Cleanup
     getReportCard('Closed', 'HIGH')
       .parent()
@@ -61,16 +62,16 @@ describe('integration test for amenities', () => {
     cy.get('#status').select('OPEN');
     cy.contains('Submit').click();
   });
-  
+
   it('Delete', () => {
     getReportCard('To do', 'LOW')
       .parent()
       .children()
       .contains('Delete')
       .click()
-    
+
     cy.contains('Room Maintenance Request').should('not.exist')
-    
+
     //Cleanup
     cy.contains('button', 'Report an incident').click();
     cy.get('#title').clear().type('Room Maintenance Request');
@@ -79,9 +80,8 @@ describe('integration test for amenities', () => {
     cy.get('#status').select('OPEN');
     cy.contains('Submit').click();
   });
-  
+
   afterEach(()=>{
-    cy.get('a[href="/login"]')
+    cy.get('#logout').click();
   });
  })
- 

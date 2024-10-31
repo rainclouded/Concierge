@@ -11,19 +11,22 @@ export class SidebarComponent {
   items = [
     {
       routerLink: 'home',
-      label: 'Home'
+      label: 'Home',
     },
     {
       routerLink: 'amenities',
-      label: 'Amenities'
+      label: 'Amenities',
     },
     {
       routerLink: 'incident_reports',
-      label: 'Incident Reports'
+      label: 'Incident Reports',
+    },
+    {routerLink: 'tasks',
+      label: 'Tasks'
     },
     {
-      routerLink: 'tasks', 
-      label: 'Tasks'       
-    }
-  ]
+      routerLink: 'permissions',
+      label: 'Permissions',
+    },
+  ];
 }
