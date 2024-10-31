@@ -1,5 +1,4 @@
 from datetime import datetime
-from incident_reports_server.application.services import Services
 from incident_reports_server.models.models import IncidentReport, Severity, Status
 
 class IncidentReportValidator:

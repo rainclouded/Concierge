@@ -1,11 +1,10 @@
 from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS
-import argparse
-import os
 
+from incident_reports_server.validators.permission_validator import PermissionValidator
 from incident_reports_server.application.services import Services
 from incident_reports_server.factory.incident_report_factory import IncidentReportFactory
-from incident_reports_server.models.models import IncidentReportResponse, ResponseMessages
+from incident_reports_server.models.models import IncidentReportResponse, ResponseMessages, PermissionNames
 from incident_reports_server.validators.incident_report_validator import IncidentReportValidator
 
 def create_app(persistence=None):
@@ -16,6 +15,10 @@ def create_app(persistence=None):
 
     @app.route("/incident_reports/", methods=["GET"])
     def get_incident_reports() -> IncidentReportResponse:        
+        api_key = request.headers.get('X-API-Key')
+        if not api_key or not PermissionValidator.validate_session_key_for_permission_name(api_key, PermissionNames.VIEW_IR):
+            return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
+
         # Get query parameters
         severity_list = request.args.get('severity')
         status_list = request.args.get('status')
@@ -57,6 +60,10 @@ def create_app(persistence=None):
     
     @app.route("/incident_reports/<int:id>", methods=["GET"])
     def get_incident_report_by_id(id: int) -> IncidentReportResponse:
+        api_key = request.headers.get('X-API-Key')
+        if not api_key or not PermissionValidator.validate_session_key_for_permission_name(api_key, PermissionNames.VIEW_IR):
+            return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
+        
         incident_report = _incident_report_persistence.get_incident_report_by_id(id)
 
         #check if report with passed id exists
@@ -70,8 +77,9 @@ def create_app(persistence=None):
 
     @app.route("/incident_reports/", methods=["POST"])
     def create_incident_report() -> IncidentReportResponse:
-        #TODO: validate session call
-        #if not _permission_validator.validate_permissions(permission, sessionKey)
+        api_key = request.headers.get('X-API-Key')
+        if not api_key or not PermissionValidator.validate_session_key_for_permission_name(api_key, PermissionNames.CREATE_IR):
+            return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
 
         #convert JSON to incident report object
         try:
@@ -99,8 +107,9 @@ def create_app(persistence=None):
 
     @app.route("/incident_reports/<int:id>", methods=["PUT"])
     def update_incident_report(id: int) -> IncidentReportResponse:   
-        #TODO: validate session call
-        #if not _permission_validator.validate_permissions(permission, sessionKey)
+        api_key = request.headers.get('X-API-Key')
+        if not api_key or not PermissionValidator.validate_session_key_for_permission_name(api_key, PermissionNames.EDIT_IR):
+            return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
 
         #convert JSON to incident report object
         try:
@@ -127,8 +136,9 @@ def create_app(persistence=None):
 
     @app.route("/incident_reports/<int:id>", methods=["DELETE"])
     def delete_incident_report(id: int) -> IncidentReportResponse:
-        #TODO: validate session call
-        #if not _permission_validator.validate_permissions(permission, sessionKey)
+        api_key = request.headers.get('X-API-Key')
+        if not api_key or not PermissionValidator.validate_session_key_for_permission_name(api_key, PermissionNames.DELETE_IR):
+            return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
 
         #find if incident report with passed id exists
         if _incident_report_persistence.get_incident_report_by_id(id) is None:

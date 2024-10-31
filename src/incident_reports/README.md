@@ -21,6 +21,12 @@ Microservice to access and manage incident reports for hotels.
 1. Go to directory: `./src/incident_reports/`
 2. Run command: `python -m unittest discover -s .\incident_reports_tests\ -p "*.py"`
 
+## Permissions
+- canViewIncidentReports
+- canEditIncidentReports
+- canCreateIncidentReports
+- canDeleteIncidentReports
+
 ## Model
 
 ### id
