@@ -1,4 +1,5 @@
 import unittest
+import os 
 from flask import json
 from incident_reports_server.factory.incident_report_factory import IncidentReportFactory
 from incident_reports_server.application.services import Services
@@ -11,6 +12,8 @@ class incident_report_unit_test(unittest.TestCase):
         return json.loads(byte_string.decode('utf-8'))[0]['data']
     
     def setUp(self):
+        os.environ['DB_IMPLEMENTATION'] = 'MOCK' 
+        
         self.valid_incident_report = IncidentReport(
             severity=Severity.HIGH,  
             status=Status.OPEN,       

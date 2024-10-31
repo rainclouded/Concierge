@@ -57,11 +57,13 @@ class TestAuthenticationManager(unittest.TestCase):
         }
     ]
 
+
     def setUp(self):
         self.database = Mockdata()
         self.database.users = self.TEST_DATA
         self.database_controller = DatabaseController(self.database)
         self.am = AuthenticationManager(self.database_controller)
+
 
     def test_get_hash(self):
         test_values = [
@@ -178,3 +180,4 @@ class TestAuthenticationManager(unittest.TestCase):
             self.assertTrue(self.am.authenticate_user_login(username, password))
         for username, password in invalid_credentials:
             self.assertFalse(self.am.authenticate_user_login(username,password))
+            

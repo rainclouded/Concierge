@@ -10,14 +10,20 @@ services:
     volumes:
       - ./configs/nginx.conf:/etc/nginx/nginx.conf
 
-  accounts:
-    build: ../src/accounts
-    ports:
-      - 50001:8080
+  accounts: #uses port 50001
+    extends:
+      file: ../src/accounts/docker-compose.dev.yaml
+      service: accounts
+    depends_on:
+      - accounts_mongo
+  accounts_mongo:
+    extends:
+      file: ../src/accounts/docker-compose.dev.yaml
+      service: accounts_mongo
 
   incident_reports: #uses port 50005
     extends:
-      file: ../src/incident_reports/docker-compose.yaml
+      file: ../src/incident_reports/docker-compose.dev.yaml
       service: incident_reports
       
   amenities: #uses port 50004

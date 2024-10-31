@@ -1,5 +1,33 @@
 services:
+  mongo_incident_reports_prod:
+    image: mongo:4.4.18
+    container_name: mongo_incident_reports_prod
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongo_db_user
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - mongo:/data/db 
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   incident_reports:
+    image: conciergeapp/concierge:incident_reports
     build: .
     ports:
       - 50005:8080
+    depends_on:
+      - mongo_incident_reports_prod
+    environment:
+      - DB_IMPLEMENTATION=MONGODB 
+      - DB_HOST=mongo_incident_reports_prod
+      - DB_PORT=27017
+      - DB_USERNAME=mongo_db_user 
+      - DB_PASSWORD=password 
+    volumes:
+      - .:/app
+volumes:
+  mongo:
+    driver: local 

@@ -61,4 +61,22 @@ class DatabaseInterface(ABC):
                 NotImplementedError if the method is not implemented
         """
         raise NotImplementedError
-    
+
+
+    @abstractmethod
+    def update_user(self, update_user:dict):
+        """Update the account info of the user whos username mathches
+            update_user['username']. 
+        
+            Raises:
+                NotImplementedError if the method is not implemented
+        """
+        raise NotImplementedError
+
+
+    @abstractmethod
+    def delete_user(self, username:str):
+        """
+            Delete the user with the specified username
+        """
+        raise NotImplementedError
