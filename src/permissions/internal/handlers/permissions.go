@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"concierge/permissions/internal/constants"
 	"concierge/permissions/internal/middleware"
 	"concierge/permissions/internal/models"
 	"fmt"
@@ -13,6 +14,17 @@ func GetPermissions(ctx *gin.Context) {
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
+		return
+	}
+
+	jwt, ok := middleware.GetJWTContext(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
+		return
+	}
+
+	if !jwt.HasPermissionByName(ctx, constants.CanViewPermissions) {
+		ctx.JSON(http.StatusUnauthorized, middleware.Format("Missing permission to view permissions", nil))
 		return
 	}
 
@@ -30,6 +42,17 @@ func GetPermissionById(ctx *gin.Context) {
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
+		return
+	}
+
+	jwt, ok := middleware.GetJWTContext(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
+		return
+	}
+
+	if !jwt.HasPermissionByName(ctx, constants.CanViewPermissions) {
+		ctx.JSON(http.StatusUnauthorized, middleware.Format("Missing permission to view permissions", nil))
 		return
 	}
 
@@ -53,6 +76,17 @@ func PostPermission(ctx *gin.Context) {
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
+		return
+	}
+
+	jwt, ok := middleware.GetJWTContext(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
+		return
+	}
+
+	if !jwt.HasPermissionByName(ctx, constants.CanEditPermissions) {
+		ctx.JSON(http.StatusUnauthorized, middleware.Format("Missing permission to edit permissions", nil))
 		return
 	}
 

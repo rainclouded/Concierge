@@ -11,21 +11,12 @@ import (
 
 type MariaDB struct {
 	db         *sql.DB
+	dataSource string
 	forTesting bool
 }
 
 func NewMariaDB(dataSourceName string, forTesting bool) (*MariaDB, error) {
-	fmt.Printf("Attempting connection to %s", dataSourceName)
-	db, err := sql.Open("mysql", dataSourceName)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Printf("Connection established\n")
-	if err := db.Ping(); err != nil {
-		return nil, err
-	}
-	fmt.Printf("Message sent\n")
-	return &MariaDB{db: db, forTesting: forTesting}, nil
+	return &MariaDB{db: nil, dataSource: dataSourceName, forTesting: forTesting}, nil
 }
 
 func (m *MariaDB) Close() error {
@@ -42,7 +33,28 @@ func (m *MariaDB) Close() error {
 	return fmt.Errorf("connection already closed")
 }
 
+func (m *MariaDB) setupConnection() error {
+	if m.db == nil {
+		db, err := sql.Open("mysql", m.dataSource)
+		if err != nil {
+			m.db = nil
+			return err
+		}
+		m.db = db
+	}
+	if err := m.db.Ping(); err != nil {
+		m.db = nil
+		return err
+	}
+	return nil
+}
+
 func (m *MariaDB) GetPermissions() ([]*models.Permission, error) {
+	err := m.setupConnection()
+	if err != nil {
+		return nil, err
+	}
+
 	rows, err := m.db.Query("SELECT id, name FROM Permissions")
 	if err != nil {
 		return nil, err
@@ -61,9 +73,14 @@ func (m *MariaDB) GetPermissions() ([]*models.Permission, error) {
 }
 
 func (m *MariaDB) GetPermissionById(id int) (*models.Permission, error) {
+	err := m.setupConnection()
+	if err != nil {
+		return nil, err
+	}
+
 	var p models.Permission
 	row := m.db.QueryRow("SELECT id, name FROM Permissions WHERE id = ?", id)
-	err := row.Scan(&p.ID, &p.Name)
+	err = row.Scan(&p.ID, &p.Name)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("permission not found")
@@ -77,6 +94,11 @@ func (m *MariaDB) GetPermissionById(id int) (*models.Permission, error) {
 }
 
 func (m *MariaDB) CreatePermission(name string) (*models.Permission, error) {
+	err := m.setupConnection()
+	if err != nil {
+		return nil, err
+	}
+
 	tx, err := m.db.Begin()
 	if err != nil {
 		return nil, err
@@ -100,6 +122,11 @@ func (m *MariaDB) CreatePermission(name string) (*models.Permission, error) {
 }
 
 func (m *MariaDB) UpdatePermission(p *models.Permission) error {
+	err := m.setupConnection()
+	if err != nil {
+		return err
+	}
+
 	tx, err := m.db.Begin()
 	if err != nil {
 		return err
@@ -116,6 +143,11 @@ func (m *MariaDB) UpdatePermission(p *models.Permission) error {
 }
 
 func (m *MariaDB) GetPermissionGroups() ([]*models.PermissionGroup, error) {
+	err := m.setupConnection()
+	if err != nil {
+		return nil, err
+	}
+
 	groupQuery := `
 SELECT 
 	pg.id AS groupId,
@@ -169,7 +201,8 @@ FROM
 SELECT 
 	gp.groupId,
 	p.id AS permissionId,
-	p.name AS permissionName
+	p.name AS permissionName,
+	gp.value as permissionValue
 FROM 
 	GroupPermissions gp
 LEFT JOIN 
@@ -185,13 +218,15 @@ LEFT JOIN
 	for permissionRows.Next() {
 		var groupId, permissionId int
 		var permissionName string
-		if err := permissionRows.Scan(&groupId, &permissionId, &permissionName); err != nil {
+		var permissionValue bool
+		if err := permissionRows.Scan(&groupId, &permissionId, &permissionName, &permissionValue); err != nil {
 			return nil, err
 		}
 		if group, exists := groupsMap[groupId]; exists && permissionId != 0 {
 			perm := &models.Permission{
-				ID:   permissionId,
-				Name: permissionName,
+				ID:    permissionId,
+				Name:  permissionName,
+				Value: permissionValue,
 			}
 			group.Permissions = append(group.Permissions, perm)
 		}
@@ -209,6 +244,11 @@ LEFT JOIN
 	return groups, nil
 }
 func (m *MariaDB) GetPermissionGroupById(id int) (*models.PermissionGroup, error) {
+	err := m.setupConnection()
+	if err != nil {
+		return nil, err
+	}
+
 	groupQuery := `
 SELECT 
 	pg.id AS groupId,
@@ -221,7 +261,7 @@ WHERE
 		`
 
 	var group models.PermissionGroup
-	err := m.db.QueryRow(groupQuery, id).Scan(&group.ID, &group.Name, &group.Description)
+	err = m.db.QueryRow(groupQuery, id).Scan(&group.ID, &group.Name, &group.Description)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("permission group not found")
@@ -257,7 +297,8 @@ ORDER BY
 	permissionQuery := `
 SELECT 
 	p.id AS permissionId,
-	p.name AS permissionName
+	p.name AS permissionName,
+	gp.value AS permissionValue
 FROM 
 	GroupPermissions gp
 LEFT JOIN 
@@ -265,7 +306,7 @@ LEFT JOIN
 WHERE 
 	gp.groupId = ?
 ORDER BY 
-	p.name;
+	p.id;
 		`
 
 	permissionRows, err := m.db.Query(permissionQuery, id)
@@ -277,12 +318,14 @@ ORDER BY
 	for permissionRows.Next() {
 		var permissionId int
 		var permissionName string
-		if err := permissionRows.Scan(&permissionId, &permissionName); err != nil {
+		var permissionValue bool
+		if err := permissionRows.Scan(&permissionId, &permissionName, &permissionValue); err != nil {
 			return nil, err
 		}
 		perm := &models.Permission{
-			ID:   permissionId,
-			Name: permissionName,
+			ID:    permissionId,
+			Name:  permissionName,
+			Value: permissionValue,
 		}
 		group.Permissions = append(group.Permissions, perm)
 	}
@@ -291,6 +334,11 @@ ORDER BY
 }
 
 func (m *MariaDB) CreatePermissionGroup(req *models.PermissionGroupRequest) error {
+	err := m.setupConnection()
+	if err != nil {
+		return err
+	}
+
 	tx, err := m.db.Begin()
 	if err != nil {
 		return err
@@ -332,6 +380,11 @@ func (m *MariaDB) CreatePermissionGroup(req *models.PermissionGroupRequest) erro
 }
 
 func (m *MariaDB) UpdatePermissionGroup(id int, req *models.PermissionGroupRequest) error {
+	err := m.setupConnection()
+	if err != nil {
+		return err
+	}
+
 	tx, err := m.db.Begin()
 	if err != nil {
 		return err
@@ -383,6 +436,11 @@ func (m *MariaDB) UpdatePermissionGroup(id int, req *models.PermissionGroupReque
 }
 
 func (m *MariaDB) GetGroupMembers(groupId int) ([]int, error) {
+	err := m.setupConnection()
+	if err != nil {
+		return nil, err
+	}
+
 	rows, err := m.db.Query("SELECT member_id FROM GroupMembers WHERE group_id = ?", groupId)
 	if err != nil {
 		return nil, err
@@ -401,6 +459,10 @@ func (m *MariaDB) GetGroupMembers(groupId int) ([]int, error) {
 }
 
 func (m *MariaDB) AddMemberToGroup(groupId int, memberId int) error {
+	err := m.setupConnection()
+	if err != nil {
+		return err
+	}
 
 	tx, err := m.db.Begin()
 	if err != nil {
@@ -416,6 +478,11 @@ func (m *MariaDB) AddMemberToGroup(groupId int, memberId int) error {
 }
 
 func (m *MariaDB) RemoveMemberFromGroup(groupId int, memberId int) error {
+	err := m.setupConnection()
+	if err != nil {
+		return err
+	}
+
 	tx, err := m.db.Begin()
 	if err != nil {
 		return err
@@ -428,6 +495,11 @@ func (m *MariaDB) RemoveMemberFromGroup(groupId int, memberId int) error {
 }
 
 func (m *MariaDB) GetPermissionForAccountId(accountId int) ([]*models.Permission, error) {
+	err := m.setupConnection()
+	if err != nil {
+		return nil, err
+	}
+
 	query := `
 		SELECT p.id, p.name, gp.value
 		FROM GroupMembers gm

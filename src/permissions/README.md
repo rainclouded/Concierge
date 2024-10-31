@@ -5,6 +5,12 @@
 ## Run locally
 - go run ./src/permissions/cmd/server/main.go
 
+## Required Permissions
+- canViewPermissionGroups
+- canEditPermissoinGroups
+- canViewPermissions
+- canEditPermissions
+
 ## Environmnet Variables
 - `JWT_SIGNING_METHOD`
     - Controls which signing method is used

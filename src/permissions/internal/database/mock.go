@@ -1,6 +1,7 @@
 package database
 
 import (
+	"concierge/permissions/internal/constants"
 	"concierge/permissions/internal/models"
 	"fmt"
 )
@@ -12,10 +13,10 @@ type MockDatabase struct {
 
 func NewMockDB() *MockDatabase {
 	var permissions = []*models.Permission{
-		{ID: 0, Name: "canEditAll", Value: true},
-		{ID: 1, Name: "canViewAll", Value: true},
-		{ID: 2, Name: "canDelete", Value: true},
-		{ID: 3, Name: "canCreate", Value: true},
+		{ID: 1, Name: constants.CanViewPermissionGroups, Value: true},
+		{ID: 2, Name: constants.CanEditPermissionGroups, Value: true},
+		{ID: 3, Name: constants.CanViewPermissions, Value: true},
+		{ID: 4, Name: constants.CanEditPermissions, Value: true},
 	}
 	db := &MockDatabase{
 		permissions: permissions,
@@ -35,7 +36,7 @@ func NewMockDB() *MockDatabase {
 			{
 				ID:          2,
 				Name:        "editor",
-				Description: "Can edit and view",
+				Description: "Can edit and view most data",
 				Permissions: []*models.Permission{
 					permissions[0].DeepCopy(),
 					permissions[1].DeepCopy(),
@@ -47,7 +48,7 @@ func NewMockDB() *MockDatabase {
 				Name:        "viewer",
 				Description: "Can only view",
 				Permissions: []*models.Permission{
-					permissions[1].DeepCopy(),
+					permissions[0].DeepCopy(),
 				},
 				Members: []int{-1, 4, 5},
 			},

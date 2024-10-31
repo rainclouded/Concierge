@@ -29,10 +29,10 @@ CREATE TABLE IF NOT EXISTS permissions_db.GroupPermissions (
 );
 
 INSERT INTO permissions_db.Permissions (name) VALUES
-('canViewAll'),
-('canEditAll'),
-('canCreate'),
-('canDelete');
+('canViewPermissionGroups'),
+('canEditPermissionGroups'),
+('canViewPermissions'),
+('canEditPermissions');
 
 INSERT INTO permissions_db.PermissionGroups (name, description) VALUES
 ('admin', 'Has all permissions'),
@@ -45,8 +45,7 @@ INSERT INTO permissions_db.GroupPermissions (groupId, permission_id, value) VALU
 (1, 3, true),
 (1, 4, true),
 (2, 1, true),
-(2, 2, true),
-(3, 1, true);
+(2, 3, true);
 
 INSERT INTO permissions_db.GroupMembers (groupId, memberId) VALUES
 (1, 0),
