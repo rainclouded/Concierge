@@ -22,7 +22,7 @@ Microservice to access and manage hotel amenities.
 3. Go to `src/amenities/amenities_db_integration_test`
 4. Run command: `dotnet test`
 
-## Permissions
+## Required Permissions
  - canViewAmenities
  - canEditAmenities
  - canDeleteAmenities

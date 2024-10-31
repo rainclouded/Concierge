@@ -15,8 +15,8 @@ class ClientPermissionValidator(PermissionInterface):
     """
     CAN_DELETE_GUEST = "canDeleteGuestsAccounts"
     CAN_DELETE_STAFF = "canDeleteStaffAccounts"
-    CAN_EDIT_STAFF = "canEditStaffAccounts"
-    CAN_EDIT_GUEST = "canEditGuestAccounts"
+    CAN_EDIT_STAFF =   "canEditStaffAccounts"
+    CAN_EDIT_GUEST =   "canEditGuestAccounts"
 
 
     def __init__(self):

@@ -48,6 +48,12 @@ Next run the tests (ctrl-c to stop)
 python3 -m tests
 ```
 
+## Required Permissions
+- canDeleteGuestsAccounts
+- canDeleteStaffAccounts
+- canEditStaffAccounts
+- canEditGuestAccounts
+
 ## Endpoints
 Handles all /accounts endpoints
 
