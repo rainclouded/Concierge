@@ -11,6 +11,14 @@ Microservice to access and manage hotel tasks.
 1. Go to directory: `./docker-compose`
 2. run command: `docker-compose -f docker-compose.dev.yaml up --build`
 
+## Required Permissions
+- canViewTasks
+- canCreateTasks
+- canEditTasks
+- canDeleteTasks
+
+
+
 ## Model
 
 | Field Name   | Description|
