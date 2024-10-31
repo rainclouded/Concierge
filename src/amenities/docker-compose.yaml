@@ -5,6 +5,8 @@ services:
     ports:
       - 50004:8080
     environment:
+      - PERMISSIONS_ENDPOINT=http://permissions:8080
+      - SESSIONS_ENDPOINT=http://sessions:8080
       - DB_IMPLEMENTATION=POSTGRES
       - DB_HOST=amenities-postgres
       - DB_PORT=5432

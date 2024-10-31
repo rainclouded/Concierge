@@ -17,17 +17,6 @@ func GetPermissions(ctx *gin.Context) {
 		return
 	}
 
-	jwt, ok := middleware.GetJWTContext(ctx)
-	if !ok {
-		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
-		return
-	}
-
-	if !jwt.HasPermissionByName(ctx, constants.CanViewPermissions) {
-		ctx.JSON(http.StatusUnauthorized, middleware.Format("Missing permission to view permissions", nil))
-		return
-	}
-
 	permissions, err := db.GetPermissions()
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, middleware.Format(err.Error(), nil))

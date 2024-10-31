@@ -76,7 +76,7 @@ func TestGetPermissionsGuest(t *testing.T) {
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
-	assert.Equal(t, http.StatusUnauthorized, w.Code)
+	assert.Equal(t, http.StatusOK, w.Code)
 }
 
 func TestGetPermissionsNoAuth(t *testing.T) {
@@ -85,7 +85,7 @@ func TestGetPermissionsNoAuth(t *testing.T) {
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
-	assert.Equal(t, http.StatusUnauthorized, w.Code)
+	assert.Equal(t, http.StatusOK, w.Code)
 }
 
 func TestGetPermissionsEmpty(t *testing.T) {
@@ -96,7 +96,7 @@ func TestGetPermissionsEmpty(t *testing.T) {
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
-	assert.Equal(t, http.StatusUnauthorized, w.Code)
+	assert.Equal(t, http.StatusOK, w.Code)
 }
 
 func TestGetPermissionsNoDb(t *testing.T) {
