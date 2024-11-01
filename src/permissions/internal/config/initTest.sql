@@ -52,11 +52,10 @@ INSERT INTO permissions_db.Permissions (name) VALUES
 INSERT INTO permissions_db.PermissionGroups (name, description) VALUES
 ('admin', 'Has all permissions'),
 ('editor', 'Can edit and view'),
-('viewer', 'Can only view'),
-('guest', 'Guest accounts');
+('viewer', 'Can only view');
 
 INSERT INTO permissions_db.GroupPermissions (groupId, permission_id, value) VALUES
-(1, 1, true), 
+(1, 1, true),
 (1, 2, true),
 (1, 3, true),
 (1, 4, true),
@@ -76,18 +75,14 @@ INSERT INTO permissions_db.GroupPermissions (groupId, permission_id, value) VALU
 (1, 18, true),
 (1, 19, true),
 (2, 1, true),
-(2, 3, true),
-(4, 5, true),
-(4, 14, true),
-(4, 17, true);
-
+(2, 3, true);
 
 INSERT INTO permissions_db.GroupMembers (groupId, memberId) VALUES
-(1, 1),
-(4, 4),
 (1, 0),
+(1, 1),
 (1, 2),
 (2, 0),
 (2, 1),
 (3, -1),
+(3, 4),
 (3, 5);

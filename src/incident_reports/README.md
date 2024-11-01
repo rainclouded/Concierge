@@ -77,6 +77,7 @@ Delete a specified incident report from the database.
 ## Environment Variables
 | Variable Name        | Description                                                       | Default Value    |
 |----------------------|-------------------------------------------------------------------|------------------|
+| `SESSIONS_ENDPOINT`  | Specify the base URL for the sessions server. Do not include path | http://permissions:8080 |
 | `DB_IMPLEMENTATION`  | Specifies the database implementation. Should be set to `MONGODB` or `MOCK`. | `MONGODB`        |
 | `DB_NAME`            | The name of the database to connect to.                           | `test_concierge` |
 | `DB_HOST`            | The hostname or IP address of the MongoDB server. Typically, this is the service name defined in `docker-compose.yml`. | `mongo`          |

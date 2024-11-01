@@ -13,17 +13,10 @@ public class AmenitiesController : ControllerBase
 {
     private IAmenityPersistence _amenityPersistence;
     private IPermissionValidator _permissionValidator;
-    public AmenitiesController(IServiceProvider? serviceProvider)
+    public AmenitiesController(IPermissionValidator permissionValidator)
     {
         _amenityPersistence = Services.GetAmenityPersistence();
-        if (serviceProvider == null)
-        {
-            _permissionValidator = new MockPermissionValidator();
-        }
-        else
-        {
-            _permissionValidator = Services.GetPermissionValidator(serviceProvider!.GetRequiredService<IHttpClientFactory>());
-        }
+        _permissionValidator = permissionValidator;
     }
 
     //get: /amenities

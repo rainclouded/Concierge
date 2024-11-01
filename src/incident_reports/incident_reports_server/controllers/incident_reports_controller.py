@@ -1,22 +1,20 @@
 from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS
-
-from incident_reports_server.validators.permission_validator import PermissionValidator
 from incident_reports_server.application.services import Services
 from incident_reports_server.factory.incident_report_factory import IncidentReportFactory
 from incident_reports_server.models.models import IncidentReportResponse, ResponseMessages, PermissionNames
 from incident_reports_server.validators.incident_report_validator import IncidentReportValidator
 
-def create_app(persistence=None):
+def create_app(persistence=None, permissionValidator=None):
     app = Flask(__name__)
     
     _incident_report_persistence = persistence or Services.get_incident_report_persistence()
-    #_permission_validator = Services.get_permission_validator()
+    _permission_validator = permissionValidator or Services.get_permission_validator()
 
     @app.route("/incident_reports/", methods=["GET"])
-    def get_incident_reports() -> IncidentReportResponse:        
+    def get_incident_reports() -> IncidentReportResponse:
         api_key = request.headers.get('X-API-Key')
-        if not api_key or not PermissionValidator.validate_session_key_for_permission_name(api_key, PermissionNames.VIEW_IR):
+        if not _permission_validator.validate_session_key_for_permission_name(api_key, PermissionNames.VIEW_IR):
             return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
 
         # Get query parameters
@@ -61,7 +59,7 @@ def create_app(persistence=None):
     @app.route("/incident_reports/<int:id>", methods=["GET"])
     def get_incident_report_by_id(id: int) -> IncidentReportResponse:
         api_key = request.headers.get('X-API-Key')
-        if not api_key or not PermissionValidator.validate_session_key_for_permission_name(api_key, PermissionNames.VIEW_IR):
+        if not _permission_validator.validate_session_key_for_permission_name(api_key, PermissionNames.VIEW_IR):
             return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
         
         incident_report = _incident_report_persistence.get_incident_report_by_id(id)
@@ -78,7 +76,7 @@ def create_app(persistence=None):
     @app.route("/incident_reports/", methods=["POST"])
     def create_incident_report() -> IncidentReportResponse:
         api_key = request.headers.get('X-API-Key')
-        if not api_key or not PermissionValidator.validate_session_key_for_permission_name(api_key, PermissionNames.CREATE_IR):
+        if not _permission_validator.validate_session_key_for_permission_name(api_key, PermissionNames.CREATE_IR):
             return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
 
         #convert JSON to incident report object
@@ -108,7 +106,7 @@ def create_app(persistence=None):
     @app.route("/incident_reports/<int:id>", methods=["PUT"])
     def update_incident_report(id: int) -> IncidentReportResponse:   
         api_key = request.headers.get('X-API-Key')
-        if not api_key or not PermissionValidator.validate_session_key_for_permission_name(api_key, PermissionNames.EDIT_IR):
+        if not _permission_validator.validate_session_key_for_permission_name(api_key, PermissionNames.EDIT_IR):
             return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
 
         #convert JSON to incident report object
@@ -137,7 +135,7 @@ def create_app(persistence=None):
     @app.route("/incident_reports/<int:id>", methods=["DELETE"])
     def delete_incident_report(id: int) -> IncidentReportResponse:
         api_key = request.headers.get('X-API-Key')
-        if not api_key or not PermissionValidator.validate_session_key_for_permission_name(api_key, PermissionNames.DELETE_IR):
+        if not _permission_validator.validate_session_key_for_permission_name(api_key, PermissionNames.DELETE_IR):
             return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
 
         #find if incident report with passed id exists

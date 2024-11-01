@@ -1,19 +1,18 @@
-import json
 import os
 import requests
 
 class PermissionValidator:
-    @staticmethod
-    def validate_session_key_for_permission_name(sessionKey: str, permissionName: str) -> bool:
-        permissions = PermissionValidator.get_session_permissions(sessionKey)
+    def validate_session_key_for_permission_name(self, sessionKey: str, permissionName: str) -> bool:
+        if not sessionKey:
+            return False
+        permissions = self.get_session_permissions(sessionKey)
         return permissionName in permissions
     
-    @staticmethod
-    def get_session_permissions(sessionKey: str) -> list[int]:
+    def get_session_permissions(self, sessionKey: str) -> list[int]:
         endpoint = os.getenv('SESSIONS_ENDPOINT')
         try:
-            response = requests.get(f'{endpoint}/sessions/me')
-            permissions = json.loads(response)['data']['sessionsData']['SessionPermissionList']
+            response: requests.Response = requests.get(f'{endpoint}/sessions/me', headers={"X-API-Key": sessionKey})
+            permissions = response.json().get('data', {}).get('sessionData', {}).get('SessionPermissionList', [])
             return permissions
         except requests.exceptions.RequestException as e:
             print(e)

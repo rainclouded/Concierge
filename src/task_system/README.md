@@ -17,8 +17,6 @@ Microservice to access and manage hotel tasks.
 - canEditTasks
 - canDeleteTasks
 
-
-
 ## Model
 
 | Field Name   | Description|
