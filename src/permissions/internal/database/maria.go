@@ -501,11 +501,13 @@ func (m *MariaDB) GetPermissionForAccountId(accountId int) ([]*models.Permission
 	}
 
 	query := `
-		SELECT p.id, p.name, gp.value
-		FROM GroupMembers gm
-		JOIN GroupPermissions gp ON gm.groupId = gp.groupId
-		JOIN Permissions p ON gp.permission_id = p.id
-		WHERE gm.memberId = ?`
+Select p.id, p.name, gp.value from GroupPermissions as gp
+LEFT JOIN GroupMembers as gm on gp.groupId = gm.groupId
+LEFT JOIN Permissions as p on gp.permission_id = p.Id
+WHERE gm.memberId = ?
+GROUP BY p.name, p.id, gp.value
+ORDER BY p.id;
+		`
 
 	rows, err := m.db.Query(query, accountId)
 	if err != nil {

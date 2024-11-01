@@ -126,12 +126,14 @@ func (jwtCtx *JWT_Context) PermissionSliceToPermissionString(permissions []*mode
 	for _, permission := range permissions {
 		index := permission.ID / jwtCtx.PermissionPerIndex
 		value := int(math.Pow(2, float64(permission.ID%jwtCtx.PermissionPerIndex)))
+		print(fmt.Sprintf("%s: Total: %d, adding: %d\n", permission.Name, value, slice[index]))
 		// value := int(1 << (permission.ID % jwtCtx.PermissionPerIndex))
 		for i := len(slice); i < index+1; i++ {
 			slice = append(slice, 0)
 		}
 		slice[index] += value
 	}
+	fmt.Printf("Total: %d\n", slice[0])
 	return slice
 }
 
@@ -190,7 +192,7 @@ func (jwtCtx *JWT_Context) HasPermissionByName(ctx *gin.Context, permName string
 	return jwtCtx.GetPermissionStateFromPermString(id, apiKey.PermissionString)
 }
 
-func (jwtCtx *JWT_Context) GetSessionPermissions(ctx *gin.Context) []string {
+func (jwtCtx *JWT_Context) GetSessionPermissions(ctx *gin.Context, sessionData *models.SessionKeyData) []string {
 	apiKey, err := jwtCtx.ParseSignedMessage(jwtCtx.GetAPIKeyFromCtx(ctx))
 	if err != nil {
 		return []string{}
@@ -203,7 +205,7 @@ func (jwtCtx *JWT_Context) GetSessionPermissions(ctx *gin.Context) []string {
 			return permissions
 		}
 
-		permissionsVal, err := db.GetPermissions()
+		permissionsVal, err := db.GetPermissionForAccountId(sessionData.AccountID)
 		if err != nil {
 			return permissions
 		}
