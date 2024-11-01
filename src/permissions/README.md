@@ -7,7 +7,7 @@
 
 ## Required Permissions
 - canViewPermissionGroups
-- canEditPermissoinGroups
+- canEditPermissionGroups
 - canViewPermissions
 - canEditPermissions
 

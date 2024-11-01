@@ -88,7 +88,7 @@ func (db *MockDatabase) GetPermissionById(permissionId int) (*models.Permission,
 }
 
 func (db *MockDatabase) CreatePermission(permissionName string) (*models.Permission, error) {
-	permission := &models.Permission{ID: db.getMaxPermissoinId(), Name: permissionName, Value: true}
+	permission := &models.Permission{ID: db.getMaxPermissionId(), Name: permissionName, Value: true}
 	for _, p := range db.permissions {
 		if p.Name == permissionName {
 			return nil, fmt.Errorf("conflict")
@@ -270,7 +270,7 @@ func (db *MockDatabase) RemoveMemberFromGroup(groupId int, accountId int) error 
 	return fmt.Errorf("remove Failed, Account %d is not a member of group %d", groupId, accountId)
 }
 
-func (db *MockDatabase) getMaxPermissoinId() int {
+func (db *MockDatabase) getMaxPermissionId() int {
 	if len(db.permissions) == 0 {
 		return 0
 	}
