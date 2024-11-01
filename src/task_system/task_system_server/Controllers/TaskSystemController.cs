@@ -64,6 +64,7 @@ namespace task_system_server.Controllers
         [HttpPost]
         public async Task<IActionResult> AddTask([FromBody] AddTaskDto taskDto)
         {
+            
             if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey!))
                 return Unauthorized(new TaskSystemResponse<string>(ResponseMessages.UNAUTHORIZED, null));
 
