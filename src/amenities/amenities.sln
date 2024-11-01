@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "amenities_server", "ameniti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "amenities_test", "amenities_test\amenities_test.csproj", "{87B13DFA-33E1-4AE2-85B4-DD121DE32C17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "amenities_db_integration_test", "amenities_db_integration_test\amenities_db_integration_test.csproj", "{733691C6-D8D3-47D1-8A90-C8AFF985CF30}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "amenities_db_integration_test", "amenities_db_integration_test\amenities_integration_test.csproj", "{733691C6-D8D3-47D1-8A90-C8AFF985CF30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -11,6 +11,9 @@ public static class TaskMapper
             Description = taskDto.Description,
             RoomId = taskDto.RoomId,
             RequesterId = taskDto.RequesterId,
+
+            CreatedAt = DateTime.UtcNow,
+            Status = TaskItemStatus.Pending
         };
     }
 }
