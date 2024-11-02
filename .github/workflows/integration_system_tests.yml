@@ -32,7 +32,7 @@ jobs:
           config-file: '/home/runner/work/Concierge/Concierge/src/guest_webapp/cypress.config.js'
           working-directory: /home/runner/work/Concierge/Concierge/src/guest_webapp/
 
-        name: Node dependencies
+      - name: Node dependencies
         run: npm install /home/runner/work/Concierge/Concierge/src/staff_webapp/
         
       - name: Run Cypress integration tests
@@ -42,7 +42,7 @@ jobs:
           config-file: '/home/runner/work/Concierge/Concierge/src/staff_webapp/cypress.config.js'
           working-directory: /home/runner/work/Concierge/Concierge/src/staff_webapp/
 
-        name: Node dependencies
+      - name: Node dependencies
         run: npm install /home/runner/work/Concierge/Concierge/src/staff_webapp/
         
       - name: Run Cypress e2e tests
