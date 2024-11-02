@@ -30,3 +30,8 @@ services:
     extends:
       file: ../src/amenities/docker-compose.dev.yaml
       service: amenities
+
+  task_system: #uses port 50006
+    extends:
+      file: ../src/task_system/docker-compose.dev.yaml
+      service: task_system

@@ -8,24 +8,25 @@ import AmenitiesPage from "./pages/AmenitiesPage.jsx";
 import IncidentReportPage from "./pages/IncidentReportPage";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ProtectedRoute } from "./utils/ProtectedRoutes.jsx";
+import { isAuthenticated } from "./utils/auth.js";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <LoginPage />,
+    element: <ProtectedRoute canAccessFunc={()=>!isAuthenticated()} element={<LoginPage />} fallbackPath={"/home"} />,
   },
   {
     path: "/home",
-    element: <HomePage />,
+    element: <ProtectedRoute canAccessFunc={isAuthenticated} element={<HomePage />} fallbackPath={"/"} />,
   },
   {
     path: "/amenities",
-    element: <AmenitiesPage />,
+    element: <ProtectedRoute canAccessFunc={isAuthenticated} element={<AmenitiesPage />} fallbackPath={"/"} />,
   },
-  ,
   {
     path: "/incident_reports",
-    element: <IncidentReportPage />,
+    element: <ProtectedRoute canAccessFunc={isAuthenticated} element={<IncidentReportPage />} fallbackPath={"/"} />,
   },
 ]);
 

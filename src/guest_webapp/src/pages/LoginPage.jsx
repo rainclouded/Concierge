@@ -1,14 +1,32 @@
 import React, { useState } from "react";
+import { setSessionKey } from "../utils/auth";
 
 const LoginPage = () => {
   const [roomKey, setRoomKey] = useState("");
+  const [error, setError] = useState(null)
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (roomKey) {
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/sessions`,
+        {
+          method: "POST",
+          headers: { "Content-Type":"application/json"},
+          body:JSON.stringify({"username":`${roomKey}`, "password":`${roomKey}`})
+        }
+      );
+      if (!response.ok) {
+        const errMsg = await response.json();
+        setError(errMsg.error);
+        return
+      }
+      const data = await response.json();
+      setSessionKey(data.data.sessionKey);
       window.location.href = "/home";
-    } else {
-      alert("Invalid room key");
+    } catch (error) {
+      console.log(error);
+      setError("Login Failed");
     }
   };
 
@@ -33,6 +51,7 @@ const LoginPage = () => {
             className="block w-full p-2 sm:p-3 border border-gray-300 rounded-md mb-3 sm:mb-4 focus:ring-2 focus:ring-blue-500 shadow-sm hover:shadow-md transition duration-200"
             placeholder="Room Key"
           />
+          {error && <p className="text-red-500">Error: {error}</p>}
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 sm:py-3 rounded-md hover:bg-blue-700 transition duration-200"

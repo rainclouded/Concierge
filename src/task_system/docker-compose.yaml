@@ -1,0 +1,33 @@
+services:
+  task_system:
+    build: .
+    ports:
+      - 50006:8080
+    environment:
+      - DB_IMPLEMENTATION=POSTGRES
+      - DB_HOST=task_system_postgres
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=sa
+    depends_on:
+      - task_system_postgres
+  task_system_postgres:
+    image: postgres:latest
+    container_name: task_system_postgres
+    ports:
+      - 50016:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - PGUSER=postgres
+      - POSTGRES_PASSWORD=sa
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - ./configs:/docker-entrypoint-initdb.d
+      - task_system_postgres:/var/lib/postgresql/data
+volumes:
+  task_system_postgres:
+    driver: local

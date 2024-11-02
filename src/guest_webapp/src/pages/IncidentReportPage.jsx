@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { fetchWithAuth } from "../utils/authFetch";
 
 const IncidentReportPage = () => {
   const [title, setTitle] = useState("");
@@ -19,7 +20,7 @@ const IncidentReportPage = () => {
     };
 
     try {
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `${import.meta.env.VITE_API_BASE_URL}/incident_reports/`,
         {
           method: "POST",
