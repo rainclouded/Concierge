@@ -6,7 +6,7 @@ on:
     branches: [ "main", "dev" ]
     
 jobs:
-  integration_tests:
+  cypress_e2e_integration_tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,9 +25,29 @@ jobs:
       - name: Node dependencies
         run: npm install /home/runner/work/Concierge/Concierge/src/guest_webapp/
         
-      - name: Run Cypress integration test
+      - name: Run Cypress integration tests
         uses: cypress-io/github-action@v6
         with: 
           headed: false
           config-file: '/home/runner/work/Concierge/Concierge/src/guest_webapp/cypress.config.js'
           working-directory: /home/runner/work/Concierge/Concierge/src/guest_webapp/
+
+        name: Node dependencies
+        run: npm install /home/runner/work/Concierge/Concierge/src/staff_webapp/
+        
+      - name: Run Cypress integration tests
+        uses: cypress-io/github-action@v6
+        with: 
+          headed: false
+          config-file: '/home/runner/work/Concierge/Concierge/src/staff_webapp/cypress.config.js'
+          working-directory: /home/runner/work/Concierge/Concierge/src/staff_webapp/
+
+        name: Node dependencies
+        run: npm install /home/runner/work/Concierge/Concierge/src/staff_webapp/
+        
+      - name: Run Cypress e2e tests
+        uses: cypress-io/github-action@v6
+        with: 
+          headed: false
+          config-file: '/home/runner/work/Concierge/Concierge/src/system_tests/cypress.config.js'
+          working-directory: /home/runner/work/Concierge/Concierge/src/system_tests/
