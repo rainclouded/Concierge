@@ -22,6 +22,12 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Restore dependencies
+        run: dotnet restore ./src/task_system/task_system_integration_test/task_system_integration_test.csproj
+
+      - name: Build project
+        run: dotnet build ./src/task_system/task_system_integration_test/task_system_integration_test.csproj --configuration Release
+
       - name: Build and Run Docker Compose
         run: docker compose -f ./src/task_system/docker-compose.test.yaml up -d
 
@@ -40,7 +46,8 @@ jobs:
       - name: Run Task System Integration Tests
         env:
           CONNECTION_STRING: "Host=127.0.0.1;Port=50021;Username=postgres;Password=sa;Database=task_system_db_integration_test"
-        run: dotnet test ./src/task_system/task_system_integration_test/task_system_integration_test.csproj --configuration Release --no-build --verbosity normal
+        run: dotnet test ./src/task_system/task_system_integration_test/task_system_integration_test.csproj --configuration Release --verbosity normal
 
       - name: Tear Down Docker Compose
-        run: docker-compose -f ./src/task_system/docker-compose.test.yaml down
+        if: always()
+        run: docker compose -f ./src/task_system/docker-compose.test.yaml down
