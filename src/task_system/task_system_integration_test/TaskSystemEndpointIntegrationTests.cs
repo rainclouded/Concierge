@@ -25,7 +25,7 @@ namespace task_system_server.Tests.Integration
 
             // Setup database connection to a test database
             _dbContextOptions = new DbContextOptionsBuilder<TaskSystemDbContext>()
-                .UseNpgsql($"Host=127.0.0.1;Port=50017;Username=postgres;Password=sa;Database={_databaseName}")
+                .UseNpgsql($"Host=127.0.0.1;Port=50021;Username=postgres;Password=sa;Database={_databaseName}")
                 .EnableSensitiveDataLogging()
                 .Options;
 

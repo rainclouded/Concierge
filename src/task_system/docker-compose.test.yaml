@@ -15,7 +15,7 @@ services:
     image: postgres:latest
     container_name: task_system_postgres_test
     ports:
-      - 50016:5432
+      - 50021:5432
     environment:
       - POSTGRES_USER=postgres
       - PGUSER=postgres
