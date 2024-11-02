@@ -1,6 +1,8 @@
-import { admin_login, admin_logout, guest_login, guest_logout } from '../support/utils.js';
+import { admin_login, admin_logout, guest_login, guest_logout, getReportCard } from '../support/utils.js';
 describe('System tests', () => {
   //System tests for the entire App
+
+
 
 
 
@@ -174,6 +176,76 @@ describe('System tests', () => {
     cy.get('#endTime').clear().type('03:00:00');
     cy.contains('Submit').click();
     admin_logout();
+  });
+
+  it('Test incident reports end to end', () => {
+
+    //Verify initial state
+    admin_login();
+    cy.get('.sidebar-item')
+      .contains('Incident Reports')
+      .click()
+    getReportCard('To do ', 'Room Maintenance Request')
+      .should('exist')
+    getReportCard('In progress', 'Lost Property')
+      .should('exist')
+    getReportCard('Resolved', 'Fire Alarm Malfunction')
+      .should('exist')
+    getReportCard('Closed', 'Food Poisoning Incident')
+      .should('exist')
+
+    admin_logout();
+    //Add on the guest side
+    guest_login();
+    cy.get('.tile-item')
+      .contains('Report an Incident')
+      .click()
+
+    cy.get('form')
+      .find('input')
+      .clear()
+      .type('TestingIncidentCreation')
+    cy.get('form')
+      .find('textarea')
+      .clear()
+      .type('TestingIncidentCreationDescription')
+    cy.contains('button', 'Submit').click()
+    cy.contains('p', 'Incident report submitted successfully').should('exist');
+
+    cy.get('button')
+      .contains('Back')
+      .click()
+    guest_logout();
+
+    //Verify the new request and remove it
+    admin_login();
+    cy.get('.sidebar-item')
+      .contains('Incident Reports')
+      .click()
+    cy.get('.sidebar-item')
+      .contains('Incident Reports')
+      .click()
+    getReportCard('To do ', 'Room Maintenance Request')
+      .should('exist')
+    getReportCard('In progress', 'Lost Property')
+      .should('exist')
+    getReportCard('Resolved', 'Fire Alarm Malfunction')
+      .should('exist')
+    getReportCard('Closed', 'Food Poisoning Incident')
+      .should('exist')
+    getReportCard('To do ', 'TestingIncidentCreation')
+      .should('exist')
+    getReportCard('To do', 'TestingIncidentCreation')
+      .parent()
+      .children()
+      .contains('Delete')
+      .click()
+
+    cy.contains('Room Maintenance Request').should('not.exist')
+
+    admin_logout();
+    
+
   });
 
 

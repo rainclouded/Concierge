@@ -28,3 +28,9 @@ export const guest_logout = () => {
     cy.contains('a', 'Log Out').should('exist')
         .click();
 }
+
+export const getReportCard = (category, name) => {
+    return cy.contains('div', category)
+      .parent()
+      .contains('p', name);
+  };
