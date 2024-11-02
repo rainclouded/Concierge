@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using task_system_server.Clients;
 using task_system_server.Interfaces;
 using task_system_server.Persistences;
 using task_system_server.Repositories;
+using task_system_server.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +47,18 @@ if(dbImplementation == "POSTGRES"){
 } else {
     // One instance for all requests - maintains in-memory state
     builder.Services.AddSingleton<ITaskSystemRepository, StubTaskSystemRepository>();
+}
+
+var permissionsImplementation = Environment.GetEnvironmentVariable("PERMISSIONS_IMPLEMENTATION");
+if (permissionsImplementation == "INTEGRATED")
+{
+    builder.Services.AddHttpClient();
+    builder.Services.AddScoped<PermissionClient>();
+    builder.Services.AddScoped<IPermissionValidator, PermissionValidator>();
+}
+else
+{
+    builder.Services.AddScoped<IPermissionValidator, MockPermissionValidator>();
 }
 
 var app = builder.Build();

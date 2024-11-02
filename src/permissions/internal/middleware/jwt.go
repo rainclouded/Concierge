@@ -17,11 +17,13 @@ import (
 )
 
 type JWT_Context struct {
-	privateKey         *ecdsa.PrivateKey
-	publicKey          *ecdsa.PublicKey
-	encryptionAlgo     jwt.SigningMethod
-	PermissionPerIndex int
-	sessionHeader      string
+	privateKey              *ecdsa.PrivateKey
+	publicKey               *ecdsa.PublicKey
+	encryptionAlgo          jwt.SigningMethod
+	PermissionPerIndex      int
+	sessionHeader           string
+	permissionNames         map[string]int
+	permissionNamesCacheExp time.Time
 }
 
 func NewJWT() *JWT_Context {
@@ -32,11 +34,13 @@ func NewJWT() *JWT_Context {
 	sessionKeyHeaderName := config.LoadSessionKeyHeader()
 
 	return &JWT_Context{
-		privateKey:         pk,
-		publicKey:          publicKey,
-		encryptionAlgo:     signingMethod,
-		PermissionPerIndex: N,
-		sessionHeader:      sessionKeyHeaderName,
+		privateKey:              pk,
+		publicKey:               publicKey,
+		encryptionAlgo:          signingMethod,
+		PermissionPerIndex:      N,
+		sessionHeader:           sessionKeyHeaderName,
+		permissionNames:         map[string]int{},
+		permissionNamesCacheExp: time.Now(),
 	}
 }
 
@@ -62,6 +66,7 @@ func GetJWTContext(ctx *gin.Context) (*JWT_Context, bool) {
 }
 
 func (jwtCtx *JWT_Context) ParseSignedMessage(sessionKey string) (*models.SessionKeyData, error) {
+	println(`sessionKey: ` + sessionKey)
 	token, err := jwt.Parse(sessionKey, func(t *jwt.Token) (interface{}, error) {
 		return jwtCtx.publicKey, nil
 	}, jwt.WithValidMethods([]string{"ES384"}))
@@ -74,6 +79,15 @@ func (jwtCtx *JWT_Context) ParseSignedMessage(sessionKey string) (*models.Sessio
 		return nil, fmt.Errorf("sessionKey signature was not valid")
 	}
 	claims := token.Claims.(jwt.MapClaims)
+
+	if exp, ok := claims["exp"].(float64); ok {
+		if int64(exp) < time.Now().Unix() {
+			return nil, fmt.Errorf("sessionKey has expired")
+		}
+	} else {
+		return nil, fmt.Errorf("expiration claim not found")
+	}
+
 	var sessionData models.SessionKeyData
 	data, err := json.Marshal(claims)
 	if err != nil {
@@ -112,11 +126,14 @@ func (jwtCtx *JWT_Context) PermissionSliceToPermissionString(permissions []*mode
 	for _, permission := range permissions {
 		index := permission.ID / jwtCtx.PermissionPerIndex
 		value := int(math.Pow(2, float64(permission.ID%jwtCtx.PermissionPerIndex)))
+		print(fmt.Sprintf("%s: Total: %d, adding: %d\n", permission.Name, value, slice[index]))
+		// value := int(1 << (permission.ID % jwtCtx.PermissionPerIndex))
 		for i := len(slice); i < index+1; i++ {
 			slice = append(slice, 0)
 		}
 		slice[index] += value
 	}
+	fmt.Printf("Total: %d\n", slice[0])
 	return slice
 }
 
@@ -136,4 +153,74 @@ func (jwtCtx *JWT_Context) GetPublicKeyPEM() (string, error) {
 
 func (jwtCtx *JWT_Context) GetAPIKeyFromCtx(ctx *gin.Context) string {
 	return ctx.GetHeader(jwtCtx.sessionHeader)
+}
+
+func (jwtCtx *JWT_Context) GetPermissionStateFromPermString(permId int, permString []int) bool {
+	index := permId / jwtCtx.PermissionPerIndex
+	value := permString[index] & (1 << (permId % jwtCtx.PermissionPerIndex))
+	return (value > 0)
+}
+
+func (jwtCtx *JWT_Context) HasPermissionByName(ctx *gin.Context, permName string) bool {
+	apiKey, err := jwtCtx.ParseSignedMessage(jwtCtx.GetAPIKeyFromCtx(ctx))
+	if err != nil {
+		return false
+	}
+
+	if time.Now().After(jwtCtx.permissionNamesCacheExp) {
+		db, ok := GetDb(ctx)
+		if !ok {
+			return false
+		}
+
+		permissions, err := db.GetPermissions()
+		if err != nil {
+			return false
+		}
+
+		jwtCtx.permissionNames = make(map[string]int)
+		for _, perm := range permissions {
+			jwtCtx.permissionNames[perm.Name] = perm.ID
+		}
+	}
+
+	id, found := jwtCtx.permissionNames[permName]
+	if !found {
+		return false
+	}
+
+	return jwtCtx.GetPermissionStateFromPermString(id, apiKey.PermissionString)
+}
+
+func (jwtCtx *JWT_Context) GetSessionPermissions(ctx *gin.Context, sessionData *models.SessionKeyData) []string {
+	apiKey, err := jwtCtx.ParseSignedMessage(jwtCtx.GetAPIKeyFromCtx(ctx))
+	if err != nil {
+		return []string{}
+	}
+
+	permissions := []string{}
+	if time.Now().After(jwtCtx.permissionNamesCacheExp) {
+		db, ok := GetDb(ctx)
+		if !ok {
+			return permissions
+		}
+
+		permissionsVal, err := db.GetPermissionForAccountId(sessionData.AccountID)
+		if err != nil {
+			return permissions
+		}
+
+		jwtCtx.permissionNames = make(map[string]int)
+		for _, perm := range permissionsVal {
+			jwtCtx.permissionNames[perm.Name] = perm.ID
+		}
+	}
+
+	for key, value := range jwtCtx.permissionNames {
+		if jwtCtx.GetPermissionStateFromPermString(value, apiKey.PermissionString) {
+			permissions = append(permissions, key)
+		}
+	}
+
+	return permissions
 }

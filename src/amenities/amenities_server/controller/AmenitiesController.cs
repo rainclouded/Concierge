@@ -3,6 +3,7 @@ using amenities_server.model;
 using amenities_server.persistence;
 using amenities_server.validators;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace amenities_server.Controllers;
 
@@ -11,22 +12,27 @@ namespace amenities_server.Controllers;
 public class AmenitiesController : ControllerBase
 {
     private IAmenityPersistence _amenityPersistence;
-    //private IPermissionValidator _permissionValidator
-    public AmenitiesController()
+    private IPermissionValidator _permissionValidator;
+    public AmenitiesController(IPermissionValidator permissionValidator)
     {
         _amenityPersistence = Services.GetAmenityPersistence();
-        //_permissionValidator = Services.GetPermissionValidator();
+        _permissionValidator = permissionValidator;
     }
 
     //get: /amenities
     [HttpGet]
     public IActionResult GetAmenities()
     {
+        if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.VIEW_AMENITES, apiKey!))
+        {
+            return Unauthorized(new AmenityResponse<int>(ResponseMessages.UNAUTHORIZED, 0));
+        }
+
         var amenities = _amenityPersistence.GetAmenities();
 
         if (amenities == null)
         {
-            return NotFound(new AmenityResponse<string>(ResponseMessages.GET_AMENITIES_FAILED, null));
+            return NotFound(new AmenityResponse<string>(ResponseMessages.GET_AMENITIES_FAILED, ""));
         }
 
         return Ok(new AmenityResponse<IEnumerable<Amenity>>(ResponseMessages.GET_AMENITIES_SUCCESS, amenities));
@@ -36,6 +42,11 @@ public class AmenitiesController : ControllerBase
     [HttpGet("{id}")]
     public IActionResult GetAmenityByID(int id)
     {
+        if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.VIEW_AMENITES, apiKey!))
+        {
+            return Unauthorized(new AmenityResponse<int>(ResponseMessages.UNAUTHORIZED, 0));
+        }
+
         var amenity = _amenityPersistence.GetAmenityByID(id);
 
         if (_amenityPersistence.GetAmenityByID(id) == null)
@@ -50,8 +61,10 @@ public class AmenitiesController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult DeleteAmenity(int id)
     {
-        //TODO: validate session call
-        //if(_permissionValidator.ValidatePermissions(permission,sessionKey))
+        if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.DELETE_AMENITES, apiKey!))
+        {
+            return Unauthorized(new AmenityResponse<int>(ResponseMessages.UNAUTHORIZED, id));
+        }
 
         //validate if id is valid
         if(_amenityPersistence.GetAmenityByID(id) == null)
@@ -61,15 +74,18 @@ public class AmenitiesController : ControllerBase
 
         _amenityPersistence.DeleteAmenity(id);
 
-        return Ok(new AmenityResponse<string>(ResponseMessages.DELETE_AMENITY_SUCCESS, null));
+        return Ok(new AmenityResponse<string>(ResponseMessages.DELETE_AMENITY_SUCCESS, ""));
     }
+
     //post: /amenities
     [HttpPost]
     public IActionResult AddAmenity(Amenity newAmenity)
     {
-        //TODO: validate session call
-        //if(_permissionValidator.ValidatePermissions(permission,sessionKey))
-        // 
+        if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.EDIT_AMENITES, apiKey!))
+        {
+            return Unauthorized(new AmenityResponse<int>(ResponseMessages.UNAUTHORIZED, 0));
+        }
+
         //validate passed amenity
         if (!AmenityValidator.ValidateNewAmenity(newAmenity))
         {
@@ -90,10 +106,12 @@ public class AmenitiesController : ControllerBase
     [HttpPut("{id}")]
     public IActionResult UpdateAmenity(int id, Amenity newAmenity)
     {
-        //TODO:  validate session call
-        //if(!Services.GetPermissionValidator().ValidatePermissions(permission,sessionKey))
+        if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.EDIT_AMENITES, apiKey!))
+        {
+            return Unauthorized(new AmenityResponse<int>(ResponseMessages.UNAUTHORIZED, 0));
+        }
 
-        if(_amenityPersistence.GetAmenityByID(id) == null)
+        if (_amenityPersistence.GetAmenityByID(id) == null)
         {
             return NotFound(new AmenityResponse<Amenity>(ResponseMessages.GET_AMENITY_FAILED, newAmenity));
         }

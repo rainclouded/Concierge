@@ -16,6 +16,8 @@ namespace amenities_server.model
 
         public const string GET_AMENITY_FAILED = "Amenity with specified id not found.";
 
+        public const string UNAUTHORIZED = "You do not have permission to perform that action.";
+
         public const string INVALID_AMENITY_PASSED = "Bad Request. Amenity with invalid parameters was passed.";
     }
 }

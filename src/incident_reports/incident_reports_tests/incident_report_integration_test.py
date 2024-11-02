@@ -3,6 +3,7 @@ import os
 from pymongo import MongoClient
 from flask import json
 
+from incident_reports_server.validators.mock_permission_validator import MockPermissionValidator
 from incident_reports_server.factory.incident_report_factory import IncidentReportFactory
 from incident_reports_server.application.services import Services
 from incident_reports_server.controllers.incident_reports_controller import create_app
@@ -39,13 +40,13 @@ class TestIntegration(unittest.TestCase):
         
         self._incident_report_persistence = Services.clear()
         self._incident_report_persistence = Services.get_incident_report_persistence()
+        self._permission_validator = MockPermissionValidator()
         
-        self.app = create_app(self._incident_report_persistence).test_client()
+        self.app = create_app(self._incident_report_persistence, self._permission_validator).test_client()
         self.app.testing = True
 
     def test_get_incident_reports_filter_severity(self):
         response = self.app.get('/incident_reports/?severity=HIGH')
-        
         self.assertEqual(response.status_code, 200)
 
     def test_get_incident_reports_filter_status(self):

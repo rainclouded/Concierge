@@ -1,15 +1,25 @@
 using amenities_server.persistence;
+using amenities_server.services;
+using amenities_server.validators;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace amenities_server.application
 {
     public static class Services
     {
         private static IAmenityPersistence? _amenityPersistence = null;
+        private static IPermissionValidator? _permissionValidator = null;
 
         public static IAmenityPersistence GetAmenityPersistence()
         {
             _amenityPersistence ??= ConstructAmenityPersistence();
             return _amenityPersistence;
+        }
+
+        public static IPermissionValidator GetPermissionValidator(IHttpClientFactory httpFacory)
+        {
+            _permissionValidator ??= ConstructPermissionValidator(httpFacory);
+            return _permissionValidator;
         }
 
         public static void SetAmenityPersistence(IAmenityPersistence amenityPersistence)
@@ -46,6 +56,13 @@ namespace amenities_server.application
             }
 
             return amenityPersistence ?? new StubAmenityPersistence();
+        }
+
+        private static IPermissionValidator ConstructPermissionValidator(IHttpClientFactory httpFactory)
+        {
+            Console.WriteLine("Constructing PermissionValidator");
+            var PermCli = new PermissionClient(httpFactory);
+            return new PermissionValidator(PermCli);
         }
 
         private static string PostgresConnectionString()

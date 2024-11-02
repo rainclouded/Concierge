@@ -1,6 +1,8 @@
 ﻿using amenities_server.persistence;
+using amenities_server.validators;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace amenities_db_integration_test
 {
@@ -13,6 +15,7 @@ namespace amenities_db_integration_test
             builder.ConfigureServices(services =>
             {
                 amenities_server.application.Services.SetAmenityPersistence(new PostgresAmenityPersistence(_connectionString));
+                services.AddSingleton<IPermissionValidator, MockPermissionValidator>(); //Set the service provider to null for permissionValidation
             });
         }
     }
