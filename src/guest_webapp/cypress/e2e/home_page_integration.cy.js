@@ -9,6 +9,7 @@ describe('Home Page Integration Tests', () => {
 
     it('Get Quick Service Buttons', ()=>{
         cy.url().should('include', 'home');
+        cy.wait(5);
         cy.contains('button', 'Room Service').should('be.visible');
         cy.contains('button', 'Food Delivery').should('be.visible');
         cy.contains('button', 'Wake Up Call').should('be.visible');
