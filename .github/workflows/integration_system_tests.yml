@@ -15,6 +15,15 @@ jobs:
       - name: Build the Docker image
         run: docker compose -f ./docker-compose/docker-compose.yaml up --build --wait --wait-timeout 300 -d
 
+      - name: Set up Node module cache
+        uses: actions/cache@v2
+        with:
+          path: |
+          ~/.npm
+          ./src/guest_webapp/node_modules
+          ./src/staff_webapp/node_modules
+          ./src/system_tests/node_modules
+
       - name: Set up Node
         uses: actions/setup-node@v2
         with:
@@ -23,9 +32,9 @@ jobs:
           cache-dependency-path: '/home/runner/work/Concierge/Concierge/src/guest_webapp/'
 
       - name: Node dependencies
-        run: npm install /home/runner/work/Concierge/Concierge/src/guest_webapp/
+        run: npm ci --prefix /home/runner/work/Concierge/Concierge/src/guest_webapp/
         
-      - name: Run Cypress integration tests
+      - name: Run guest_webapp integration tests
         uses: cypress-io/github-action@v6
         with: 
           headed: false
@@ -33,17 +42,17 @@ jobs:
           working-directory: /home/runner/work/Concierge/Concierge/src/guest_webapp/
 
       - name: Node dependencies
-        run: npm install /home/runner/work/Concierge/Concierge/src/staff_webapp/
+        run: npm ci --prefix /home/runner/work/Concierge/Concierge/src/staff_webapp/
         
-      - name: Run Cypress integration tests
+      - name: Run staff_webapp integration tests
         uses: cypress-io/github-action@v6
         with: 
           headed: false
-          config-file: '/home/runner/work/Concierge/Concierge/src/staff_webapp/cypress.config.js'
+          config-file: '/home/runner/work/Concierge/Concierge/src/staff_webapp/cypress.config.ts'
           working-directory: /home/runner/work/Concierge/Concierge/src/staff_webapp/
 
       - name: Node dependencies
-        run: npm install /home/runner/work/Concierge/Concierge/src/staff_webapp/
+        run: npm ci --prefix /home/runner/work/Concierge/Concierge/src/staff_webapp/
         
       - name: Run Cypress e2e tests
         uses: cypress-io/github-action@v6
