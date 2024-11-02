@@ -3,11 +3,13 @@ using task_system_server.Models;
 using task_system_server.Interfaces;
 using task_system_server.Dtos;
 using task_system_server.Mappers;
+using Microsoft.AspNetCore.Cors;
 
 namespace task_system_server.Controllers
 {
     [Route("tasks")]
     [ApiController]
+    [EnableCors("AllowAll")]
     public class TaskSystemController : ControllerBase
     {
         private readonly ITaskSystemRepository _taskSystemRepository;
