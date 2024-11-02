@@ -13,7 +13,7 @@ Microservice to access and manage incident reports for hotels.
 
 #### How to Run Integration Tests
 1. Go to directory: `./src/incident_reports/`
-2. Run command: `docker-compose -f docker-compose.test.yaml up -d`
+2. Run command: `docker-compose -f docker-compose.test.yaml up -d --build`
 3. Run command: `docker exec -it incident_reports-incident_reports-1 /bin/sh`
 4. Run command: `python -m unittest discover -s incident_reports_tests -p "*.py" -v`
 

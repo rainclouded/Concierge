@@ -6,13 +6,21 @@ import os
 
 class Services:
     _incident_report_persistence = None 
+    _permission_validator = None
     
     @staticmethod
     def get_incident_report_persistence() -> IIncidentReportPersistence:
         if Services._incident_report_persistence is None:
             Services._incident_report_persistence = Services._construct_incident_report_persistence()
             
-        return Services._incident_report_persistence  # Return the persistence instance
+        return Services._incident_report_persistence 
+    
+    @staticmethod
+    def get_permission_validator():
+        if Services._permission_validator is None:
+            Services._permission_validator = Services._construct_permission_validator()
+        
+        return Services._permission_validator
     
     @staticmethod
     def _construct_incident_report_persistence() -> IIncidentReportPersistence:
@@ -39,6 +47,10 @@ class Services:
             db_implementation = IncidentReportPersistenceStub()
         
         return db_implementation 
+    
+    @staticmethod
+    def _construct_permission_validator():
+        return PermissionValidator()
     
     @staticmethod
     def db_connection_string() -> str:
