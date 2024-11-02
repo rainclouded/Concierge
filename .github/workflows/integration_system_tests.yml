@@ -16,14 +16,15 @@ jobs:
         run: docker compose -f ./docker-compose/docker-compose.yaml up --build --wait --wait-timeout 300 -d
 
       - name: Set up Node module cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
-          ~/.npm
-          ./src/guest_webapp/node_modules
-          ./src/staff_webapp/node_modules
-          ./src/system_tests/node_modules
-
+            ~/.npm
+            ./src/guest_webapp/node_modules
+            ./src/staff_webapp/node_modules
+            ./src/system_tests/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }} 
+      
       - name: Set up Node
         uses: actions/setup-node@v2
         with:
