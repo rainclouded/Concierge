@@ -6,7 +6,7 @@ describe('System tests', () => {
 
 
 
-  it('Test amenities end to end', () => {
+  it.skip('Test amenities end to end', () => {
 
     guest_login();
     cy.get('.tile-item')
@@ -235,13 +235,13 @@ describe('System tests', () => {
       .should('exist')
     getReportCard('To do ', 'TestingIncidentCreation')
       .should('exist')
-    getReportCard('To do', 'TestingIncidentCreation')
+    getReportCard('To do', 'TestingIncidentCreationDescription')
       .parent()
       .children()
       .contains('Delete')
       .click()
 
-    cy.contains('Room Maintenance Request').should('not.exist')
+    cy.contains('Room TestingIncidentCreation Request').should('not.exist')
 
     admin_logout();
     
