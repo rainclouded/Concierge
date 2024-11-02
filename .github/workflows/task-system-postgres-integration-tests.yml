@@ -23,7 +23,7 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Build and Run Docker Compose
-        run: docker-compose -f docker-compose.test.yaml up -d
+        run: docker compose -f ./src/task_system/docker-compose.test.yaml up -d
 
       - name: Wait for PostgreSQL to be ready
         run: |
@@ -40,7 +40,7 @@ jobs:
       - name: Run Task System Integration Tests
         env:
           CONNECTION_STRING: "Host=127.0.0.1;Port=50021;Username=postgres;Password=sa;Database=task_system_db_integration_test"
-        run: dotnet test ./task_system_integration_test/task_system_integration_test.csproj --configuration Release --no-build --verbosity normal
+        run: dotnet test ./src/task_system/task_system_integration_test/task_system_integration_test.csproj --configuration Release --no-build --verbosity normal
 
       - name: Tear Down Docker Compose
-        run: docker-compose -f docker-compose.test.yaml down
+        run: docker-compose -f ./src/task_system/docker-compose.test.yaml down
