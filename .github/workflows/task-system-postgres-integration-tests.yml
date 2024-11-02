@@ -21,6 +21,7 @@ jobs:
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '8.0.x'
+          cache: true
 
       - name: Restore dependencies
         run: dotnet restore ./src/task_system/task_system_integration_test/task_system_integration_test.csproj

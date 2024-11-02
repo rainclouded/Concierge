@@ -51,6 +51,7 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+        cache: 'pip'
     - name: Install dependencies
       run: |
         cd /home/runner/work/Concierge/Concierge/src/incident_reports/
@@ -76,6 +77,7 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+        cache: true
     - name: Restore dependencies
       run: dotnet restore /home/runner/work/Concierge/Concierge/src/amenities/amenities_server/amenities_server.csproj
     - name: Build
@@ -94,6 +96,7 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
+          cache: true
       - name: Restore dependencies
         run: dotnet restore src/task_system/task_system_server/task_system_server.csproj
       - name: Build task system service
