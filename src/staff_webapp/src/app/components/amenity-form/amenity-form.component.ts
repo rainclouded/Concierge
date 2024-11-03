@@ -48,17 +48,24 @@ export class AmenityFormComponent implements OnChanges {
 
   onSubmit() {
     if (this.amenityForm.valid) {
+      // Convert startTime and endTime to HH:mm:ss format
+      const formattedData = {
+        ...this.amenityForm.value,
+        startTime: this.formatTime(this.amenityForm.value.startTime),
+        endTime: this.formatTime(this.amenityForm.value.endTime)
+      };
+
       if (this.data) {
         this.amenityService
-          .updateAmenity(this.data.id as number, this.amenityForm.value)
+          .updateAmenity(this.data.id as number, formattedData)
           .subscribe({
             next: (response: any) => {
               this.onClose();
               console.log(response.message);
             }
-          })
+          });
       } else {
-        this.amenityService.addAmenity(this.amenityForm.value)
+        this.amenityService.addAmenity(formattedData)
           .subscribe({
             next: (response: any) => {
               this.onClose();
@@ -67,7 +74,13 @@ export class AmenityFormComponent implements OnChanges {
           });
       }
     } else {
-      this.amenityForm.markAllAsTouched(); // determine wether or not to display validation errors when users "touched"
+      this.amenityForm.markAllAsTouched();
     }
+  }
+
+  // Helper function to format time in HH:mm:ss
+  private formatTime(time: string): string {
+    const [hour, minute] = time.split(':');
+    return `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}:00`;
   }
 }

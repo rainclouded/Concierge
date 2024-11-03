@@ -16,14 +16,14 @@
 	</div>
 	<div class="mb-6">
 		<label for="startTime" class="font-semibold">Start at</label>
-		<input type="text" id="startTime" placeholder="eg. 05:15:00" formControlName="startTime" class="p-2 border rounded-lg w-full h-10">
+		<input type="time" id="startTime" formControlName="startTime" class="p-2 border rounded-lg w-full h-10">
 		@if (amenityForm.get('startTime')?.hasError('required') && amenityForm.get('startTime')?.touched) {
 			<div class="absolute text-xs text-red-700">ⓘ Starting Time is required</div>
 		}
 	</div>
 	<div class="mb-6">
 		<label for="endTime" class="font-semibold">End at</label>
-		<input type="text" id="endTime" placeholder="eg. 18:30:00" formControlName="endTime" class="p-2 border rounded-lg w-full h-10">
+		<input type="time" id="endTime" formControlName="endTime" class="p-2 border rounded-lg w-full h-10">
 		@if (amenityForm.get('endTime')?.hasError('required') && amenityForm.get('endTime')?.touched) {
 			<div class="absolute text-xs text-red-700">ⓘ Ending Time is required</div>
 		}
