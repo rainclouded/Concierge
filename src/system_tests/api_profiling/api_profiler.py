@@ -9,7 +9,7 @@ import requests
 
 class APIProfiler():
     """
-    Integration tests for accounts service
+    Api profiler for endpoints
     """
 
     def __init__(self):
@@ -58,7 +58,7 @@ class APIProfiler():
                 self.create_call(request)
                 for request in request_data['requests']
             ]
-  
+
         return api_calls
 
 
@@ -93,8 +93,11 @@ class APIProfiler():
             print(log)
             logs.append(log)
         return logs
- 
+
 
     def write_logs(self, logs:list):
+        """
+        Write the logged data to a file
+        """
         with open(self.log_file, 'w', encoding='utf-8') as log_file:
             log_file.writelines(log+'\n' for log in logs)
