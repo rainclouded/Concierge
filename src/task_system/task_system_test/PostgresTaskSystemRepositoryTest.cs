@@ -10,7 +10,7 @@ namespace task_system_test;
 
 public class PostgresTaskSystemRepositoryTest : IDisposable
 {
-     private readonly TaskSystemDbContext _context;
+    private readonly TaskSystemDbContext _context;
     private readonly PostgresTaskSystemRepository _repository;
 
     public PostgresTaskSystemRepositoryTest()
@@ -20,7 +20,7 @@ public class PostgresTaskSystemRepositoryTest : IDisposable
             .Options;
 
         _context = new TaskSystemDbContext(options);
-        _context.Database.EnsureCreated(); 
+        _context.Database.EnsureCreated();
         _repository = new PostgresTaskSystemRepository(_context);
 
         SeedDatabase();
@@ -290,6 +290,30 @@ public class PostgresTaskSystemRepositoryTest : IDisposable
         };
 
         await Assert.ThrowsAsync<KeyNotFoundException>(() => _repository.UpdateTaskAsync(taskId, updateDto));
+    }
+
+    [Fact]
+    public async Task UpdateAssigneeAsync_ExistingTask_UpdatesAssigneeId()
+    {
+        int taskId = 1;
+        int newAssigneeId = 10;
+
+        var result = await _repository.UpdateAssigneeAsync(taskId, newAssigneeId);
+        var updatedTask = await _repository.GetTaskByIdAsync(taskId);
+
+        Assert.NotNull(result);
+        Assert.Equal(newAssigneeId, result.AssigneeId);
+        Assert.NotNull(updatedTask);
+        Assert.Equal(newAssigneeId, updatedTask.AssigneeId);
+    }
+
+    [Fact]
+    public async Task UpdateAssigneeAsync_NonexistentTask_ThrowsKeyNotFoundException()
+    {
+        int taskId = 999;
+        int newAssigneeId = 10;
+
+        await Assert.ThrowsAsync<KeyNotFoundException>(() => _repository.UpdateAssigneeAsync(taskId, newAssigneeId));
     }
 
     [Fact]

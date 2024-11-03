@@ -183,6 +183,61 @@ namespace task_system_server.Tests.Integration
         }
 
         [Fact]
+        public async Task UpdateAssignee_ReturnsOkResult_WithUpdatedAssigneeId()
+        {
+            // Arrange
+            var task = new TaskItem
+            {
+                TaskType = TaskItemType.SpaAndMassage,
+                Description = "Schedule a massage for room 305",
+                RoomId = 305,
+                RequesterId = 7,
+                AssigneeId = 4,
+                Status = TaskItemStatus.Pending,
+                CreatedAt = DateTime.Now
+            };
+            await _context.Tasks.AddAsync(task);
+            await _context.SaveChangesAsync();
+
+            var updateAssigneeDto = new UpdateAssigneeDto
+            {
+                AssigneeId = 10
+            };
+
+            // Act
+            var result = await _controller.UpdateAssignee(task.Id, updateAssigneeDto);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var response = Assert.IsType<TaskSystemResponse<TaskItem>>(okResult.Value);
+            Assert.Equal(ResponseMessages.UPDATE_TASK_SUCCESS, response.Message);
+            Assert.NotNull(response.Data);
+            Assert.Equal(updateAssigneeDto.AssigneeId, response.Data.AssigneeId);
+            Assert.Equal(task.TaskType, response.Data.TaskType);
+            Assert.Equal(task.Description, response.Data.Description);
+            Assert.Equal(task.Status, response.Data.Status);
+            Assert.Equal(task.RoomId, response.Data.RoomId);
+        }
+
+        [Fact]
+        public async Task UpdateAssignee_ThrowsKeyNotFoundException_ForNonexistentTask()
+        {
+            // Arrange
+            var updateAssigneeDto = new UpdateAssigneeDto
+            {
+                AssigneeId = 10
+            };
+
+            // Act & Assert
+            await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+            {
+                await _controller.UpdateAssignee(999, updateAssigneeDto);
+            });
+        }
+
+
+
+        [Fact]
         public async Task DeleteTask_ReturnsNotFound_WhenTaskDoesNotExist()
         {
             // Act

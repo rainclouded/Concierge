@@ -225,6 +225,64 @@ namespace task_system_server.Tests.Integration
             });
         }
 
+        [Fact]
+        public async Task UpdateAssignee_ReturnsOk_WhenTaskExists()
+        {
+            // Arrange
+            var task = new TaskItem
+            {
+                TaskType = TaskItemType.SpaAndMassage,
+                Description = "Massage appointment for room 305",
+                RoomId = 305,
+                RequesterId = 7,
+                AssigneeId = 4,
+                Status = TaskItemStatus.Pending,
+                CreatedAt = DateTime.UtcNow
+            };
+            await _context.Tasks.AddAsync(task);
+            await _context.SaveChangesAsync();
+
+            var updateAssigneeDto = new UpdateAssigneeDto
+            {
+                AssigneeId = 10
+            };
+
+            // Act
+            var actionResult = await _controller.UpdateAssignee(task.Id, updateAssigneeDto);
+            var okResult = actionResult as OkObjectResult;
+
+            // Assert
+            Assert.NotNull(okResult);
+            Assert.Equal((int)HttpStatusCode.OK, okResult.StatusCode);
+
+            var response = okResult.Value as TaskSystemResponse<TaskItem>;
+            Assert.NotNull(response);
+            Assert.Equal(ResponseMessages.UPDATE_TASK_SUCCESS, response.Message);
+            Assert.Equal(updateAssigneeDto.AssigneeId, response.Data?.AssigneeId);
+            Assert.Equal(task.TaskType, response.Data?.TaskType);
+            Assert.Equal(task.Description, response.Data?.Description);
+            Assert.Equal(task.Status, response.Data?.Status);
+            Assert.Equal(task.RoomId, response.Data?.RoomId);
+        }
+
+        [Fact]
+        public async Task UpdateAssignee_ThrowsKeyNotFoundException_WhenTaskDoesNotExist()
+        {
+            // Arrange
+            var updateAssigneeDto = new UpdateAssigneeDto
+            {
+                AssigneeId = 10
+            };
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+            {
+                await _controller.UpdateAssignee(999, updateAssigneeDto);
+            });
+
+            Assert.Equal("Task not found.", exception.Message);
+        }
+
 
         public void Dispose()
         {

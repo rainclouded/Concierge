@@ -56,8 +56,22 @@ public class PostgresTaskSystemRepository : ITaskSystemRepository
 
         existingTask.TaskType = taskDto.TaskType;
         existingTask.Description = taskDto.Description;
-        existingTask.AssigneeId = taskDto.AssigneeId;
+        if (taskDto.AssigneeId.HasValue)
+        {
+            existingTask.AssigneeId = taskDto.AssigneeId.Value;
+        }
         existingTask.Status = taskDto.Status;
+
+        await _context.SaveChangesAsync();
+
+        return existingTask;
+    }
+
+    public async Task<TaskItem?> UpdateAssigneeAsync(int id, int assigneeId)
+    {
+        var existingTask = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id) ?? throw new KeyNotFoundException("Task not found.");
+
+        existingTask.AssigneeId = assigneeId;
 
         await _context.SaveChangesAsync();
 

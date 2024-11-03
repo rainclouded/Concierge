@@ -87,6 +87,18 @@ namespace task_system_server.Controllers
             return Ok(new TaskSystemResponse<TaskItem>(ResponseMessages.UPDATE_TASK_SUCCESS, updatedTask));
         }
 
+        // PATCH: /tasks/{id}/assignee
+        [HttpPatch("{id}/assignee")]
+        public async Task<IActionResult> UpdateAssignee([FromRoute] int id, [FromBody] UpdateAssigneeDto assigneeDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var updatedTask = await _taskSystemRepository.UpdateAssigneeAsync(id, assigneeDto.AssigneeId);
+
+            return Ok(new TaskSystemResponse<TaskItem>(ResponseMessages.UPDATE_TASK_SUCCESS, updatedTask));
+        }
+
         //DELETE: /tasks/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask([FromRoute] int id)
