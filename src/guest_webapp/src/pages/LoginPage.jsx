@@ -23,6 +23,7 @@ const LoginPage = () => {
       }
       const data = await response.json();
       setSessionKey(data.data.sessionKey);
+      sessionStorage.setItem('roomKey', roomKey);
       window.location.href = "/home";
     } catch (error) {
       console.log(error);

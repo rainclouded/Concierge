@@ -18,6 +18,7 @@ import { removeSessionKey } from "../utils/auth";
 import RequestCard from "../components/RequestCard";
 
 const HomePage = () => {
+  const roomKey = sessionStorage.getItem('roomKey'); //room key of user 
   //State for requests
   const [inputValue, setInputValue] = useState('');
 
@@ -26,7 +27,7 @@ const HomePage = () => {
   const WakeUpCallTag = "Wake Up Call"
   const LaundryServiceTag = "Laundry Service"
   const SpaMassageTag = "Spa And Massage"
-  const Maintenance = "Maintenance"
+  const MaintenanceTag = "Maintenance"
 
   const [mainDish, setMainDish] = useState('');
   const [sideDish, setSideDish] = useState('');
@@ -71,52 +72,64 @@ const HomePage = () => {
 
   const handleSubmit = async (tag) => {
     let items = '';
-    if(tag === FoodDeliveryTag){
-
-      console.log(mainDish)
-        if (mainChecked && mainDish) {
-          items += `Main: ${mainDish}. `;
-        }
-        if (sideChecked && sideDish) {
-          items += `Side: ${sideDish}. `;
-        }
-        if (drinkChecked && drink) {
-          items += `Drink: ${drink}. `;
-        }
+  
+    if (tag === FoodDeliveryTag) {
+      items = handleFoodDelivery();
     }
-
-    if((tag === WakeUpCallTag && inputValue === "") || (tag === FoodDeliveryTag && items === "")){
-      alert("Can't send your request: please enter values!");
-      setInputValue("");
-      return;  
+      const isInvalidRequest =
+      (tag === WakeUpCallTag && !inputValue) ||
+      (tag === FoodDeliveryTag && !items) ||
+      (tag === MaintenanceTag && !inputValue);
+  
+    if (isInvalidRequest) {
+      alert("Can't send your request: please enter a valid description!");
+      setInputValue('');
+      return;
     }
-
+  
     const requestBody = {
       taskType: tag.replace(/\s+/g, ''), 
-      description: tag === FoodDeliveryTag ? items.trim() : inputValue,
-      roomId: roomInfo.roomNumber,
+      description: items || inputValue || "N/A",
+      roomId: parseInt(roomKey, 10),
       requesterId: 100,
     };
-    
-    setInputValue("");
-
+  
+    setInputValue('');
+  
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/tasks/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestBody),
-        }
-      );
-      if (response.ok) alert("Successfully submitted request!");
-      else throw new Error("Failed to submit request");
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/tasks/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
+  
+      if (response.ok) {
+        alert('Successfully submitted request!');
+      } else {
+        throw new Error('Failed to submit request');
+      }
     } catch (error) {
-      alert("Couldn't submit your request at this time! ");
-      console.log(error);
+      alert("Couldn't submit your request at this time!");
+      console.error(error);
     }
+  };
+
+  const handleFoodDelivery = () => {
+    let items = '';
+  
+    if (mainChecked && mainDish) {
+      items += `Main: ${mainDish}. `;
+    }
+    if (sideChecked && sideDish) {
+      items += `Side: ${sideDish}. `;
+    }
+    if (drinkChecked && drink) {
+      items += `Drink: ${drink}. `;
+    }
+  
+    return items.trim();
   };
 
   return (
@@ -320,7 +333,7 @@ const HomePage = () => {
 
           <RequestCard
             icon={faWrench}
-            text={Maintenance}
+            text={MaintenanceTag}
             onSubmit={handleSubmit}
             onClose={handleModalClose}
           >
@@ -398,10 +411,9 @@ const HomePage = () => {
   
 };
 
-// hardcoded, change later
 const getRoomInfo = () => {
   return {
-    roomNumber: "Room 404",
+    roomNumber: "Room " + sessionStorage.getItem('roomKey'),
     periodOfStay: "23.11  11:00am - 26.11  11:00am",
   };
 };
