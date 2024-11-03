@@ -38,8 +38,8 @@ describe('integration test for amenities', () => {
     cy.contains('Add Amenity').click();
     cy.get('#name').clear().type('testAmenity');
     cy.get('#description').clear().type('this is a test');
-    cy.get('#startTime').clear().type('06:00:00');
-    cy.get('#endTime').clear().type('07:00:00');
+    cy.get('#startTime').clear().type('18:00');
+    cy.get('#endTime').clear().type('19:00');
     cy.contains('Submit').click();
     cy.get('.amenity-item')
       .should(($items) => {
@@ -68,8 +68,8 @@ describe('integration test for amenities', () => {
     cy.contains('Add Amenity').click();
     cy.get('#name').clear().type('Bar');
     cy.get('#description').clear().type('Serves alcohol and food');
-    cy.get('#startTime').clear().type('02:00:00');
-    cy.get('#endTime').clear().type('03:00:00');
+    cy.get('#startTime').clear().type('14:00');
+    cy.get('#endTime').clear().type('15:00');
     cy.contains('Submit').click();
   });
 
@@ -81,8 +81,8 @@ describe('integration test for amenities', () => {
       .click();
     cy.get('#name').clear().type('Test');
     cy.get('#description').clear().type('This is a test');
-    cy.get('#startTime').clear().type('12:34:00');
-    cy.get('#endTime').clear().type('13:57:00');
+    cy.get('#startTime').clear().type('12:34');
+    cy.get('#endTime').clear().type('13:57');
     cy.contains('Submit').click();
 
     cy.contains('th', 'Test')
@@ -101,8 +101,8 @@ describe('integration test for amenities', () => {
       .click();
     cy.get('#name').clear().type('Bar');
     cy.get('#description').clear().type('Serves alcohol and food');
-    cy.get('#startTime').clear().type('02:00:00');
-    cy.get('#endTime').clear().type('03:00:00');
+    cy.get('#startTime').clear().type('14:00');
+    cy.get('#endTime').clear().type('15:00');
     cy.contains('Submit').click();
   })
 

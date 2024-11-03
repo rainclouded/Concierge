@@ -18,8 +18,8 @@ const LoginPage = () => {
       );
       if (!response.ok) {
         const errMsg = await response.json();
-        setError(errMsg.error);
-        return
+        setError(errMsg.error || errMsg.message || "Login Failed");
+        return;
       }
       const data = await response.json();
       setSessionKey(data.data.sessionKey);
