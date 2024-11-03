@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IAmenity } from '../../models/amenity.model';
 import { AmenityService } from '../../services/amenity.service';
+import { HttpErrorResponse } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-amenity-form',
@@ -48,6 +50,10 @@ export class AmenityFormComponent implements OnChanges {
 
   onSubmit() {
     if (this.amenityForm.valid) {
+      //format time input into timespan acceptable format
+      this.amenityForm.value.startTime! = this.formatTime(this.amenityForm.value.startTime!);
+      this.amenityForm.value.endTime! = this.formatTime(this.amenityForm.value.endTime!);
+
       if (this.data) {
         this.amenityService
           .updateAmenity(this.data.id as number, this.amenityForm.value)
@@ -55,6 +61,15 @@ export class AmenityFormComponent implements OnChanges {
             next: (response: any) => {
               this.onClose();
               console.log(response.message);
+              if (response.status === 400) alert("You have entered invalid data for the amenity!");
+            },
+            error: (error: HttpErrorResponse) => {
+              this.onClose();
+              console.error(`Error Status: ${error.status}`);
+              console.error(error.message);
+              
+              //show error to client
+              //if (error.status === 400) alert("You have entered invalid data for the amenity!");
             }
           })
       } else {
@@ -63,11 +78,25 @@ export class AmenityFormComponent implements OnChanges {
             next: (response: any) => {
               this.onClose();
               console.log(response.message);
+              if (response.status === 400) alert("You have entered invalid data for the amenity!");
+            },
+            error: (error: HttpErrorResponse) => {
+              this.onClose();
+              console.error(`Error Status: ${error.status}`);
+              console.error(error.message);
+              
+               //show error to client
+              //if (error.status === 400) alert("You have entered invalid data for the amenity!");
             }
           });
       }
     } else {
       this.amenityForm.markAllAsTouched(); // determine wether or not to display validation errors when users "touched"
     }
+  }
+
+  private formatTime(time: string): string {
+    const [hours, minutes] = time.split(':');
+    return `${hours}:${minutes}:00`;
   }
 }
