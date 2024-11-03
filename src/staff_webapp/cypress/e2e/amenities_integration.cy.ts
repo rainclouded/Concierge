@@ -90,7 +90,7 @@ describe('integration test for amenities', () => {
       .find('td')
       .should(($tds)=>{
         expect($tds[0]).to.contain.text('This is a test');
-        expect($tds[1]).to.contain.text('12:34:00 - 13:57:00');
+        expect($tds[1]).to.contain.text('12:34 PM - 01:57 PM');
       })
 
     //cleanup
