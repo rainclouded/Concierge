@@ -67,3 +67,15 @@ jobs:
         run: |
           docker compose -f docker-compose.yaml build
           docker compose -f docker-compose.yaml push
+
+      - name: permissions
+        working-directory: ./src/permissions
+        run: |
+          docker compose -f docker-compose.yaml build
+          docker compose -f docker-compose.yaml push
+
+      - name: task_system
+        working-directory: ./src/task_system
+        run: |
+          docker compose -f docker-compose.yaml build
+          docker compose -f docker-compose.yaml push
