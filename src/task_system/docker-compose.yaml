@@ -1,5 +1,6 @@
 services:
   task_system:
+    image: conciergeapp/concierge:task_system
     build: .
     ports:
       - 50006:8080
