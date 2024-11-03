@@ -39,14 +39,16 @@ class IncidentReportValidator:
         return True
     
     @staticmethod
-    def validate_incident_report_severity(severity : str) -> bool:     
+    def validate_incident_report_severity(severity : str) -> bool:    
+        #check if value is in the range of stated enum values 
         if severity not in IncidentReportValidator.severity_values:
             return False
         
         return True
     
     @staticmethod
-    def validate_incident_report_status(severity : str) -> bool:     
+    def validate_incident_report_status(severity : str) -> bool:  
+        #check if value is in the range of stated enum values    
         if severity not in IncidentReportValidator.status_values:
             return False
         

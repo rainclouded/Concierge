@@ -5,11 +5,14 @@ describe('Home Page Integration Tests', () => {
         .type('404')
       cy.get('button').click()
     })
-    
+
+
     it('Get Quick Service Buttons', ()=>{
+        cy.url().should('include', 'home');
         cy.contains('button', 'Room Cleaning').should('be.visible');
         cy.contains('button', 'Food Delivery').should('be.visible');
         cy.contains('button', 'Wake Up Call').should('be.visible');
+        cy.contains('button', 'Laundry Service').scrollIntoView();
         cy.contains('button', 'Laundry Service').should('be.visible');
         cy.contains('button', 'Spa And Massage').should('be.visible');
         cy.contains('button', 'Maintenance').should('be.visible');

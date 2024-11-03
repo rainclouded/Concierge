@@ -12,13 +12,15 @@ namespace amenities_server.application
 
         public static IAmenityPersistence GetAmenityPersistence()
         {
+            //return a singleton of the amenity persistence, construct one if it does not exist
             _amenityPersistence ??= ConstructAmenityPersistence();
             return _amenityPersistence;
         }
 
-        public static IPermissionValidator GetPermissionValidator(IHttpClientFactory httpFacory)
+        public static IPermissionValidator GetPermissionValidator(IHttpClientFactory httpFactory)
         {
-            _permissionValidator ??= ConstructPermissionValidator(httpFacory);
+            //return a singleton of the permission validator, construct one if it does not exist
+            _permissionValidator ??= ConstructPermissionValidator(httpFactory);
             return _permissionValidator;
         }
 
@@ -34,6 +36,7 @@ namespace amenities_server.application
 
         private static IAmenityPersistence ConstructAmenityPersistence()
         {
+            //construct a instance of the amenity persistence, creates a mock or postgres implementation based on the env variable 'DB_IMPLEMENTATION' stated in the yaml file
             string? dbImplementation = Environment.GetEnvironmentVariable("DB_IMPLEMENTATION") ?? string.Empty;
             IAmenityPersistence? amenityPersistence = null;
             if (dbImplementation == "POSTGRES")
@@ -67,6 +70,7 @@ namespace amenities_server.application
 
         private static string PostgresConnectionString()
         {
+            //if a postgres connection is to be made, grab connection details from the environment as stated in the yaml file
             string? dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? string.Empty;
             string? dbPort = Environment.GetEnvironmentVariable("DB_PORT") ?? string.Empty;
             string? dbUsername = Environment.GetEnvironmentVariable("DB_USERNAME") ?? string.Empty;

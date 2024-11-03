@@ -23,6 +23,7 @@ public class AmenitiesController : ControllerBase
     [HttpGet]
     public IActionResult GetAmenities()
     {
+        //validate permissions of requester
         if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.VIEW_AMENITES, apiKey!))
         {
             return Unauthorized(new AmenityResponse<int>(ResponseMessages.UNAUTHORIZED, 0));
@@ -42,6 +43,7 @@ public class AmenitiesController : ControllerBase
     [HttpGet("{id}")]
     public IActionResult GetAmenityByID(int id)
     {
+        //validate permissions of requester
         if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.VIEW_AMENITES, apiKey!))
         {
             return Unauthorized(new AmenityResponse<int>(ResponseMessages.UNAUTHORIZED, 0));
@@ -49,6 +51,7 @@ public class AmenitiesController : ControllerBase
 
         var amenity = _amenityPersistence.GetAmenityByID(id);
 
+        //validate passed id
         if (_amenityPersistence.GetAmenityByID(id) == null)
         {
             return NotFound(new AmenityResponse<int>(ResponseMessages.GET_AMENITY_FAILED, id));
@@ -61,6 +64,7 @@ public class AmenitiesController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult DeleteAmenity(int id)
     {
+        //validate permissions of requester
         if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.DELETE_AMENITES, apiKey!))
         {
             return Unauthorized(new AmenityResponse<int>(ResponseMessages.UNAUTHORIZED, id));
@@ -81,6 +85,7 @@ public class AmenitiesController : ControllerBase
     [HttpPost]
     public IActionResult AddAmenity(Amenity newAmenity)
     {
+        //validate permissions of requester
         if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.EDIT_AMENITES, apiKey!))
         {
             return Unauthorized(new AmenityResponse<int>(ResponseMessages.UNAUTHORIZED, 0));
@@ -106,16 +111,19 @@ public class AmenitiesController : ControllerBase
     [HttpPut("{id}")]
     public IActionResult UpdateAmenity(int id, Amenity newAmenity)
     {
+        //validate permissions of requester
         if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.EDIT_AMENITES, apiKey!))
         {
             return Unauthorized(new AmenityResponse<int>(ResponseMessages.UNAUTHORIZED, 0));
         }
 
+        //validate passed id
         if (_amenityPersistence.GetAmenityByID(id) == null)
         {
             return NotFound(new AmenityResponse<Amenity>(ResponseMessages.GET_AMENITY_FAILED, newAmenity));
         }
 
+        //validate passed amenity
         if (!AmenityValidator.ValidateAmenityParameters(newAmenity))
         {
             return BadRequest(new AmenityResponse<Amenity>(ResponseMessages.INVALID_AMENITY_PASSED, newAmenity));

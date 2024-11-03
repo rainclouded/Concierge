@@ -16,10 +16,11 @@ public class PostgresTaskSystemRepositoryTest : IDisposable
     public PostgresTaskSystemRepositoryTest()
     {
         var options = new DbContextOptionsBuilder<TaskSystemDbContext>()
-            .UseInMemoryDatabase(databaseName: "TaskSystemTestDb")
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
         _context = new TaskSystemDbContext(options);
+        _context.Database.EnsureCreated(); 
         _repository = new PostgresTaskSystemRepository(_context);
 
         SeedDatabase();

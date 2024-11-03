@@ -13,7 +13,7 @@ Microservice to access and manage incident reports for hotels.
 
 #### How to Run Integration Tests
 1. Go to directory: `./src/incident_reports/`
-2. Run command: `docker-compose -f docker-compose.test.yaml up -d`
+2. Run command: `docker-compose -f docker-compose.test.yaml up -d --build`
 3. Run command: `docker exec -it incident_reports-incident_reports-1 /bin/sh`
 4. Run command: `python -m unittest discover -s incident_reports_tests -p "*.py" -v`
 
@@ -79,7 +79,6 @@ Delete a specified incident report from the database.
 |----------------------|-------------------------------------------------------------------|------------------|
 | `SESSIONS_ENDPOINT`  | Specify the base URL for the sessions server. Do not include path | http://permissions:8080 |
 | `DB_IMPLEMENTATION`  | Specifies the database implementation. Should be set to `MONGODB` or `MOCK`. | `MONGODB`        |
-| `DB_NAME`            | The name of the database to connect to.                           | `test_concierge` |
 | `DB_HOST`            | The hostname or IP address of the MongoDB server. Typically, this is the service name defined in `docker-compose.yml`. | `mongo`          |
 | `DB_PORT`            | The port on which the MongoDB server is running.                  | `27017`          |
 | `DB_USERNAME`        | The username used for authentication with the MongoDB database.   | `mongo_db_user`  |
