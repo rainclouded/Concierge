@@ -6,6 +6,8 @@ using task_system_server.Persistences;
 using task_system_server.Dtos;
 using task_system_server.Controllers;
 using task_system_server.Repositories;
+using task_system_server.Validators;
+
 
 namespace task_system_server.Tests.Integration
 {
@@ -33,7 +35,8 @@ namespace task_system_server.Tests.Integration
 
             // Initialize repository with the test context
             var repository = new PostgresTaskSystemRepository(_context);
-            _controller = new TaskSystemController(repository);
+            var validator = new MockPermissionValidator();
+            _controller = new TaskSystemController(repository, validator);
         }
 
         [Fact]
