@@ -16,173 +16,138 @@
          "Task": {
             "type": "object",
             "properties": {
-               "task-id": {
+               "id": {
                   "type": "integer",
                   "description": "task's id",
                   "example": "123"
                },
-               "name": {
+               "taskType": {
                   "type": "string",
-                  "description": "Name of the tasks"
+                  "description": "Type of the tasks",
+                  "example": "Maintenance"
                },
                "description": {
                   "type": "string",
-                  "description": "description of tasks"
+                  "description": "description of tasks",
+                  "example": "There is a leak in the bathroom sink that needs urgent attention."
                },
-               "created": {
-                  "type": "string",
-                  "description": "Date and time this task was created"
-               },
-               "start": {
-                  "type": "string",
-                  "description": "Date and time this task becomes actionable"
-               },
-               "end": {
-                  "type": "string",
-                  "description": "Date and time this task overdue"
-               },
-               "on-expiration": {
-                  "type": "string",
-                  "description": "How the system should handle this task if it becomes overdue",
-                  "example": "escale"
-               },
-               "view-permission-name": {
-                  "type": "string",
-                  "description": "Only accounts with this permission can see this tasks",
-                  "example": "can-view-admin-tasks"
-               },
-               "edit-permission-name": {
-                  "type": "string",
-                  "description": "Only accounts with this permission can edit, assign, or claim this tasks",
-                  "example": "can-edit-admin-tasks"
-               },
-               "responsible-permission-name": {
-                  "type": "string",
-                  "description": "Accounts with this permission are responsible for this task. Adjusts how task is presented to accounts of groups with this permission",
-                  "example": "is-responsible-for-admin-tasks"
-               },
-               "can-edit": {
-                  "type": "boolean",
-                  "description": "indicates if this account can edit this task"
-               },
-               "is-responsible": {
-                  "type": "boolean",
-                  "description": "indicates if this account is responsible for this task"
-               },
-               "is-subscribed": {
-                  "type": "boolean",
-                  "description": "indicates if this account is subscribed for this task"
-               },
-               "location": {
-                  "type": "string",
-                  "description": "Location of the task. Primarily used for room-related tasks"
-               },
-               "trigger": {
-                  "type": "string",
-                  "description": "Reason task entered the system",
-                  "example": "guest-request"
-               },
-               "priority": {
+               "roomId": {
                   "type": "integer",
-                  "description": "Used to sort tasks"
+                  "description": "Location of the task. Primarily used for room-related tasks",
+                  "example": "123"
                },
-               "assigned-to": {
+               "requesterId": {
                   "type": "integer",
-                  "description": "Account ID of responsible staff"
+                  "description": "Account ID of requester",
+                  "example": "10"
                },
-               "linked-task-id": {
+               "assigneeId": {
                   "type": "integer",
-                  "description": "References another task"
+                  "description": "Account ID of responsible staff",
+                  "example": "12"
                },
                "status": {
                   "type": "string",
                   "description": "Indicates if a task is complete or not",
-                  "example": "in-progress"
+                  "example": "InProgress"
                },
-               "subscribed-accounts": {
-                  "type": "array",
-                  "description": "List of accounts that should be able to see this task, regardless of permission group",
-                  "items": {
-                     "type": "integer"
-                  }
-               },
-               "special-instructions": {
+               "createdAt": {
                   "type": "string",
-                  "description": "Any additional notes needed for this task"
-               },
-               "guest-facing-comments": {
-                  "type": "string",
-                  "description": "Notes that the subscribed guests should be able to see."
+                  "description": "Date and time this task was created",
+                  "example": "2024-10-17T10:00:00"
                }
             }
          },
-         "Task-Template": {
+         "AddTaskDto": {
+            "required": [
+               "description",
+               "requesterId",
+               "roomId",
+               "taskType"
+            ],
             "type": "object",
             "properties": {
-               "task-id": {
-                  "type": "integer",
-                  "description": "template's id",
-                  "example": "123"
-               },
-               "name": {
-                  "type": "string",
-                  "description": "Name of the template"
+               "taskType": {
+                  "$ref": "#/components/schemas/TaskItemType"
                },
                "description": {
-                  "type": "string",
-                  "description": "description of template"
+                  "maxLength": 400,
+                  "minLength": 1,
+                  "type": "string"
                },
-               "sla": {
-                  "type": "number",
-                  "description": "Number of hours between task creation and becoming overdue"
-               },
-               "start-delay": {
-                  "type": "number",
-                  "description": "Number of hours between triggering event and task start"
-               },
-               "on-expiration": {
-                  "type": "string",
-                  "description": "How the system should handle this task if the SLA is violated",
-                  "example": "escale"
-               },
-               "view-permission-name": {
-                  "type": "string",
-                  "description": "Only accounts with this permission can see this tasks",
-                  "example": "can-view-admin-tasks"
-               },
-               "edit-permission-name": {
-                  "type": "string",
-                  "description": "Only accounts with this permission can edit, assign, or claim this tasks",
-                  "example": "can-edit-admin-tasks"
-               },
-               "responsible-permission-name": {
-                  "type": "string",
-                  "description": "Accounts with this permission are responsible for this task. Adjusts how task is presented to accounts of groups with this permission",
-                  "example": "is-responsible-for-admin-tasks"
-               },
-               "location": {
-                  "type": "string",
-                  "description": "Location of the task. Primarily used for room-related tasks",
-                  "example": "::trigger::room"
-               },
-               "trigger": {
-                  "type": "string",
-                  "description": "Reason task entered the system. Triggers may have metadata when the event occurs. Such as '::trigger::room'",
-                  "example": "guest-request"
-               },
-               "priority": {
+               "roomId": {
+                  "maximum": 500,
+                  "minimum": 100,
                   "type": "integer",
-                  "description": "Used to sort tasks"
+                  "format": "int32"
                },
-               "assigned-to": {
+               "requesterId": {
+                  "maximum": 500,
+                  "minimum": 1,
                   "type": "integer",
-                  "description": "Account ID of responsible staff"
-               },
-               "linked-task-id": {
-                  "type": "integer",
-                  "description": "References another task"
+                  "format": "int32"
                }
-            }
+            },
+            "additionalProperties": false
+         },
+         "TaskItemStatus": {
+            "enum": [
+               "Pending",
+               "InProgress",
+               "Completed"
+            ],
+            "type": "string"
+         },
+         "TaskItemType": {
+            "enum": [
+               "RoomCleaning",
+               "Maintenance",
+               "FoodDelivery",
+               "WakeUpCall",
+               "LaundryService",
+               "SpaAndMassage"
+            ],
+            "type": "string"
+         },
+         "UpdateAssigneeDto": {
+            "required": [
+               "assigneeId"
+            ],
+            "type": "object",
+            "properties": {
+               "assigneeId": {
+                  "type": "integer",
+                  "format": "int32"
+               }
+            },
+            "additionalProperties": false
+         },
+         "UpdateTaskDto": {
+            "required": [
+               "description",
+               "status",
+               "taskType"
+            ],
+            "type": "object",
+            "properties": {
+               "taskType": {
+                  "$ref": "#/components/schemas/TaskItemType"
+               },
+               "description": {
+                  "maxLength": 400,
+                  "minLength": 1,
+                  "type": "string"
+               },
+               "assigneeId": {
+                  "type": "integer",
+                  "format": "int32",
+                  "nullable": true
+               },
+               "status": {
+                  "$ref": "#/components/schemas/TaskItemStatus"
+               }
+            },
+            "additionalProperties": false
          },
          "Reservation": {
             "type": "object",
@@ -387,7 +352,7 @@
                      "properties": {
                      "username": {
                         "type": "string",
-                        "description": "The username of the user to update",
+                        "description": "The username of the user to update"
                      }
                      },
                      "required": [
@@ -2253,7 +2218,7 @@
       "tasks": {
          "summary": "View, add or modify hotel service tasks",
          "get": {
-            "summary": "View all service tasks",
+            "summary": "View All Tasks",
             "description": "Requests /permissions/{permission-name-or-id}/sessions/{X-API-KEY} for access permission",
             "operationId": "getTasks",
             "tags": [
@@ -2268,55 +2233,82 @@
                   "schema": {
                      "type": "string"
                   }
+               },
+               {
+                  "name": "RoomId",
+                  "in": "query",
+                  "schema": {
+                     "type": "integer",
+                     "format": "int32"
+                  }
+               },
+               {
+                  "name": "RequesterId",
+                  "in": "query",
+                  "schema": {
+                     "type": "integer",
+                     "format": "int32"
+                  }
+               },
+               {
+                  "name": "AssigneeId",
+                  "in": "query",
+                  "schema": {
+                     "type": "integer",
+                     "format": "int32"
+                  }
+               },
+               {
+                  "name": "Status",
+                  "in": "query",
+                  "schema": {
+                     "$ref": "#/components/schemas/TaskItemStatus"
+                  }
+               },
+               {
+                  "name": "Year",
+                  "in": "query",
+                  "schema": {
+                     "type": "integer",
+                     "format": "int32"
+                  }
+               },
+               {
+                  "name": "Month",
+                  "in": "query",
+                  "schema": {
+                     "type": "integer",
+                     "format": "int32"
+                  }
+               },
+               {
+                  "name": "Day",
+                  "in": "query",
+                  "schema": {
+                     "type": "integer",
+                     "format": "int32"
+                  }
+               },
+               {
+                  "name": "SortAscending",
+                  "in": "query",
+                  "schema": {
+                     "type": "boolean"
+                  }
                }
             ],
             "responses": {
                "200": {
-                  "description": "A list of tasks",
+                  "description": "OK",
                   "content": {
                      "application/json": {
                         "schema": {
                            "type": "object",
                            "properties": {
-                              "permissions": {
+                              "tasks": {
                                  "type": "array",
                                  "items": {
-                                    "type": "object",
-                                    "properties": {
-                                       "id": {
-                                          "type": "integer",
-                                          "description": "tasks's id",
-                                          "example": "123"
-                                       },
-                                       "roomId": {
-                                          "type": "integer",
-                                          "description": "room number of requester"
-                                       },
-                                       "taskType": {
-                                          "type": "string",
-                                          "description": "type of task"
-                                       },
-                                       "description": {
-                                          "type": "string",
-                                          "description": "description of tasks"
-                                       },
-                                       "createdAt": {
-                                          "type": "datetime",
-                                          "description": "Date and time this task was created"
-                                       },
-                                       "requesterId": {
-                                          "type": "integer",
-                                          "description": "account id of requester"
-                                       },
-                                       "assigneeId": {
-                                          "type": "integer",
-                                          "description": "account id of assignee"
-                                       },
-                                       "status": {
-                                          "type": "string",
-                                          "description": "status of task"
-                                       }
-                                    }
+                                    "$ref": "#/components/schemas/Task"
                                  }
                               }
                            }
@@ -2324,18 +2316,18 @@
                      }
                   }
                },
+               "400": {
+                  "description": "Bad request"
+               },
                "401": {
                   "description": "Unauthorized"
-               },
-               "404": {
-                  "description": "Tasks not found."
                }
             }
          },
          "post": {
             "summary": "Create Task",
             "description": "Requests GET /sessions/{sessionId} to get accountID associated to current session.",
-            "operationId": "postTasks",
+            "operationId": "postTask",
             "tags": [
                "Tasks"
             ],
@@ -2351,36 +2343,27 @@
                }
             ],
             "requestBody": {
-               "required": true,
                "content": {
                   "application/json": {
                      "schema": {
-                        "type": "object",
-                        "properties": {
-                           "roomId": {
-                              "type": "integer",
-                              "description": "room number of requester"
-                           },
-                           "taskType": {
-                              "type": "string",
-                              "description": "type of task"
-                           },
-                           "description": {
-                              "type": "string",
-                              "description": "description of tasks"
-                           },
-                           "requesterId": {
-                              "type": "integer",
-                              "description": "account id of requester"
-                           }
-                        }
+                        "$ref": "#/components/schemas/AddTaskDto"
+                     }
+                  },
+                  "text/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/AddTaskDto"
+                     }
+                  },
+                  "application/*+json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/AddTaskDto"
                      }
                   }
                }
             },
             "responses": {
-               "201": {
-                  "description": "Task created successfully"
+               "200": {
+                  "description": "OK"
                },
                "400": {
                   "description": "Bad request",
@@ -2413,75 +2396,47 @@
             ],
             "parameters": [
                {
-                  "name": "task-id",
-                  "in": "path",
-                  "description": "Id of task to view",
+                  "name": "X-API-KEY",
+                  "in": "cookie",
+                  "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
                   "schema": {
-                     "type": "integer"
+                     "type": "string"
+                  }
+               },
+               {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                     "type": "integer",
+                     "format": "int32"
                   }
                }
             ],
             "responses": {
                "200": {
-                  "description": "A task",
+                  "description": "OK",
                   "content": {
                      "application/json": {
                         "schema": {
-                           "schema": {
-                              "type": "object",
-                              "properties": {
-                                 "id": {
-                                    "type": "integer",
-                                    "description": "tasks's id",
-                                    "example": "123"
-                                 },
-                                 "roomId": {
-                                    "type": "integer",
-                                    "description": "room number of requester"
-                                 },
-                                 "taskType": {
-                                    "type": "string",
-                                    "description": "type of task"
-                                 },
-                                 "description": {
-                                    "type": "string",
-                                    "description": "description of tasks"
-                                 },
-                                 "createdAt": {
-                                    "type": "datetime",
-                                    "description": "Date and time this task was created"
-                                 },
-                                 "requesterId": {
-                                    "type": "integer",
-                                    "description": "account id of requester"
-                                 },
-                                 "assigneeId": {
-                                    "type": "integer",
-                                    "description": "account id of assignee"
-                                 },
-                                 "status": {
-                                    "type": "string",
-                                    "description": "status of task"
-                                 }
-                              }
-                           }
+                           "$ref": "#/components/schemas/Task"
                         }
                      }
                   }
                },
-               "401":{
-                  "description": "Unauthorized"
+               "400": {
+                  "description": "Bad request"
                },
-               "404": {
-                  "description": "task with specified not found."
+               "401": {
+                  "description": "Unauthorized"
                }
             }
          },
          "put": {
             "summary": "Update Task",
             "description": "Requests GET /sessions/{sessionId} to get accountID associated to current session.",
-            "operationId": "putTasks",
+            "operationId": "putTask",
             "tags": [
                "Tasks"
             ],
@@ -2496,62 +2451,40 @@
                   }
                },
                {
-                  "name": "task-id",
+                  "name": "id",
                   "in": "path",
-                  "description": "Id of task to update",
                   "required": true,
                   "schema": {
-                     "type": "integer"
+                     "type": "integer",
+                     "format": "int32"
                   }
                }
             ],
             "requestBody": {
-               "required": true,
                "content": {
                   "application/json": {
                      "schema": {
-                        "type": "object",
-                        "properties": {
-                           "taskType": {
-                              "type": "string",
-                              "description": "type of task"
-                           },
-                           "description": {
-                              "type": "string",
-                              "description": "description of tasks"
-                           },
-                           "assigneeId": {
-                              "type": "integer",
-                              "description": "account id of assignee"
-                           },
-                           "status": {
-                              "type": "string",
-                              "description": "status of task"
-                           }
-                        }
+                        "$ref": "#/components/schemas/UpdateTaskDto"
+                     }
+                  },
+                  "text/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/UpdateTaskDto"
+                     }
+                  },
+                  "application/*+json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/UpdateTaskDto"
                      }
                   }
                }
             },
             "responses": {
                "200": {
-                  "description": "Task updated successfully"
+                  "description": "OK"
                },
                "400": {
-                  "description": "Bad request",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "object",
-                           "properties": {
-                              "error": {
-                                 "type": "string",
-                                 "example": "The 'name' field is required"
-                              }
-                           }
-                        }
-                     }
-                  }
+                  "description": "Bad request"
                },
                "401": {
                   "description": "Unauthorized"
@@ -2561,7 +2494,7 @@
          "delete": {
             "summary": "Delete Task",
             "description": "Requests GET /sessions/{sessionId} to get accountID associated to current session.",
-            "operationId": "deleteAmenities",
+            "operationId": "deleteTask",
             "tags": [
                "Tasks"
             ],
@@ -2587,10 +2520,78 @@
             ],
             "responses": {
                "200": {
-                  "description": "Task deleted successfully"
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "boolean",
+                           "example": true
+                        }
+                     }
+                  }
                },
                "400": {
-                  "description": "Task not found"
+                  "description": "Bad request"
+               },
+               "401": {
+                  "description": "Unauthorized"
+               }
+            }
+         }
+      },
+      "/tasks/{id}/assignee": {
+         "patch": {
+            "summary": "Assign Task",
+            "description": "Requests /permissions/{permission-name-or-id}/sessions/{session-key} for access permission.",
+            "operationId": "patchTask",
+            "tags": [
+               "Tasks"
+            ],
+            "parameters": [
+               {
+                  "name": "X-API-KEY",
+                  "in": "cookie",
+                  "description": "A session key, associated to an account with the necessary permissions for authenticating user",
+                  "required": true,
+                  "schema": {
+                     "type": "string"
+                  }
+               },
+               {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                     "type": "integer",
+                     "format": "int32"
+                  }
+               }
+            ],
+            "requestBody": {
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/UpdateAssigneeDto"
+                     }
+                  },
+                  "text/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/UpdateAssigneeDto"
+                     }
+                  },
+                  "application/*+json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/UpdateAssigneeDto"
+                     }
+                  }
+               }
+            },
+            "responses": {
+               "200": {
+                  "description": "OK"
+               },
+               "400": {
+                  "description": "Bad request"
                },
                "401": {
                   "description": "Unauthorized"
