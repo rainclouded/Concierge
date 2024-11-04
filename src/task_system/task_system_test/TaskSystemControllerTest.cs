@@ -1,21 +1,26 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System.Security;
 using task_system_server.Controllers;
 using task_system_server.Dtos;
 using task_system_server.Interfaces;
 using task_system_server.Models;
+using task_system_server.Validators;
 
 namespace task_system_test
 {
     public class TaskSystemControllerTest
     {
         private readonly Mock<ITaskSystemRepository> _mockRepo;
+        private readonly Mock<IPermissionValidator> _mockPermValidator;
         private readonly TaskSystemController _controller;
 
         public TaskSystemControllerTest()
         {
             _mockRepo = new Mock<ITaskSystemRepository>();
-            _controller = new TaskSystemController(_mockRepo.Object);
+            _mockPermValidator = new Mock<IPermissionValidator>();
+            _controller = new TaskSystemController(_mockRepo.Object, _mockPermValidator.Object);
         }
 
         [Fact]
@@ -103,6 +108,15 @@ namespace task_system_test
             };
 
             _mockRepo.Setup(repo => repo.GetTasksAsync(query)).ReturnsAsync(tasks);
+            
+            var apiKey = "test-api-key";
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(true);
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
 
             var result = await _controller.GetTasks(query);
 
@@ -118,6 +132,15 @@ namespace task_system_test
             var emptyTasks = new List<TaskItem>();
 
             _mockRepo.Setup(repo => repo.GetTasksAsync(query)).ReturnsAsync(emptyTasks);
+
+            var apiKey = "test-api-key";
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(true);
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
 
             var result = await _controller.GetTasks(query);
 
@@ -144,6 +167,15 @@ namespace task_system_test
             };
             _mockRepo.Setup(repo => repo.GetTaskByIdAsync(taskId)).ReturnsAsync(task);
 
+            var apiKey = "test-api-key";
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(true);
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
             var result = await _controller.GetTaskById(taskId);
 
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -158,6 +190,15 @@ namespace task_system_test
             int taskId = 1;
             TaskItem? noTask = null;
             _mockRepo.Setup(repo => repo.GetTaskByIdAsync(taskId)).ReturnsAsync(noTask);
+
+            var apiKey = "test-api-key";
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(true);
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
 
             var result = await _controller.GetTaskById(taskId);
 
@@ -183,6 +224,15 @@ namespace task_system_test
                 CreatedAt = DateTime.Now
             };
             _mockRepo.Setup(repo => repo.AddTaskAsync(It.IsAny<TaskItem>())).ReturnsAsync(newTask);
+
+            var apiKey = "test-api-key";
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey)).Returns(true);
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
 
             var result = await _controller.AddTask(taskDto);
 
@@ -216,6 +266,15 @@ namespace task_system_test
 
             _mockRepo.Setup(repo => repo.UpdateTaskAsync(taskId, taskDto)).ReturnsAsync(updatedTask);
 
+            var apiKey = "test-api-key";
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.EDIT_TASKS, apiKey)).Returns(true);
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
             var result = await _controller.UpdateTask(taskId, taskDto);
 
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -241,6 +300,14 @@ namespace task_system_test
             };
             _mockRepo.Setup(repo => repo.GetTaskByIdAsync(taskId)).ReturnsAsync(existingTask);
             _mockRepo.Setup(repo => repo.DeleteTaskAsync(taskId)).ReturnsAsync(true);
+            var apiKey = "test-api-key";
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.DELETE_TASKS, apiKey)).Returns(true);
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
 
             var result = await _controller.DeleteTask(taskId);
 
@@ -256,6 +323,14 @@ namespace task_system_test
             int taskId = 1;
             TaskItem? noTask = null;
             _mockRepo.Setup(repo => repo.GetTaskByIdAsync(taskId)).ReturnsAsync(noTask);
+            var apiKey = "test-api-key";
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.DELETE_TASKS, apiKey)).Returns(true);
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
 
             var result = await _controller.DeleteTask(taskId);
 
@@ -269,6 +344,14 @@ namespace task_system_test
         [Fact]
         public async Task GetTasks_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
+            var apiKey = "test-api-key";
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(true);
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
             _controller.ModelState.AddModelError("Error", "Sample Error");
 
             var result = await _controller.GetTasks(new QueryObject());
@@ -279,6 +362,14 @@ namespace task_system_test
         [Fact]
         public async Task GetTask_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
+            var apiKey = "test-api-key";
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(true);
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
             _controller.ModelState.AddModelError("Error", "Sample Error");
 
             var result = await _controller.GetTaskById(1);
@@ -289,6 +380,14 @@ namespace task_system_test
         [Fact]
         public async Task AddTask_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
+            var apiKey = "test-api-key";
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey)).Returns(true);
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
             _controller.ModelState.AddModelError("Error", "Sample Error");
 
             var result = await _controller.AddTask(new AddTaskDto());
@@ -299,6 +398,14 @@ namespace task_system_test
         [Fact]
         public async Task UpdateTask_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
+            var apiKey = "test-api-key";
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.EDIT_TASKS, apiKey)).Returns(true);
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
             _controller.ModelState.AddModelError("Error", "Sample error");
 
             var actionResult = await _controller.UpdateTask(1, new UpdateTaskDto());
@@ -309,6 +416,14 @@ namespace task_system_test
         [Fact]
         public async Task DeleteTask_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
+            var apiKey = "test-api-key";
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.DELETE_TASKS, apiKey)).Returns(true);
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
             _controller.ModelState.AddModelError("Error", "Sample error");
 
             var actionResult = await _controller.DeleteTask(1);

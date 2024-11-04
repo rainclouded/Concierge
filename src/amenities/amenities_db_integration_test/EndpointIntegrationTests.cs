@@ -31,6 +31,7 @@ namespace amenities_db_integration_test
 
             _appFactory = new WebAppFactoryForTests(_connectionString); //Automatically sets the db to test postgres
             _client = _appFactory.CreateClient();
+            _client.DefaultRequestHeaders.Add("X-API-Key", "Tests");
         }
 
         [Test]

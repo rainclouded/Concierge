@@ -30,6 +30,12 @@ Microservice to access and manage hotel tasks.
 3. Go to directory: `./src/task_system`
 4. run command: `dotnet test`
 
+## Required Permissions
+- canViewTasks
+- canCreateTasks
+- canEditTasks
+- canDeleteTasks
+
 ## Model
 
 | Field Name   | Description|

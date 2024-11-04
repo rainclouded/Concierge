@@ -5,16 +5,17 @@
 ## Run locally
 - go run ./src/permissions/cmd/server/main.go
 
+## Required Permissions
+- canViewPermissionGroups
+- canEditPermissionGroups
+- canViewPermissions
+- canEditPermissions
+
 ## Environmnet Variables
 - `JWT_SIGNING_METHOD`
     - Controls which signing method is used
     - Available Values
         - `ECDSA384` ECDSA 384 (default)
-    - Planned Values:
-        - `HS256` HMAC-SHA 256
-        - `HS256` HMAC-SHA 256
-        - `HS256` HMAC-SHA 256
-        - `RS256` RSA 256
         
 - `SESSION_EXPIRATION`
     - Controls how long a session persists in Minutes. 

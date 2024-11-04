@@ -3,16 +3,35 @@ package tests
 import (
 	"bytes"
 	"concierge/permissions/api"
+	"concierge/permissions/internal/constants"
 	"concierge/permissions/internal/database"
 	"concierge/permissions/internal/middleware"
 	"concierge/permissions/internal/models"
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
+
+func GetPermissionResponse() string {
+	return `{"message":"Permissions retreived successfully","data":[{"permissionId":1,"permissionName":"canViewPermissionGroups","permissionState":true},{"permissionId":2,"permissionName":"canEditPermissionGroups","permissionState":true},{"permissionId":3,"permissionName":"canViewPermissions","permissionState":true},{"permissionId":4,"permissionName":"canEditPermissions","permissionState":true}],"timestamp":""}`
+}
+
+func GetPermission1Response() string {
+	return `{"message":"Permission found successfully","data":{"permissionId":1,"permissionName":"canViewPermissionGroups","permissionState":true},"timestamp":""}`
+}
+
+func GetPermissionGroupReponse() string {
+	return `{"message":"Permission groups retreived successfully","data":[{"groupId":1,"groupName":"admin","groupDescription":"Has all permissions","groupPermissions":[{"permissionId":1,"permissionName":"canViewPermissionGroups","permissionState":true},{"permissionId":2,"permissionName":"canEditPermissionGroups","permissionState":true},{"permissionId":3,"permissionName":"canViewPermissions","permissionState":true},{"permissionId":4,"permissionName":"canEditPermissions","permissionState":true}],"groupMembers":[0,1,2]},{"groupId":2,"groupName":"editor","groupDescription":"Can edit and view most data","groupPermissions":[{"permissionId":1,"permissionName":"canViewPermissionGroups","permissionState":true},{"permissionId":2,"permissionName":"canEditPermissionGroups","permissionState":true}],"groupMembers":[3]},{"groupId":3,"groupName":"viewer","groupDescription":"Can only view","groupPermissions":[{"permissionId":1,"permissionName":"canViewPermissionGroups","permissionState":true}],"groupMembers":[-1,4,5]}],"timestamp":""}`
+}
+
+func GetPermissionGroup1Respnse() string {
+	return `{"message":"Permission group retreived successfully","data":{"groupId":1,"groupName":"admin","groupDescription":"Has all permissions","groupPermissions":[{"permissionId":1,"permissionName":"canViewPermissionGroups","permissionState":true},{"permissionId":2,"permissionName":"canEditPermissionGroups","permissionState":true},{"permissionId":3,"permissionName":"canViewPermissions","permissionState":true},{"permissionId":4,"permissionName":"canEditPermissions","permissionState":true}],"groupMembers":[0,1,2]},"timestamp":""}`
+}
 
 func RemoveTimestamp(msg string) string {
 	var resp middleware.MessageFormat
@@ -48,11 +67,41 @@ func PermissionGroupEqv(t *testing.T, a *models.PermissionGroup, b *models.Permi
 	return isEqual
 }
 
+func RequestWithSession(t *testing.T, sessionType string, method string, url string, body io.Reader) (*http.Request, error) {
+	req, err := http.NewRequest(method, url, body)
+	if err != nil {
+		return req, err
+	}
+
+	if sessionType == "admin" {
+		SetSessioKey(t, req, 1, 2, 3, 4)
+	} else if sessionType == "viewer" {
+		SetSessioKey(t, req, 1, 3)
+	} else if sessionType == "guest" {
+		SetSessioKey(t, req)
+	} else if sessionType == "nil" {
+		//do nothing
+	} else {
+		return req, fmt.Errorf("Unknown session type provided!")
+	}
+
+	return req, nil
+}
+
 //PermissionGroups logic
 
 func TestHealthcheck(t *testing.T) {
 	router := api.NewRouter(api.WithDB(database.NewMockDB()))
-	req, _ := http.NewRequest(http.MethodGet, "/permissions/healthcheck", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permissions/healthcheck", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+}
+
+func TestHealthcheckNoAuth(t *testing.T) {
+	router := api.NewRouter(api.WithDB(database.NewMockDB()))
+	req, _ := RequestWithSession(t, "nil", http.MethodGet, "/permissions/healthcheck", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -61,17 +110,45 @@ func TestHealthcheck(t *testing.T) {
 
 func TestGetPermissionGroups(t *testing.T) {
 	router := api.NewRouter(api.WithDB(database.NewMockDB()))
-	req, _ := http.NewRequest(http.MethodGet, "/permission-groups", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permission-groups", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.JSONEq(t, RemoveTimestamp(w.Body.String()), `{"message":"Permission groups retreived successfully","data":[{"groupId":1,"groupName":"admin","groupDescription":"Has all permissions","groupPermissions":[{"permissionId":0,"permissionName":"canEditAll","permissionState":true},{"permissionId":1,"permissionName":"canViewAll","permissionState":true},{"permissionId":2,"permissionName":"canDelete","permissionState":true},{"permissionId":3,"permissionName":"canCreate","permissionState":true}],"groupMembers":[0,1,2]},{"groupId":2,"groupName":"editor","groupDescription":"Can edit and view","groupPermissions":[{"permissionId":0,"permissionName":"canEditAll","permissionState":true},{"permissionId":1,"permissionName":"canViewAll","permissionState":true}],"groupMembers":[3]},{"groupId":3,"groupName":"viewer","groupDescription":"Can only view","groupPermissions":[{"permissionId":1,"permissionName":"canViewAll","permissionState":true}],"groupMembers":[-1,4,5]}],"timestamp":""}`)
+	assert.JSONEq(t, RemoveTimestamp(w.Body.String()), GetPermissionGroupReponse())
+}
+
+func TestGetPermissionGroupsNoAuth(t *testing.T) {
+	router := api.NewRouter(api.WithDB(database.NewMockDB()))
+	req, _ := RequestWithSession(t, "nil", http.MethodGet, "/permission-groups", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
+}
+
+func TestGetPermissionGroupsGuestAuth(t *testing.T) {
+	router := api.NewRouter(api.WithDB(database.NewMockDB()))
+	req, _ := RequestWithSession(t, "guest", http.MethodGet, "/permission-groups", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
+}
+
+func TestGetPermissionGroupsViewer(t *testing.T) {
+	router := api.NewRouter(api.WithDB(database.NewMockDB()))
+	req, _ := RequestWithSession(t, "viewer", http.MethodGet, "/permission-groups", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.JSONEq(t, RemoveTimestamp(w.Body.String()), GetPermissionGroupReponse())
 }
 
 func TestGetPermissionGroupsBadDb(t *testing.T) {
 	router := api.NewRouter(api.WithDB(nil))
-	req, _ := http.NewRequest(http.MethodGet, "/permission-groups", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permission-groups", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -80,17 +157,45 @@ func TestGetPermissionGroupsBadDb(t *testing.T) {
 
 func TestGetPermissionGroupsIdGood(t *testing.T) {
 	router := api.NewRouter(api.WithDB(database.NewMockDB()))
-	req, _ := http.NewRequest(http.MethodGet, "/permission-groups/1", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permission-groups/1", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.JSONEq(t, RemoveTimestamp(w.Body.String()), `{"message":"Permission group retreived successfully","data":{"groupId":1,"groupName":"admin","groupDescription":"Has all permissions","groupPermissions":[{"permissionId":0,"permissionName":"canEditAll","permissionState":true},{"permissionId":1,"permissionName":"canViewAll","permissionState":true},{"permissionId":2,"permissionName":"canDelete","permissionState":true},{"permissionId":3,"permissionName":"canCreate","permissionState":true}],"groupMembers":[0,1,2]},"timestamp":""}`)
+	assert.JSONEq(t, RemoveTimestamp(w.Body.String()), GetPermissionGroup1Respnse())
+}
+
+func TestGetPermissionGroupsIdNoAuth(t *testing.T) {
+	router := api.NewRouter(api.WithDB(database.NewMockDB()))
+	req, _ := RequestWithSession(t, "nil", http.MethodGet, "/permission-groups/1", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
+}
+
+func TestGetPermissionGroupsIdGuest(t *testing.T) {
+	router := api.NewRouter(api.WithDB(database.NewMockDB()))
+	req, _ := RequestWithSession(t, "guest", http.MethodGet, "/permission-groups/1", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
+}
+
+func TestGetPermissionGroupsIdViewer(t *testing.T) {
+	router := api.NewRouter(api.WithDB(database.NewMockDB()))
+	req, _ := RequestWithSession(t, "viewer", http.MethodGet, "/permission-groups/1", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.JSONEq(t, RemoveTimestamp(w.Body.String()), GetPermissionGroup1Respnse())
 }
 
 func TestGetPermissionGroupsIdBadDb(t *testing.T) {
 	router := api.NewRouter(api.WithDB(nil))
-	req, _ := http.NewRequest(http.MethodGet, "/permission-groups/1", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permission-groups/1", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -99,7 +204,7 @@ func TestGetPermissionGroupsIdBadDb(t *testing.T) {
 
 func TestGetPermissionGroupsIdNotFound(t *testing.T) {
 	router := api.NewRouter(api.WithDB(database.NewMockDB()))
-	req, _ := http.NewRequest(http.MethodGet, "/permission-groups/100", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permission-groups/100", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -108,7 +213,7 @@ func TestGetPermissionGroupsIdNotFound(t *testing.T) {
 
 func TestGetPermissionGroupsIdBadRequest(t *testing.T) {
 	router := api.NewRouter(api.WithDB(database.NewMockDB()))
-	req, _ := http.NewRequest(http.MethodGet, "/permission-groups/cat", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permission-groups/cat", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -117,7 +222,7 @@ func TestGetPermissionGroupsIdBadRequest(t *testing.T) {
 
 func TestPostPermissionGroupsBadDb(t *testing.T) {
 	router := api.NewRouter(api.WithDB(nil))
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -126,7 +231,7 @@ func TestPostPermissionGroupsBadDb(t *testing.T) {
 
 func TestPostPermissionGroupsBadReq(t *testing.T) {
 	router := api.NewRouter(api.WithDB(database.NewMockDB()))
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -138,10 +243,10 @@ func TestPostPermissionGroupsBadReqOkSuper(t *testing.T) {
 		Name:        "cats",
 		Description: "we are cats",
 		Permissions: []*models.PermissionId{
-			{ID: 0, State: true},
 			{ID: 1, State: true},
 			{ID: 2, State: true},
 			{ID: 3, State: true},
+			{ID: 4, State: true},
 		},
 		Members: []int{1, 2, 3},
 		// MembersRemove: []int{4},
@@ -149,7 +254,7 @@ func TestPostPermissionGroupsBadReqOkSuper(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -160,13 +265,82 @@ func TestPostPermissionGroupsBadReqOkSuper(t *testing.T) {
 		Name:        "cats",
 		Description: "we are cats",
 		Permissions: []*models.Permission{
-			{ID: 0, Name: "canEditAll", Value: true},
-			{ID: 1, Name: "canViewAll", Value: true},
-			{ID: 2, Name: "canDelete", Value: true},
-			{ID: 3, Name: "canCreate", Value: true},
+			{ID: 1, Name: constants.CanViewPermissionGroups, Value: true},
+			{ID: 2, Name: constants.CanEditPermissionGroups, Value: true},
+			{ID: 3, Name: constants.CanViewPermissions, Value: true},
+			{ID: 4, Name: constants.CanEditPermissions, Value: true},
 		},
 		Members: []int{1, 2, 3},
 	}, group)
+}
+
+func TestPostPermissionGroupsBadReqNoAuth(t *testing.T) {
+	newGroup := models.PermissionGroupRequest{
+		Name:        "cats",
+		Description: "we are cats",
+		Permissions: []*models.PermissionId{
+			{ID: 1, State: true},
+			{ID: 2, State: true},
+			{ID: 3, State: true},
+			{ID: 4, State: true},
+		},
+		Members: []int{1, 2, 3},
+		// MembersRemove: []int{4},
+	}
+	db := database.NewMockDB()
+	router := api.NewRouter(api.WithDB(db))
+	reqBody, _ := json.Marshal(newGroup)
+	req, _ := RequestWithSession(t, "nil", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
+}
+
+func TestPostPermissionGroupsBadReqGuest(t *testing.T) {
+	newGroup := models.PermissionGroupRequest{
+		Name:        "cats",
+		Description: "we are cats",
+		Permissions: []*models.PermissionId{
+			{ID: 1, State: true},
+			{ID: 2, State: true},
+			{ID: 3, State: true},
+			{ID: 4, State: true},
+		},
+		Members: []int{1, 2, 3},
+		// MembersRemove: []int{4},
+	}
+	db := database.NewMockDB()
+	router := api.NewRouter(api.WithDB(db))
+	reqBody, _ := json.Marshal(newGroup)
+	req, _ := RequestWithSession(t, "guest", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
+}
+
+func TestPostPermissionGroupsBadReqViewer(t *testing.T) {
+	newGroup := models.PermissionGroupRequest{
+		Name:        "cats",
+		Description: "we are cats",
+		Permissions: []*models.PermissionId{
+			{ID: 1, State: true},
+			{ID: 2, State: true},
+			{ID: 3, State: true},
+			{ID: 4, State: true},
+		},
+		Members: []int{1, 2, 3},
+		// MembersRemove: []int{4},
+	}
+	db := database.NewMockDB()
+	router := api.NewRouter(api.WithDB(db))
+	reqBody, _ := json.Marshal(newGroup)
+	req, _ := RequestWithSession(t, "viewer", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
 }
 
 func TestPostPermissionGroupsBadReqOkFalsePerms(t *testing.T) {
@@ -174,17 +348,17 @@ func TestPostPermissionGroupsBadReqOkFalsePerms(t *testing.T) {
 		Name:        "cats",
 		Description: "we are cats",
 		Permissions: []*models.PermissionId{
-			{ID: 0, State: false},
 			{ID: 1, State: false},
 			{ID: 2, State: false},
 			{ID: 3, State: false},
+			{ID: 4, State: false},
 		},
 		Members: []int{1, 2, 3},
 	}
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -195,10 +369,10 @@ func TestPostPermissionGroupsBadReqOkFalsePerms(t *testing.T) {
 		Name:        "cats",
 		Description: "we are cats",
 		Permissions: []*models.Permission{
-			{ID: 0, Name: "canEditAll", Value: false},
-			{ID: 1, Name: "canViewAll", Value: false},
-			{ID: 2, Name: "canDelete", Value: false},
-			{ID: 3, Name: "canCreate", Value: false},
+			{ID: 1, Name: constants.CanViewPermissionGroups, Value: false},
+			{ID: 2, Name: constants.CanEditPermissionGroups, Value: false},
+			{ID: 3, Name: constants.CanViewPermissions, Value: false},
+			{ID: 4, Name: constants.CanEditPermissions, Value: false},
 		},
 		Members: []int{1, 2, 3},
 	}, group)
@@ -214,7 +388,7 @@ func TestPostPermissionGroupsBadReqOkWeakNoPerms(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -239,7 +413,7 @@ func TestPostPermissionGroupsBadReqOkWeakNilPerms(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -259,17 +433,17 @@ func TestPostPermissionGroupsBadReqOkWeakNoMembers(t *testing.T) {
 		Name:        "cats",
 		Description: "we are cats",
 		Permissions: []*models.PermissionId{
-			{ID: 0, State: false},
 			{ID: 1, State: false},
 			{ID: 2, State: false},
 			{ID: 3, State: false},
+			{ID: 4, State: false},
 		},
 		Members: []int{},
 	}
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -280,10 +454,10 @@ func TestPostPermissionGroupsBadReqOkWeakNoMembers(t *testing.T) {
 		Name:        "cats",
 		Description: "we are cats",
 		Permissions: []*models.Permission{
-			{ID: 0, Name: "canEditAll", Value: false},
-			{ID: 1, Name: "canViewAll", Value: false},
-			{ID: 2, Name: "canDelete", Value: false},
-			{ID: 3, Name: "canCreate", Value: false},
+			{ID: 1, Name: constants.CanViewPermissionGroups, Value: false},
+			{ID: 2, Name: constants.CanEditPermissionGroups, Value: false},
+			{ID: 3, Name: constants.CanViewPermissions, Value: false},
+			{ID: 4, Name: constants.CanEditPermissions, Value: false},
 		},
 		Members: []int{},
 	}, group)
@@ -293,10 +467,10 @@ func TestPostPermissionGroupsBadReqBadNoName(t *testing.T) {
 	newGroup := models.PermissionGroupRequest{
 		Description: "we are cats",
 		Permissions: []*models.PermissionId{
-			{ID: 0, State: true},
 			{ID: 1, State: true},
 			{ID: 2, State: true},
 			{ID: 3, State: true},
+			{ID: 4, State: true},
 		},
 		Members: []int{1, 2, 3},
 		// MembersRemove: []int{4},
@@ -304,7 +478,7 @@ func TestPostPermissionGroupsBadReqBadNoName(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -315,10 +489,10 @@ func TestPostPermissionGroupsOkNoDesc(t *testing.T) {
 	newGroup := models.PermissionGroupRequest{
 		Name: "cats",
 		Permissions: []*models.PermissionId{
-			{ID: 0, State: true},
 			{ID: 1, State: true},
 			{ID: 2, State: true},
 			{ID: 3, State: true},
+			{ID: 4, State: true},
 		},
 		Members: []int{1, 2, 3},
 		// MembersRemove: []int{4},
@@ -326,7 +500,7 @@ func TestPostPermissionGroupsOkNoDesc(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -336,10 +510,10 @@ func TestPostPermissionGroupsOkNoDesc(t *testing.T) {
 		ID:   4,
 		Name: "cats",
 		Permissions: []*models.Permission{
-			{ID: 0, Name: "canEditAll", Value: true},
-			{ID: 1, Name: "canViewAll", Value: true},
-			{ID: 2, Name: "canDelete", Value: true},
-			{ID: 3, Name: "canCreate", Value: true},
+			{ID: 1, Name: constants.CanViewPermissionGroups, Value: true},
+			{ID: 2, Name: constants.CanEditPermissionGroups, Value: true},
+			{ID: 3, Name: constants.CanViewPermissions, Value: true},
+			{ID: 4, Name: constants.CanEditPermissions, Value: true},
 		},
 		Members: []int{1, 2, 3},
 	}, group)
@@ -350,10 +524,10 @@ func TestPostPermissionGroupsBadReqBadHasRemove(t *testing.T) {
 		Name:        "cats",
 		Description: "we are cats",
 		Permissions: []*models.PermissionId{
-			{ID: 0, State: true},
 			{ID: 1, State: true},
 			{ID: 2, State: true},
 			{ID: 3, State: true},
+			{ID: 4, State: true},
 		},
 		Members:       []int{1, 2, 3},
 		MembersRemove: []int{4},
@@ -361,7 +535,7 @@ func TestPostPermissionGroupsBadReqBadHasRemove(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -373,10 +547,10 @@ func TestPostPermissionGroupsOkHasRemove(t *testing.T) {
 		Name:        "cats",
 		Description: "we are cats",
 		Permissions: []*models.PermissionId{
-			{ID: 0, State: true},
 			{ID: 1, State: true},
 			{ID: 2, State: true},
 			{ID: 3, State: true},
+			{ID: 4, State: true},
 		},
 		Members:       []int{1, 2, 3},
 		MembersRemove: []int{},
@@ -384,7 +558,7 @@ func TestPostPermissionGroupsOkHasRemove(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -395,10 +569,10 @@ func TestPostPermissionGroupsOkHasRemove(t *testing.T) {
 		Name:        "cats",
 		Description: "we are cats",
 		Permissions: []*models.Permission{
-			{ID: 0, Name: "canEditAll", Value: true},
-			{ID: 1, Name: "canViewAll", Value: true},
-			{ID: 2, Name: "canDelete", Value: true},
-			{ID: 3, Name: "canCreate", Value: true},
+			{ID: 1, Name: constants.CanViewPermissionGroups, Value: true},
+			{ID: 2, Name: constants.CanEditPermissionGroups, Value: true},
+			{ID: 3, Name: constants.CanViewPermissions, Value: true},
+			{ID: 4, Name: constants.CanEditPermissions, Value: true},
 		},
 		Members: []int{1, 2, 3},
 	}, group)
@@ -419,7 +593,7 @@ func TestPostPermissionGroupsBadReqInvalidPermission(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -431,10 +605,10 @@ func TestPatchPermissionGroupsOkFull(t *testing.T) {
 		Name:        "cats",
 		Description: "we are cats",
 		Permissions: []*models.PermissionId{
-			{ID: 0, State: false},
 			{ID: 1, State: false},
 			{ID: 2, State: false},
 			{ID: 3, State: false},
+			{ID: 4, State: false},
 		},
 		Members:       []int{2, 3},
 		MembersRemove: []int{0, 1},
@@ -442,7 +616,7 @@ func TestPatchPermissionGroupsOkFull(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -453,10 +627,10 @@ func TestPatchPermissionGroupsOkFull(t *testing.T) {
 		Name:        "cats",
 		Description: "we are cats",
 		Permissions: []*models.Permission{
-			{ID: 0, Name: "canEditAll", Value: false},
-			{ID: 1, Name: "canViewAll", Value: false},
-			{ID: 2, Name: "canDelete", Value: false},
-			{ID: 3, Name: "canCreate", Value: false},
+			{ID: 1, Name: constants.CanViewPermissionGroups, Value: false},
+			{ID: 2, Name: constants.CanEditPermissionGroups, Value: false},
+			{ID: 3, Name: constants.CanViewPermissions, Value: false},
+			{ID: 4, Name: constants.CanEditPermissions, Value: false},
 		},
 		Members: []int{2, 3},
 	}, group)
@@ -468,7 +642,7 @@ func TestPatchPermissionGroupsOkNone(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -479,13 +653,52 @@ func TestPatchPermissionGroupsOkNone(t *testing.T) {
 		Name:        "admin",
 		Description: "Has all permissions",
 		Permissions: []*models.Permission{
-			{ID: 0, Name: "canEditAll", Value: true},
-			{ID: 1, Name: "canViewAll", Value: true},
-			{ID: 2, Name: "canDelete", Value: true},
-			{ID: 3, Name: "canCreate", Value: true},
+			{ID: 1, Name: constants.CanViewPermissionGroups, Value: true},
+			{ID: 2, Name: constants.CanEditPermissionGroups, Value: true},
+			{ID: 3, Name: constants.CanViewPermissions, Value: true},
+			{ID: 4, Name: constants.CanEditPermissions, Value: true},
 		},
 		Members: []int{0, 1, 2},
 	}, group)
+}
+
+func TestPatchPermissionGroupsNoAuth(t *testing.T) {
+	newGroup := models.PermissionGroupRequest{}
+
+	db := database.NewMockDB()
+	router := api.NewRouter(api.WithDB(db))
+	reqBody, _ := json.Marshal(newGroup)
+	req, _ := RequestWithSession(t, "nil", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
+}
+
+func TestPatchPermissionGroupsGuest(t *testing.T) {
+	newGroup := models.PermissionGroupRequest{}
+
+	db := database.NewMockDB()
+	router := api.NewRouter(api.WithDB(db))
+	reqBody, _ := json.Marshal(newGroup)
+	req, _ := RequestWithSession(t, "guest", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
+}
+
+func TestPatchPermissionGroupsViewer(t *testing.T) {
+	newGroup := models.PermissionGroupRequest{}
+
+	db := database.NewMockDB()
+	router := api.NewRouter(api.WithDB(db))
+	reqBody, _ := json.Marshal(newGroup)
+	req, _ := RequestWithSession(t, "viewer", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
 }
 
 func TestPatchPermissionGroupsOkName(t *testing.T) {
@@ -496,7 +709,7 @@ func TestPatchPermissionGroupsOkName(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -507,10 +720,10 @@ func TestPatchPermissionGroupsOkName(t *testing.T) {
 		Name:        "cats",
 		Description: "Has all permissions",
 		Permissions: []*models.Permission{
-			{ID: 0, Name: "canEditAll", Value: true},
-			{ID: 1, Name: "canViewAll", Value: true},
-			{ID: 2, Name: "canDelete", Value: true},
-			{ID: 3, Name: "canCreate", Value: true},
+			{ID: 1, Name: constants.CanViewPermissionGroups, Value: true},
+			{ID: 2, Name: constants.CanEditPermissionGroups, Value: true},
+			{ID: 3, Name: constants.CanViewPermissions, Value: true},
+			{ID: 4, Name: constants.CanEditPermissions, Value: true},
 		},
 		Members: []int{0, 1, 2},
 	}, group)
@@ -524,7 +737,7 @@ func TestPatchPermissionGroupsBadName(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -535,10 +748,10 @@ func TestPatchPermissionGroupsBadName(t *testing.T) {
 		Name:        "admin",
 		Description: "Has all permissions",
 		Permissions: []*models.Permission{
-			{ID: 0, Name: "canEditAll", Value: true},
-			{ID: 1, Name: "canViewAll", Value: true},
-			{ID: 2, Name: "canDelete", Value: true},
-			{ID: 3, Name: "canCreate", Value: true},
+			{ID: 1, Name: constants.CanViewPermissionGroups, Value: true},
+			{ID: 2, Name: constants.CanEditPermissionGroups, Value: true},
+			{ID: 3, Name: constants.CanViewPermissions, Value: true},
+			{ID: 4, Name: constants.CanEditPermissions, Value: true},
 		},
 		Members: []int{0, 1, 2},
 	}, group)
@@ -552,7 +765,7 @@ func TestPatchPermissionGroupsOkDesc(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -563,12 +776,11 @@ func TestPatchPermissionGroupsOkDesc(t *testing.T) {
 		Name:        "admin",
 		Description: "we are cats",
 		Permissions: []*models.Permission{
-			{ID: 0, Name: "canEditAll", Value: true},
-			{ID: 1, Name: "canViewAll", Value: true},
-			{ID: 2, Name: "canDelete", Value: true},
-			{ID: 3, Name: "canCreate", Value: true},
-		},
-		Members: []int{0, 1, 2},
+			{ID: 1, Name: constants.CanViewPermissionGroups, Value: true},
+			{ID: 2, Name: constants.CanEditPermissionGroups, Value: true},
+			{ID: 3, Name: constants.CanViewPermissions, Value: true},
+			{ID: 4, Name: constants.CanEditPermissions, Value: true},
+		}, Members: []int{0, 1, 2},
 	}, group)
 }
 
@@ -580,7 +792,7 @@ func TestPatchPermissionGroupsBadDesc(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -591,10 +803,10 @@ func TestPatchPermissionGroupsBadDesc(t *testing.T) {
 		Name:        "admin",
 		Description: "Has all permissions",
 		Permissions: []*models.Permission{
-			{ID: 0, Name: "canEditAll", Value: true},
-			{ID: 1, Name: "canViewAll", Value: true},
-			{ID: 2, Name: "canDelete", Value: true},
-			{ID: 3, Name: "canCreate", Value: true},
+			{ID: 1, Name: constants.CanViewPermissionGroups, Value: true},
+			{ID: 2, Name: constants.CanEditPermissionGroups, Value: true},
+			{ID: 3, Name: constants.CanViewPermissions, Value: true},
+			{ID: 4, Name: constants.CanEditPermissions, Value: true},
 		},
 		Members: []int{0, 1, 2},
 	}, group)
@@ -603,14 +815,14 @@ func TestPatchPermissionGroupsBadDesc(t *testing.T) {
 func TestPatchPermissionGroupsOkPermission(t *testing.T) {
 	newGroup := models.PermissionGroupRequest{
 		Permissions: []*models.PermissionId{
-			{ID: 0, State: false},
+			{ID: 1, State: false},
 		},
 	}
 
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -621,10 +833,10 @@ func TestPatchPermissionGroupsOkPermission(t *testing.T) {
 		Name:        "admin",
 		Description: "Has all permissions",
 		Permissions: []*models.Permission{
-			{ID: 0, Name: "canEditAll", Value: false},
-			{ID: 1, Name: "canViewAll", Value: true},
-			{ID: 2, Name: "canDelete", Value: true},
-			{ID: 3, Name: "canCreate", Value: true},
+			{ID: 1, Name: constants.CanViewPermissionGroups, Value: false},
+			{ID: 2, Name: constants.CanEditPermissionGroups, Value: true},
+			{ID: 3, Name: constants.CanViewPermissions, Value: true},
+			{ID: 4, Name: constants.CanEditPermissions, Value: true},
 		},
 		Members: []int{0, 1, 2},
 	}, group)
@@ -638,7 +850,7 @@ func TestPatchPermissionGroupsBadNoPerm(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -649,10 +861,10 @@ func TestPatchPermissionGroupsBadNoPerm(t *testing.T) {
 		Name:        "admin",
 		Description: "Has all permissions",
 		Permissions: []*models.Permission{
-			{ID: 0, Name: "canEditAll", Value: true},
-			{ID: 1, Name: "canViewAll", Value: true},
-			{ID: 2, Name: "canDelete", Value: true},
-			{ID: 3, Name: "canCreate", Value: true},
+			{ID: 1, Name: constants.CanViewPermissionGroups, Value: true},
+			{ID: 2, Name: constants.CanEditPermissionGroups, Value: true},
+			{ID: 3, Name: constants.CanViewPermissions, Value: true},
+			{ID: 4, Name: constants.CanEditPermissions, Value: true},
 		},
 		Members: []int{0, 1, 2},
 	}, group)
@@ -666,7 +878,7 @@ func TestPatchPermissionGroupsBadNilPerm(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -677,10 +889,10 @@ func TestPatchPermissionGroupsBadNilPerm(t *testing.T) {
 		Name:        "admin",
 		Description: "Has all permissions",
 		Permissions: []*models.Permission{
-			{ID: 0, Name: "canEditAll", Value: true},
-			{ID: 1, Name: "canViewAll", Value: true},
-			{ID: 2, Name: "canDelete", Value: true},
-			{ID: 3, Name: "canCreate", Value: true},
+			{ID: 1, Name: constants.CanViewPermissionGroups, Value: true},
+			{ID: 2, Name: constants.CanEditPermissionGroups, Value: true},
+			{ID: 3, Name: constants.CanViewPermissions, Value: true},
+			{ID: 4, Name: constants.CanEditPermissions, Value: true},
 		},
 		Members: []int{0, 1, 2},
 	}, group)
@@ -696,7 +908,7 @@ func TestPatchPermissionGroupsBadPermNotFound(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -707,10 +919,10 @@ func TestPatchPermissionGroupsBadPermNotFound(t *testing.T) {
 		Name:        "admin",
 		Description: "Has all permissions",
 		Permissions: []*models.Permission{
-			{ID: 0, Name: "canEditAll", Value: true},
-			{ID: 1, Name: "canViewAll", Value: true},
-			{ID: 2, Name: "canDelete", Value: true},
-			{ID: 3, Name: "canCreate", Value: true},
+			{ID: 1, Name: constants.CanViewPermissionGroups, Value: true},
+			{ID: 2, Name: constants.CanEditPermissionGroups, Value: true},
+			{ID: 3, Name: constants.CanViewPermissions, Value: true},
+			{ID: 4, Name: constants.CanEditPermissions, Value: true},
 		},
 		Members: []int{0, 1, 2},
 	}, group)
@@ -724,7 +936,7 @@ func TestPatchPermissionGroupsOkAddMember(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -735,10 +947,10 @@ func TestPatchPermissionGroupsOkAddMember(t *testing.T) {
 		Name:        "admin",
 		Description: "Has all permissions",
 		Permissions: []*models.Permission{
-			{ID: 0, Name: "canEditAll", Value: true},
-			{ID: 1, Name: "canViewAll", Value: true},
-			{ID: 2, Name: "canDelete", Value: true},
-			{ID: 3, Name: "canCreate", Value: true},
+			{ID: 1, Name: constants.CanViewPermissionGroups, Value: true},
+			{ID: 2, Name: constants.CanEditPermissionGroups, Value: true},
+			{ID: 3, Name: constants.CanViewPermissions, Value: true},
+			{ID: 4, Name: constants.CanEditPermissions, Value: true},
 		},
 		Members: []int{0, 1, 2, 5},
 	}, group)
@@ -752,7 +964,7 @@ func TestPatchPermissionGroupsRemoveMember(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -763,10 +975,10 @@ func TestPatchPermissionGroupsRemoveMember(t *testing.T) {
 		Name:        "admin",
 		Description: "Has all permissions",
 		Permissions: []*models.Permission{
-			{ID: 0, Name: "canEditAll", Value: true},
-			{ID: 1, Name: "canViewAll", Value: true},
-			{ID: 2, Name: "canDelete", Value: true},
-			{ID: 3, Name: "canCreate", Value: true},
+			{ID: 1, Name: constants.CanViewPermissionGroups, Value: true},
+			{ID: 2, Name: constants.CanEditPermissionGroups, Value: true},
+			{ID: 3, Name: constants.CanViewPermissions, Value: true},
+			{ID: 4, Name: constants.CanEditPermissions, Value: true},
 		},
 		Members: []int{0, 2},
 	}, group)
@@ -780,7 +992,7 @@ func TestPatchPermissionGroupsRemoveMemberNotFound(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -791,10 +1003,10 @@ func TestPatchPermissionGroupsRemoveMemberNotFound(t *testing.T) {
 		Name:        "admin",
 		Description: "Has all permissions",
 		Permissions: []*models.Permission{
-			{ID: 0, Name: "canEditAll", Value: true},
-			{ID: 1, Name: "canViewAll", Value: true},
-			{ID: 2, Name: "canDelete", Value: true},
-			{ID: 3, Name: "canCreate", Value: true},
+			{ID: 1, Name: constants.CanViewPermissionGroups, Value: true},
+			{ID: 2, Name: constants.CanEditPermissionGroups, Value: true},
+			{ID: 3, Name: constants.CanViewPermissions, Value: true},
+			{ID: 4, Name: constants.CanEditPermissions, Value: true},
 		},
 		Members: []int{0, 1, 2},
 	}, group)

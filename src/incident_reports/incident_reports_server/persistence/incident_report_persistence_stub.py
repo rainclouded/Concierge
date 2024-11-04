@@ -54,6 +54,8 @@ class IncidentReportPersistenceStub(IIncidentReportPersistence):
     def get_incident_reports(self, severities=None, statuses=None, beforeDate=None, afterDate=None) -> List[IncidentReport]:
         filtered_reports = self._incident_reports
         
+        #get filter parameters if any
+        #then get incident reports that match the requirements of the query
         if severities:
             filtered_reports = [report for report in filtered_reports if report.severity in severities]
 

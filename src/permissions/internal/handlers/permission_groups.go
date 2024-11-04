@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"concierge/permissions/internal/constants"
 	"concierge/permissions/internal/middleware"
 	"concierge/permissions/internal/models"
 	"fmt"
@@ -13,6 +14,17 @@ func GetPermissionGroups(ctx *gin.Context) {
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
+		return
+	}
+
+	jwt, ok := middleware.GetJWTContext(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
+		return
+	}
+
+	if !jwt.HasPermissionByName(ctx, constants.CanViewPermissionGroups) {
+		ctx.JSON(http.StatusUnauthorized, middleware.Format("Missing permission to view permission groups", nil))
 		return
 	}
 
@@ -29,6 +41,17 @@ func GetPermissionGroupById(ctx *gin.Context) {
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
+		return
+	}
+
+	jwt, ok := middleware.GetJWTContext(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
+		return
+	}
+
+	if !jwt.HasPermissionByName(ctx, constants.CanViewPermissionGroups) {
+		ctx.JSON(http.StatusUnauthorized, middleware.Format("Missing permission to view permission groups", nil))
 		return
 	}
 
@@ -52,6 +75,17 @@ func PostPermissionGroups(ctx *gin.Context) {
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
+		return
+	}
+
+	jwt, ok := middleware.GetJWTContext(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
+		return
+	}
+
+	if !jwt.HasPermissionByName(ctx, constants.CanEditPermissionGroups) {
+		ctx.JSON(http.StatusUnauthorized, middleware.Format("Missing permission to edit permission groups", nil))
 		return
 	}
 
@@ -84,6 +118,17 @@ func PatchPermissionGroups(ctx *gin.Context) {
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
+		return
+	}
+
+	jwt, ok := middleware.GetJWTContext(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, middleware.Format("Internal server error", nil))
+		return
+	}
+
+	if !jwt.HasPermissionByName(ctx, constants.CanEditPermissionGroups) {
+		ctx.JSON(http.StatusUnauthorized, middleware.Format("Missing permission to edit permission groups", nil))
 		return
 	}
 

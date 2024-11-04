@@ -22,6 +22,11 @@ Microservice to access and manage hotel amenities.
 3. Go to `src/amenities/amenities_db_integration_test`
 4. Run command: `dotnet test`
 
+## Required Permissions
+ - canViewAmenities
+ - canEditAmenities
+ - canDeleteAmenities
+
 ## Model
 
 ### Id
@@ -56,6 +61,10 @@ update amenity with changed information
 delete specified amenity from database
 
 ## Environment Variables
+* `PERMISSIONS_ENDPOINT`
+   * Used to identify the permissions endpoint. Eg, "http://permissions:8080"
+* `SESSIONS_ENDPOINT`
+   * Used to identify the Sessions endpoint. Eg, "http://sessions:8080"
 * `DB_IMPLEMENTATION`
 	* used to determine whether a stub or real implementation of a data layer is returned
 	* Value: `POSTGRES`, Attempts to connect to a POSTGRESQL database

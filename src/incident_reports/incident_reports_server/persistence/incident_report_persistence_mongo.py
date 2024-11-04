@@ -6,12 +6,13 @@ from incident_reports_server.models.models import IncidentReport, Severity, Stat
 from incident_reports_server.persistence.i_incident_report_persistence import IIncidentReportPersistence
 
 class IncidentReportPersistenceMongo(IIncidentReportPersistence):
-    def __init__(self, db_connection_string: str, db_name: str):
+    def __init__(self, db_connection_string: str):
         self.db_client = pymongo.MongoClient(db_connection_string)
 
-        self.concierge_db = self.db_client[db_name]
+        self.concierge_db = self.db_client["concierge"]
         self.ir_collection = self.concierge_db["incident_reports"]
         
+        #initialize db if empty
         if self.ir_collection.count_documents({}) == 0:
             self.create_incident_report(
                 IncidentReport(
@@ -57,6 +58,7 @@ class IncidentReportPersistenceMongo(IIncidentReportPersistence):
     def get_incident_reports(self, severities=None, statuses=None, beforeDate=None, afterDate=None) -> List[IncidentReport]:
         query = {}
         
+        #get filter parameters if any
         if severities:
             query["severity"] = {"$in": [severity.value for severity in severities]}
 
@@ -70,6 +72,7 @@ class IncidentReportPersistenceMongo(IIncidentReportPersistence):
             query.setdefault("created_at", {})
             query["created_at"]["$gte"] = afterDate
 
+        #then get incident reports that match the requirements of the query
         incident_reports = list(self.ir_collection.find(query))
 
         return [IncidentReport.from_dict(report) for report in incident_reports]

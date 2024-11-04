@@ -24,17 +24,17 @@ func TestMariaMariaGetPermissionsOk(t *testing.T) {
 	}
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
-	req, _ := http.NewRequest(http.MethodGet, "/permission-groups", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permission-groups", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.JSONEq(t, RemoveTimestamp(w.Body.String()), `{"message":"Permission groups retreived successfully","data":[{"groupId":1,"groupName":"admin","groupDescription":"Has all permissions","groupPermissions":[{"permissionId":1,"permissionName":"canViewAll","permissionState":false},{"permissionId":2,"permissionName":"canEditAll","permissionState":false},{"permissionId":3,"permissionName":"canCreate","permissionState":false},{"permissionId":4,"permissionName":"canDelete","permissionState":false}],"groupMembers":[0,1,2]},{"groupId":2,"groupName":"editor","groupDescription":"Can edit and view","groupPermissions":[{"permissionId":1,"permissionName":"canViewAll","permissionState":false},{"permissionId":2,"permissionName":"canEditAll","permissionState":false}],"groupMembers":[0,1]},{"groupId":3,"groupName":"viewer","groupDescription":"Can only view","groupPermissions":[{"permissionId":1,"permissionName":"canViewAll","permissionState":false}],"groupMembers":[-1,4,5]}],"timestamp":""}`)
+	assert.JSONEq(t, RemoveTimestamp(w.Body.String()), `{"message":"Permission groups retreived successfully","data":[{"groupId":1,"groupName":"admin","groupDescription":"Has all permissions","groupPermissions":[{"permissionId":1,"permissionName":"canViewPermissionGroups","permissionState":true},{"permissionId":2,"permissionName":"canEditPermissionGroups","permissionState":true},{"permissionId":3,"permissionName":"canViewPermissions","permissionState":true},{"permissionId":4,"permissionName":"canEditPermissions","permissionState":true}],"groupMembers":[0,1,2]},{"groupId":2,"groupName":"editor","groupDescription":"Can edit and view","groupPermissions":[{"permissionId":1,"permissionName":"canViewPermissionGroups","permissionState":true},{"permissionId":3,"permissionName":"canViewPermissions","permissionState":true}],"groupMembers":[0,1]},{"groupId":3,"groupName":"viewer","groupDescription":"Can only view","groupPermissions":null,"groupMembers":[-1,4,5]}],"timestamp":""}`)
 }
 
 func TestMariaGetPermissionGroupsBadDb(t *testing.T) {
 	router := api.NewRouter(api.WithDB(nil))
-	req, _ := http.NewRequest(http.MethodGet, "/permission-groups", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permission-groups", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -48,17 +48,17 @@ func TestMariaGetPermissionGroupsIdGood(t *testing.T) {
 	}
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
-	req, _ := http.NewRequest(http.MethodGet, "/permission-groups/1", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permission-groups/1", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.JSONEq(t, RemoveTimestamp(w.Body.String()), `{"message":"Permission group retreived successfully","data":{"groupId":1,"groupName":"admin","groupDescription":"Has all permissions","groupPermissions":[{"permissionId":3,"permissionName":"canCreate","permissionState":false},{"permissionId":4,"permissionName":"canDelete","permissionState":false},{"permissionId":2,"permissionName":"canEditAll","permissionState":false},{"permissionId":1,"permissionName":"canViewAll","permissionState":false}],"groupMembers":[0,1,2]},"timestamp":""}`)
+	assert.JSONEq(t, RemoveTimestamp(w.Body.String()), `{"message":"Permission group retreived successfully","data":{"groupId":1,"groupName":"admin","groupDescription":"Has all permissions","groupPermissions":[{"permissionId":1,"permissionName":"canViewPermissionGroups","permissionState":true},{"permissionId":2,"permissionName":"canEditPermissionGroups","permissionState":true},{"permissionId":3,"permissionName":"canViewPermissions","permissionState":true},{"permissionId":4,"permissionName":"canEditPermissions","permissionState":true}],"groupMembers":[0,1,2]},"timestamp":""}`)
 }
 
 func TestMariaGetPermissionGroupsIdBadDb(t *testing.T) {
 	router := api.NewRouter(api.WithDB(nil))
-	req, _ := http.NewRequest(http.MethodGet, "/permission-groups/1", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permission-groups/1", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -72,7 +72,7 @@ func TestMariaGetPermissionGroupsIdNotFound(t *testing.T) {
 	}
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
-	req, _ := http.NewRequest(http.MethodGet, "/permission-groups/100", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permission-groups/100", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -86,7 +86,7 @@ func TestMariaGetPermissionGroupsIdBadRequest(t *testing.T) {
 	}
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
-	req, _ := http.NewRequest(http.MethodGet, "/permission-groups/cat", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permission-groups/cat", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -95,7 +95,7 @@ func TestMariaGetPermissionGroupsIdBadRequest(t *testing.T) {
 
 func TestMariaPostPermissionGroupsBadDb(t *testing.T) {
 	router := api.NewRouter(api.WithDB(nil))
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -109,7 +109,7 @@ func TestMariaPostPermissionGroupsBadReq(t *testing.T) {
 	}
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -135,7 +135,7 @@ func TestMariaPostPermissionGroupsBadReqOkSuper(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -161,7 +161,7 @@ func TestMariaPostPermissionGroupsBadReqOkFalsePerms(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -182,7 +182,7 @@ func TestMariaPostPermissionGroupsBadReqOkWeakNoPerms(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -203,7 +203,7 @@ func TestMariaPostPermissionGroupsBadReqOkWeakNilPerms(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -229,7 +229,7 @@ func TestMariaPostPermissionGroupsBadReqOkWeakNoMembers(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -255,7 +255,7 @@ func TestMariaPostPermissionGroupsBadReqBadNoName(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -281,7 +281,7 @@ func TestMariaPostPermissionGroupsOkNoDesc(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -308,7 +308,7 @@ func TestMariaPostPermissionGroupsBadReqBadHasRemove(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -335,7 +335,7 @@ func TestMariaPostPermissionGroupsOkHasRemove(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -361,7 +361,7 @@ func TestMariaPostPermissionGroupsBadReqInvalidPermission(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permission-groups", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -388,7 +388,7 @@ func TestMariaPatchPermissionGroupsOkFull(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -405,7 +405,7 @@ func TestMariaPatchPermissionGroupsOkNone(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -424,7 +424,7 @@ func TestMariaPatchPermissionGroupsOkName(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -443,7 +443,7 @@ func TestMariaPatchPermissionGroupsBadName(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -462,7 +462,7 @@ func TestMariaPatchPermissionGroupsOkDesc(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -481,7 +481,7 @@ func TestMariaPatchPermissionGroupsBadDesc(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -502,7 +502,7 @@ func TestMariaPatchPermissionGroupsOkPermission(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -521,7 +521,7 @@ func TestMariaPatchPermissionGroupsBadNoPerm(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -540,7 +540,7 @@ func TestMariaPatchPermissionGroupsBadNilPerm(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -561,7 +561,7 @@ func TestMariaPatchPermissionGroupsBadPermNotFound(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/100", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/100", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -580,7 +580,7 @@ func TestMariaPatchPermissionGroupsOkAddMember(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -599,7 +599,7 @@ func TestMariaPatchPermissionGroupsRemoveMember(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -618,7 +618,7 @@ func TestMariaPatchPermissionGroupsRemoveMemberNotFound(t *testing.T) {
 	defer db.Close()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newGroup)
-	req, _ := http.NewRequest(http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPatch, "/permission-groups/1", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 

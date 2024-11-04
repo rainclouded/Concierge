@@ -21,6 +21,7 @@ services:
     depends_on:
       - mongo_incident_reports_prod
     environment:
+      - SESSIONS_ENDPOINT=http://permissions:8080
       - DB_IMPLEMENTATION=MONGODB 
       - DB_HOST=mongo_incident_reports_prod
       - DB_PORT=27017

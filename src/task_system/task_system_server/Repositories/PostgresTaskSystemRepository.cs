@@ -44,6 +44,9 @@ public class PostgresTaskSystemRepository : ITaskSystemRepository
             throw new InvalidOperationException("TaskItem with the same ID already exists.");
         }
 
+        //Necessary format to store in DB
+        task.CreatedAt = DateTime.UtcNow;
+
         await _context.Tasks.AddAsync(task);
         await _context.SaveChangesAsync();
 

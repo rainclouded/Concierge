@@ -1,6 +1,7 @@
 package database
 
 import (
+	"concierge/permissions/internal/constants"
 	"concierge/permissions/internal/models"
 	"fmt"
 )
@@ -12,10 +13,25 @@ type MockDatabase struct {
 
 func NewMockDB() *MockDatabase {
 	var permissions = []*models.Permission{
-		{ID: 0, Name: "canEditAll", Value: true},
-		{ID: 1, Name: "canViewAll", Value: true},
-		{ID: 2, Name: "canDelete", Value: true},
-		{ID: 3, Name: "canCreate", Value: true},
+		{ID: 1, Name: constants.CanViewPermissionGroups, Value: true},
+		{ID: 2, Name: constants.CanEditPermissionGroups, Value: true},
+		{ID: 3, Name: constants.CanViewPermissions, Value: true},
+		{ID: 4, Name: constants.CanEditPermissions, Value: true},
+		{ID: 5, Name: constants.CanViewAmenities, Value: true},
+		{ID: 6, Name: constants.CanEditAmenities, Value: true},
+		{ID: 7, Name: constants.CanDeleteAmenities, Value: true},
+		{ID: 8, Name: constants.CanDeleteGuestsAccounts, Value: true},
+		{ID: 9, Name: constants.CanDeleteStaffAccounts, Value: true},
+		{ID: 10, Name: constants.CanEditStaffAccounts, Value: true},
+		{ID: 11, Name: constants.CanEditGuestAccounts, Value: true},
+		{ID: 12, Name: constants.CanViewIncidentReports, Value: true},
+		{ID: 13, Name: constants.CanEditIncidentReports, Value: true},
+		{ID: 14, Name: constants.CanCreateIncidentReports, Value: true},
+		{ID: 15, Name: constants.CanDeleteIncidentReports, Value: true},
+		{ID: 16, Name: constants.CanViewTasks, Value: true},
+		{ID: 17, Name: constants.CanCreateTasks, Value: true},
+		{ID: 18, Name: constants.CanEditTasks, Value: true},
+		{ID: 19, Name: constants.CanDeleteTasks, Value: true},
 	}
 	db := &MockDatabase{
 		permissions: permissions,
@@ -35,7 +51,7 @@ func NewMockDB() *MockDatabase {
 			{
 				ID:          2,
 				Name:        "editor",
-				Description: "Can edit and view",
+				Description: "Can edit and view most data",
 				Permissions: []*models.Permission{
 					permissions[0].DeepCopy(),
 					permissions[1].DeepCopy(),
@@ -47,7 +63,7 @@ func NewMockDB() *MockDatabase {
 				Name:        "viewer",
 				Description: "Can only view",
 				Permissions: []*models.Permission{
-					permissions[1].DeepCopy(),
+					permissions[0].DeepCopy(),
 				},
 				Members: []int{-1, 4, 5},
 			},
@@ -72,7 +88,7 @@ func (db *MockDatabase) GetPermissionById(permissionId int) (*models.Permission,
 }
 
 func (db *MockDatabase) CreatePermission(permissionName string) (*models.Permission, error) {
-	permission := &models.Permission{ID: db.getMaxPermissoinId(), Name: permissionName, Value: true}
+	permission := &models.Permission{ID: db.getMaxPermissionId(), Name: permissionName, Value: true}
 	for _, p := range db.permissions {
 		if p.Name == permissionName {
 			return nil, fmt.Errorf("conflict")
@@ -254,7 +270,7 @@ func (db *MockDatabase) RemoveMemberFromGroup(groupId int, accountId int) error 
 	return fmt.Errorf("remove Failed, Account %d is not a member of group %d", groupId, accountId)
 }
 
-func (db *MockDatabase) getMaxPermissoinId() int {
+func (db *MockDatabase) getMaxPermissionId() int {
 	if len(db.permissions) == 0 {
 		return 0
 	}
