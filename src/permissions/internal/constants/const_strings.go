@@ -1,10 +1,10 @@
 package constants
 
 const (
-	CanViewPermissionGroups  = "canViewPermissionGroups"
-	CanEditPermissionGroups  = "canEditPermissionGroups"
-	CanViewPermissions       = "canViewPermissions"
-	CanEditPermissions       = "canEditPermissions"
+	CanViewPermissionGroups  = "canViewAll"
+	CanEditPermissionGroups  = "canEditAll"
+	CanViewPermissions       = "canViewAll"
+	CanEditPermissions       = "canEditAll"
 	CanViewAmenities         = "canViewAmenities"
 	CanEditAmenities         = "canEditAmenities"
 	CanDeleteAmenities       = "canDeleteAmenities"

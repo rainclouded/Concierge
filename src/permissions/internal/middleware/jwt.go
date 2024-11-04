@@ -134,6 +134,7 @@ func (jwtCtx *JWT_Context) PermissionSliceToPermissionString(permissions []*mode
 		slice[index] += value
 	}
 	fmt.Printf("Total: %d\n", slice[0])
+	println(slice)
 	return slice
 }
 

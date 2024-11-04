@@ -13,7 +13,7 @@ def create_app(persistence=None, permissionValidator=None):
 
     @app.route("/incident_reports/", methods=["GET"])
     def get_incident_reports() -> IncidentReportResponse:
-        api_key = request.headers.get('X-API-Key')
+        api_key = request.headers.get('X-Api-Key')
         if not _permission_validator.validate_session_key_for_permission_name(api_key, PermissionNames.VIEW_IR):
             return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
 
@@ -58,7 +58,7 @@ def create_app(persistence=None, permissionValidator=None):
     
     @app.route("/incident_reports/<int:id>", methods=["GET"])
     def get_incident_report_by_id(id: int) -> IncidentReportResponse:
-        api_key = request.headers.get('X-API-Key')
+        api_key = request.headers.get('X-Api-Key')
         if not _permission_validator.validate_session_key_for_permission_name(api_key, PermissionNames.VIEW_IR):
             return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
         
@@ -75,7 +75,7 @@ def create_app(persistence=None, permissionValidator=None):
 
     @app.route("/incident_reports/", methods=["POST"])
     def create_incident_report() -> IncidentReportResponse:
-        api_key = request.headers.get('X-API-Key')
+        api_key = request.headers.get('X-Api-Key')
         if not _permission_validator.validate_session_key_for_permission_name(api_key, PermissionNames.CREATE_IR):
             return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
 
@@ -105,7 +105,7 @@ def create_app(persistence=None, permissionValidator=None):
 
     @app.route("/incident_reports/<int:id>", methods=["PUT"])
     def update_incident_report(id: int) -> IncidentReportResponse:   
-        api_key = request.headers.get('X-API-Key')
+        api_key = request.headers.get('X-Api-Key')
         if not _permission_validator.validate_session_key_for_permission_name(api_key, PermissionNames.EDIT_IR):
             return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
 
@@ -134,7 +134,7 @@ def create_app(persistence=None, permissionValidator=None):
 
     @app.route("/incident_reports/<int:id>", methods=["DELETE"])
     def delete_incident_report(id: int) -> IncidentReportResponse:
-        api_key = request.headers.get('X-API-Key')
+        api_key = request.headers.get('X-Api-Key')
         if not _permission_validator.validate_session_key_for_permission_name(api_key, PermissionNames.DELETE_IR):
             return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
 

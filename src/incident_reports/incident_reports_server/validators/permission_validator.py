@@ -11,7 +11,7 @@ class PermissionValidator:
     def get_session_permissions(self, sessionKey: str) -> list[int]:
         endpoint = os.getenv('SESSIONS_ENDPOINT')
         try:
-            response: requests.Response = requests.get(f'{endpoint}/sessions/me', headers={"X-API-Key": sessionKey})
+            response: requests.Response = requests.get(f'{endpoint}/sessions/me', headers={"X-Api-Key": sessionKey})
             permissions = response.json().get('data', {}).get('sessionData', {}).get('SessionPermissionList', [])
             return permissions
         except requests.exceptions.RequestException as e:

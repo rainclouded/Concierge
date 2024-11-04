@@ -1,6 +1,6 @@
 import { getSessionkey } from "./auth";
 
-const SESSION_KEY = "X-API-Key"
+const SESSION_KEY = "X-Api-Key"
 
 export const fetchWithAuth = async (url, options = {}) => {
     options.headers = {

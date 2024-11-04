@@ -38,7 +38,7 @@ func SetSessioKey(t *testing.T, req *http.Request, permissionIds ...int) {
 		t.Errorf("\nFailed to get generate test session key")
 	}
 
-	req.Header.Set("X-API-Key", msg)
+	req.Header.Set("X-Api-Key", msg)
 }
 
 func TestPostSessionKeyOk(t *testing.T) {
@@ -128,7 +128,7 @@ func TestParseSessionKeyNoApiKey(t *testing.T) {
 func TestParseSessionKeyBadApiKey(t *testing.T) {
 	router := api.NewRouter()
 	req, _ := http.NewRequest(http.MethodGet, "/sessions/me", nil)
-	req.Header.Set("X-API-Key", `eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoidGVzdFVvZXIiLCJleHAiOjE3Mjk5NDU0NjcsInBlcm1pc3Npb25TdHJpbmciOlsxNV0sInBlcm1pc3Npb25WZXJzaW9uIjoxfQ.sci3wixmWS3iyNeLhmwpuwqVnzL_QreqZhspSwP0Eq2FvGUd1iXgmbAOtJC_43-3yNpDacU_RRDx_Y-EOJa9xxOPdJOrgFvtrfb472l0Vba5Zo6gD3GePGhPi-na_vAc`)
+	req.Header.Set("X-Api-Key", `eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoidGVzdFVvZXIiLCJleHAiOjE3Mjk5NDU0NjcsInBlcm1pc3Npb25TdHJpbmciOlsxNV0sInBlcm1pc3Npb25WZXJzaW9uIjoxfQ.sci3wixmWS3iyNeLhmwpuwqVnzL_QreqZhspSwP0Eq2FvGUd1iXgmbAOtJC_43-3yNpDacU_RRDx_Y-EOJa9xxOPdJOrgFvtrfb472l0Vba5Zo6gD3GePGhPi-na_vAc`)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 

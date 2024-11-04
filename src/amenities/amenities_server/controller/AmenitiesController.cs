@@ -24,7 +24,7 @@ public class AmenitiesController : ControllerBase
     public IActionResult GetAmenities()
     {
         //validate permissions of requester
-        if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.VIEW_AMENITES, apiKey!))
+        if (!Request.Headers.TryGetValue("X-Api-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.VIEW_AMENITES, apiKey!))
         {
             return Unauthorized(new AmenityResponse<int>(ResponseMessages.UNAUTHORIZED, 0));
         }
@@ -44,7 +44,7 @@ public class AmenitiesController : ControllerBase
     public IActionResult GetAmenityByID(int id)
     {
         //validate permissions of requester
-        if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.VIEW_AMENITES, apiKey!))
+        if (!Request.Headers.TryGetValue("X-Api-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.VIEW_AMENITES, apiKey!))
         {
             return Unauthorized(new AmenityResponse<int>(ResponseMessages.UNAUTHORIZED, 0));
         }
@@ -65,7 +65,7 @@ public class AmenitiesController : ControllerBase
     public IActionResult DeleteAmenity(int id)
     {
         //validate permissions of requester
-        if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.DELETE_AMENITES, apiKey!))
+        if (!Request.Headers.TryGetValue("X-Api-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.DELETE_AMENITES, apiKey!))
         {
             return Unauthorized(new AmenityResponse<int>(ResponseMessages.UNAUTHORIZED, id));
         }
@@ -86,7 +86,7 @@ public class AmenitiesController : ControllerBase
     public IActionResult AddAmenity(Amenity newAmenity)
     {
         //validate permissions of requester
-        if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.EDIT_AMENITES, apiKey!))
+        if (!Request.Headers.TryGetValue("X-Api-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.CREATE_AMENITES, apiKey!))
         {
             return Unauthorized(new AmenityResponse<int>(ResponseMessages.UNAUTHORIZED, 0));
         }
@@ -112,7 +112,7 @@ public class AmenitiesController : ControllerBase
     public IActionResult UpdateAmenity(int id, Amenity newAmenity)
     {
         //validate permissions of requester
-        if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.EDIT_AMENITES, apiKey!))
+        if (!Request.Headers.TryGetValue("X-Api-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.EDIT_AMENITES, apiKey!))
         {
             return Unauthorized(new AmenityResponse<int>(ResponseMessages.UNAUTHORIZED, 0));
         }

@@ -43,7 +43,7 @@ qpxDzZdl4T0dNvWeRMCGLZGAPVz6zOD4
 ``` 
 - `SESSION_KEY_HEADER`
     - The name of the header containing the session key
-    - default to `X-API-Key`
+    - default to `X-Api-Key`
 
 ### THIS SHOULD BE FOR TESTING ONLY!!!
 - failure to set this value will enable unverified users to spoof as super admins

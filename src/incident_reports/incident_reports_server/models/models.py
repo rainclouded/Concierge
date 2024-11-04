@@ -89,7 +89,7 @@ class ResponseMessages:
     UNAUTHORIZED = "Your account does not have permission to do this operation."
 
 class PermissionNames:
-    VIEW_IR =   "canViewIncidentReports"
-    EDIT_IR =   "canEditIncidentReports"
-    CREATE_IR = "canCreateIncidentReports"
-    DELETE_IR = "canDeleteIncidentReports"
+    VIEW_IR =   "canViewAll"
+    EDIT_IR =   "canEditAll"
+    CREATE_IR = "canCreate"
+    DELETE_IR = "canDelete"

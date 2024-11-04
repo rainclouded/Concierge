@@ -16,7 +16,7 @@ namespace amenities_server.services
         {
             Console.WriteLine($"Connecting to Permissions @ {endpoint}");
             var client = _httpClientFactory.CreateClient();
-            client.DefaultRequestHeaders.Add("X-API-Key", apiKey);
+            client.DefaultRequestHeaders.Add("X-Api-Key", apiKey);
             var response = await client.GetAsync(endpoint);
 
             var resp = await response.Content.ReadAsStringAsync();

@@ -56,7 +56,7 @@ func LoadPermissionPerIndex() int {
 func LoadSessionKeyHeader() string {
 	valueStr := os.Getenv("SESSION_KEY_HEADER")
 	if valueStr == "" {
-		valueStr = "X-API-Key"
+		valueStr = "X-Api-Key"
 	}
 
 	return valueStr

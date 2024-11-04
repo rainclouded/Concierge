@@ -112,7 +112,7 @@ namespace task_system_test
             var apiKey = "test-api-key";
             _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(true);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            httpContext.Request.Headers["X-Api-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
@@ -136,7 +136,7 @@ namespace task_system_test
             var apiKey = "test-api-key";
             _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(true);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            httpContext.Request.Headers["X-Api-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
@@ -170,7 +170,7 @@ namespace task_system_test
             var apiKey = "test-api-key";
             _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(true);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            httpContext.Request.Headers["X-Api-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
@@ -194,7 +194,7 @@ namespace task_system_test
             var apiKey = "test-api-key";
             _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(true);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            httpContext.Request.Headers["X-Api-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
@@ -228,7 +228,7 @@ namespace task_system_test
             var apiKey = "test-api-key";
             _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey)).Returns(true);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            httpContext.Request.Headers["X-Api-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
@@ -269,7 +269,7 @@ namespace task_system_test
             var apiKey = "test-api-key";
             _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.EDIT_TASKS, apiKey)).Returns(true);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            httpContext.Request.Headers["X-Api-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
@@ -303,7 +303,7 @@ namespace task_system_test
             var apiKey = "test-api-key";
             _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.DELETE_TASKS, apiKey)).Returns(true);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            httpContext.Request.Headers["X-Api-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
@@ -326,7 +326,7 @@ namespace task_system_test
             var apiKey = "test-api-key";
             _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.DELETE_TASKS, apiKey)).Returns(true);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            httpContext.Request.Headers["X-Api-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
@@ -347,7 +347,7 @@ namespace task_system_test
             var apiKey = "test-api-key";
             _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(true);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            httpContext.Request.Headers["X-Api-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
@@ -365,7 +365,7 @@ namespace task_system_test
             var apiKey = "test-api-key";
             _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(true);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            httpContext.Request.Headers["X-Api-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
@@ -383,7 +383,7 @@ namespace task_system_test
             var apiKey = "test-api-key";
             _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey)).Returns(true);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            httpContext.Request.Headers["X-Api-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
@@ -401,7 +401,7 @@ namespace task_system_test
             var apiKey = "test-api-key";
             _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.EDIT_TASKS, apiKey)).Returns(true);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            httpContext.Request.Headers["X-Api-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
@@ -419,7 +419,7 @@ namespace task_system_test
             var apiKey = "test-api-key";
             _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.DELETE_TASKS, apiKey)).Returns(true);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            httpContext.Request.Headers["X-Api-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
