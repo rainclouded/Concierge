@@ -7,6 +7,7 @@ using task_system_server.Persistences;
 using task_system_server.Dtos;
 using task_system_server.Controllers;
 using task_system_server.Repositories;
+using task_system_server.Validators;
 using Microsoft.AspNetCore.Http;
 
 namespace task_system_server.Tests.Integration
@@ -35,7 +36,8 @@ namespace task_system_server.Tests.Integration
 
             // Initialize repository with the test context
             var repository = new PostgresTaskSystemRepository(_context);
-            _controller = new TaskSystemController(repository);
+            var validator = new MockPermissionValidator;
+            _controller = new TaskSystemController(repository, validator);
 
             // Setup controller context
             _controller.ControllerContext = new ControllerContext
