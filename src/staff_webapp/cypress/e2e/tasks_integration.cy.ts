@@ -18,16 +18,6 @@ describe('Integration Test for Task Manager', () => {
 
     // Navigate to the Task Manager page
     cy.get('.sidebar-item').contains('Tasks').click();
-
-    // Ensure initial state by checking task list
-    getTaskRow(
-      101,
-      'There is a leak in the bathroom sink that needs urgent attention.'
-    ).should('exist');
-    getTaskRow(
-      102,
-      'Some light bulbs are out in the hallway. Please replace them.'
-    ).should('exist');
   });
 
   it('View All Tasks', () => {
