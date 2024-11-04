@@ -47,16 +47,16 @@ Microservice to access and manage hotel tasks.
 get all tasks
 
 ### GET /tasks/id
-get specific amenity by id
+get specific task by id
 
 ### POST /tasks
-create amenity
+create task
 
 ### PUT /tasks/id
-update amenity with changed information
+update task with changed information
 
 ### DELETE /tasks/id
-delete specified amenity from database
+delete specified task from database
 
 ## Environment Variables
 * `DB_IMPLEMENTATION`

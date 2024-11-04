@@ -223,7 +223,7 @@
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -679,7 +679,7 @@
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -747,7 +747,7 @@
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -837,7 +837,7 @@
             }
          }
       },
-      "/permissions/{permission-name-or-id}/sessions/{session-key}": {
+      "/permissions/{permission-name-or-id}/sessions/{X-API-KEY}": {
          "summary": "Checks if the session has the given permission",
          "get": {
             "summary": "Check Sesssion Permission",
@@ -857,7 +857,7 @@
                   }
                },
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "path",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -876,7 +876,7 @@
                            "properties": {
                               "account-id": {
                                  "type": "integer",
-                                 "description": "Account ID associated to session key. If session-key associated to an anonymous session, returns -1"
+                                 "description": "Account ID associated to session key. If X-API-KEY associated to an anonymous session, returns -1"
                               },
                               "permission-status": {
                                  "type": "boolean",
@@ -912,7 +912,7 @@
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -996,7 +996,7 @@
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -1081,7 +1081,7 @@
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -1169,7 +1169,7 @@
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -1235,14 +1235,14 @@
          "summary": "Add or remove accounts from a permission group",
          "get": {
             "summary": "View Accounts in Group",
-            "description": "Requests GET accounts to add details to account ids. Requests GET /sessions/{sessionId} to get accountID associated to current session. Is part of the permissions service, otherwise it would use GET /permissions/{permission-name-or-id}/sessions/{session-key}",
+            "description": "Requests GET accounts to add details to account ids. Requests GET /sessions/{sessionId} to get accountID associated to current session. Is part of the permissions service, otherwise it would use GET /permissions/{permission-name-or-id}/sessions/{X-API-KEY}",
             "operationId": "getPermissionGroupAccounts",
             "tags": [
                "Permissions"
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -1308,7 +1308,7 @@
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -1369,7 +1369,7 @@
             }
          }
       },
-      "/sessions/{session-key}": {
+      "/sessions/{X-API-KEY}": {
          "summary": "Get session details",
          "get": {
             "summary": "View session details",
@@ -1379,7 +1379,7 @@
             ],
             "parameters": [
                {
-                  "name": "session-key",
+                  "name": "X-API-KEY",
                   "in": "path",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -1457,7 +1457,7 @@
                         "schema": {
                            "type": "string"
                         },
-                        "example": "session-key=abc123; Path=/; HttpOnly; Secure"
+                        "example": "X-API-KEY=abc123; Path=/; HttpOnly; Secure"
                      }
                   }
                },
@@ -1571,6 +1571,16 @@
                                           "type": "integer",
                                           "description": "Account ID of the person reviewing the report.",
                                           "example": 789
+                                       },
+                                       "severity": {
+                                          "type": "string",
+                                          "description": "Severity of incident report.",
+                                          "example": "LOW"
+                                       },
+                                       "status": {
+                                          "type": "string",
+                                          "description": "Status of incident report.",
+                                          "example": "Open"
                                        }
                                     }
                                  }
@@ -1581,6 +1591,9 @@
                   }
                },
                "400": {
+                  "description": "Unauthorized"
+               },
+               "404": {
                   "description": "We had trouble fetching your incident reports"
                }
             }
@@ -1594,7 +1607,7 @@
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -1610,11 +1623,6 @@
                      "schema": {
                         "type": "object",
                         "properties": {
-                           "id": {
-                              "type": "integer",
-                              "description": "Unique value that identifies the incident report",
-                              "example": 123
-                           },
                            "title": {
                               "type": "string",
                               "description": "Title of the incident report",
@@ -1625,18 +1633,6 @@
                               "description": "Detailed description of the incident",
                               "example": "A power outage occurred due to a storm"
                            },
-                           "created_at": {
-                              "type": "string",
-                              "format": "date-time",
-                              "description": "Timestamp when the incident report was created",
-                              "example": "2024-10-06T12:34:56Z"
-                           },
-                           "updated_at": {
-                              "type": "string",
-                              "format": "date-time",
-                              "description": "Timestamp when the incident report was last updated",
-                              "example": "2024-10-07T14:22:30Z"
-                           },
                            "filing_person_id": {
                               "type": "integer",
                               "description": "Account ID of the person filing the report",
@@ -1646,6 +1642,16 @@
                               "type": "integer",
                               "description": "Account ID of the person reviewing the report.",
                               "example": 789
+                           },
+                           "severity": {
+                              "type": "string",
+                              "description": "Severity of incident report.",
+                              "example": "LOW"
+                           },
+                           "status": {
+                              "type": "string",
+                              "description": "Status of incident report.",
+                              "example": "Open"
                            }
                         }
                      }
@@ -1740,11 +1746,24 @@
                                  "type": "integer",
                                  "description": "Account ID of the person reviewing the report.",
                                  "example": 789
+                              },
+                              "severity": {
+                                 "type": "string",
+                                 "description": "Severity of incident report.",
+                                 "example": "LOW"
+                              },
+                              "status": {
+                                 "type": "string",
+                                 "description": "Status of incident report.",
+                                 "example": "Open"
                               }
                            }
                         }
                      }
                   }
+               },
+               "401": {
+                  "description": "Unauthorized"
                },
                "404": {
                   "description": "Incident report with specified id not found."
@@ -1760,7 +1779,7 @@
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -1821,6 +1840,16 @@
                               "type": "integer",
                               "description": "Account ID of the person reviewing the report.",
                               "example": 789
+                           },
+                           "severity": {
+                              "type": "string",
+                              "description": "Severity of incident report.",
+                              "example": "LOW"
+                           },
+                           "status": {
+                              "type": "string",
+                              "description": "Status of incident report.",
+                              "example": "Open"
                            }
                         }
                      }
@@ -1861,7 +1890,7 @@
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -1896,14 +1925,14 @@
          "summary": "View, add or modify hotel amenities",
          "get": {
             "summary": "View hotel amenities",
-            "description": "Requests /permissions/{permission-name-or-id}/sessions/{session-key} for access permission",
+            "description": "Requests /permissions/{permission-name-or-id}/sessions/{X-API-KEY} for access permission",
             "operationId": "getAmenities",
             "tags": [
                "Amenities"
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -1954,6 +1983,9 @@
                      }
                   }
                },
+               "401": {
+                  "description": "Unauthorized"
+               },
                "404": {
                   "description": "Amenities not found."
                }
@@ -1968,7 +2000,7 @@
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -1984,11 +2016,6 @@
                      "schema": {
                         "type": "object",
                         "properties": {
-                           "Id": {
-                              "type": "integer",
-                              "description": "amenity's id",
-                              "example": "123"
-                           },
                            "Name": {
                               "type": "string",
                               "description": "Name of the amenity"
@@ -2050,7 +2077,7 @@
                   "description": "Id of amenity to adjust",
                   "required": true,
                   "schema": {
-                     "type": "string"
+                     "type": "integer"
                   }
                }
             ],
@@ -2090,6 +2117,9 @@
                      }
                   }
                },
+               "401": {
+                  "description": "Unauthorized"
+               },
                "404": {
                   "description": "Amenity with specified not found."
                }
@@ -2104,7 +2134,7 @@
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -2118,7 +2148,7 @@
                   "description": "Id of amenity to adjust",
                   "required": true,
                   "schema": {
-                     "type": "string"
+                     "type": "integer"
                   }
                }
             ],
@@ -2156,7 +2186,7 @@
                }
             },
             "responses": {
-               "201": {
+               "200": {
                   "description": "Amenity updated successfully"
                },
                "400": {
@@ -2189,7 +2219,7 @@
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -2203,12 +2233,12 @@
                   "description": "Id of amenity to adjust",
                   "required": true,
                   "schema": {
-                     "type": "string"
+                     "type": "integer"
                   }
                }
             ],
             "responses": {
-               "201": {
+               "200": {
                   "description": "Amenity deleted successfully"
                },
                "400": {
@@ -2221,148 +2251,17 @@
          }
       },
       "tasks": {
-         "summary": "A list of tasks. Automatically restricted to the permissions of the active session",
+         "summary": "View, add or modify hotel service tasks",
          "get": {
-            "summary": "View tasks",
-            "description": "Requests /permissions/{permission-name-or-id}/sessions/{session-key} for access permission.",
+            "summary": "View all service tasks",
+            "description": "Requests /permissions/{permission-name-or-id}/sessions/{X-API-KEY} for access permission",
             "operationId": "getTasks",
             "tags": [
                "Tasks"
             ],
             "parameters": [
                {
-                  "name": "session_key",
-                  "in": "cookie",
-                  "description": "A session key, associated to an account with the necessary permissions for authenticating user",
-                  "required": true,
-                  "schema": {
-                     "type": "string"
-                  }
-               },
-               {
-                  "name": "name",
-                  "in": "query",
-                  "description": "Filter tasks by name.",
-                  "example": "Clean Vacant Room",
-                  "required": false,
-                  "schema": {
-                     "type": "string"
-                  }
-               },
-               {
-                  "name": "assigned-to",
-                  "in": "query",
-                  "description": "Filter tasks by assigned person.",
-                  "example": "Jack",
-                  "required": false,
-                  "schema": {
-                     "type": "string"
-                  }
-               },
-               {
-                  "name": "status",
-                  "in": "query",
-                  "description": "Filter tasks by status.",
-                  "example": "active",
-                  "required": false,
-                  "schema": {
-                     "type": "string"
-                  }
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "A list of amenities",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "object",
-                           "properties": {
-                              "tasks": {
-                                 "type": "array",
-                                 "items": {
-                                    "$ref": "#/components/schemas/Task"
-                                 }
-                              }
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "description": "Bad request"
-               },
-               "401": {
-                  "description": "Unauthorized"
-               }
-            }
-         },
-         "post": {
-            "summary": "Create a New Task",
-            "description": "Requests GET /sessions/{sessionId} to get accountID associated to current session.",
-            "operationId": "postTasks",
-            "tags": [
-               "Tasks"
-            ],
-            "parameters": [
-               {
-                  "name": "session_key",
-                  "in": "cookie",
-                  "description": "A session key, associated to an account with the necessary permissions for authenticating user",
-                  "required": true,
-                  "schema": {
-                     "type": "string"
-                  }
-               }
-            ],
-            "requestBody": {
-               "required": true,
-               "content": {
-                  "application/json": {
-                     "schema": {
-                        "$ref": "#/components/schemas/Task"
-                     }
-                  }
-               }
-            },
-            "responses": {
-               "201": {
-                  "description": "Task created successfully"
-               },
-               "400": {
-                  "description": "Bad request",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "object",
-                           "properties": {
-                              "error": {
-                                 "type": "string",
-                                 "example": "The 'name' field is required"
-                              }
-                           }
-                        }
-                     }
-                  }
-               },
-               "401": {
-                  "description": "Unauthorized"
-               }
-            }
-         }
-      },
-      "tasks/{task-id}": {
-         "summary": "Contains all information for a task",
-         "get": {
-            "summary": "View task",
-            "description": "Requests /permissions/{permission-name-or-id}/sessions/{session-key} for access permission.",
-            "operationId": "getTask",
-            "tags": [
-               "Tasks"
-            ],
-            "parameters": [
-               {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -2373,116 +2272,7 @@
             ],
             "responses": {
                "200": {
-                  "description": "A task",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "$ref": "#/components/schemas/Task"
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "description": "Bad request"
-               },
-               "401": {
-                  "description": "Unauthorized"
-               }
-            }
-         },
-         "put": {
-            "summary": "Update Task",
-            "description": "Requests GET /sessions/{sessionId} to get accountID associated to current session.",
-            "operationId": "putTask",
-            "tags": [
-               "Tasks"
-            ],
-            "parameters": [
-               {
-                  "name": "session_key",
-                  "in": "cookie",
-                  "description": "A session key, associated to an account with the necessary permissions for authenticating user",
-                  "required": true,
-                  "schema": {
-                     "type": "string"
-                  }
-               },
-               {
-                  "name": "task-id",
-                  "in": "path",
-                  "description": "Id of task to adjust",
-                  "required": true,
-                  "schema": {
-                     "type": "string"
-                  }
-               }
-            ],
-            "requestBody": {
-               "required": true,
-               "content": {
-                  "application/json": {
-                     "schema": {
-                        "$ref": "#/components/schemas/Task"
-                     }
-                  }
-               },
-               "responses": {
-                  "201": {
-                     "description": "Task updated successfully"
-                  },
-                  "400": {
-                     "description": "Bad request"
-                  },
-                  "401": {
-                     "description": "Unauthorized"
-                  }
-               }
-            }
-         }
-      },
-      "task-templates": {
-         "summary": "Contains list of task templates",
-         "get": {
-            "summary": "View task templates",
-            "description": "Requests /permissions/{permission-name-or-id}/sessions/{session-key} for access permission.",
-            "operationId": "getTaskTemplates",
-            "tags": [
-               "Tasks"
-            ],
-            "parameters": [
-               {
-                  "name": "session_key",
-                  "in": "cookie",
-                  "description": "A session key, associated to an account with the necessary permissions for authenticating user",
-                  "required": true,
-                  "schema": {
-                     "type": "string"
-                  }
-               },
-               {
-                  "name": "name",
-                  "in": "query",
-                  "description": "Filter templates by name.",
-                  "example": "Clean Vacant Room",
-                  "required": false,
-                  "schema": {
-                     "type": "string"
-                  }
-               },
-               {
-                  "name": "trigger",
-                  "in": "query",
-                  "description": "Filter templates by trigger.",
-                  "example": "active",
-                  "required": false,
-                  "schema": {
-                     "type": "string"
-                  }
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "A list of templates",
+                  "description": "A list of tasks",
                   "content": {
                      "application/json": {
                         "schema": {
@@ -2491,7 +2281,42 @@
                               "permissions": {
                                  "type": "array",
                                  "items": {
-                                    "$ref": "#/components/schemas/Task-Template"
+                                    "type": "object",
+                                    "properties": {
+                                       "id": {
+                                          "type": "integer",
+                                          "description": "tasks's id",
+                                          "example": "123"
+                                       },
+                                       "roomId": {
+                                          "type": "integer",
+                                          "description": "room number of requester"
+                                       },
+                                       "taskType": {
+                                          "type": "string",
+                                          "description": "type of task"
+                                       },
+                                       "description": {
+                                          "type": "string",
+                                          "description": "description of tasks"
+                                       },
+                                       "createdAt": {
+                                          "type": "datetime",
+                                          "description": "Date and time this task was created"
+                                       },
+                                       "requesterId": {
+                                          "type": "integer",
+                                          "description": "account id of requester"
+                                       },
+                                       "assigneeId": {
+                                          "type": "integer",
+                                          "description": "account id of assignee"
+                                       },
+                                       "status": {
+                                          "type": "string",
+                                          "description": "status of task"
+                                       }
+                                    }
                                  }
                               }
                            }
@@ -2499,238 +2324,24 @@
                      }
                   }
                },
-               "400": {
-                  "description": "Bad request"
-               },
                "401": {
                   "description": "Unauthorized"
+               },
+               "404": {
+                  "description": "Tasks not found."
                }
             }
          },
          "post": {
-            "summary": "Create a New Templates",
+            "summary": "Create Task",
             "description": "Requests GET /sessions/{sessionId} to get accountID associated to current session.",
-            "operationId": "postTaskTemplates",
+            "operationId": "postTasks",
             "tags": [
                "Tasks"
             ],
             "parameters": [
                {
-                  "name": "session_key",
-                  "in": "cookie",
-                  "description": "A session key, associated to an account with the necessary permissions for authenticating user",
-                  "required": true,
-                  "schema": {
-                     "type": "string"
-                  }
-               }
-            ],
-            "requestBody": {
-               "required": true,
-               "content": {
-                  "application/json": {
-                     "schema": {
-                        "$ref": "#/components/schemas/Task-Template"
-                     }
-                  }
-               }
-            },
-            "responses": {
-               "201": {
-                  "description": "Templates created successfully"
-               },
-               "400": {
-                  "description": "Bad request",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "object",
-                           "properties": {
-                              "error": {
-                                 "type": "string",
-                                 "example": "The 'name' field is required"
-                              }
-                           }
-                        }
-                     }
-                  }
-               },
-               "401": {
-                  "description": "Unauthorized"
-               }
-            }
-         }
-      },
-      "task-templates/{task-id}": {
-         "summary": "Contains all information for a templates",
-         "get": {
-            "summary": "View Template",
-            "description": "Requests /permissions/{permission-name-or-id}/sessions/{session-key} for access permission.",
-            "operationId": "getTaskTemplate",
-            "tags": [
-               "Tasks"
-            ],
-            "parameters": [
-               {
-                  "name": "session_key",
-                  "in": "cookie",
-                  "description": "A session key, associated to an account with the necessary permissions for authenticating user",
-                  "required": true,
-                  "schema": {
-                     "type": "string"
-                  }
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "A task",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "$ref": "#/components/schemas/Task-Template"
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "description": "Bad request"
-               },
-               "401": {
-                  "description": "Unauthorized"
-               }
-            }
-         },
-         "put": {
-            "summary": "Update Template",
-            "description": "Requests GET /sessions/{sessionId} to get accountID associated to current session.",
-            "operationId": "putTaskTemplate",
-            "tags": [
-               "Tasks"
-            ],
-            "parameters": [
-               {
-                  "name": "session_key",
-                  "in": "cookie",
-                  "description": "A session key, associated to an account with the necessary permissions for authenticating user",
-                  "required": true,
-                  "schema": {
-                     "type": "string"
-                  }
-               },
-               {
-                  "name": "template-id",
-                  "in": "path",
-                  "description": "Id of template to adjust",
-                  "required": true,
-                  "schema": {
-                     "type": "string"
-                  }
-               }
-            ],
-            "requestBody": {
-               "required": true,
-               "content": {
-                  "application/json": {
-                     "schema": {
-                        "$ref": "#/components/schemas/Task-Template"
-                     }
-                  }
-               },
-               "responses": {
-                  "201": {
-                     "description": "Templates updated successfully"
-                  },
-                  "400": {
-                     "description": "Bad request"
-                  },
-                  "401": {
-                     "description": "Unauthorized"
-                  }
-               }
-            }
-         }
-      },
-      "guest-templates": {
-         "summary": "Contains access for guests to create tasks. All tasks with the 'guest-request' trigger appear on this list",
-         "get": {
-            "summary": "Get Guest Task Templates",
-            "description": "Requests /permissions/{permission-name-or-id}/sessions/{session-key} for access permission.",
-            "operationId": "getGuestTemplate",
-            "tags": [
-               "Tasks"
-            ],
-            "parameters": [
-               {
-                  "name": "session_key",
-                  "in": "cookie",
-                  "description": "A session key, associated to an account with the necessary permissions for authenticating user",
-                  "required": true,
-                  "schema": {
-                     "type": "string"
-                  }
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "A list of templates guests can use",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "object",
-                           "properties": {
-                              "template-id": {
-                                 "type": "integer",
-                                 "description": "template's id",
-                                 "example": "123"
-                              },
-                              "name": {
-                                 "type": "string",
-                                 "description": "Name of the tasks"
-                              },
-                              "description": {
-                                 "type": "string",
-                                 "description": "description of tasks"
-                              },
-                              "start": {
-                                 "type": "string",
-                                 "description": "Date and time this task becomes actionable"
-                              },
-                              "end": {
-                                 "type": "string",
-                                 "description": "Date and time this task overdue"
-                              },
-                              "status": {
-                                 "type": "string",
-                                 "description": "Indicates if a task is complete or not",
-                                 "example": "in-progress"
-                              },
-                              "special-instructions": {
-                                 "type": "string",
-                                 "description": "Instructions given by the creator of the task"
-                              }
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "description": "Bad request"
-               },
-               "401": {
-                  "description": "Unauthorized"
-               }
-            }
-         },
-         "post": {
-            "summary": "Guest Create a New Task",
-            "description": "Requests GET /sessions/{sessionId} to get accountID associated to current session.",
-            "operationId": "postGuestTaskTemplates",
-            "tags": [
-               "Tasks"
-            ],
-            "parameters": [
-               {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -2746,30 +2357,21 @@
                      "schema": {
                         "type": "object",
                         "properties": {
-                           "template-id": {
+                           "roomId": {
                               "type": "integer",
-                              "description": "template's id, use -1 and special-instructions for custom guest requests",
-                              "example": "123"
+                              "description": "room number of requester"
                            },
-                           "name": {
+                           "taskType": {
                               "type": "string",
-                              "description": "Name of the tasks"
+                              "description": "type of task"
                            },
                            "description": {
                               "type": "string",
                               "description": "description of tasks"
                            },
-                           "start": {
-                              "type": "string",
-                              "description": "Date and time this task becomes actionable"
-                           },
-                           "end": {
-                              "type": "string",
-                              "description": "Date and time this task overdue"
-                           },
-                           "special-instructions": {
-                              "type": "string",
-                              "description": "Any additional notes needed for this task"
+                           "requesterId": {
+                              "type": "integer",
+                              "description": "account id of requester"
                            }
                         }
                      }
@@ -2779,6 +2381,161 @@
             "responses": {
                "201": {
                   "description": "Task created successfully"
+               },
+               "400": {
+                  "description": "Bad request",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object",
+                           "properties": {
+                              "error": {
+                                 "type": "string",
+                                 "example": "The 'taskType' field is required"
+                              }
+                           }
+                        }
+                     }
+                  }
+               },
+               "401": {
+                  "description": "Unauthorized"
+               }
+            }
+         }
+      },
+      "/tasks/{id}": {
+         "get": {
+            "summary": "View task",
+            "operationId": "getTaskById",
+            "tags": [
+               "Tasks"
+            ],
+            "parameters": [
+               {
+                  "name": "task-id",
+                  "in": "path",
+                  "description": "Id of task to view",
+                  "required": true,
+                  "schema": {
+                     "type": "integer"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "A task",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "schema": {
+                              "type": "object",
+                              "properties": {
+                                 "id": {
+                                    "type": "integer",
+                                    "description": "tasks's id",
+                                    "example": "123"
+                                 },
+                                 "roomId": {
+                                    "type": "integer",
+                                    "description": "room number of requester"
+                                 },
+                                 "taskType": {
+                                    "type": "string",
+                                    "description": "type of task"
+                                 },
+                                 "description": {
+                                    "type": "string",
+                                    "description": "description of tasks"
+                                 },
+                                 "createdAt": {
+                                    "type": "datetime",
+                                    "description": "Date and time this task was created"
+                                 },
+                                 "requesterId": {
+                                    "type": "integer",
+                                    "description": "account id of requester"
+                                 },
+                                 "assigneeId": {
+                                    "type": "integer",
+                                    "description": "account id of assignee"
+                                 },
+                                 "status": {
+                                    "type": "string",
+                                    "description": "status of task"
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               },
+               "401":{
+                  "description": "Unauthorized"
+               },
+               "404": {
+                  "description": "task with specified not found."
+               }
+            }
+         },
+         "put": {
+            "summary": "Update Task",
+            "description": "Requests GET /sessions/{sessionId} to get accountID associated to current session.",
+            "operationId": "putTasks",
+            "tags": [
+               "Tasks"
+            ],
+            "parameters": [
+               {
+                  "name": "X-API-KEY",
+                  "in": "cookie",
+                  "description": "A session key, associated to an account with the necessary permissions for authenticating user",
+                  "required": true,
+                  "schema": {
+                     "type": "string"
+                  }
+               },
+               {
+                  "name": "task-id",
+                  "in": "path",
+                  "description": "Id of task to update",
+                  "required": true,
+                  "schema": {
+                     "type": "integer"
+                  }
+               }
+            ],
+            "requestBody": {
+               "required": true,
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "type": "object",
+                        "properties": {
+                           "taskType": {
+                              "type": "string",
+                              "description": "type of task"
+                           },
+                           "description": {
+                              "type": "string",
+                              "description": "description of tasks"
+                           },
+                           "assigneeId": {
+                              "type": "integer",
+                              "description": "account id of assignee"
+                           },
+                           "status": {
+                              "type": "string",
+                              "description": "status of task"
+                           }
+                        }
+                     }
+                  }
+               }
+            },
+            "responses": {
+               "200": {
+                  "description": "Task updated successfully"
                },
                "400": {
                   "description": "Bad request",
@@ -2800,20 +2557,59 @@
                   "description": "Unauthorized"
                }
             }
+         },
+         "delete": {
+            "summary": "Delete Task",
+            "description": "Requests GET /sessions/{sessionId} to get accountID associated to current session.",
+            "operationId": "deleteAmenities",
+            "tags": [
+               "Tasks"
+            ],
+            "parameters": [
+               {
+                  "name": "X-API-KEY",
+                  "in": "cookie",
+                  "description": "A session key, associated to an account with the necessary permissions for authenticating user",
+                  "required": true,
+                  "schema": {
+                     "type": "string"
+                  }
+               },
+               {
+                  "name": "task-id",
+                  "in": "path",
+                  "description": "Id of task to delete",
+                  "required": true,
+                  "schema": {
+                     "type": "integer"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "Task deleted successfully"
+               },
+               "400": {
+                  "description": "Task not found"
+               },
+               "401": {
+                  "description": "Unauthorized"
+               }
+            }
          }
       },
       "reservations": {
          "summary": "List all reservations the session has permission for",
          "get": {
             "summary": "Get List of Resrvations",
-            "description": "Requests /permissions/{permission-name-or-id}/sessions/{session-key} for access permission.",
+            "description": "Requests /permissions/{permission-name-or-id}/sessions/{X-API-KEY} for access permission.",
             "operationId": "getReservations",
             "tags": [
                "Reservations"
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -2917,7 +2713,7 @@
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
@@ -3008,7 +2804,7 @@
             ],
             "parameters": [
                {
-                  "name": "session_key",
+                  "name": "X-API-KEY",
                   "in": "cookie",
                   "description": "A session key, associated to an account with the necessary permissions for authenticating user",
                   "required": true,
