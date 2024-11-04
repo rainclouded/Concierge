@@ -1,4 +1,8 @@
+using amenities_server.application;
 using amenities_server.Controllers;
+using amenities_server.model;
+using amenities_server.persistence;
+using amenities_server.validators;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +16,12 @@ namespace amenities_test
         private Amenity _testUpdatedValidAmenity;
         private Amenity _testInvalidAmenity;
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            Services.SetAmenityPersistence(new StubAmenityPersistence());
+        }
+
         [SetUp]
         public void Setup()
         {
@@ -19,13 +29,17 @@ namespace amenities_test
             _testUpdatedValidAmenity = new Amenity("_testUpdatedValidAmenity", "testUpdatedValidDesc", new TimeSpan(12, 0, 0), new TimeSpan(24, 0, 0));
             _testInvalidAmenity = new Amenity("testInvalidAmenity", "testInvalidDesc", new TimeSpan(13, 0, 0), new TimeSpan(12, 0, 0));
 
-            Services.clear();
+            Services.Clear();
             _amenityPersistence = Services.GetAmenityPersistence();
-  
-            _controller = new AmenitiesController();
-            _controller.ControllerContext = new ControllerContext
+
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = "TestsKey";
+            _controller = new AmenitiesController(new MockPermissionValidator())
             {
-                HttpContext = new DefaultHttpContext()
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = httpContext
+                }
             };
         }
 

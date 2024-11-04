@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { fetchWithAuth } from "../utils/authFetch"
 
 const AmenitiesPage = () => {
   const [amenities, setAmenities] = useState([]);
@@ -9,7 +10,7 @@ const AmenitiesPage = () => {
   useEffect(() => {
     const fetchAmenities = async () => {
       try {
-        const response = await fetch(
+        const response = await fetchWithAuth(
           `${import.meta.env.VITE_API_BASE_URL}/amenities/`
         );
         if (!response.ok) {
@@ -42,7 +43,7 @@ const AmenitiesPage = () => {
           </thead>
           <tbody>
             {amenities.map((amenity) => (
-              <tr key={amenity.id} class="amenity-row-item">
+              <tr key={amenity.id} className="amenity-row-item">
                 <td className="border border-gray-300 px-4 py-2">
                   {amenity.name}
                 </td>

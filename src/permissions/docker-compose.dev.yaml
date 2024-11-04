@@ -1,0 +1,7 @@
+services:
+  permissions:
+    build: .
+    ports:
+      - 50003:8080
+    environment:
+      PERMISSION_DB_IMPLEMENTATION: MOCK

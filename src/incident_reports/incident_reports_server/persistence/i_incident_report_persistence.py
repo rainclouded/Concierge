@@ -24,4 +24,8 @@ class IIncidentReportPersistence(ABC):
     def delete_incident_report(self, id:int) -> None:
         pass
     
+    @abstractmethod
+    def clear(self) -> None:
+        pass 
+    
     

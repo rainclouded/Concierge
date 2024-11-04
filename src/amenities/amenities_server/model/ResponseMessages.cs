@@ -1,5 +1,7 @@
-public static class ResponseMessages
+namespace amenities_server.model
 {
+    public static class ResponseMessages
+    {
         public const string GET_AMENITIES_SUCCESS = "Amenities retrieved successfully.";
 
         public const string GET_AMENITY_SUCCESS = "Amenity retrieved successfully.";
@@ -13,6 +15,9 @@ public static class ResponseMessages
         public const string GET_AMENITIES_FAILED = "We had trouble fetching your amenities.";
 
         public const string GET_AMENITY_FAILED = "Amenity with specified id not found.";
-        
+
+        public const string UNAUTHORIZED = "You do not have permission to perform that action.";
+
         public const string INVALID_AMENITY_PASSED = "Bad Request. Amenity with invalid parameters was passed.";
+    }
 }

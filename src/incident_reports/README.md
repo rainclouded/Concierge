@@ -11,9 +11,21 @@ Microservice to access and manage incident reports for hotels.
 2. Run command: `docker-compose -f docker-compose.yaml build`
 3. Run command: `docker-compose -f docker-compose.yaml up`
 
+#### How to Run Integration Tests
+1. Go to directory: `./src/incident_reports/`
+2. Run command: `docker-compose -f docker-compose.test.yaml up -d --build`
+3. Run command: `docker exec -it incident_reports-incident_reports-1 /bin/sh`
+4. Run command: `python -m unittest discover -s incident_reports_tests -p "*.py" -v`
+
 ## How to Run Unit Tests
 1. Go to directory: `./src/incident_reports/`
 2. Run command: `python -m unittest discover -s .\incident_reports_tests\ -p "*.py"`
+
+## Required Permissions
+- canViewIncidentReports
+- canEditIncidentReports
+- canCreateIncidentReports
+- canDeleteIncidentReports
 
 ## Model
 
@@ -63,7 +75,11 @@ Update an existing incident report with changed information.
 Delete a specified incident report from the database.
 
 ## Environment Variables
-* `forProduction_DB`
-  * Used to determine whether a stub or real implementation of a data layer is used.
-* `forProduction_Auth`
-  * Used to determine whether a fake or real implementation of a permission validator is used.
+| Variable Name        | Description                                                       | Default Value    |
+|----------------------|-------------------------------------------------------------------|------------------|
+| `SESSIONS_ENDPOINT`  | Specify the base URL for the sessions server. Do not include path | http://permissions:8080 |
+| `DB_IMPLEMENTATION`  | Specifies the database implementation. Should be set to `MONGODB` or `MOCK`. | `MONGODB`        |
+| `DB_HOST`            | The hostname or IP address of the MongoDB server. Typically, this is the service name defined in `docker-compose.yml`. | `mongo`          |
+| `DB_PORT`            | The port on which the MongoDB server is running.                  | `27017`          |
+| `DB_USERNAME`        | The username used for authentication with the MongoDB database.   | `mongo_db_user`  |
+| `DB_PASSWORD`        | The password used for authentication with the MongoDB database.   | `password`       |

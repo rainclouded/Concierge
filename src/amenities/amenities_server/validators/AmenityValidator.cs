@@ -1,38 +1,49 @@
-public static class AmenityValidator
+using amenities_server.application;
+using amenities_server.model;
+using amenities_server.persistence;
+
+namespace amenities_server.validators
 {
-    private static IAmenityPersistence amenityPersistence;
-    
-    public static bool ValidateAmenityParameters(Amenity amenity)
+    public static class AmenityValidator
     {
-        if (amenity == null)
+        private static IAmenityPersistence amenityPersistence;
+
+        public static bool ValidateAmenityParameters(Amenity amenity)
         {
-            return false;
+            if (amenity == null)
+            {
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(amenity.Name))
+            {
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(amenity.Description))
+            {
+                return false;
+            }
+
+            if (amenity.StartTime >= amenity.EndTime)
+            {
+                return false;
+            }
+
+            return true;
         }
 
-        if(string.IsNullOrWhiteSpace(amenity.Name)){
-            return false;
+        public static bool ValidateNewAmenity(Amenity amenity)
+        {
+            //get recent instance of persistence
+            amenityPersistence = Services.GetAmenityPersistence();
+
+            if (!ValidateAmenityParameters(amenity))
+            {
+                return false;
+            }
+
+            return amenity.Id < 0 || amenityPersistence.GetAmenityByID(amenity.Id) == null;
         }
-
-        if(string.IsNullOrWhiteSpace(amenity.Description)){
-            return false;
-        }
-
-        if(amenity.StartTime >= amenity.EndTime){
-            return false;
-        }
-
-        return true;
-    }
-
-    public static bool ValidateNewAmenity(Amenity amenity)
-    {
-        //get recent instance of persistence
-        amenityPersistence = Services.GetAmenityPersistence();
-
-        if (!ValidateAmenityParameters(amenity)){
-            return false;
-        }
-
-        return amenity.Id < 0 || amenityPersistence.GetAmenityByID(amenity.Id) == null;
     }
 }

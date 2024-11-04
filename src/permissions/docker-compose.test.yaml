@@ -1,0 +1,23 @@
+services:
+  permissions:
+    build: .
+    ports:
+      - 50003:8080
+    environment:
+      PERMISSION_DB_IMPLEMENTATION: MARIADB
+      PERMISSION_DB_USERNAME: root
+      PERMISSION_DB_PASSWORD: default
+      PERMISSION_DB_HOST: permissions-db
+      PERMISSION_DB_PORT: 3306
+      PERMISSION_DB_NAME: permissions_db
+    depends_on:
+      - permissions-db
+  permissions-db:
+    image: mariadb:11.6.1-ubi9-rc
+    ports:
+      - 3306:3306
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: default
+    volumes:
+      - ./internal/config/initTest.sql:/docker-entrypoint-initdb.d/init.sql

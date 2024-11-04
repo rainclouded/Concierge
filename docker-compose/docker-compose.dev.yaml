@@ -1,0 +1,39 @@
+include:
+  - ../src/guest_webapp/docker-compose.yaml     # uses port 8081
+  - ../src/staff_webapp/docker-compose.yaml     # uses port 8082
+  - ../src/permissions/docker-compose.dev.yaml      # uses port 50003
+
+services:
+  nginx:
+    image: nginx:stable-alpine-slim
+    ports:
+      - 8089:80
+      - 80:80
+    volumes:
+      - ./configs/nginx.conf:/etc/nginx/nginx.conf
+
+  accounts: #uses port 50001
+    extends:
+      file: ../src/accounts/docker-compose.dev.yaml
+      service: accounts
+    depends_on:
+      - accounts_mongo
+  accounts_mongo:
+    extends:
+      file: ../src/accounts/docker-compose.dev.yaml
+      service: accounts_mongo
+
+  incident_reports: #uses port 50005
+    extends:
+      file: ../src/incident_reports/docker-compose.dev.yaml
+      service: incident_reports
+      
+  amenities: #uses port 50004
+    extends:
+      file: ../src/amenities/docker-compose.dev.yaml
+      service: amenities
+
+  task_system: #uses port 50006
+    extends:
+      file: ../src/task_system/docker-compose.dev.yaml
+      service: task_system
