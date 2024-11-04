@@ -10,7 +10,7 @@ import {
   faHamburger,
   faShirt,
   faSpa,
-  faWrench
+  faWrench,
 } from "@fortawesome/free-solid-svg-icons";
 
 import ServiceCard from "../components/ServiceCard";
@@ -18,23 +18,24 @@ import { removeSessionKey } from "../utils/auth";
 import RequestCard from "../components/RequestCard";
 
 const HomePage = () => {
+  const roomKey = sessionStorage.getItem("roomKey"); //room key of user
   //State for requests
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
 
-  const RoomServiceTag = "Room Cleaning"
-  const FoodDeliveryTag = "Food Delivery"
-  const WakeUpCallTag = "Wake Up Call"
-  const LaundryServiceTag = "Laundry Service"
-  const SpaMassageTag = "Spa And Massage"
-  const Maintenance = "Maintenance"
+  const RoomServiceTag = "Room Cleaning";
+  const FoodDeliveryTag = "Food Delivery";
+  const WakeUpCallTag = "Wake Up Call";
+  const LaundryServiceTag = "Laundry Service";
+  const SpaMassageTag = "Spa And Massage";
+  const MaintenanceTag = "Maintenance";
 
-  const [mainDish, setMainDish] = useState('');
-  const [sideDish, setSideDish] = useState('');
-  const [drink, setDrink] = useState('');
+  const [mainDish, setMainDish] = useState("");
+  const [sideDish, setSideDish] = useState("");
+  const [drink, setDrink] = useState("");
   const [mainChecked, setMainChecked] = useState(false);
   const [sideChecked, setSideChecked] = useState(false);
   const [drinkChecked, setDrinkChecked] = useState(false);
-  
+
   // State for side drawers
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isProfileOpen, setProfileOpen] = useState(false);
@@ -51,9 +52,9 @@ const HomePage = () => {
 
   const handleLogout = () => {
     removeSessionKey();
-    window.location.href = '/';
-  }
-  
+    window.location.href = "/";
+  };
+
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   };
@@ -63,41 +64,36 @@ const HomePage = () => {
     setMainDish("");
     setSideDish("");
     setDrink("");
-    
+
     setMainChecked(false);
     setSideChecked(false);
     setDrinkChecked(false);
   };
 
   const handleSubmit = async (tag) => {
-    let items = '';
-    if(tag === FoodDeliveryTag){
+    let items = "";
 
-      console.log(mainDish)
-        if (mainChecked && mainDish) {
-          items += `Main: ${mainDish}. `;
-        }
-        if (sideChecked && sideDish) {
-          items += `Side: ${sideDish}. `;
-        }
-        if (drinkChecked && drink) {
-          items += `Drink: ${drink}. `;
-        }
+    if (tag === FoodDeliveryTag) {
+      items = handleFoodDelivery();
     }
+    const isInvalidRequest =
+      (tag === WakeUpCallTag && !inputValue) ||
+      (tag === FoodDeliveryTag && !items) ||
+      (tag === MaintenanceTag && !inputValue);
 
-    if((tag === WakeUpCallTag && inputValue === "") || (tag === FoodDeliveryTag && items === "")){
-      alert("Can't send your request: please enter values!");
+    if (isInvalidRequest) {
+      alert("Can't send your request: please enter a valid description!");
       setInputValue("");
-      return;  
+      return;
     }
 
     const requestBody = {
-      taskType: tag.replace(/\s+/g, ''), 
-      description: tag === FoodDeliveryTag ? items.trim() : inputValue,
-      roomId: roomInfo.roomNumber,
+      taskType: tag.replace(/\s+/g, ""),
+      description: items || inputValue || "N/A",
+      roomId: parseInt(roomKey, 10),
       requesterId: 100,
     };
-    
+
     setInputValue("");
 
     try {
@@ -111,45 +107,65 @@ const HomePage = () => {
           body: JSON.stringify(requestBody),
         }
       );
-      if (response.ok) alert("Successfully submitted request!");
-      else throw new Error("Failed to submit request");
+
+      if (response.ok) {
+        alert("Successfully submitted request!");
+      } else {
+        throw new Error("Failed to submit request");
+      }
     } catch (error) {
-      alert("Couldn't submit your request at this time! ");
-      console.log(error);
+      alert("Couldn't submit your request at this time!");
+      console.error(error);
     }
+  };
+
+  const handleFoodDelivery = () => {
+    let items = "";
+
+    if (mainChecked && mainDish) {
+      items += `Main: ${mainDish}. `;
+    }
+    if (sideChecked && sideDish) {
+      items += `Side: ${sideDish}. `;
+    }
+    if (drinkChecked && drink) {
+      items += `Drink: ${drink}. `;
+    }
+
+    return items.trim();
   };
 
   return (
     <div className="h-screen bg-[#ECD8C8] relative flex flex-col">
-    <div className="flex-grow overflow-y-auto">
-      {/* Sticky Header */}
-      <header className="sticky top-0 bg-white p-4 shadow-md flex justify-between items-center z-40">
-        <button           
-          className="p-2 h-10 w-10 flex items-center justify-center"
-          onClick={toggleMenu}
-        >
-          <FontAwesomeIcon icon={faBars} className="text-xl" />
-        </button>
-        <h1 className="text-2xl font-extrabold">Quick Service</h1>
-        <button
-          onClick={toggleProfile}
-          className="rounded-full bg-gray-300 p-2 h-10 w-10 flex items-center justify-center"
-        >
-          <FontAwesomeIcon icon={faUser} className="text-xl" />
-        </button>
-      </header>
+      <div className="flex-grow overflow-y-auto">
+        {/* Sticky Header */}
+        <header className="sticky top-0 bg-white p-4 shadow-md flex justify-between items-center z-40">
+          <button
+            className="p-2 h-10 w-10 flex items-center justify-center"
+            onClick={toggleMenu}
+          >
+            <FontAwesomeIcon icon={faBars} className="text-xl" />
+          </button>
+          <h1 className="text-2xl font-extrabold">Quick Service</h1>
+          <button
+            onClick={toggleProfile}
+            className="rounded-full bg-gray-300 p-2 h-10 w-10 flex items-center justify-center"
+          >
+            <FontAwesomeIcon icon={faUser} className="text-xl" />
+          </button>
+        </header>
 
-      {/* Light Brown Section */}
-      <div className="p-4 bg-[#ECD8C8] rounded-t-xl text-center mx-auto max-w-full md:max-w-[75%]">
-        <div className="text-[#8F613C] text-2xl font-bold">
-          {roomInfo.roomNumber}
+        {/* Light Brown Section */}
+        <div className="p-4 bg-[#ECD8C8] rounded-t-xl text-center mx-auto max-w-full md:max-w-[75%]">
+          <div className="text-[#8F613C] text-2xl font-bold">
+            {roomInfo.roomNumber}
+          </div>
+          <div className="text-gray-500">{roomInfo.periodOfStay}</div>
+          <h2 className="mt-4 text-lg font-semibold">Explore Our Services</h2>
+          <p>Choose your service. We will deliver right to your door!</p>
         </div>
-        <div className="text-gray-500">{roomInfo.periodOfStay}</div>
-        <h2 className="mt-4 text-lg font-semibold">Explore Our Services</h2>
-        <p>Choose your service. We will deliver right to your door!</p>
-      </div>
 
-      {/* Requests Cards */}
+        {/* Requests Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 mx-auto justify-items-center max-w-full md:max-w-[75%]">
           <RequestCard
             icon={faBroom}
@@ -165,7 +181,7 @@ const HomePage = () => {
               value={inputValue}
               onChange={handleInputChange}
               className="border rounded p-2 mb-4 w-full"
-              style={{ height: '180px', resize: 'none' }}
+              style={{ height: "180px", resize: "none" }}
             />
           </RequestCard>
 
@@ -178,14 +194,18 @@ const HomePage = () => {
             <label htmlFor="request" className="block mb-2">
               Choose from our selection:
             </label>
+
             {/* Main Dish Selection */}
             <div className="flex items-center mb-4">
-              <select 
+              <select
                 value={mainDish}
                 onChange={(e) => setMainDish(e.target.value)}
                 className="border rounded p-2 mr-2 w-48"
-              > 
-                <option value="">Select a Main Dish</option>
+                disabled={!mainChecked} // Disabled unless checkbox is checked
+              >
+                <option value="" disabled>
+                  Select a Main Dish
+                </option>
                 <option value="Grilled Chicken">Grilled Chicken</option>
                 <option value="Steak">Steak</option>
                 <option value="Pasta Primavera">Pasta Primavera</option>
@@ -196,7 +216,10 @@ const HomePage = () => {
                 <input
                   type="checkbox"
                   checked={mainChecked}
-                  onChange={() => setMainChecked(!mainChecked)}
+                  onChange={() => {
+                    setMainChecked(!mainChecked);
+                    if (mainChecked) setMainDish(""); // Reset dropdown when unchecked
+                  }}
                   className="mr-2 w-5 h-5"
                 />
                 <span>Main</span>
@@ -207,10 +230,13 @@ const HomePage = () => {
             <div className="flex items-center mb-4">
               <select
                 value={sideDish}
-                onChange={(e) => setSideDish(e.target.value)} 
+                onChange={(e) => setSideDish(e.target.value)}
                 className="border rounded p-2 mr-2 w-48"
+                disabled={!sideChecked} // Disabled unless checkbox is checked
               >
-                <option value="">Select a Side Dish</option>
+                <option value="" disabled>
+                  Select a Side Dish
+                </option>
                 <option value="French Fries">French Fries</option>
                 <option value="Caesar Salad">Caesar Salad</option>
                 <option value="Steamed Vegetables">Steamed Vegetables</option>
@@ -221,7 +247,10 @@ const HomePage = () => {
                 <input
                   type="checkbox"
                   checked={sideChecked}
-                  onChange={() => setSideChecked(!sideChecked)}
+                  onChange={() => {
+                    setSideChecked(!sideChecked);
+                    if (sideChecked) setSideDish(""); // Reset dropdown when unchecked
+                  }}
                   className="mr-2 w-5 h-5"
                 />
                 <span>Side</span>
@@ -232,10 +261,13 @@ const HomePage = () => {
             <div className="flex items-center mb-4">
               <select
                 value={drink}
-                onChange={(e) => setDrink(e.target.value)} 
+                onChange={(e) => setDrink(e.target.value)}
                 className="border rounded p-2 mr-2 w-48"
+                disabled={!drinkChecked} // Disabled unless checkbox is checked
               >
-                <option value="">Select a Drink</option>
+                <option value="" disabled>
+                  Select a Drink
+                </option>
                 <option value="Soda">Soda</option>
                 <option value="Red Wine">Red Wine</option>
                 <option value="Cocktail">Cocktail</option>
@@ -246,7 +278,10 @@ const HomePage = () => {
                 <input
                   type="checkbox"
                   checked={drinkChecked}
-                  onChange={() => setDrinkChecked(!drinkChecked)}
+                  onChange={() => {
+                    setDrinkChecked(!drinkChecked);
+                    if (drinkChecked) setDrink(""); // Reset dropdown when unchecked
+                  }}
                   className="mr-2 w-5 h-5"
                 />
                 <span>Drink</span>
@@ -296,9 +331,9 @@ const HomePage = () => {
               value={inputValue}
               onChange={handleInputChange}
               className="border rounded p-2 mb-4 w-full"
-              style={{ height: '180px', resize: 'none' }}
+              style={{ height: "180px", resize: "none" }}
             />
-          </RequestCard>    
+          </RequestCard>
 
           <RequestCard
             icon={faSpa}
@@ -314,13 +349,13 @@ const HomePage = () => {
               value={inputValue}
               onChange={handleInputChange}
               className="border rounded p-2 mb-4 w-full"
-              style={{ height: '180px', resize: 'none' }}
+              style={{ height: "180px", resize: "none" }}
             />
-          </RequestCard>   
+          </RequestCard>
 
           <RequestCard
             icon={faWrench}
-            text={Maintenance}
+            text={MaintenanceTag}
             onSubmit={handleSubmit}
             onClose={handleModalClose}
           >
@@ -332,12 +367,12 @@ const HomePage = () => {
               value={inputValue}
               onChange={handleInputChange}
               className="border rounded p-2 mb-4 w-full"
-              style={{ height: '180px', resize: 'none' }}
+              style={{ height: "180px", resize: "none" }}
             />
-          </RequestCard>    
+          </RequestCard>
         </div>
       </div>
-      
+
       {/* Left Side Drawer (Menu) */}
       {isMenuOpen && (
         <div
@@ -372,7 +407,9 @@ const HomePage = () => {
                 <a href="/home">Settings</a>
               </li>
               <li>
-                <a href="#" onClick={handleLogout}>Log Out</a>
+                <a href="#" onClick={handleLogout}>
+                  Log Out
+                </a>
               </li>
             </ul>
           </div>
@@ -392,16 +429,13 @@ const HomePage = () => {
           link="/incident_reports"
         />
       </footer>
-
     </div>
   );
-  
 };
 
-// hardcoded, change later
 const getRoomInfo = () => {
   return {
-    roomNumber: "Room 404",
+    roomNumber: "Room " + sessionStorage.getItem("roomKey"),
     periodOfStay: "23.11  11:00am - 26.11  11:00am",
   };
 };
