@@ -36,7 +36,7 @@ namespace task_system_server.Tests.Integration
 
             // Initialize repository with the test context
             var repository = new PostgresTaskSystemRepository(_context);
-            var validator = new MockPermissionValidator;
+            var validator = new MockPermissionValidator();
             _controller = new TaskSystemController(repository, validator);
 
             // Setup controller context
