@@ -195,6 +195,31 @@ public class SubTaskSystemRepositoryTest
     }
 
     [Fact]
+    public async Task UpdateAssigneeAsync_ExistingTask_UpdatesAssigneeId()
+    {
+        int taskId = 1;
+        int newAssigneeId = 10;
+
+        var result = await _repository.UpdateAssigneeAsync(taskId, newAssigneeId);
+        var updatedTask = await _repository.GetTaskByIdAsync(taskId);
+
+        Assert.NotNull(result);
+        Assert.Equal(newAssigneeId, result.AssigneeId);
+        Assert.NotNull(updatedTask);
+        Assert.Equal(newAssigneeId, updatedTask.AssigneeId);
+    }
+
+    [Fact]
+    public async Task UpdateAssigneeAsync_NonexistentTask_ThrowsKeyNotFoundException()
+    {
+        int taskId = 999;
+        int newAssigneeId = 10;
+
+        await Assert.ThrowsAsync<KeyNotFoundException>(() => _repository.UpdateAssigneeAsync(taskId, newAssigneeId));
+    }
+
+
+    [Fact]
     public async Task DeleteTaskAsync_ExistingTask_DeletesAndReturnsTrue()
     {
         int taskId = 1;
