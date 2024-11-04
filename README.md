@@ -1,3 +1,5 @@
+[![Build Docker](https://github.com/rainclouded/Concierge/actions/workflows/docker-image.yml/badge.svg)](https://github.com/rainclouded/Concierge/actions/workflows/docker-image.yml)
+[![Publish Docker image](https://github.com/rainclouded/Concierge/actions/workflows/push-docker.yaml/badge.svg)](https://github.com/rainclouded/Concierge/actions/workflows/push-docker.yaml)
 # Team 6: Concierge
 
 ![Concierge Logo](/docs/images/logo.png)

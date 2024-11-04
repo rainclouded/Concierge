@@ -32,6 +32,23 @@ export class AddTaskModalComponent {
 
   // Validate and Save Task
   saveTask() {
+    if(
+      this.newRoomNumber 
+      && (
+        typeof this.newRoomNumber !== 'number' 
+        || this.newRoomNumber < 100 
+        || this.newRoomNumber > 500
+      )
+    )
+    {
+      this.errorMessage = 'Room number must be in the range 100-500.';
+      return;
+    }
+    if(this.newDescription && this.newDescription.length >= 400)
+    {
+      this.errorMessage = 'Description must be fewer than 400 characters.';
+      return;
+    }
     if (!this.newRoomNumber || !this.newTaskType || !this.newDescription) {
       this.errorMessage = 'All fields are required.';
       return;

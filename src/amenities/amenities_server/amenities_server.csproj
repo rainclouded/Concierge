@@ -7,6 +7,7 @@
     <UserSecretsId>e3140caf-96a2-40dc-a4b0-b0a79f61acea</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 
   <ItemGroup>
