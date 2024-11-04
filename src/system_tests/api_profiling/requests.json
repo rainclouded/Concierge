@@ -1,0 +1,71 @@
+{
+    "requests": [
+        {
+            "type":"get",
+            "url" : "http://localhost:50001/accounts"
+        },
+        {
+            "type":"post",
+            "url" : "http://localhost:50001/accounts",
+            "headers": {
+                "header1": "value"
+            },
+            "body":{
+                "username" : "staffman1",
+                "type" : "staff",
+                "password" : "LongPassword99"
+            }
+        },
+        {
+            "type":"post",
+            "url" : "http://localhost:50001/accounts",
+            "headers": {
+                "header1": "value"
+            },
+            "body":{
+                "username" : "staffman1",
+                "type" : "staff",
+                "password" : "LongPassword99"
+            }
+        },
+        {
+            "type":"post",
+            "url" : "http://localhost:50001/accounts",
+            "body":{
+                "username" : "100",
+                "type" : "guest"
+            }
+        },
+        {
+            "type":"post",
+            "url" : "http://localhost:50001/accounts/login_attempt",
+            "body":{
+                "username" : "staffman1",
+                "type" : "staff",
+                "password" : "LongPassword99"
+            }
+        },
+        {
+            "type":"post",
+            "url" : "http://localhost:50001/accounts/delete",
+            "body":{
+                "username" : "staffman1"
+            },
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcnkiOjE4MTYzNzk3NzIuODE1MjQ3fQ.uFq-3UXz2tk-cciqQSDMw855uDHrzHKB63ceTqzMK0nh_jl6ujCZ1rQBn0gqdPVSisS23uAJwfN88CPC-CHc5Q"
+            }
+        },
+        {
+            "type":"put",
+            "url" : "http://localhost:50001/accounts/update",
+            "body":{
+                "username" : "100"
+            },
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcnkiOjE4MTYzNzk3NzIuODE1MjQ3fQ.uFq-3UXz2tk-cciqQSDMw855uDHrzHKB63ceTqzMK0nh_jl6ujCZ1rQBn0gqdPVSisS23uAJwfN88CPC-CHc5Q"
+            }
+        }
+    ]
+}
