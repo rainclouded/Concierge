@@ -103,6 +103,9 @@ namespace task_system_server.Controllers
         [HttpPatch("{id}/assignee")]
         public async Task<IActionResult> UpdateAssignee([FromRoute] int id, [FromBody] UpdateAssigneeDto assigneeDto)
         {
+            if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.EDIT_TASKS, apiKey!))
+                return Unauthorized(new TaskSystemResponse<string>(ResponseMessages.UNAUTHORIZED, null));
+                
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
