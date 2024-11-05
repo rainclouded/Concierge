@@ -7,6 +7,7 @@ using task_system_server.Persistences;
 using task_system_server.Dtos;
 using task_system_server.Controllers;
 using task_system_server.Repositories;
+using task_system_server.Validators;
 using Microsoft.AspNetCore.Http;
 
 namespace task_system_server.Tests.Integration
@@ -33,14 +34,18 @@ namespace task_system_server.Tests.Integration
             _context = new TaskSystemDbContext(_dbContextOptions);
             _context.Database.EnsureCreated();
 
+            // Setup controller context
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = "TestsKey";
+
             // Initialize repository with the test context
             var repository = new PostgresTaskSystemRepository(_context);
-            _controller = new TaskSystemController(repository);
-
-            // Setup controller context
-            _controller.ControllerContext = new ControllerContext
+            _controller = new TaskSystemController(repository, new MockPermissionValidator())
             {
-                HttpContext = new DefaultHttpContext()
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = httpContext
+                }
             };
         }
 
