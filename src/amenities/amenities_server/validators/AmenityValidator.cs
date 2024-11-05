@@ -25,11 +25,6 @@ namespace amenities_server.validators
                 return false;
             }
 
-            if (amenity.StartTime >= amenity.EndTime)
-            {
-                return false;
-            }
-
             return true;
         }
 

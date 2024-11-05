@@ -400,7 +400,7 @@ func (m *MariaDB) UpdatePermissionGroup(id int, req *models.PermissionGroupReque
 
 	if req.Permissions != nil {
 		for _, permission := range req.Permissions {
-			_, err := tx.Exec("INSERT IGNORE INTO GroupPermissions (groupId, permission_id, value) VALUES (?, ?, ?)", id, permission.ID, permission.State)
+			_, err := tx.Exec(`INSERT INTO GroupPermissions (groupId, permission_id, value) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value = ?`, id, permission.ID, permission.State)
 			if err != nil {
 				tx.Rollback()
 				return err
@@ -521,7 +521,9 @@ ORDER BY p.id;
 		if err := rows.Scan(&p.ID, &p.Name, &p.Value); err != nil {
 			return nil, err
 		}
-		permissions = append(permissions, &p)
+		if p.Value {
+			permissions = append(permissions, &p)
+		}
 	}
 
 	if err := rows.Err(); err != nil {

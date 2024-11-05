@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 using Xunit;
 using task_system_server.Models;
 using task_system_server.Persistences;
 using task_system_server.Dtos;
 using task_system_server.Controllers;
 using task_system_server.Repositories;
+using task_system_server.Validators;
 
 namespace task_system_server.Tests.Integration
 {
@@ -31,9 +33,18 @@ namespace task_system_server.Tests.Integration
             _context = new TaskSystemDbContext(_dbContextOptions);
             _context.Database.EnsureCreated(); // Create the test database
 
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = "TestsKey";
+
             // Initialize repository with the test context
             var repository = new PostgresTaskSystemRepository(_context);
-            _controller = new TaskSystemController(repository);
+            _controller = new TaskSystemController(repository, new MockPermissionValidator())
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = httpContext
+                }
+            };
         }
 
         [Fact]

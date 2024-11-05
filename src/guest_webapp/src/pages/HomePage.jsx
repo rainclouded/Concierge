@@ -16,6 +16,8 @@ import {
 import ServiceCard from "../components/ServiceCard";
 import { removeSessionKey } from "../utils/auth";
 import RequestCard from "../components/RequestCard";
+import { fetchWithAuth } from "../utils/authFetch";
+
 
 const HomePage = () => {
   const roomKey = sessionStorage.getItem("roomKey"); //room key of user
@@ -97,7 +99,7 @@ const HomePage = () => {
     setInputValue("");
 
     try {
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `${import.meta.env.VITE_API_BASE_URL}/tasks/`,
         {
           method: "POST",
