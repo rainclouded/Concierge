@@ -15,4 +15,18 @@ services:
       - 80:80
     volumes:
       - ./configs/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - accounts_mongo
+      - accounts
+      - amenities
+      - amenities-postgres
+      - guest_webapp
+      - mongo_incident_reports_prod
+      - incident_reports
+      - permissions
+      - permissions-db
+      - staff_webapp
+      - task_system
+      - task_system_postgres
+
 
