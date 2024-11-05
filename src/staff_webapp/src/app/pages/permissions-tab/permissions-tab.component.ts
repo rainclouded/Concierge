@@ -51,11 +51,13 @@ export class PermissionsTabComponent {
       [];
 
     this.permissionGroups.forEach((pGroup) => {
-      pGroup.groupPermissions.forEach((permission) => {
-        if (!permissions.find(p=>p.permissionId == permission.permissionId)) {
-          permissions.push(permission)
-        }
-      });
+      if (pGroup.groupPermissions) { 
+        pGroup.groupPermissions.forEach((permission) => {
+          if (!permissions.find(p => p.permissionId === permission.permissionId)) {
+            permissions.push(permission);
+          }
+        });
+      }
     });
 
     Array.from(permissions, (permission) => {
@@ -66,17 +68,18 @@ export class PermissionsTabComponent {
         id: permission.permissionId,
         name: permission.permissionName,
       };
+    
       this.permissionGroups.forEach((group) => {
-        const groupPermission = group.groupPermissions.find(
+        const groupPermissions = group.groupPermissions || []; 
+    
+        const groupPermission = groupPermissions.find(
           (p) => p.permissionName === permission.permissionName
         );
-        let gName = group.groupName;
-        if (gName ==null || gName === "")
-        {
-          gName = "unknown"
-        }
+    
+        let gName = group.groupName || "unknown"; 
         permissionEntry[gName] = groupPermission?.permissionState ?? false;
       });
+    
       flatPermissionGroups.push(permissionEntry);
     });
     return flatPermissionGroups;

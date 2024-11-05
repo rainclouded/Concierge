@@ -8,6 +8,7 @@
         {
             var permData = _permClient.GetSessionData(sessionKey).GetAwaiter().GetResult();
             var permissionList = permData?.Data?.SessionData?.SessionPermissionList ?? [];
+            Console.WriteLine("permissionList:" + permissionList + "| permissionName:" + permissionName);
             return permissionList.Contains(permissionName);
         }
     }
