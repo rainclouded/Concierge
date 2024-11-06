@@ -20,7 +20,15 @@ So far we have been able to maintain all of our tests on every commit to both de
 
 ## Showoff
 
-@rainclouded
+### Leeroy
+My favourite code:
+
+https://github.com/rainclouded/Concierge/tree/main/src/amenities/amenities_server
+
+I am most proud of the way I designed the amenities microservice and how everything was separated into their own classes and interfaces by their own special delegated tasks. This separation reduced coupling and made the system more accessible for other group members, enabling smoother implementation, easier additions, quicker bug fixes, and better overall maintenance.
+
+### @rainclouded
+My favourite code:
 
 *Add link to profiler*
 
