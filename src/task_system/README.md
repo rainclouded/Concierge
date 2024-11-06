@@ -55,6 +55,9 @@ create task
 ### PUT /tasks/id
 update task with changed information
 
+### PATCH /tasks/id/assigneeId
+update task with new assignId
+
 ### DELETE /tasks/id
 delete specified task from database
 
