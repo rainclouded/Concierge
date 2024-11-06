@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace amenities_test
 {
     public class AmenitiesControllerTests
-    { 
+    {
         private AmenitiesController _controller;
         private IAmenityPersistence _amenityPersistence;
         private Amenity _testValidAmenity;
@@ -30,7 +30,7 @@ namespace amenities_test
 
             Services.Clear();
             _amenityPersistence = Services.GetAmenityPersistence();
-  
+
             _controller = new AmenitiesController();
             _controller.ControllerContext = new ControllerContext
             {
@@ -107,7 +107,7 @@ namespace amenities_test
         public void UpdateAmenity_ValidAmenity_IsSuccessful()
         {
             _amenityPersistence.AddAmenity(_testValidAmenity);
-            Assert.IsInstanceOf<OkObjectResult>(_controller.UpdateAmenity(_testValidAmenity.Id,_testValidAmenity));
+            Assert.IsInstanceOf<OkObjectResult>(_controller.UpdateAmenity(_testValidAmenity.Id, _testValidAmenity));
 
         }
 
@@ -117,15 +117,15 @@ namespace amenities_test
             _testValidAmenity = _amenityPersistence.AddAmenity(_testValidAmenity);
 
             _testUpdatedValidAmenity.Id = _testValidAmenity.Id;
-            
+
             _controller.UpdateAmenity(_testValidAmenity.Id, _testUpdatedValidAmenity);
 
             var result = _controller.GetAmenityByID(_testValidAmenity.Id) as OkObjectResult;
-            Assert.IsNotNull(result); 
-            
+            Assert.IsNotNull(result);
+
             var amenityResponse = result.Value as AmenityResponse<Amenity>;
-            Assert.IsNotNull(amenityResponse); 
-            
+            Assert.IsNotNull(amenityResponse);
+
             Assert.That(amenityResponse.Data, Is.EqualTo(_testUpdatedValidAmenity));
         }
         [Test]
