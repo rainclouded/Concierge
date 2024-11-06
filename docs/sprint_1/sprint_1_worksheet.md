@@ -1,6 +1,6 @@
 ## Testing Plan
 
-[Link to our testing plan](testing_plan.pdf)
+[Link to our testing plan](../project_docs/TestingPlan.pdf)
 
 ## Coverage:
 
