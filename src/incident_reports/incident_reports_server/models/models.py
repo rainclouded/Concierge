@@ -86,5 +86,10 @@ class ResponseMessages:
     GET_INCIDENT_REPORT_FAILED = "Incident report with specified id not found."
     INVALID_INCIDENT_REPORT_PASSED = "Bad Request. Incident report with invalid parameters was passed."
     INVALID_PARAMETERS_PASSED = "Bad Request. Invalid parameters was passed."
+    UNAUTHORIZED = "Your account does not have permission to do this operation."
 
-    
+class PermissionNames:
+    VIEW_IR =   "canViewIncidentReports"
+    EDIT_IR =   "canEditIncidentReports"
+    CREATE_IR = "canCreateIncidentReports"
+    DELETE_IR = "canDeleteIncidentReports"

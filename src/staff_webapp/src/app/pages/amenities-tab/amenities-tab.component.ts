@@ -58,4 +58,18 @@ export class AmenitiesTabComponent implements OnInit {
     this.isOpenWIndow = false;
     this.getAllAmenities();
   }
+
+  formatTimeToAMPM(time: string): string {
+    if (!time) return '';
+    const [hours, minutes] = time.split(':');
+    const date = new Date();
+    date.setHours(parseInt(hours, 10), parseInt(minutes, 10));
+
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  }
+
 }

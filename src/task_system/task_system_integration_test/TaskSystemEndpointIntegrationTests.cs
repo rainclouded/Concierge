@@ -7,6 +7,7 @@ using task_system_server.Persistences;
 using task_system_server.Dtos;
 using task_system_server.Controllers;
 using task_system_server.Repositories;
+using task_system_server.Validators;
 using Microsoft.AspNetCore.Http;
 
 namespace task_system_server.Tests.Integration
@@ -33,14 +34,18 @@ namespace task_system_server.Tests.Integration
             _context = new TaskSystemDbContext(_dbContextOptions);
             _context.Database.EnsureCreated();
 
+            // Setup controller context
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = "TestsKey";
+
             // Initialize repository with the test context
             var repository = new PostgresTaskSystemRepository(_context);
-            _controller = new TaskSystemController(repository);
-
-            // Setup controller context
-            _controller.ControllerContext = new ControllerContext
+            _controller = new TaskSystemController(repository, new MockPermissionValidator())
             {
-                HttpContext = new DefaultHttpContext()
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = httpContext
+                }
             };
         }
 
@@ -223,6 +228,64 @@ namespace task_system_server.Tests.Integration
             {
                 await _controller.UpdateTask(999, updateDto);
             });
+        }
+
+        [Fact]
+        public async Task UpdateAssignee_ReturnsOk_WhenTaskExists()
+        {
+            // Arrange
+            var task = new TaskItem
+            {
+                TaskType = TaskItemType.SpaAndMassage,
+                Description = "Massage appointment for room 305",
+                RoomId = 305,
+                RequesterId = 7,
+                AssigneeId = 4,
+                Status = TaskItemStatus.Pending,
+                CreatedAt = DateTime.UtcNow
+            };
+            await _context.Tasks.AddAsync(task);
+            await _context.SaveChangesAsync();
+
+            var updateAssigneeDto = new UpdateAssigneeDto
+            {
+                AssigneeId = 10
+            };
+
+            // Act
+            var actionResult = await _controller.UpdateAssignee(task.Id, updateAssigneeDto);
+            var okResult = actionResult as OkObjectResult;
+
+            // Assert
+            Assert.NotNull(okResult);
+            Assert.Equal((int)HttpStatusCode.OK, okResult.StatusCode);
+
+            var response = okResult.Value as TaskSystemResponse<TaskItem>;
+            Assert.NotNull(response);
+            Assert.Equal(ResponseMessages.UPDATE_TASK_SUCCESS, response.Message);
+            Assert.Equal(updateAssigneeDto.AssigneeId, response.Data?.AssigneeId);
+            Assert.Equal(task.TaskType, response.Data?.TaskType);
+            Assert.Equal(task.Description, response.Data?.Description);
+            Assert.Equal(task.Status, response.Data?.Status);
+            Assert.Equal(task.RoomId, response.Data?.RoomId);
+        }
+
+        [Fact]
+        public async Task UpdateAssignee_ThrowsKeyNotFoundException_WhenTaskDoesNotExist()
+        {
+            // Arrange
+            var updateAssigneeDto = new UpdateAssigneeDto
+            {
+                AssigneeId = 10
+            };
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+            {
+                await _controller.UpdateAssignee(999, updateAssigneeDto);
+            });
+
+            Assert.Equal("Task not found.", exception.Message);
         }
 
 

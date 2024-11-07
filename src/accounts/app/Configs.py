@@ -2,6 +2,7 @@
 Default Configurations for the account service
 """
 import hashlib
+from app.permissions.ClientPermissions import ClientPermissionValidator
 from app.database.Mockdata import Mockdata
 from app.permissions.MockPermissions import MockPermissions
 from app.database.MongoConnection import MongoConnection
@@ -30,7 +31,7 @@ STAFF_TYPE = 'staff'
 #The database to use
 if getenv('DEPLOYMENT') == 'production':
     DATABASE = MongoConnection()
-    PERMISSIONS = MockPermissions()
+    PERMISSIONS = ClientPermissionValidator()
 elif getenv('DEPLOYMENT') == 'development':
     DATABASE = MongoConnection()
     PERMISSIONS = MockPermissions()

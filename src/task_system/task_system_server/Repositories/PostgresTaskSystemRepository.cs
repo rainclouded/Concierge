@@ -44,6 +44,9 @@ public class PostgresTaskSystemRepository : ITaskSystemRepository
             throw new InvalidOperationException("TaskItem with the same ID already exists.");
         }
 
+        //Necessary format to store in DB
+        task.CreatedAt = DateTime.UtcNow;
+
         await _context.Tasks.AddAsync(task);
         await _context.SaveChangesAsync();
 
@@ -56,8 +59,22 @@ public class PostgresTaskSystemRepository : ITaskSystemRepository
 
         existingTask.TaskType = taskDto.TaskType;
         existingTask.Description = taskDto.Description;
-        existingTask.AssigneeId = taskDto.AssigneeId;
+        if (taskDto.AssigneeId.HasValue)
+        {
+            existingTask.AssigneeId = taskDto.AssigneeId.Value;
+        }
         existingTask.Status = taskDto.Status;
+
+        await _context.SaveChangesAsync();
+
+        return existingTask;
+    }
+
+    public async Task<TaskItem?> UpdateAssigneeAsync(int id, int assigneeId)
+    {
+        var existingTask = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id) ?? throw new KeyNotFoundException("Task not found.");
+
+        existingTask.AssigneeId = assigneeId;
 
         await _context.SaveChangesAsync();
 

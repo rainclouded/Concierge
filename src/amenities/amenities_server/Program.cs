@@ -1,3 +1,6 @@
+using amenities_server.services;
+using amenities_server.validators;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -17,6 +20,9 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<PermissionClient>();
+builder.Services.AddSingleton<IPermissionValidator, PermissionValidator>();
 
 var app = builder.Build();
 

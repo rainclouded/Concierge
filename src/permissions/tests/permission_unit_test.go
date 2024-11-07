@@ -3,6 +3,7 @@ package tests
 import (
 	"bytes"
 	"concierge/permissions/api"
+	"concierge/permissions/internal/constants"
 	"concierge/permissions/internal/database"
 	"concierge/permissions/internal/middleware"
 	"concierge/permissions/internal/models"
@@ -51,29 +52,56 @@ func ParsePermissionResponse(msg *middleware.MessageFormat) *models.Permission {
 
 func TestGetPermissionsOk(t *testing.T) {
 	router := api.NewRouter(api.WithDB(database.NewMockDB()))
-	req, _ := http.NewRequest(http.MethodGet, "/permissions", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permissions", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.JSONEq(t, RemoveTimestamp(w.Body.String()), `{"message":"Permissions retreived successfully","data":[{"permissionId":0,"permissionName":"canEditAll","permissionState":true},{"permissionId":1,"permissionName":"canViewAll","permissionState":true},{"permissionId":2,"permissionName":"canDelete","permissionState":true},{"permissionId":3,"permissionName":"canCreate","permissionState":true}],"timestamp":""}`)
+	assert.JSONEq(t, RemoveTimestamp(w.Body.String()), GetPermissionResponse())
+}
+
+func TestGetPermissionsViewer(t *testing.T) {
+	router := api.NewRouter(api.WithDB(database.NewMockDB()))
+	req, _ := RequestWithSession(t, "viewer", http.MethodGet, "/permissions", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.JSONEq(t, RemoveTimestamp(w.Body.String()), GetPermissionResponse())
+}
+
+func TestGetPermissionsGuest(t *testing.T) {
+	router := api.NewRouter(api.WithDB(database.NewMockDB()))
+	req, _ := RequestWithSession(t, "guest", http.MethodGet, "/permissions", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+}
+
+func TestGetPermissionsNoAuth(t *testing.T) {
+	router := api.NewRouter(api.WithDB(database.NewMockDB()))
+	req, _ := RequestWithSession(t, "nil", http.MethodGet, "/permissions", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
 }
 
 func TestGetPermissionsEmpty(t *testing.T) {
 	db := database.NewMockDB()
 	db.ClearPermissions()
 	router := api.NewRouter(api.WithDB(db))
-	req, _ := http.NewRequest(http.MethodGet, "/permissions", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permissions", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.JSONEq(t, RemoveTimestamp(w.Body.String()), `{"message":"Permissions retreived successfully","data":[],"timestamp":""}`)
 }
 
 func TestGetPermissionsNoDb(t *testing.T) {
 	router := api.NewRouter(api.WithDB(nil))
-	req, _ := http.NewRequest(http.MethodGet, "/permissions", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permissions", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -83,18 +111,49 @@ func TestGetPermissionsNoDb(t *testing.T) {
 func TestGetPermissionByIdOk(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
-	req, _ := http.NewRequest(http.MethodGet, "/permissions/1", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permissions/1", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.JSONEq(t, RemoveTimestamp(w.Body.String()), `{"message":"Permission found successfully","data":{"permissionId":1,"permissionName":"canViewAll","permissionState":true},"timestamp":""}`)
+	assert.JSONEq(t, RemoveTimestamp(w.Body.String()), GetPermission1Response())
+}
+
+func TestGetPermissionByIdViewer(t *testing.T) {
+	db := database.NewMockDB()
+	router := api.NewRouter(api.WithDB(db))
+	req, _ := RequestWithSession(t, "viewer", http.MethodGet, "/permissions/1", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.JSONEq(t, RemoveTimestamp(w.Body.String()), GetPermission1Response())
+}
+
+func TestGetPermissionByIdGuest(t *testing.T) {
+	db := database.NewMockDB()
+	router := api.NewRouter(api.WithDB(db))
+	req, _ := RequestWithSession(t, "guest", http.MethodGet, "/permissions/1", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
+}
+
+func TestGetPermissionByIdNoAuth(t *testing.T) {
+	db := database.NewMockDB()
+	router := api.NewRouter(api.WithDB(db))
+	req, _ := RequestWithSession(t, "nil", http.MethodGet, "/permissions/1", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
 }
 
 func TestGetPermissionByIdNotFound(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
-	req, _ := http.NewRequest(http.MethodGet, "/permissions/100", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permissions/100", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -104,7 +163,7 @@ func TestGetPermissionByIdNotFound(t *testing.T) {
 func TestGetPermissionByIdBadId(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
-	req, _ := http.NewRequest(http.MethodGet, "/permissions/1a00", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permissions/1a00", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -113,7 +172,7 @@ func TestGetPermissionByIdBadId(t *testing.T) {
 
 func TestGetPermissionByIdNoDb(t *testing.T) {
 	router := api.NewRouter(api.WithDB(nil))
-	req, _ := http.NewRequest(http.MethodGet, "/permissions/1", nil)
+	req, _ := RequestWithSession(t, "admin", http.MethodGet, "/permissions/1", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -125,7 +184,7 @@ func TestPostPermissionOk(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newPermission)
-	req, _ := http.NewRequest(http.MethodPost, "/permissions", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permissions", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -135,10 +194,10 @@ func TestPostPermissionOk(t *testing.T) {
 		t.Fatalf("Failed to decode response: %s", err.Error())
 	}
 
-	perm, _ := db.GetPermissionById(4)
+	perm, _ := db.GetPermissionById(5)
 	//Ensure expected data was created
 	assert.Equal(t, &models.Permission{
-		ID:    4,
+		ID:    5,
 		Name:  "example",
 		Value: true,
 	}, perm)
@@ -147,12 +206,48 @@ func TestPostPermissionOk(t *testing.T) {
 	assert.Equal(t, perm, ParsePermissionResponse(&response))
 }
 
-func TestPostPermissionDuplicate(t *testing.T) {
-	newPermission := models.PermissionPostRequest{Name: "canEditAll"}
+func TestPostPermissionViewer(t *testing.T) {
+	newPermission := models.PermissionPostRequest{Name: "example"}
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newPermission)
-	req, _ := http.NewRequest(http.MethodPost, "/permissions", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "viewer", http.MethodPost, "/permissions", bytes.NewBuffer(reqBody))
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
+}
+
+func TestPostPermissionGuest(t *testing.T) {
+	newPermission := models.PermissionPostRequest{Name: "example"}
+	db := database.NewMockDB()
+	router := api.NewRouter(api.WithDB(db))
+	reqBody, _ := json.Marshal(newPermission)
+	req, _ := RequestWithSession(t, "guest", http.MethodPost, "/permissions", bytes.NewBuffer(reqBody))
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
+}
+
+func TestPostPermissionNoAuth(t *testing.T) {
+	newPermission := models.PermissionPostRequest{Name: "example"}
+	db := database.NewMockDB()
+	router := api.NewRouter(api.WithDB(db))
+	reqBody, _ := json.Marshal(newPermission)
+	req, _ := RequestWithSession(t, "nil", http.MethodPost, "/permissions", bytes.NewBuffer(reqBody))
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
+}
+
+func TestPostPermissionDuplicate(t *testing.T) {
+	newPermission := models.PermissionPostRequest{Name: constants.CanEditPermissionGroups}
+	db := database.NewMockDB()
+	router := api.NewRouter(api.WithDB(db))
+	reqBody, _ := json.Marshal(newPermission)
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permissions", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -164,7 +259,7 @@ func TestPostPermissionNoName(t *testing.T) {
 	db := database.NewMockDB()
 	router := api.NewRouter(api.WithDB(db))
 	reqBody, _ := json.Marshal(newPermission)
-	req, _ := http.NewRequest(http.MethodPost, "/permissions", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permissions", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -175,7 +270,7 @@ func TestPostPermissionNoDb(t *testing.T) {
 	newPermission := models.PermissionPostRequest{Name: "example"}
 	router := api.NewRouter(api.WithDB(nil))
 	reqBody, _ := json.Marshal(newPermission)
-	req, _ := http.NewRequest(http.MethodPost, "/permissions", bytes.NewBuffer(reqBody))
+	req, _ := RequestWithSession(t, "admin", http.MethodPost, "/permissions", bytes.NewBuffer(reqBody))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 

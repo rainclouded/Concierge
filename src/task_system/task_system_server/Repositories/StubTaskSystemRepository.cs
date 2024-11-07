@@ -135,8 +135,20 @@ public class StubTaskSystemRepository : ITaskSystemRepository
 
         existingTask.TaskType = taskDto.TaskType;
         existingTask.Description = taskDto.Description;
-        existingTask.AssigneeId = taskDto.AssigneeId;
+        if (taskDto.AssigneeId.HasValue)
+        {
+            existingTask.AssigneeId = taskDto.AssigneeId.Value;
+        }
         existingTask.Status = taskDto.Status;
+
+        return await Task.FromResult(existingTask);
+    }
+
+    public async Task<TaskItem?> UpdateAssigneeAsync(int id, int assigneeId)
+    {
+        var existingTask = _tasks.FirstOrDefault(t => t.Id == id) ?? throw new KeyNotFoundException("Task not found.");
+
+        existingTask.AssigneeId = assigneeId;
 
         return await Task.FromResult(existingTask);
     }

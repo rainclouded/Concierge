@@ -4,6 +4,7 @@ using task_system_server.Interfaces;
 using task_system_server.Dtos;
 using task_system_server.Mappers;
 using Microsoft.AspNetCore.Cors;
+using task_system_server.Validators;
 
 namespace task_system_server.Controllers
 {
@@ -13,16 +14,21 @@ namespace task_system_server.Controllers
     public class TaskSystemController : ControllerBase
     {
         private readonly ITaskSystemRepository _taskSystemRepository;
+        private readonly IPermissionValidator _permissionValidator;
 
-        public TaskSystemController(ITaskSystemRepository taskSystemRepository)
+        public TaskSystemController(ITaskSystemRepository taskSystemRepository, IPermissionValidator permissionValidator)
         {
             _taskSystemRepository = taskSystemRepository;
+            _permissionValidator = permissionValidator;
         }
 
         //GET: /tasks
         [HttpGet]
         public async Task<IActionResult> GetTasks([FromQuery] QueryObject query)
         {
+            if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey!))
+                return Unauthorized(new TaskSystemResponse<string>(ResponseMessages.UNAUTHORIZED, null));
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -40,6 +46,9 @@ namespace task_system_server.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTaskById([FromRoute] int id)
         {
+            if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey!))
+                return Unauthorized(new TaskSystemResponse<string>(ResponseMessages.UNAUTHORIZED, null));
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -57,7 +66,9 @@ namespace task_system_server.Controllers
         [HttpPost]
         public async Task<IActionResult> AddTask([FromBody] AddTaskDto taskDto)
         {
-            //TODO: validate permission
+            
+            if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey!))
+                return Unauthorized(new TaskSystemResponse<string>(ResponseMessages.UNAUTHORIZED, null));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -77,7 +88,8 @@ namespace task_system_server.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTask([FromRoute] int id, [FromBody] UpdateTaskDto taskDto)
         {
-            //TODO: validate permission
+            if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.EDIT_TASKS, apiKey!))
+                return Unauthorized(new TaskSystemResponse<string>(ResponseMessages.UNAUTHORIZED, null));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -87,11 +99,27 @@ namespace task_system_server.Controllers
             return Ok(new TaskSystemResponse<TaskItem>(ResponseMessages.UPDATE_TASK_SUCCESS, updatedTask));
         }
 
+        // PATCH: /tasks/{id}/assignee
+        [HttpPatch("{id}/assignee")]
+        public async Task<IActionResult> UpdateAssignee([FromRoute] int id, [FromBody] UpdateAssigneeDto assigneeDto)
+        {
+            if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.EDIT_TASKS, apiKey!))
+                return Unauthorized(new TaskSystemResponse<string>(ResponseMessages.UNAUTHORIZED, null));
+                
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var updatedTask = await _taskSystemRepository.UpdateAssigneeAsync(id, assigneeDto.AssigneeId);
+
+            return Ok(new TaskSystemResponse<TaskItem>(ResponseMessages.UPDATE_TASK_SUCCESS, updatedTask));
+        }
+
         //DELETE: /tasks/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask([FromRoute] int id)
         {
-            //TODO: validate permission
+            if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.DELETE_TASKS, apiKey!))
+                return Unauthorized(new TaskSystemResponse<string>(ResponseMessages.UNAUTHORIZED, null));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

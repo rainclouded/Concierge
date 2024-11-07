@@ -51,6 +51,7 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+        cache: 'pip'
     - name: Install dependencies
       run: |
         cd /home/runner/work/Concierge/Concierge/src/incident_reports/

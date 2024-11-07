@@ -10,4 +10,5 @@ public class ResponseMessages
     public const string UPDATE_TASK_SUCCESS = "Task updated successfully.";
     public const string DELETE_TASK_SUCCESS = "Task deleted successfully.";
     public const string INVALID_TASK_PASSED = "Bad request. Task with invalid parameters was passed.";
+    public const string UNAUTHORIZED = "Your account does not have permission to perform this action.";
 }

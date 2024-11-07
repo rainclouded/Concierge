@@ -20,4 +20,4 @@ services:
     environment:
       MARIADB_ROOT_PASSWORD: default
     volumes:
-      - ./internal/config/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./internal/config/initTest.sql:/docker-entrypoint-initdb.d/init.sql
