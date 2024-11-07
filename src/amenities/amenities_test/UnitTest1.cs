@@ -33,7 +33,6 @@ namespace amenities_test
             _amenityPersistence = Services.GetAmenityPersistence();
 
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["X-API-Key"] = "TestsKey";
             _controller = new AmenitiesController(new MockPermissionValidator())
             {
                 ControllerContext = new ControllerContext
