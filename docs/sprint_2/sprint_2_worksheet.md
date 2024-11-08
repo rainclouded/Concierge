@@ -366,3 +366,8 @@ The task system is my favorite project—designing it was incredibly rewarding a
 ### Mykola
 [My favourite code](https://github.com/rainclouded/Concierge/tree/main/src/staff_webapp/src/app/components/task-modal)
 I focused on designing the Task Modal component, which provides a user-friendly and robust interface for managing individual tasks. This component combines complex functionality, robust state management, and a user-focused design, all while maintaining a simple, polished interface.
+
+### Josh
+[My favourite code](https://github.com/rainclouded/Concierge/blob/documentation/worksheet/84963211/src/permissions/api/routes.go#L23-L31)
+This mirrors the gin config structure and elegantly enables dependency injection. We can simply override the default options when creating a new routing object. While there are other solutions to managing DI, I really like this solution, since it feels very Go-like.
+
