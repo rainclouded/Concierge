@@ -1,6 +1,6 @@
 
 """
-Module for integration tests
+Module for running api tests
 """
 import json
 import os
