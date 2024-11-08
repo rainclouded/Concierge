@@ -129,5 +129,5 @@ This is an api profiler @rainclouded wrote in a very pythonic fashion.
 The task system is my favorite project—designing it was incredibly rewarding as I learned .NET and applied the repository pattern to create a robust service structure. I enjoyed building it with well-defined layers, which added flexibility and organization to the code, making each component more efficient and maintainable.
 
 ### Mykola
-[My favourite code](https://github.com/rainclouded/Concierge/src/staff_webapp/src/app/components/task-modal)
+[My favourite code](https://github.com/rainclouded/Concierge/tree/main/src/staff_webapp/src/app/components/task-modal)
 I focused on designing the Task Modal component, which provides a user-friendly and robust interface for managing individual tasks. This component combines complex functionality, robust state management, and a user-focused design, all while maintaining a simple, polished interface.
