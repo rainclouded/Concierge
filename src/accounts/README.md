@@ -72,6 +72,17 @@ Handles all /accounts endpoints
      body: {'username' : '<username>', 'password' : '<password>'}
      returns: a message containing if the login was successful else error
 
+   /accounts/delete - Update a user account
+     body: {'username' : '<username>'}
+     headers: {'X-Api-Key' : <jwt token>}
+     returns: a message containing if the delete was successful else error
+
+
+### Put
+    /accounts/update
+     body: {'username' : '<username>'}
+     header: {'X-Api-Key': <jwt token>}
+     returns: Message if account update was successful else error message
 
 ## Architecture
 
@@ -80,6 +91,7 @@ Handles all /accounts endpoints
 -   The database module maintains interfaces/controllers to the database
 -   The user_service module facilitates the creation/deletion of user accounts
 -   The validation manager provides data validation for user credentials
+-   Currently the database used for the production environment is MongoDB (otherwise, a mock is available for testing)
 
 Below is an image of the interactions between the modules.
 
