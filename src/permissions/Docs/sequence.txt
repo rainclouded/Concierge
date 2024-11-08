@@ -1,0 +1,33 @@
+actor User
+participant Staff Frontend
+participant nGINX
+participant Permissions
+participant Accounts
+database PermissionDB
+database AccountDB
+
+User->Staff Frontend: Login attempt
+Staff Frontend->nGINX: Route login attempt
+nGINX->Permissions: Route to permissionser service
+Permissions->Accounts: Send login_attempt request
+Accounts->AccountDB: Check credentials
+
+alt Bad Credentials
+Accounts-->Permissions:Login Failed
+Permissions-->nGINX: Login Failed 
+nGINX-->Staff Frontend: Login Failed
+end
+
+Accounts-->Permissions: Return success
+Permissions->PermissionDB: Get account permissions
+Permissions-->nGINX: send session key
+nGINX-->Staff Frontend: Store session key
+Staff Frontend-->User: Login
+
+User->nGINX: Update permission status
+nGINX->Permissions: forward message
+Permissions->PermissionDB: Validate and update data
+
+Permissions->nGINX: Forward result message
+nGINX->Staff Frontend: Forward result
+Staff Frontend->User: Update permissions display
