@@ -21,26 +21,78 @@ On pull request to main or dev, all of our tests run (integration, unit, and sys
 
 2.
 
-List of test files: 
+List of test files (corresponding images below each): 
 
 [Build test](https://github.com/rainclouded/Concierge/blob/main/.github/workflows/docker-image.yml) 
+<summary>
+ <details>
+  ![Build Test](/docs/sprint_2/images/build.png)
+ </details>
+</summary>
+
 
 [Node and cypress integration and system tests](https://github.com/rainclouded/Concierge/blob/main/.github/workflows/integration_system_tests.yml) 
+<summary>
+ <details>
+  ![Integration and System Tests](/docs/sprint_2/images/e2e_int_cypress.png)
+ </details>
+</summary>
 
 [Python integration tests](https://github.com/rainclouded/Concierge/blob/main/.github/workflows/python-integration-tests.yml) 
 
-[Amenities, Accounts, and Incident report unit tests](https://github.com/rainclouded/Concierge/blob/main/.github/workflows/run-unit-tests.yml) 
+<summary>
+  <details>
+  ![Intehration tests on python 3.10](/docs/sprint_2/images/python310_int.png)
+ </details>
+  <details>
+  ![Integration tests on python 3.11](/docs/sprint_2/images/python311_int.png)
+ </details>
+</summary>
+
+[Amenities, Accounts, and other unit tests](https://github.com/rainclouded/Concierge/blob/main/.github/workflows/run-unit-tests.yml) 
+
+
+<summary>
+ <details>
+  ![Accounts on python 3.9](/docs/sprint_2/images/accounts39_unit.png)
+ </details>
+  <details>
+  ![Accounts on python 3.10](/docs/sprint_2/images/accounts310_unit.png)
+ </details>
+  <details>
+  ![Accounts on python 3.11](/docs/sprint_2/images/accounts_311_unit.png)
+ </details>
+
+  <details>
+  ![Amenities on python 3.9](/docs/sprint_2/images/amenities_39_unit.png)
+ </details>
+  <details>
+  ![Amenities on python 3.10](/docs/sprint_2/images/amenities_310_unit.png)
+ </details>
+  <details>
+  ![Amenities on python 3.11](/docs/sprint_2/images/amenities_311_unit.png)
+ </details>
+
+   <details>
+  ![Task system](/docs/sprint_2/images/task_unit.png)
+ </details>
+</summary>
 
 [Task system integration tests](https://github.com/rainclouded/Concierge/blob/main/.github/workflows/task-system-postgres-integration-tests.yml) 
 
+<summary>
 
+  <details>
+     ![Task system](/docs/sprint_2/images/task_system_int.png)
+
+ </details>
+</summary>
 ## Testing slowdown
 
 As mentioned in question 1, we have been able to keep all of our testing. Currently, some of our tests which involve the UI are approaching 8 minutes, however we aim to keep each test suite under 10 minutes and thus have not needed to remove any tests. Furthermore, our turnaround time for approving and merging pull requests is about 1 day, giving us plenty of time for the test to complete before any major change is made to our main branch. 
 
 
 In terms of test-plan, we have not created more than one. We run all our tests in all scenarios in order to ensure expected and desired performance. However, in future, if the integration tests begin to increase at the rate they have been, we will look into reducing the amount run during development.
-
 ## Not testing
 
 
