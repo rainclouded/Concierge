@@ -26,7 +26,7 @@ Microservice to access and manage hotel tasks.
 
 ### Run All Tests
 1. Open Docker
-2. Run command from anywhere: `docker run -e POSTGRES_PASSWORD=sa -d -p 50017:5432 postgres`
+2. Run command from anywhere: `docker run -e POSTGRES_PASSWORD=sa -d -p 50021:5432 postgres`
 3. Go to directory: `./src/task_system`
 4. run command: `dotnet test`
 

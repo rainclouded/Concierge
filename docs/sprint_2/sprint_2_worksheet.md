@@ -66,3 +66,9 @@ I am most proud of the way I designed the amenities microservice and how everyth
 
 
 This is an api profiler @rainclouded wrote in a very pythonic fashion.
+
+### Nathan (NhatAnh)
+
+[My favourite code: Task System](https://github.com/rainclouded/Concierge/tree/main/src/task_system)
+
+The task system is my favorite project—designing it was incredibly rewarding as I learned .NET and applied the repository pattern to create a robust service structure. I enjoyed building it with well-defined layers, which added flexibility and organization to the code, making each component more efficient and maintainable.
