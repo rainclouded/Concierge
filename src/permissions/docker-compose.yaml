@@ -1,5 +1,6 @@
 services:
   permissions:
+    image: conciergeapp/concierge:permissions
     build: .
     ports:
       - 50003:8080

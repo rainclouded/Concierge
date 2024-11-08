@@ -3,7 +3,7 @@
 [API Documentation (Open in a browser)](/src/api_help/redoc-static.html)
 
 ## Architecture Diagram
-![](/docs/project_docs/images/sprint1_arch_diag.drawio.svg)
+![](/docs/project_docs/images/sprint2_arch_diag.drawio.png)
 
 ### Description
 The database will be MongoDB and MySQL.\
@@ -43,6 +43,20 @@ Handles all `/incident_report` endpoints.
 Dedicated to managing incident reports made by hotel staff. 
 
 [Read more.](/src/accounts/README.md)
+
+## Task System
+Handles all `/incident_report` endpoints.
+
+Dedicated to managing the creation of guest created requests and completion by hotel staff.
+
+[Read more.](/src/task_system/README.md)
+
+## Permissions
+Handles all `/permissions` & `/sessions` endpoints
+
+Dedicated to managing the permissions of users of Concierge and what they can view and edit. Also manages permission verification and login.
+
+[Read more.](/src/permissions/README.md)
 
 ## Guest Web App
 The guest front end of Concierge. Responsible in displaying an appealing interface for our guests to access hotel information and request for services. 

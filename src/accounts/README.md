@@ -27,14 +27,14 @@ Then run the services (ctrl-c to stop):
 ```
 docker compose -f ./docker-compose.yaml up
 ```
-Then run the services:
+Or run the services (for testing):
 ```
-docker compose -f ./docker-compose.yaml up
+docker compose -f ./docker-compose.dev.yaml up
 ```
 
 Then clean up:
 ```
-docker compose -f ./docker-compose down
+docker compose -f ./docker-compose/docker-compose(.dev).yaml down
 ```
 
 Local testing:
@@ -43,7 +43,7 @@ cd into the accounts directory and first install requirements.
 ```
 python3 -m pip install requirements.txt
 ```
-Next run the tests (ctrl-c to stop)
+Next run the tests
 ```
 python3 -m tests
 ```
@@ -68,10 +68,21 @@ Handles all /accounts endpoints
      password is not required for 'guest' type
      returns: a message containing the password if successful else error
 
-    /accounts/login_attempt - Create a new user
+    /accounts/login_attempt - Login a user
      body: {'username' : '<username>', 'password' : '<password>'}
      returns: a message containing if the login was successful else error
 
+   /accounts/delete - Update a user account
+     body: {'username' : '<username>'}
+     headers: {'X-Api-Key' : <key>}
+     returns: a message containing if the delete was successful else error
+
+
+### Put
+    /accounts/update - Update a user account
+     body: {'username' : '<username>'}
+     headers: {'X-Api-Key' : <key>}
+     returns: a message containing if the update was successful else error
 
 ## Architecture
 
