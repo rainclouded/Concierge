@@ -28,3 +28,8 @@
 * Allows for hotel guests to create and manage hotel service requests through a user-friendly dashboard. Guests can track the status of their requests, while staff can view incomplete tasks, claim responsibility, and process them in real time.
 
 ![](/docs/sprint_2/images/TaskSystemSD.svg)
+
+### Permissions
+
+![](/docs/sprint_2/images/Login.svg)
+![](/docs/sprint_2/images/image.png)
