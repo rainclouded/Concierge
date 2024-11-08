@@ -85,27 +85,27 @@ As we approach the final sprint, there are several challenges that may arise due
 
 UI Enhancements and Refactoring without Breaking Systems:
 
-    Enhancing the UI and refactoring code to improve aesthetics and usability is important, but even small changes risk breaking existing functionality or creating inconsistencies. Careful testing will be essential to ensure that visual improvements don’t compromise stability. 
+Enhancing the UI and refactoring code to improve aesthetics and usability is important, but even small changes risk breaking existing functionality or creating inconsistencies. Careful testing will be essential to ensure that visual improvements don’t compromise stability. 
 
  
 Limited Team Resources for Golang Permissions Service:
 
-    Only one team member is proficient in Golang, which could cause delays if that person faces challenges or becomes unavailable. This dependency creates a potential bottleneck, making knowledge-sharing essential to reduce risk and ensure progress. 
+Only one team member is proficient in Golang, which could cause delays if that person faces challenges or becomes unavailable. This dependency creates a potential bottleneck, making knowledge-sharing essential to reduce risk and ensure progress. 
 
  
 Integrating Watchman into the CD Pipeline:
 
-    Integrating Watchman for improved file-watching may introduce compatibility issues within our CD pipeline, potentially leading to deployment delays or misconfigurations. Testing in a staging environment and thorough documentation will help mitigate these risks. 
+Integrating Watchman for improved file-watching may introduce compatibility issues within our CD pipeline, potentially leading to deployment delays or misconfigurations. Testing in a staging environment and thorough documentation will help mitigate these risks. 
 
  
 Load Balancer Integration:
 
-    Configuring a load balancer is critical for scalability but can lead to session persistence issues or uneven traffic distribution if not set up correctly. Load testing and monitoring will be necessary to confirm stability and reliability. 
+Configuring a load balancer is critical for scalability but can lead to session persistence issues or uneven traffic distribution if not set up correctly. Load testing and monitoring will be necessary to confirm stability and reliability. 
 
  
 Managing Scope Creep and Hardening the System:
 
-    The final sprint might bring new ideas from the team that can lead to scope creep, risking overloading our workload and compromising stability. Staying focused on hardening the system rather than adding features will be essential to deliver a polished result within the timeline. 
+The final sprint might bring new ideas from the team that can lead to scope creep, risking overloading our workload and compromising stability. Staying focused on hardening the system rather than adding features will be essential to deliver a polished result within the timeline. 
 
  
 While each of these potential issues presents unique challenges, proactive planning, thorough testing, and effective communication within the team will help mitigate these risks. By staying focused on stability, performance, and clear priorities, we can achieve a successful and sustainable final sprint. 
