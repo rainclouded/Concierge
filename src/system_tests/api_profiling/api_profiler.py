@@ -101,3 +101,6 @@ class APIProfiler():
         """
         with open(self.log_file, 'w', encoding='utf-8') as log_file:
             log_file.writelines(log+'\n' for log in logs)
+            
+if __name__=='__main__':
+    APIProfiler()

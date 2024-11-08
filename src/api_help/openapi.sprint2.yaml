@@ -1,0 +1,2154 @@
+---
+openapi: 3.1.0
+info:
+  title: Concierge
+  description: An API to access the Concierge system
+  version: 2.0.0
+servers:
+- url: https://example.com/
+  description: Production server
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      In: header
+      name: X-Api-Key
+  schemas:
+    Task:
+      type: object
+      properties:
+        task-id:
+          type: integer
+          description: task's id
+          example: '123'
+        name:
+          type: string
+          description: Name of the tasks
+        description:
+          type: string
+          description: description of tasks
+        created:
+          type: string
+          description: Date and time this task was created
+        start:
+          type: string
+          description: Date and time this task becomes actionable
+        end:
+          type: string
+          description: Date and time this task overdue
+        on-expiration:
+          type: string
+          description: How the system should handle this task if it becomes overdue
+          example: escale
+        view-permission-name:
+          type: string
+          description: Only accounts with this permission can see this tasks
+          example: can-view-admin-tasks
+        edit-permission-name:
+          type: string
+          description: Only accounts with this permission can edit, assign, or claim
+            this tasks
+          example: can-edit-admin-tasks
+        responsible-permission-name:
+          type: string
+          description: Accounts with this permission are responsible for this task.
+            Adjusts how task is presented to accounts of groups with this permission
+          example: is-responsible-for-admin-tasks
+        can-edit:
+          type: boolean
+          description: indicates if this account can edit this task
+        is-responsible:
+          type: boolean
+          description: indicates if this account is responsible for this task
+        is-subscribed:
+          type: boolean
+          description: indicates if this account is subscribed for this task
+        location:
+          type: string
+          description: Location of the task. Primarily used for room-related tasks
+        trigger:
+          type: string
+          description: Reason task entered the system
+          example: guest-request
+        priority:
+          type: integer
+          description: Used to sort tasks
+        assigned-to:
+          type: integer
+          description: Account ID of responsible staff
+        linked-task-id:
+          type: integer
+          description: References another task
+        status:
+          type: string
+          description: Indicates if a task is complete or not
+          example: in-progress
+        subscribed-accounts:
+          type: array
+          description: List of accounts that should be able to see this task, regardless
+            of permission group
+          items:
+            type: integer
+        special-instructions:
+          type: string
+          description: Any additional notes needed for this task
+        guest-facing-comments:
+          type: string
+          description: Notes that the subscribed guests should be able to see.
+    Task-Template:
+      type: object
+      properties:
+        task-id:
+          type: integer
+          description: template's id
+          example: '123'
+        name:
+          type: string
+          description: Name of the template
+        description:
+          type: string
+          description: description of template
+        sla:
+          type: number
+          description: Number of hours between task creation and becoming overdue
+        start-delay:
+          type: number
+          description: Number of hours between triggering event and task start
+        on-expiration:
+          type: string
+          description: How the system should handle this task if the SLA is violated
+          example: escale
+        view-permission-name:
+          type: string
+          description: Only accounts with this permission can see this tasks
+          example: can-view-admin-tasks
+        edit-permission-name:
+          type: string
+          description: Only accounts with this permission can edit, assign, or claim
+            this tasks
+          example: can-edit-admin-tasks
+        responsible-permission-name:
+          type: string
+          description: Accounts with this permission are responsible for this task.
+            Adjusts how task is presented to accounts of groups with this permission
+          example: is-responsible-for-admin-tasks
+        location:
+          type: string
+          description: Location of the task. Primarily used for room-related tasks
+          example: "::trigger::room"
+        trigger:
+          type: string
+          description: Reason task entered the system. Triggers may have metadata
+            when the event occurs. Such as '::trigger::room'
+          example: guest-request
+        priority:
+          type: integer
+          description: Used to sort tasks
+        assigned-to:
+          type: integer
+          description: Account ID of responsible staff
+        linked-task-id:
+          type: integer
+          description: References another task
+    Reservation:
+      type: object
+      properties:
+        reservation-id:
+          type: integer
+          description: Room's id
+          example: '123'
+        room-number:
+          type: integer
+          description: Associated room for the reservation
+          example: '123'
+        start:
+          type: integer
+          description: Date and time the reservation becomes active
+          example: '123'
+        end:
+          type: integer
+          description: Date and time of checkout
+          example: '123'
+security:
+  - ApiKeyAuth: []
+paths:
+  "/accounts":
+    summary: Check if acounts service is running
+    get:
+      summary: Create Account
+      operationId: createAccount
+      tags:
+      - Accounts
+      responses:
+        '200':
+          description: Confirmation accounts is active
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: You have contacted the accounts
+                  status:
+                    type: string
+                    example: success
+                required:
+                - message
+    post:
+      summary: Create New Account
+      description: Creates a new user account. Requires a username and type. If type
+        is 'staff', a password must also be provided.
+      operationId: postAccounts
+      tags:
+      - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username of the new account
+                type:
+                  type: string
+                  enum:
+                  - guest
+                  - staff
+                  description: The type of account, either 'guest' or 'staff'
+                password:
+                  type: string
+                  description: Required if type is 'staff'
+              required:
+              - username
+              - type
+              additionalProperties: false
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'User created successfully. password: {new_password}'
+                required:
+                - message
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Could not create user
+  "/accounts/update":
+    summary: Updates the account of a user.
+    put:
+      summary: Update Account
+      operationId: updateAccount
+      tags:
+      - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username of the user to update
+              required:
+              - username
+      parameters:
+      - name: x-api-key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: JWT token for authentication
+      responses:
+        '200':
+          description: User successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: |-
+                      {username} Successfully updated!
+                      password: {password}
+                required:
+                - message
+        '401':
+          description: Cannot update user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Cannot delete user.
+                  status:
+                    type: string
+                    example: error
+                required:
+                - message
+                - status
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User not found.
+                  status:
+                    type: string
+                    example: error
+                required:
+                - message
+                - status
+  "/accounts/delete":
+    summary: Attempt to delete an account
+    post:
+      summary: Account Deletion
+      operationId: postDeleteAttempt
+      tags:
+      - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The name of the user to delete
+              required:
+              - username
+      parameters:
+      - name: x-api-key
+        in: header
+        required: true
+        schema:
+          type: string
+          description: JWT token for authentication
+      responses:
+        '200':
+          description: User successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "{Username} Successfully deleted!"
+                  status:
+                    type: string
+                    example: ok
+                required:
+                - message
+                - status
+        '401':
+          description: Deletion could not be completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Deletion could not be completed
+                  status:
+                    type: string
+                    example: error
+                required:
+                - message
+                - status
+        '403':
+          description: Action not permitted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Action not permitted
+                  status:
+                    type: string
+                    example: forbidden
+                required:
+                - message
+                - status
+  "/accounts/login_attempt":
+    summary: Attempt to login to an account
+    post:
+      summary: Account Auth
+      operationId: postLoginAttempt
+      tags:
+      - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Username to authenticate
+                password:
+                  type: string
+                  description: Password to authenticate
+              required:
+              - username
+              - password
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Welcome, {username}!
+                required:
+                - message
+        '401':
+          description: Login Fail - Invalid Credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login Fail - Invalid Credentials
+                required:
+                - message
+  "/permissions/healthcheck":
+    get:
+      summary: Check the status of the permissions server
+      operationId: permissionHealthcheck
+      tags:
+      - Permissions
+      responses:
+        '200':
+          description: Status of server
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  status: 
+                    type: string
+                    example: "ok"
+  "/permissions":
+    get:
+      summary: "Retrieve permissions"
+      tags:
+      - Permissions
+      responses:
+        '200':
+          description: "Permissions retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Permissions retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        permissionId:
+                          type: integer
+                          example: 1
+                        permissionName:
+                          type: string
+                          example: "canViewPermissionGroups"
+                        permissionState:
+                          type: boolean
+                          example: false
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T12:59:19Z"
+    post:
+      summary: "Create a new permission"
+      tags:
+      - Permissions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                permissionName:
+                  type: string
+                  example: "canDoThing"
+              required:
+                - permissionName
+      responses:
+        '201':
+          description: "Permission created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Permission created successfully"
+                  data:
+                    type: object
+                    properties:
+                      permissionId:
+                        type: integer
+                        example: 20
+                      permissionName:
+                        type: string
+                        example: "Cat"
+                      permissionState:
+                        type: boolean
+                        example: false
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:05:43Z"
+        '400':
+          description: "Invalid input, missing or incorrect data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid request body"
+  "/permissions/{id}":
+    get:
+      summary: "Retrieve permissions"
+      tags:
+      - Permissions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+          description: "The ID of the permission to retrieve"
+      responses:
+        '200':
+          description: "Permissions retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Permissions retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      permissionId:
+                        type: integer
+                        example: 1
+                      permissionName:
+                        type: string
+                        example: "canViewPermissionGroups"
+                      permissionState:
+                        type: boolean
+                        example: false
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T12:59:19Z"
+  "/permission-groups":
+    get:
+      summary: "Retrieve all permission groups"
+      tags:
+      - Permissions
+      responses:
+        '200':
+          description: "Permission groups retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Permission groups retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        groupId:
+                          type: integer
+                          example: 1
+                        groupName:
+                          type: string
+                          example: "admin"
+                        groupDescription:
+                          type: string
+                          example: "Has all permissions"
+                        groupPermissions:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              permissionId:
+                                type: integer
+                                example: 1
+                              permissionName:
+                                type: string
+                                example: "canViewPermissionGroups"
+                              permissionState:
+                                type: boolean
+                                example: true
+                        groupMembers:
+                          type: array
+                          items:
+                            type: integer
+                            example: 0
+                        required:
+                          - groupId
+                          - groupName
+                          - groupDescription
+                          - groupPermissions
+                          - groupMembers
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:08:00Z"
+    post:
+      summary: "Create a new permission group"
+      tags:
+      - Permissions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                groupName:
+                  type: string
+                  example: "cats"
+                groupDescription:
+                  type: string
+                  example: "We are the cats"
+              required:
+                - groupName
+                - groupDescription
+      responses:
+        '201':
+          description: "Group created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Group created successfully"
+                  data:
+                    type: null
+                    example: null
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:09:08Z"
+        '400':
+          description: "Invalid input, missing or incorrect data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid request body"
+  "/permission-groups/{id}":
+    get:
+      summary: "Retrieve permissions"
+      tags:
+      - Permissions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+          description: "The ID of the permission to retrieve"
+      responses:
+        '200':
+          description: "Permissions retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Permissions retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      groupId:
+                        type: integer
+                        example: 1
+                      groupName:
+                        type: string
+                        example: "admin"
+                      groupDescription:
+                        type: string
+                        example: "Has all permissions"
+                      groupPermissions:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            permissionId:
+                              type: integer
+                              example: 1
+                            permissionName:
+                              type: string
+                              example: "canViewPermissionGroups"
+                            permissionState:
+                              type: boolean
+                              example: true
+                      groupMembers:
+                        type: array
+                        items:
+                          type: integer
+                          example: 0
+                      required:
+                        - groupId
+                        - groupName
+                        - groupDescription
+                        - groupPermissions
+                        - groupMembers
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T12:59:19Z"
+    patch:
+      summary: "Update an existing permission group"
+      tags:
+      - Permissions
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          description: "The ID of the permission group to update"
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                groupName:
+                  type: string
+                  example: "MASK"
+                groupDescription:
+                  type: string
+                  example: "New description"
+                groupPermissions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      permissionId:
+                        type: integer
+                        example: 1
+                      state:
+                        type: boolean
+                        example: true
+                groupMembers:
+                  type: array
+                  items:
+                    type: integer
+                    example: 12
+                removeGroupMembers:
+                  type: array
+                  items:
+                    type: integer
+                    example: 5
+              additionalProperties: false
+      responses:
+        '200':
+          description: "Group updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Group updated successfully"
+                  data:
+                    type: null
+                    example: null
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:11:15Z"
+        '400':
+          description: "Invalid input or missing required data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid request body"
+        '404':
+          description: "Group not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Permission group not found"
+  /amenities:
+    get:
+      tags:
+        - amenities
+      summary: "Retrieve all amenities"
+      responses:
+        '200':
+          description: "Amenities retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Amenities retrieved successfully."
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: "Pool"
+                        description:
+                          type: string
+                          example: "Indoor pool"
+                        startTime:
+                          type: string
+                          format: time
+                          example: "06:00:00"
+                        endTime:
+                          type: string
+                          format: time
+                          example: "22:00:00"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:15:38.4169797Z"
+        '404':
+          description: "No amenities found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "No amenities found"
+    post:
+      tags:
+        - amenities
+      summary: "Create a new amenity"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Testing"
+                description:
+                  type: string
+                  example: "A test"
+                startTime:
+                  type: string
+                  format: time
+                  example: "08:00:00"
+                endTime:
+                  type: string
+                  format: time
+                  example: "20:00:00"
+              required:
+                - name
+                - description
+                - startTime
+                - endTime
+      responses:
+        '201':
+          description: "Amenity created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Amenity created successfully."
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 5
+                      name:
+                        type: string
+                        example: "Testing"
+                      description:
+                        type: string
+                        example: "A test"
+                      startTime:
+                        type: string
+                        format: time
+                        example: "08:00:00"
+                      endTime:
+                        type: string
+                        format: time
+                        example: "20:00:00"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:16:49.8211555Z"
+        '400':
+          description: "Invalid input"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid request body"
+    delete:
+      tags:
+        - amenities
+      summary: "Delete an amenity by ID"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: "Amenity deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Amenity deleted successfully."
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:25:00.000Z"
+        '404':
+          description: "Amenity not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Amenity not found"
+  /amenities/{id}:
+    get:
+      tags:
+        - amenities
+      summary: "Retrieve an amenity by ID"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: "Amenity retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Amenity retrieved successfully."
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: "Pool"
+                      description:
+                        type: string
+                        example: "Indoor pool"
+                      startTime:
+                        type: string
+                        format: time
+                        example: "06:00:00"
+                      endTime:
+                        type: string
+                        format: time
+                        example: "22:00:00"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:19:20.848665Z"
+        '404':
+          description: "Amenity not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Amenity not found"
+    put:
+      tags:
+        - amenities
+      summary: "Update an amenity by ID"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Swimming Pool"
+                description:
+                  type: string
+                  example: "A large outdoor swimming pool."
+                startTime:
+                  type: string
+                  format: time
+                  example: "08:00:00"
+                endTime:
+                  type: string
+                  format: time
+                  example: "20:00:00"
+              required:
+                - name
+                - description
+                - startTime
+                - endTime
+      responses:
+        '200':
+          description: "Amenity updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Amenity updated successfully."
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 2
+                      name:
+                        type: string
+                        example: "Swimming Pool"
+                      description:
+                        type: string
+                        example: "A large outdoor swimming pool."
+                      startTime:
+                        type: string
+                        format: time
+                        example: "08:00:00"
+                      endTime:
+                        type: string
+                        format: time
+                        example: "20:00:00"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:20:45.123456Z"
+        '400':
+          description: "Invalid input"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid request body"
+        '404':
+          description: "Amenity not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Amenity not found"
+  /incident_reports:
+    get:
+      tags:
+        - incident_reports
+      summary: "Retrieve all incident reports"
+      responses:
+        '200':
+          description: "Incident reports retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Incident reports retrieved successfully."
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        created_at:
+                          type: string
+                          format: date-time
+                          example: "2024-11-08T13:04:27.711721"
+                        description:
+                          type: string
+                          example: "Guest reported a leaky faucet in Room 203."
+                        filing_person_id:
+                          type: integer
+                          example: 301
+                        id:
+                          type: integer
+                          example: 1
+                        reviewer_id:
+                          type: integer
+                          example: 401
+                        severity:
+                          type: string
+                          enum:
+                            - LOW
+                            - MEDIUM
+                            - HIGH
+                            - CRITICAL
+                          example: "LOW"
+                        status:
+                          type: string
+                          enum:
+                            - OPEN
+                            - IN_PROGRESS
+                            - RESOLVED
+                            - CLOSED
+                          example: "OPEN"
+                        title:
+                          type: string
+                          example: "Room Maintenance Request"
+                        updated_at:
+                          type: string
+                          format: date-time
+                          example: "2024-11-08T13:04:27.711722"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "Fri, 08 Nov 2024 13:20:52 GMT"
+        '404':
+          description: "No incident reports found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "No incident reports found"
+    post:
+      tags:
+        - incident_reports
+      summary: "Create a new incident report"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "title"
+                description:
+                  type: string
+                  example: "description"
+                filing_person_id:
+                  type: integer
+                  example: 301
+                reviewer_id:
+                  type: integer
+                  example: 401
+                status:
+                  type: string
+                  enum:
+                    - OPEN
+                    - IN_PROGRESS
+                    - RESOLVED
+                    - CLOSED
+                  example: "OPEN"
+                severity:
+                  type: string
+                  enum:
+                    - LOW
+                    - MEDIUM
+                    - HIGH
+                    - CRITICAL
+                  example: "HIGH"
+              required:
+                - title
+                - description
+                - filing_person_id
+                - reviewer_id
+                - status
+                - severity
+      responses:
+        '201':
+          description: "Incident report created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Incident report created successfully."
+                  data:
+                    type: object
+                    properties:
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2024-11-08T13:21:43.555450"
+                      description:
+                        type: string
+                        example: "description"
+                      filing_person_id:
+                        type: integer
+                        example: 301
+                      id:
+                        type: integer
+                        example: 5
+                      reviewer_id:
+                        type: integer
+                        example: 401
+                      severity:
+                        type: string
+                        enum:
+                          - LOW
+                          - MEDIUM
+                          - HIGH
+                          - CRITICAL
+                        example: "HIGH"
+                      status:
+                        type: string
+                        enum:
+                          - OPEN
+                          - IN_PROGRESS
+                          - RESOLVED
+                          - CLOSED
+                        example: "OPEN"
+                      title:
+                        type: string
+                        example: "title"
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: "2024-11-08T13:21:43.555453"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "Fri, 08 Nov 2024 13:21:43 GMT"
+        '400':
+          description: "Invalid input"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid input data"
+  /incident_reports/{id}:
+    get:
+      tags:
+        - incident_reports
+      summary: "Retrieve an incident report by ID"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: "Incident report retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Incident report retrieved successfully."
+                  data:
+                    type: object
+                    properties:
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2024-11-08T13:04:27.711721"
+                      description:
+                        type: string
+                        example: "Guest reported a leaky faucet in Room 203."
+                      filing_person_id:
+                        type: integer
+                        example: 301
+                      id:
+                        type: integer
+                        example: 1
+                      reviewer_id:
+                        type: integer
+                        example: 401
+                      severity:
+                        type: string
+                        enum:
+                          - LOW
+                          - MEDIUM
+                          - HIGH
+                          - CRITICAL
+                        example: "LOW"
+                      status:
+                        type: string
+                        enum:
+                          - OPEN
+                          - IN_PROGRESS
+                          - RESOLVED
+                          - CLOSED
+                        example: "OPEN"
+                      title:
+                        type: string
+                        example: "Room Maintenance Request"
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: "2024-11-08T13:04:27.711722"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:19:20.848665Z"
+        '404':
+          description: "Incident report not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Incident report not found"
+
+    put:
+      tags:
+        - incident_reports
+      summary: "Update an incident report by ID"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "title"
+                description:
+                  type: string
+                  example: "description"
+                filing_person_id:
+                  type: integer
+                  example: 301
+                reviewer_id:
+                  type: integer
+                  example: 401
+                status:
+                  type: string
+                  enum:
+                    - OPEN
+                    - IN_PROGRESS
+                    - RESOLVED
+                    - CLOSED
+                  example: "OPEN"
+                severity:
+                  type: string
+                  enum:
+                    - LOW
+                    - MEDIUM
+                    - HIGH
+                    - CRITICAL
+                  example: "HIGH"
+              required:
+                - title
+                - description
+                - filing_person_id
+                - reviewer_id
+                - status
+                - severity
+      responses:
+        '200':
+          description: "Incident report updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Incident report updated successfully."
+                  data:
+                    type: object
+                    properties:
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2024-11-08T13:04:27.711721"
+                      description:
+                        type: string
+                        example: "description"
+                      filing_person_id:
+                        type: integer
+                        example: 301
+                      id:
+                        type: integer
+                        example: 1
+                      reviewer_id:
+                        type: integer
+                        example: 401
+                      severity:
+                        type: string
+                        enum:
+                          - LOW
+                          - MEDIUM
+                          - HIGH
+                          - CRITICAL
+                        example: "HIGH"
+                      status:
+                        type: string
+                        enum:
+                          - OPEN
+                          - IN_PROGRESS
+                          - RESOLVED
+                          - CLOSED
+                        example: "OPEN"
+                      title:
+                        type: string
+                        example: "title"
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: "2024-11-08T13:21:43.555453"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:21:43.555450"
+        '400':
+          description: "Invalid input"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid request body"
+        '404':
+          description: "Incident report not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Incident report not found"
+    delete:
+      tags:
+        - incident_reports
+      summary: "Delete an incident report by ID"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: "Incident report deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Incident report deleted successfully."
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:30:00.000Z"
+        '404':
+          description: "Incident report not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Incident report not found"
+  /sessions:
+    post:
+      tags:
+        - sessions
+      summary: "Create a new session (login)"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "admin"
+                password:
+                  type: string
+                  example: "admin"
+              required:
+                - username
+                - password
+      responses:
+        '201':
+          description: "Session key successfully created"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Session key successfully created"
+                  data:
+                    type: object
+                    properties:
+                      sessionKey:
+                        type: string
+                        example: "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNzQ2NzgsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.FEISO40tniSKZu7MisP9SptneWetqX0AI1jmGxyAFtS1pQhu9rmOH2Ysp-4z9FVatY4K8cVib1VTBgYHDrKlrmSt6zgnz6e_CeqskVJv40CNcVgNzp3MX-CFKg3DU9HU"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:04:38Z"
+        '400':
+          description: "Invalid credentials"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid username or password"
+  /sessions/me:
+    get:
+      tags:
+        - sessions
+      summary: "Get current session details"
+      responses:
+        '200':
+          description: "Session key successfully read"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Session key successfully read"
+                  data:
+                    type: object
+                    properties:
+                      sessionData:
+                        type: object
+                        properties:
+                          accountId:
+                            type: integer
+                            example: 1
+                          accountName:
+                            type: string
+                            example: "admin"
+                          SessionPermissionList:
+                            type: array
+                            items:
+                              type: string
+                            example:
+                              - "canEditPermissionGroups"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:25:54Z"
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Unauthorized - Please login"
+  /sessions/public-key:
+    get:
+      tags:
+        - sessions
+      summary: "Fetch the public key for encryption"
+      responses:
+        '200':
+          description: "Public key fetched"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Public key fetched"
+                  data:
+                    type: object
+                    properties:
+                      publicKey:
+                        type: string
+                        example: |
+                          -----BEGIN PUBLIC KEY-----
+                          MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE61z8KkG7BfsioUcmMMTTbZ0hHR8kzIXI
+                          PYcpoLnqbOPHXPSM4PYCsLbhaTzuw0sASDMcdSEZqwFw3krnXwHKEp3ID5ol2vj4
+                          qpxDzZdl4T0dNvWeRMCGLZGAPVz6zOD4
+                          -----END PUBLIC KEY-----
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:27:00Z"
+  /tasks:
+    get:
+      tags:
+        - tasks
+      summary: "Get all tasks"
+      responses:
+        '200':
+          description: "Tasks retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Tasks retrieved successfully."
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        taskType:
+                          type: string
+                          example: "Maintenance"
+                        description:
+                          type: string
+                          example: "There is a leak in the bathroom sink that needs urgent attention."
+                        roomId:
+                          type: integer
+                          example: 101
+                        requesterId:
+                          type: integer
+                          example: 1
+                        assigneeId:
+                          type: integer
+                          example: 2
+                        status:
+                          type: string
+                          example: "InProgress"
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: "2024-10-10T10:30:00+00:00"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:27:44.257057Z"
+    post:
+      tags:
+        - tasks
+      summary: "Create a new task"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                roomId:
+                  type: integer
+                  example: 414
+                taskType:
+                  type: string
+                  example: "Maintenance"
+                description:
+                  type: string
+                  example: "123"
+                status:
+                  type: string
+                  example: "Pending"
+                assignee:
+                  type: object
+                  nullable: true
+                  example: null
+                requesterId:
+                  type: integer
+                  example: 1
+                createdAt:
+                  type: string
+                  format: date-time
+                  example: "2024-11-08T12:02:05.809Z"
+              required:
+                - roomId
+                - taskType
+                - description
+                - status
+                - requesterId
+                - createdAt
+      responses:
+        '201':
+          description: "Task created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Task created successfully."
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 6
+                      taskType:
+                        type: string
+                        example: "Maintenance"
+                      description:
+                        type: string
+                        example: "123"
+                      roomId:
+                        type: integer
+                        example: 414
+                      requesterId:
+                        type: integer
+                        example: 1
+                      assigneeId:
+                        type: integer
+                        example: null
+                      status:
+                        type: string
+                        example: "Pending"
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2024-11-08T12:02:05.809Z"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:28:00Z"
+  /tasks/{id}:
+    get:
+      tags:
+        - tasks
+      summary: "Get a task by ID"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: "Task retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Task retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      taskType:
+                        type: string
+                        example: "Maintenance"
+                      description:
+                        type: string
+                        example: "There is a leak in the bathroom sink that needs urgent attention."
+                      roomId:
+                        type: integer
+                        example: 101
+                      requesterId:
+                        type: integer
+                        example: 1
+                      assigneeId:
+                        type: integer
+                        example: 2
+                      status:
+                        type: string
+                        example: "InProgress"
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2024-10-10T10:30:00+00:00"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:38:08.9097748Z"
+        '404':
+          description: "Task not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Task not found"
+    patch:
+      tags:
+        - tasks
+      summary: "Partially update a task by ID"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                taskType:
+                  type: string
+                  example: "Maintenance"
+                description:
+                  type: string
+                  example: "Updated description"
+                status:
+                  type: string
+                  example: "InProgress"
+                assigneeId:
+                  type: integer
+                  example: 2
+      responses:
+        '200':
+          description: "Task updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Task updated successfully."
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      taskType:
+                        type: string
+                        example: "Maintenance"
+                      description:
+                        type: string
+                        example: "Updated description"
+                      roomId:
+                        type: integer
+                        example: 101
+                      requesterId:
+                        type: integer
+                        example: 1
+                      assigneeId:
+                        type: integer
+                        example: 2
+                      status:
+                        type: string
+                        example: "InProgress"
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2024-10-10T10:30:00+00:00"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:31:00Z"
+        '400':
+          description: "Invalid input"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid input"
+        '404':
+          description: "Task not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Task not found"
+    put:
+      tags:
+        - tasks
+      summary: "Update a task by ID"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                taskType:
+                  type: string
+                  example: "Maintenance"
+                description:
+                  type: string
+                  example: "Full update of the task description"
+                roomId:
+                  type: integer
+                  example: 101
+                assigneeId:
+                  type: integer
+                  example: 2
+                status:
+                  type: string
+                  example: "InProgress"
+                requesterId:
+                  type: integer
+                  example: 1
+                createdAt:
+                  type: string
+                  format: date-time
+                  example: "2024-10-10T10:30:00+00:00"
+      responses:
+        '200':
+          description: "Task updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Task updated successfully."
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      taskType:
+                        type: string
+                        example: "Maintenance"
+                      description:
+                        type: string
+                        example: "Full update of the task description"
+                      roomId:
+                        type: integer
+                        example: 101
+                      requesterId:
+                        type: integer
+                        example: 1
+                      assigneeId:
+                        type: integer
+                        example: 2
+                      status:
+                        type: string
+                        example: "InProgress"
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2024-10-10T10:30:00+00:00"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:31:30Z"
+        '400':
+          description: "Invalid input"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid input"
+        '404':
+          description: "Task not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Task not found"
+    delete:
+      tags:
+        - tasks
+      summary: "Delete a task by ID"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: "Task deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Task deleted successfully."
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-11-08T13:30:00Z"
+        '404':
+          description: "Task not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Task not found"

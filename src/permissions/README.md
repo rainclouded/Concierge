@@ -11,6 +11,42 @@
 - canViewPermissions
 - canEditPermissions
 
+## Endpoints
+### POST /sessions
+Get a new session key
+
+### GET /sessions/me
+Get session data for current session
+
+### GET /sessions/public-key
+Get the public key to validate 
+
+### GET /permissions/healthcheck
+Check if the permissions service
+
+### GET /permissions
+Get a list of available permissions
+
+### GET /permissions/:<id>
+Get a specific permission by ID
+
+### POST /permissions
+Create a new permissions
+
+### GET /permission-groups
+Get all permission groups and their current permissions
+
+### GET /permission-groups/<id>
+Get a specific permission group
+
+### POST /permission-groups
+Create a new permission group
+
+### PATCH /permission-groups/<id>
+Update a permission group
+
+
+
 ## Environmnet Variables
 - `JWT_SIGNING_METHOD`
     - Controls which signing method is used
