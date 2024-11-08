@@ -81,6 +81,29 @@ In terms of test-plan, we have not created more than one. We run all our tests i
 
 
 ## Last dash:
+As we approach the final sprint, there are several challenges that may arise due to both technical complexity and resource limitations. Here are the key areas of concern: 
+
+UI Enhancements and Refactoring without Breaking Systems:
+    Enhancing the UI and refactoring code to improve aesthetics and usability is important, but even small changes risk breaking existing functionality or creating inconsistencies. Careful testing will be essential to ensure that visual improvements don’t compromise stability. 
+
+ 
+Limited Team Resources for Golang Permissions Service:
+    Only one team member is proficient in Golang, which could cause delays if that person faces challenges or becomes unavailable. This dependency creates a potential bottleneck, making knowledge-sharing essential to reduce risk and ensure progress. 
+
+ 
+Integrating Watchman into the CD Pipeline:
+    Integrating Watchman for improved file-watching may introduce compatibility issues within our CD pipeline, potentially leading to deployment delays or misconfigurations. Testing in a staging environment and thorough documentation will help mitigate these risks. 
+
+ 
+Load Balancer Integration:
+    Configuring a load balancer is critical for scalability but can lead to session persistence issues or uneven traffic distribution if not set up correctly. Load testing and monitoring will be necessary to confirm stability and reliability. 
+
+ 
+Managing Scope Creep and Hardening the System:
+    The final sprint might bring new ideas from the team that can lead to scope creep, risking overloading our workload and compromising stability. Staying focused on hardening the system rather than adding features will be essential to deliver a polished result within the timeline. 
+
+ 
+While each of these potential issues presents unique challenges, proactive planning, thorough testing, and effective communication within the team will help mitigate these risks. By staying focused on stability, performance, and clear priorities, we can achieve a successful and sustainable final sprint. 
 
 
 
@@ -104,3 +127,7 @@ This is an api profiler @rainclouded wrote in a very pythonic fashion.
 [My favourite code: Task System](https://github.com/rainclouded/Concierge/tree/main/src/task_system)
 
 The task system is my favorite project—designing it was incredibly rewarding as I learned .NET and applied the repository pattern to create a robust service structure. I enjoyed building it with well-defined layers, which added flexibility and organization to the code, making each component more efficient and maintainable.
+
+### Mykola
+[My favourite code](https://github.com/rainclouded/Concierge/src/staff_webapp/src/app/components/task-modal)
+I focused on designing the Task Modal component, which provides a user-friendly and robust interface for managing individual tasks. This component combines complex functionality, robust state management, and a user-focused design, all while maintaining a simple, polished interface.
