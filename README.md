@@ -4,13 +4,6 @@
 
 ![Concierge Logo](/docs/images/logo.png)
 
-
-- [@Mondane-Monkeys](https://github.com/Mondane-Monkeys)
-- [@LeeroyDilim](https://github.com/LeeroyDilim)
-- [@nateng98](https://github.com/nateng98)
-- [@mykolabesarab](https://github.com/mykolabesarab)
-- [@rainclouded](https://github.com/rainclouded)
-
 ## Vision Statement:
 
 Concierge is an easy to use hotel administration system which allows guests to communicate with hotel operators from anywhere and provide comprehensive administration tools for hotel employees.
@@ -41,7 +34,7 @@ Concierge stands out by modernizing the hotel experience, aligning it with today
 * Enables hotel managers to monitor past and current incidents through a dedicated dashboard that displays details such as severity, status and description. Managers can update reports in real time, ensuring accurate information is displayed as an incident case progresses.
 
 # Team 6
-Databases: MongoDB, Postgres, and MySQL (Maria)\
+Databases: MongoDB and MySQL\
 Contained in docker \
 Orchestrated with Docker Compose 
 
@@ -69,21 +62,17 @@ docker compose -f ./docker-compose/docker-compose.yaml down
 Concierge/
 ├── docker-compose/
 |   └──configs/
-├── docs/
-|    └──images/
+├── Docs/
 |   └──sprint_0/
 |   └──sprint_1/
-|   └──sprint_2/
 └── src/
     ├── accounts/
-    ├── amenities/
     ├── api_help/
     ├── guest_webapp
-    ├── incident_reports/     
     ├── permissions
-    ├── task_system
+    ├── sessions
     ├── staff_webapp
-    └── system_tests
+    └── webapp
 ```
 ## Branch Naming:
 Before you branch, create an issue for what you are working on.
@@ -92,7 +81,7 @@ We'll use the issue # in the branch name and snake_case.
 the format is:
 ```
 {branch-type}/{feature-name}/{issue-#}
-ex. feature/account_server/123
+ex. feature/account_server/9354093
 ```
 
 ## Supporting Documents
@@ -101,8 +90,6 @@ ex. feature/account_server/123
 - [Sprint 0 Worksheet](/docs/sprint_0/sprint_0_worksheet.md)
 ### Sprint 1:
 - [Sprint 1 Worksheet](/docs/sprint_1/sprint_1_worksheet.md)
-### Sprint 1:
-- [Sprint 1 Worksheet](/docs/sprint_2/sprint_2_worksheet.md)
 
 ### Project:
 - [Getting Started (Docker Compose)](docs/project_docs/getting_started.md)
@@ -126,10 +113,7 @@ ex. feature/account_server/123
 - [accounts](/src/accounts/README.md)
 - [amenities](src/amenities/README.md)
 - [incident_reports](src/incident_reports)
-- [permissions](src/permissions)
-- [task_system](src/task_system)
 
 #### Web Application Servers
 - [guest webapp](/src/guest_webapp/README.md)
 - [staff webapp](/src/staff_webapp/README.md)
-
