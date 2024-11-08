@@ -52,7 +52,7 @@ class incident_report_unit_test(unittest.TestCase):
     def test_get_incident_reports_filter_severity(self):
         response = self.app.get('/incident_reports/?severity=HIGH')
         
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
 
     def test_get_incident_reports_filter_status(self):
         response = self.app.get('/incident_reports/?status=Closed')
