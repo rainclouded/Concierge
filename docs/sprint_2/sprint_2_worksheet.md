@@ -78,6 +78,236 @@ In terms of test-plan, we have not created more than one. We run all our tests i
 
 ## Profiler:
 
+Profiling 
+
+Since we use a microservice architecture, it makes sense to profile the endpoints and identify slow or problematic endpoints. However, after running the profiler, we found that all endpoints were sufficiently performant. Out of all of the services, incident reports took the longest. This does not need to be fixed as it is not an unreasonable amount of time, however we believe it is slower than the rest due to database lookups and similar actions. One way which we could speed this up is by using a clinet side cache to store some of the data in order to reduce the amount of database interaciton as well as data transferred. Each request takes less than 0.1 seconds. Here is the result of our internal profiler: 
+
+``` 
+
+Sending get to http://localhost:50001/accounts 
+
+Response took 0.03427639999972598 seconds: Request OK 
+
+  
+
+Sending post to http://localhost:50001/accounts 
+
+Response took 0.029192799998781993 seconds: Request OK 
+
+  
+
+Sending post to http://localhost:50001/accounts 
+
+Response took 0.03012719999969704 seconds: Request OK 
+
+  
+
+Sending post to http://localhost:50001/accounts 
+
+Response took 0.029902899999797228 seconds: Request OK 
+
+  
+
+Sending post to http://localhost:50001/accounts/login_attempt 
+
+Response took 0.033338999999614316 seconds: Request OK 
+
+  
+
+Sending post to http://localhost:50001/accounts/delete 
+
+Response took 0.029298499999640626 seconds: Request OK 
+
+  
+
+Sending put to http://localhost:50001/accounts/update 
+
+Response took 0.029190200000812183 seconds: Request OK 
+
+  
+
+Sending get to http://localhost:8089/amenities 
+
+Response took 0.03728699999919627 seconds: Request OK 
+
+  
+
+Sending get to http://localhost:8089/amenities/2 
+
+Response took 0.028500799999164883 seconds: Request OK 
+
+  
+
+Sending post to http://localhost:8089/amenities 
+
+Response took 0.014620599999034312 seconds: Request OK 
+
+  
+
+Sending put to http://localhost:8089/amenities/2 
+
+Response took 0.031769200000780984 seconds: Request OK 
+
+  
+
+Sending delete to http://localhost:8089/amenities/1 
+
+Response took 0.028471499999795924 seconds: Request OK 
+
+  
+
+Sending get to http://localhost:8081/ 
+
+Response took 0.02457909999975527 seconds: Request OK 
+
+  
+
+Sending get to http://localhost:8089/incident_reports 
+
+Response took 0.06998700000076497 seconds: Request OK 
+
+  
+
+Sending get to http://localhost:8089/incident_reports/1 
+
+Response took 0.028436799999326468 seconds: Request OK 
+
+  
+
+Sending post to http://localhost:8089/incident_reports 
+
+Response took 0.06165379999947618 seconds: Request OK 
+
+  
+
+Sending put to http://localhost:8089/incident_reports/1 
+
+Response took 0.02909160000126576 seconds: Request OK 
+
+  
+
+Sending delete to http://localhost:8089/incident_reports/2 
+
+Response took 0.0295298000000912 seconds: Request OK 
+
+  
+
+Sending post to http://localhost:8089/sessions 
+
+Response took 0.024636599999212194 seconds: Request OK 
+
+  
+
+Sending get to http://localhost:8089/sessions/me 
+
+Response took 0.03289279999989958 seconds: Request OK 
+
+  
+
+Sending get to http://localhost:8089/sessions/public-key 
+
+Response took 0.02870240000083868 seconds: Request OK 
+
+  
+
+Sending get to http://localhost:8089/permissions/healthcheck 
+
+Response took 0.02876300000025367 seconds: Request OK 
+
+  
+
+Sending get to http://localhost:8089/permissions 
+
+Response took 0.03126490000067861 seconds: Request OK 
+
+  
+
+Sending get to http://localhost:8089/permissions/1 
+
+Response took 0.03031129999908444 seconds: Request OK 
+
+  
+
+Sending post to http://localhost:8089/permissions 
+
+Response took 0.031055100000230595 seconds: Request OK 
+
+  
+
+Sending get to http://localhost:8089/permission-groups 
+
+Response took 0.03221119999943767 seconds: Request OK 
+
+  
+
+Sending get to http://localhost:8089/permission-groups/1 
+
+Response took 0.030704999999215943 seconds: Request OK 
+
+  
+
+Sending post to http://localhost:8089/permission-groups 
+
+Response took 0.012689599998338963 seconds: Request OK 
+
+  
+
+Sending patch to http://localhost:8089/permission-groups/1 
+
+Response took 0.030088199999227072 seconds: Request OK 
+
+  
+
+Sending get to http://localhost:8082 
+
+Response took 0.020607299999028328 seconds: Request OK 
+
+  
+
+Sending get to http://localhost:8089/tasks 
+
+Response took 0.015648599999622093 seconds: Request OK 
+
+  
+
+Sending get to http://localhost:8089/tasks 
+
+Response took 0.011821800000689109 seconds: Request OK 
+
+  
+
+Sending get to http://localhost:8089/tasks/1 
+
+Response took 0.023139400000218302 seconds: Request OK 
+
+  
+
+Sending post to http://localhost:8089/tasks/1 
+
+Response took 0.006332599999950617 seconds: Request OK 
+
+  
+
+Sending put to http://localhost:8089/tasks/1 
+
+Response took 0.012232099999891943 seconds: Request OK 
+
+  
+
+Sending patch to http://localhost:8089/tasks/1 
+
+Response took 0.023242700000992045 seconds: Request OK 
+
+  
+
+Sending delete to http://localhost:8089/tasks/2 
+
+Response took 0.03469489999952202 seconds: Request OK 
+
+``` 
+
+Validated against chrome dev tools profiler and network call time: 
+
 
 
 ## Last dash:
