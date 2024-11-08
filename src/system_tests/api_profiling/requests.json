@@ -53,7 +53,7 @@
             },
             "headers": 
             {
-              "X-Api-Key": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcnkiOjE4MTYzNzk3NzIuODE1MjQ3fQ.uFq-3UXz2tk-cciqQSDMw855uDHrzHKB63ceTqzMK0nh_jl6ujCZ1rQBn0gqdPVSisS23uAJwfN88CPC-CHc5Q"
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
             }
         },
         {
@@ -64,7 +64,338 @@
             },
             "headers": 
             {
-              "X-Api-Key": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcnkiOjE4MTYzNzk3NzIuODE1MjQ3fQ.uFq-3UXz2tk-cciqQSDMw855uDHrzHKB63ceTqzMK0nh_jl6ujCZ1rQBn0gqdPVSisS23uAJwfN88CPC-CHc5Q"
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"get",
+            "url" : "http://localhost:8089/amenities",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"get",
+            "url" : "http://localhost:8089/amenities/2",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"post",
+            "url" : "http://localhost:8089/amenities",
+            "body":{
+                "id":11112111,
+                "name": "Testing",
+                "description": "A test",
+                "startTime": "08:00:00", 
+                "endTime": "20:00:00"
+            },
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"put",
+            "url" : "http://localhost:8089/amenities/2",
+            "body":{
+                "name": "Swimming Pool",
+                "description": "A large outdoor swimming pool.",
+                "startTime": "08:00:00",
+                "endTime": "20:00:00"
+            },
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"delete",
+            "url" : "http://localhost:8089/amenities/1",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"get",
+            "url" : "http://localhost:8081/",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"get",
+            "url" : "http://localhost:8089/incident_reports",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"get",
+            "url" : "http://localhost:8089/incident_reports/1",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"post",
+            "url" : "http://localhost:8089/incident_reports",
+            "body":{
+                "title":"title",
+                "description":"description",
+                "filing_person_id": 301,
+                "reviewer_id": 401,
+                "status":"OPEN",
+                "severity":"HIGH"
+            },
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"put",
+            "url" : "http://localhost:8089/incident_reports/1",
+            "body":{
+                "title":"title",
+                "description":"description",
+                "filing_person_id": 301,
+                "reviewer_id": 401,
+                "status":"OPEN",
+                "severity":"HIGH"
+            },
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"delete",
+            "url" : "http://localhost:8089/incident_reports/2",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"post",
+            "url" : "http://localhost:8089/sessions",
+            "body":{
+                "username":"admin",
+                "password":"admin"
+            },
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"get",
+            "url" : "http://localhost:8089/sessions/me",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"get",
+            "url" : "http://localhost:8089/sessions/public-key",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"get",
+            "url" : "http://localhost:8089/permissions/healthcheck",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"get",
+            "url" : "http://localhost:8089/permissions",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"get",
+            "url" : "http://localhost:8089/permissions/1",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"post",
+            "url" : "http://localhost:8089/permissions",
+            "body":{"permissionName":"Cat"},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"get",
+            "url" : "http://localhost:8089/permission-groups",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"get",
+            "url" : "http://localhost:8089/permission-groups/1",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"post",
+            "url" : "http://localhost:8089/permission-groups",
+            "body":{
+                "groupName":"cats",
+                "groupDescription":"We are the cats"
+            },
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"patch",
+            "url" : "http://localhost:8089/permission-groups/1",
+            "body":{
+                "groupName":"MASK",
+                "groupDescription":"NEew descriptsion",
+                "groupPermissions":[{"permissionId":1, "state":true}],
+                "groupMembers": [12,13,14],
+                "removeGroupMembers": [5]
+            },
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"get",
+            "url" : "http://localhost:8082",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"get",
+            "url" : "http://localhost:8089/tasks",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"get",
+            "url" : "http://localhost:8089/tasks",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"get",
+            "url" : "http://localhost:8089/tasks/1",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"post",
+            "url" : "http://localhost:8089/tasks/1",
+            "body":{
+                "roomId": 414,
+                "taskType": "Maintenance",
+                "description": "123",
+                "status": "Pending",
+                "assignee": null,
+                "requesterId": 1,
+                "createdAt": "2024-11-08T12:02:05.809Z"
+            },
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"put",
+            "url" : "http://localhost:8089/tasks/1",
+            "body":{
+                "roomId": 414,
+                "taskType": "Maintenance",
+                "description": "123",
+                "status": "Pending",
+                "assignee": null,
+                "requesterId": 1,
+                "createdAt": "2024-11-08T12:02:05.809Z"
+            },
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"patch",
+            "url" : "http://localhost:8089/tasks/1",
+            "body":{
+                "roomId": 414,
+                "taskType": "Maintenance",
+                "description": "123",
+                "status": "Pending",
+                "assignee": null,
+                "requesterId": 1,
+                "createdAt": "2024-11-08T12:02:05.809Z"
+            },
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
+            }
+        },
+        {
+            "type":"delete",
+            "url" : "http://localhost:8089/tasks/2",
+            "body":{},
+            "headers": 
+            {
+              "X-Api-Key": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjEsImFjY291bnROYW1lIjoiYWRtaW4iLCJleHAiOjE3MzEwNjgwMTAsInBlcm1pc3Npb25TdHJpbmciOlsxMDQ4NTc0XSwicGVybWlzc2lvblZlcnNpb24iOjF9.gotdyODBW0hJ1ft3DMNV4cFfmkeJG0oFsZLY_AkmCT-dNyjJ7J7AwMnajSdQDfmGblDjVf0AAbtErq3ihn8a_mLxy9i1rq2T6ymiSO7W-pXpQvLqBDYVCwV8MetKNt4X"
             }
         }
     ]
