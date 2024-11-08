@@ -71,7 +71,7 @@ public class AmenitiesController : ControllerBase
         }
 
         //validate if id is valid
-        if (_amenityPersistence.GetAmenityByID(id) == null)
+        if(_amenityPersistence.GetAmenityByID(id) == null)
         {
             return NotFound(new AmenityResponse<int>(ResponseMessages.GET_AMENITY_FAILED, id));
         }
@@ -101,8 +101,8 @@ public class AmenitiesController : ControllerBase
 
         //return a 201 with location to newly created amenity
         return CreatedAtAction(
-            nameof(GetAmenityByID),
-            new { id = newAmenity.Id },
+            nameof(GetAmenityByID),  
+            new { id = newAmenity.Id },  
             new AmenityResponse<Amenity>(ResponseMessages.CREATE_AMENITY_SUCCESS, newAmenity)
         );
     }
