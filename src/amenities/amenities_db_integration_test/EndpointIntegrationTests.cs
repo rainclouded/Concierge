@@ -41,7 +41,7 @@ namespace amenities_db_integration_test
             var content = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
             Assert.IsNotNull(content);
             Assert.IsNotNull(content.data);
-            Assert.IsInstanceOf<JArray> (content.data);
+            Assert.IsInstanceOf<JArray>(content.data);
             Assert.AreEqual(0, content.data.Count);
         }
 
@@ -123,7 +123,7 @@ namespace amenities_db_integration_test
         public async Task DeleteAmenities_OneNotFound()
         {
             var amenity = AddAmenity(NewAmenity());
-            var response = await _client.DeleteAsync($"/amenities/{amenity.Id+1}");
+            var response = await _client.DeleteAsync($"/amenities/{amenity.Id + 1}");
             Assert.That(response.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.NotFound));
         }
 
@@ -159,7 +159,7 @@ namespace amenities_db_integration_test
             var amenity = NewAmenity();
             using StringContent jsonContent = new(
                 System.Text.Json.JsonSerializer.Serialize(new
-                {  
+                {
                     id = 1,
                     name = amenity.Name,
                     description = amenity.Description,
@@ -399,7 +399,7 @@ namespace amenities_db_integration_test
 
 
         [TearDown]
-        public void TearDown() 
+        public void TearDown()
         {
             _client.Dispose();
             _appFactory.Dispose();
@@ -437,7 +437,7 @@ namespace amenities_db_integration_test
                 );
             }
 
-            return amenity!=null;
+            return amenity != null;
         }
 
         private Amenity? GetAmenity(int id)
@@ -468,7 +468,7 @@ namespace amenities_db_integration_test
 
         private static bool IsAmenityObjEqualToAmenity(dynamic a, Amenity b)
         {
-            var i1 = a.id == b.Id; 
+            var i1 = a.id == b.Id;
             var i2 = a.name == b.Name;
             var i3 = a.description == b.Description;
             var i4 = a.startTime.ToString().Equals(b.StartTime.ToString());

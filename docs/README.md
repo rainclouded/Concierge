@@ -9,6 +9,7 @@ Concierge/
 |    └──images/
 |   └──sprint_0/
 |   └──sprint_1/
+|   └──sprint_2/
 └── src/
     ├── accounts/
     ├── amenities/
@@ -16,9 +17,9 @@ Concierge/
     ├── guest_webapp
     ├── incident_reports/     
     ├── permissions
-    ├── sessions
+    ├── task_system
     ├── staff_webapp
-    └── webapp
+    └── system_tests
 ```
 ## Branching Strategy
 Before you branch, create an issue for what you are working on.

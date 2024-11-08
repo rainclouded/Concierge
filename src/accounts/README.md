@@ -27,14 +27,14 @@ Then run the services (ctrl-c to stop):
 ```
 docker compose -f ./docker-compose.yaml up
 ```
-Then run the services:
+Or run the services (for testing):
 ```
-docker compose -f ./docker-compose.yaml up
+docker compose -f ./docker-compose.dev.yaml up
 ```
 
 Then clean up:
 ```
-docker compose -f ./docker-compose down
+docker compose -f ./docker-compose/docker-compose(.dev).yaml down
 ```
 
 Local testing:
@@ -43,7 +43,7 @@ cd into the accounts directory and first install requirements.
 ```
 python3 -m pip install requirements.txt
 ```
-Next run the tests (ctrl-c to stop)
+Next run the tests
 ```
 python3 -m tests
 ```
@@ -72,17 +72,17 @@ Handles all /accounts endpoints
      body: {'username' : '<username>', 'password' : '<password>'}
      returns: a message containing if the login was successful else error
 
-    /accounts/delete - Login a user
+   /accounts/delete - Update a user account
      body: {'username' : '<username>'}
-     header: {'X-Api-Key': <jwt token>}
-     returns: a message containing if the login was successful else error
+     headers: {'X-Api-Key' : <jwt token>}
+     returns: a message containing if the delete was successful else error
+
 
 ### Put
     /accounts/update
      body: {'username' : '<username>'}
      header: {'X-Api-Key': <jwt token>}
      returns: Message if account update was successful else error message
-
 
 ## Architecture
 
