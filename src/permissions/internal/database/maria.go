@@ -400,7 +400,7 @@ func (m *MariaDB) UpdatePermissionGroup(id int, req *models.PermissionGroupReque
 
 	if req.Permissions != nil {
 		for _, permission := range req.Permissions {
-			_, err := tx.Exec(`INSERT INTO GroupPermissions (groupId, permission_id, value) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value = ?`, id, permission.ID, permission.State)
+			_, err := tx.Exec(`INSERT INTO GroupPermissions (groupId, permission_id, value) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value = ?`, id, permission.ID, permission.State, permission.State)
 			if err != nil {
 				tx.Rollback()
 				return err
