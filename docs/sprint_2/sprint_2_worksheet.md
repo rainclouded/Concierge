@@ -307,7 +307,7 @@ Response took 0.03469489999952202 seconds: Request OK
 ``` 
 
 Validated against chrome dev tools profiler and network call time: 
-
+  ![](/docs/sprint_2/images/profile.png)
 
 
 ## Last dash:
