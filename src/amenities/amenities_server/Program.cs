@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
-        policy=>
+        policy =>
         {
             policy.AllowAnyOrigin()      // Allow requests from any origin
                    .AllowAnyMethod()      // Allow any HTTP method (GET, POST, PUT, DELETE, etc.)
@@ -33,7 +33,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseRouting(); 
+app.UseRouting();
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
