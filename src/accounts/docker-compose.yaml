@@ -9,6 +9,7 @@ services:
       retries: 3
 
   accounts:
+    image: conciergeapp/concierge:accounts
     build: .
     ports:
       - 50001:8080

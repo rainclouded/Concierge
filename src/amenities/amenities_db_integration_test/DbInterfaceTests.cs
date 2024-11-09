@@ -13,8 +13,8 @@ namespace amenities_db_integration_test
         private string? _connectionString;
 
         [OneTimeSetUp]
-        public void OneTimeSetUp() 
-        {   
+        public void OneTimeSetUp()
+        {
             _connectionString = "Host=127.0.0.1; Port=50014; Username=postgres; Password=sa";
 
             _persistence = new PostgresAmenityPersistence(_connectionString);
