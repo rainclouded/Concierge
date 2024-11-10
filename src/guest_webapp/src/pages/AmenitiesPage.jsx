@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchWithAuth } from "../utils/authFetch"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const AmenitiesPage = () => {
   const [amenities, setAmenities] = useState([]);
@@ -26,51 +28,40 @@ const AmenitiesPage = () => {
   }, []);
 
   return (
-    <div className="p-6 text-center">
-      <h1 className="text-2xl font-bold mb-4">Amenities</h1>
+    <div className="relative pt-1 bg-primary h-screen">
+      <Link to="/home" className="absolute left-4 top-4 p-1 text-xl font-semibold rounded-full z-50">
+        <FontAwesomeIcon icon={faArrowLeft} />
+      </Link>
+      {/* Sticky Header */}
+      <header className="sticky top-0 my-2 p-2 flex justify-center items-center z-40">
+        <h1 className="text-2xl font-extrabold mx-auto">Amenities</h1>
+      </header>
 
-      {error && <p className="text-red-500">Error: {error}</p>}
+      {error && <p className="text-red-700">Error: {error}</p>}
 
       {!error && amenities.length > 0 ? (
-        <table className="table-auto w-full border-collapse border border-gray-300">
-          <thead>
-            <tr>
-              <th className="border border-gray-300 px-4 py-2">Name</th>
-              <th className="border border-gray-300 px-4 py-2">Description</th>
-              <th className="border border-gray-300 px-4 py-2">Start Time</th>
-              <th className="border border-gray-300 px-4 py-2">End Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {amenities.map((amenity) => (
-              <tr key={amenity.id} className="amenity-row-item">
-                <td className="border border-gray-300 px-4 py-2">
-                  {amenity.name}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {amenity.description}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {amenity.startTime}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {amenity.endTime}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="flex flex-col justify-center items-center space-y-4 mt-4">
+          {amenities.map((amenity) => (
+            <div
+              key={amenity.id}
+              className="flex rounded-lg p-4 shadow-md bg-lightPrimary w-full max-w-[95%] lg:max-w-[50%]"
+            >
+              <div className="basis-1/2 flex items-center">
+                <h2 className="text-3xl font-bold text-black">{amenity.name}</h2>
+              </div>
+              <div className="basis-1/2">
+              <p className="text-brown mb-2">{amenity.description}</p>
+                <div className="text-brown text-sm font-medium">
+                  <p>Start Time: {amenity.startTime}</p>
+                  <p>End Time: {amenity.endTime}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
         !error && <p>Loading amenities...</p>
       )}
-
-      {/* Back to Homepage Button */}
-      <Link
-        to="/home"
-        className="inline-block mb-4 mt-4 px-6 py-3 bg-blue-500 text-white rounded"
-      >
-        Back to Homepage
-      </Link>
     </div>
   );
 };
