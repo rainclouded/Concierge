@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { IncidentReportService } from '../../services/incident-report.service';
 import { IIncidentReport } from '../../models/incident-report.model';
 import { WindowComponent } from '../../components/window/window.component'; 
@@ -7,7 +8,7 @@ import { IncidentReportFormComponent } from '../../components/incident-report-fo
 @Component({
   selector: 'app-incident-reports-tab',
   standalone: true,
-  imports: [WindowComponent, IncidentReportFormComponent],
+  imports: [WindowComponent, IncidentReportFormComponent, CommonModule],
   templateUrl: './incident-reports-tab.component.html',
 })
 export class IncidentReportsTabComponent {

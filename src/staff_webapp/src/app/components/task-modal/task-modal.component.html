@@ -22,7 +22,7 @@
         <!-- Delete icon next to edit -->
         <button
           (click)="openDeleteConfirmModal()"
-          class="ml-3 text-red-500 hover:text-red-700"
+          class="ml-3 text-red-700"
         >
           <i class="fas fa-trash"></i>
         </button>
@@ -48,16 +48,16 @@
           ></textarea>
           <div class="flex justify-end mt-2">
             <button
-              (click)="cancelEdit()"
-              class="bg-white text-blue-500 border border-blue-500 p-2 rounded-lg w-20 mr-2"
-            >
-              Cancel
-            </button>
-            <button
               (click)="saveDescription()"
-              class="bg-white text-blue-500 border border-blue-500 p-2 rounded-lg w-20"
+              class="bg-white border border-black text-black hover:bg-black hover:text-white p-2 rounded-lg w-20 mr-1"
             >
               Save
+            </button>
+            <button
+              (click)="cancelEdit()"
+              class="bg-white border border-red-700 text-red-700 hover:bg-red-700 hover:text-white p-2 rounded-lg w-20"
+            >
+              Cancel
             </button>
           </div>
         </div>
@@ -81,21 +81,21 @@
         <button
           *ngIf="!task?.assignee"
           (click)="assignTask()"
-          class="bg-blue-500 text-white p-2 rounded-lg mr-2"
+          class="bg-black text-white p-2 rounded-lg mr-1"
         >
           Assign to Me
         </button>
         <button
           *ngIf="task?.assignee"
           (click)="unassignTask()"
-          class="bg-red-500 text-white p-2 rounded-lg mr-2"
+          class="bg-red-700 text-white p-2 rounded-lg mr-1"
         >
           Unassign
         </button>
         <button
           *ngIf="task?.assignee"
           (click)="toggleComplete()"
-          class="bg-green-500 text-white p-2 rounded-lg"
+          class="bg-green-600 text-white p-2 rounded-lg"
         >
           {{ task.status === "Completed" ? "Completed" : "Mark Complete" }}
         </button>

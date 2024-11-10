@@ -1,115 +1,167 @@
 <h3 class="font-semibold text-5xl mb-5">Incident Reports</h3>
 <p class="mb-5 font-bold text-xl">Manage Incident Reports</p>
-<button (click)="openWindow()" type="button" class="bg-blue-500 text-white p-2 rounded-lg mb-4">
-  Report an incident
+<button (click)="openWindow()" type="button" class="bg-black text-white px-4 py-2 rounded-lg mb-4 tracking-wide">
+	<i class="fa-solid fa-exclamation-triangle mr-1"></i>
+	Report an incident
 </button>
 <div class="flex gap-2">
 	<!-- To do -->
 	<div class="w-1/4 border rounded-lg">
-		<div class="w-full bg-slate-300 p-3 uppercase font-semibold text-xl flex items-center justify-center text-center">
+		<div
+			class="w-full bg-slate-200 p-3 uppercase font-semibold text-xl flex items-center justify-center text-center">
 			To do
 		</div>
 		<div class="p-2">
-			@if(todoReports.length > 0){
-				@for(report of todoReports; track report.id){
-					<div class="w-full h-[175px] flex flex-col justify-between p-2 border rounded-lg">
-						<div class="flex justify-between mb-1">
-							<p class="text-xl font-semibold truncate">{{report.title}}</p>
-						</div>
-						<p class="line-clamp-3 break-words">
-							{{ report.description }}
-						</p>
-						<div class="flex items-center justify-between mt-auto">
-							<p class="text-xs mt-4 font-semibold">{{report.severity}}</p>
-							<div>
-								<button type="button" (click)="report.id && loadAmenity(report)" style="width: 60px; height: 30px;" class="bg-slate-300 p-1 mr-2 rounded-md ">Edit</button>
-								<button type="button" (click)="report.id && deleteReport(report.id)" style="width: 60px; height: 30px;" class="bg-red-700 text-white p-1 rounded-md">Delete</button>
-							</div>
-						</div>
+			@if(todoReports.length > 0){ @for(report of todoReports; track report.id){
+			<div class="w-full h-[175px] flex flex-col justify-between p-2 border rounded-lg">
+				<div class="flex justify-between mb-1">
+					<p class="text-xl font-semibold truncate">{{ report.title }}</p>
+				</div>
+				<p class="line-clamp-3 break-words">
+					{{ report.description }}
+				</p>
+				<div class="flex items-center justify-between mt-auto">
+					<p class="text-xs mt-4 font-semibold px-2 py-1 rounded"
+						[ngClass]="{
+							'bg-green-400 text-white': report.severity === 'LOW',
+							'bg-yellow-500 text-black': report.severity === 'MEDIUM',
+							'bg-orange-400 text-white': report.severity === 'HIGH',
+							'bg-red-600 text-white': report.severity === 'CRITICAL'
+						}"
+					>{{ report.severity }}</p>
+					<div>
+						<button type="button" (click)="report.id && loadAmenity(report)"
+							class="bg-slate-200 hover:bg-primary p-1 mr-2 rounded-md w-8 h-8 text-center">
+							<i class="fa-solid fa-pen"></i>
+						</button>
+						<button type="button" (click)="report.id && deleteReport(report.id)"
+							class="bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
+							<i class="fa-solid fa-trash"></i>
+						</button>
 					</div>
-				}
-			}
+				</div>
+			</div>
+			} }
 		</div>
 	</div>
 	<!-- In progress -->
 	<div class="w-1/4 border rounded-lg">
-		<div class="w-full bg-slate-300 p-3 uppercase font-semibold text-xl flex items-center justify-center text-center">
+		<div
+			class="w-full bg-slate-200 p-3 uppercase font-semibold text-xl flex items-center justify-center text-center">
 			In progress
 		</div>
 		<div class="p-2">
-			@if(inProgressReports.length > 0){
-				@for(report of inProgressReports; track report.id){
-					<div class="w-full h-[175px] flex flex-col justify-between p-2 border rounded-lg">
-						<div class="flex justify-between mb-1">
-							<p class="text-xl font-semibold truncate">{{report.title}}</p>
-						</div>
-						<p class="line-clamp-3 break-words">
-							{{ report.description }}
-						</p>
-						<div class="flex items-center justify-between mt-auto">
-							<p class="text-xs mt-4 font-semibold">{{report.severity}}</p>
-							<div>
-								<button type="button" (click)="report.id && loadAmenity(report)" style="width: 60px; height: 30px;" class="bg-slate-300 p-1 mr-2 rounded-md ">Edit</button>
-								<button type="button" (click)="report.id && deleteReport(report.id)" style="width: 60px; height: 30px;" class="bg-red-700 text-white p-1 rounded-md">Delete</button>
-							</div>
-						</div>
+			@if(inProgressReports.length > 0){ @for(report of inProgressReports; track
+			report.id){
+			<div class="w-full h-[175px] flex flex-col justify-between p-2 border rounded-lg">
+				<div class="flex justify-between mb-1">
+					<p class="text-xl font-semibold truncate">{{ report.title }}</p>
+				</div>
+				<p class="line-clamp-3 break-words">
+					{{ report.description }}
+				</p>
+				<div class="flex items-center justify-between mt-auto">
+					<p class="text-xs mt-4 font-semibold px-2 py-1 rounded"
+						[ngClass]="{
+							'bg-green-400 text-white': report.severity === 'LOW',
+							'bg-yellow-500 text-black': report.severity === 'MEDIUM',
+							'bg-orange-400 text-white': report.severity === 'HIGH',
+							'bg-red-600 text-white': report.severity === 'CRITICAL'
+						}"
+					>{{ report.severity }}</p>
+					<div>
+						<button type="button" (click)="report.id && loadAmenity(report)"
+							class="bg-slate-200 hover:bg-primary p-1 mr-2 rounded-md w-8 h-8 text-center">
+							<i class="fa-solid fa-pen"></i>
+						</button>
+						<button type="button" (click)="report.id && deleteReport(report.id)"
+							class="bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
+							<i class="fa-solid fa-trash"></i>
+						</button>
 					</div>
-				}
-			}
+				</div>
+			</div>
+			} }
 		</div>
 	</div>
 	<!-- Resolved -->
 	<div class="w-1/4 border rounded-lg">
-		<div class="w-full bg-slate-300 p-3 uppercase font-semibold text-xl flex items-center justify-center text-center">
+		<div
+			class="w-full bg-slate-200 p-3 uppercase font-semibold text-xl flex items-center justify-center text-center">
 			Resolved
 		</div>
 		<div class="p-2">
-			@if(resolvedReports.length > 0){
-				@for(report of resolvedReports; track report.id){
-					<div class="w-full h-[175px] flex flex-col justify-between p-2 border rounded-lg">
-						<div class="flex justify-between mb-1">
-							<p class="text-xl font-semibold truncate">{{report.title}}</p>
-						</div>
-						<p class="line-clamp-3 break-words">
-							{{ report.description }}
-						</p>
-						<div class="flex items-center justify-between mt-auto">
-							<p class="text-xs mt-4 font-semibold">{{report.severity}}</p>
-							<div>
-								<button type="button" (click)="report.id && loadAmenity(report)" style="width: 60px; height: 30px;" class="bg-slate-300 p-1 mr-2 rounded-md ">Edit</button>
-								<button type="button" (click)="report.id && deleteReport(report.id)" style="width: 60px; height: 30px;" class="bg-red-700 text-white p-1 rounded-md">Delete</button>
-							</div>
-						</div>
+			@if(resolvedReports.length > 0){ @for(report of resolvedReports; track
+			report.id){
+			<div class="w-full h-[175px] flex flex-col justify-between p-2 border rounded-lg">
+				<div class="flex justify-between mb-1">
+					<p class="text-xl font-semibold truncate">{{ report.title }}</p>
+				</div>
+				<p class="line-clamp-3 break-words">
+					{{ report.description }}
+				</p>
+				<div class="flex items-center justify-between mt-auto">
+					<p class="text-xs mt-4 font-semibold px-2 py-1 rounded"
+						[ngClass]="{
+							'bg-green-400 text-white': report.severity === 'LOW',
+							'bg-yellow-500 text-black': report.severity === 'MEDIUM',
+							'bg-orange-400 text-white': report.severity === 'HIGH',
+							'bg-red-600 text-white': report.severity === 'CRITICAL'
+						}"
+					>{{ report.severity }}</p>
+					<div>
+						<button type="button" (click)="report.id && loadAmenity(report)"
+							class="bg-slate-200 hover:bg-primary p-1 mr-2 rounded-md w-8 h-8 text-center">
+							<i class="fa-solid fa-pen"></i>
+						</button>
+						<button type="button" (click)="report.id && deleteReport(report.id)"
+							class="bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
+							<i class="fa-solid fa-trash"></i>
+						</button>
 					</div>
-				}
-			}
+				</div>
+			</div>
+			} }
 		</div>
 	</div>
 	<!-- Closed -->
 	<div class="w-1/4 border rounded-lg">
-		<div class="w-full bg-slate-300 p-3 uppercase font-semibold text-xl flex items-center justify-center text-center">
+		<div
+			class="w-full bg-slate-200 p-3 uppercase font-semibold text-xl flex items-center justify-center text-center">
 			Closed
 		</div>
 		<div class="p-2">
-			@if(closedReports.length > 0){
-				@for(report of closedReports; track report.id){
-					<div class="w-full h-[175px] flex flex-col justify-between p-2 border rounded-lg">
-						<div class="flex justify-between mb-1">
-							<p class="text-xl font-semibold truncate">{{report.title}}</p>
-						</div>
-						<p class="line-clamp-3 break-words">
-							{{ report.description }}
-						</p>
-						<div class="flex items-center justify-between mt-auto">
-							<p class="text-xs mt-4 font-semibold">{{report.severity}}</p>
-							<div>
-								<button type="button" (click)="report.id && loadAmenity(report)" style="width: 60px; height: 30px;" class="bg-slate-300 p-1 mr-2 rounded-md ">Edit</button>
-								<button type="button" (click)="report.id && deleteReport(report.id)" style="width: 60px; height: 30px;" class="bg-red-700 text-white p-1 rounded-md">Delete</button>
-							</div>
-						</div>
+			@if(closedReports.length > 0){ @for(report of closedReports; track
+			report.id){
+			<div class="w-full h-[175px] flex flex-col justify-between p-2 border rounded-lg">
+				<div class="flex justify-between mb-1">
+					<p class="text-xl font-semibold truncate">{{ report.title }}</p>
+				</div>
+				<p class="line-clamp-3 break-words">
+					{{ report.description }}
+				</p>
+				<div class="flex items-center justify-between mt-auto">
+					<p class="text-xs mt-4 font-semibold px-2 py-1 rounded"
+						[ngClass]="{
+							'bg-green-400 text-white': report.severity === 'LOW',
+							'bg-yellow-500 text-black': report.severity === 'MEDIUM',
+							'bg-orange-400 text-white': report.severity === 'HIGH',
+							'bg-red-600 text-white': report.severity === 'CRITICAL'
+						}"
+					>{{ report.severity }}</p>
+					<div>
+						<button type="button" (click)="report.id && loadAmenity(report)"
+							class="bg-slate-200 hover:bg-primary p-1 mr-2 rounded-md w-8 h-8 text-center">
+							<i class="fa-solid fa-pen"></i>
+						</button>
+						<button type="button" (click)="report.id && deleteReport(report.id)"
+							class="bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
+							<i class="fa-solid fa-trash"></i>
+						</button>
 					</div>
-				}
-			}
+				</div>
+			</div>
+			} }
 		</div>
 	</div>
 </div>

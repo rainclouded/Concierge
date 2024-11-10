@@ -1,6 +1,7 @@
 <h3 class="font-semibold text-5xl mb-5">Amenities</h3>
 <p class="mb-5 font-bold text-xl">Manage Amenities</p>
-<button (click)="openWindow()" type="button" class="bg-blue-500 text-white p-2 rounded-lg mb-4">
+<button (click)="openWindow()" type="button" class="bg-black text-white px-4 py-2 rounded-lg mb-4">
+  <i class="fa-solid fa-plus-circle mr-1"></i>
   Add Amenity
 </button>
 <div class="relative overflow-x-auto shadow-sm rounded-lg">
@@ -15,26 +16,32 @@
     </thead>
     <tbody>
       @if (amenities.length > 0) {
-        @for(amenity of amenities; track amenity.id) {
-          <tr class="bg-white border-b amenity-item">
-            <th scope="row" class="px-6 py-6 font-semibold text-2xl whitespace-nowrap">
-              {{amenity.name}}
-            </th>
-            <td class="px-6 py-6">
-              {{amenity.description}}
-            </td>
-            <td class="px-6 py-6">
-              {{ formatTimeToAMPM(amenity.startTime) }} - {{ formatTimeToAMPM(amenity.endTime) }}
-            </td>
-            <td class="px-6 py-6 flex gap-3 items-center justify-end">
-              <button type="button" (click)="amenity.id && loadAmenity(amenity)" class="bg-slate-200 p-3 rounded-lg">Edit</button>
-              <button type="button" (click)="amenity.id && deleteAmenity(amenity.id)" class="bg-red-700 text-white p-3 rounded-lg">Delete</button>
-            </td>
-          </tr>
-        }
+      @for(amenity of amenities; track amenity.id) {
+      <tr class="bg-white border-b amenity-item">
+        <th scope="row" class="px-4 py-4 font-semibold text-2xl whitespace-nowrap">
+          {{amenity.name}}
+        </th>
+        <td class="px-4 py-4">
+          {{amenity.description}}
+        </td>
+        <td class="px-4 py-4">
+          {{ formatTimeToAMPM(amenity.startTime) }} - {{ formatTimeToAMPM(amenity.endTime) }}
+        </td>
+        <td class="px-4 py-4 flex gap-3 items-center justify-end">
+          <button type="button" (click)="amenity.id && loadAmenity(amenity)"
+            class="bg-slate-200 rounded-lg w-9 h-9">
+            <i class="fa-solid fa-pen"></i>
+          </button>
+          <button type="button" (click)="amenity.id && deleteAmenity(amenity.id)"
+            class="bg-red-700 text-white rounded-lg w-9 h-9">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+      }
       } @else {
-        <p>No amenities found</p>
-      } 
+      <p>No amenities found</p>
+      }
     </tbody>
   </table>
 </div>
