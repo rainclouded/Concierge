@@ -2539,6 +2539,61 @@
             }
          }
       },
+      "/tasks/account/{id}": {
+         "get": {
+            "summary": "View tasks under a specified account",
+            "operationId": "getTaskByAccountId",
+            "tags": [
+               "Tasks"
+            ],
+            "parameters": [
+               {
+                  "name": "X-API-KEY",
+                  "in": "cookie",
+                  "description": "A session key, associated to an account with the necessary permissions for authenticating user",
+                  "required": true,
+                  "schema": {
+                     "type": "string"
+                  }
+               },
+               {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                     "type": "integer",
+                     "format": "int32"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object",
+                           "properties": {
+                              "tasks": {
+                                 "type": "array",
+                                 "items": {
+                                    "$ref": "#/components/schemas/Task"
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               },
+               "404": {
+                  "description": "Not found"
+               },
+               "401": {
+                  "description": "Unauthorized"
+               }
+            }
+         }
+      },
       "/tasks/{id}/assignee": {
          "patch": {
             "summary": "Assign Task",

@@ -116,6 +116,15 @@ public class StubTaskSystemRepository : ITaskSystemRepository
         return await Task.FromResult(_tasks.FirstOrDefault(t => t.Id == id));
     }
 
+    public async Task<IEnumerable<TaskItem>> GetTaskByAccountIdAsync(int accountId)
+    {
+        var tasks = _tasks.AsQueryable();
+    
+        var matchingTasks = tasks.Where(s => s.RequesterId == accountId);
+
+        return await Task.FromResult(matchingTasks);
+    }
+
     public async Task<TaskItem> AddTaskAsync(TaskItem task)
     {
         if (_tasks.FirstOrDefault(t => t.Id == task.Id) != null)

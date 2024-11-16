@@ -6,5 +6,10 @@
         {
             return true;
         }
+
+        public bool ValidateAccountId(int accountId, string sessionKey)
+        {
+            return true;
+        }
     }
 }

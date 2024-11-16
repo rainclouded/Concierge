@@ -7,6 +7,7 @@ public interface ITaskSystemRepository
 {
     Task<IEnumerable<TaskItem>> GetTasksAsync(QueryObject query);
     Task<TaskItem?> GetTaskByIdAsync(int id);
+    Task<IEnumerable<TaskItem>> GetTaskByAccountIdAsync(int accountId);
     Task<TaskItem> AddTaskAsync(TaskItem task);
     Task<TaskItem?> UpdateTaskAsync(int id, UpdateTaskDto task);
     Task<TaskItem?> UpdateAssigneeAsync(int id, int assigneeId);
