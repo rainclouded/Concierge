@@ -32,9 +32,18 @@ public class PostgresTaskSystemRepository : ITaskSystemRepository
         return await tasks.ToListAsync();
     }
 
-    public async Task<TaskItem?> GetTaskByIdAsync(int id)
+    public async Task<TaskItem?> GetTaskByIdAsync(int taskId)
     {
-        return await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id);
+        return await _context.Tasks.FirstOrDefaultAsync(t => t.Id == taskId);
+    }
+
+    public async Task<IEnumerable<TaskItem>> GetTaskByAccountIdAsync(int accountId)
+    {
+        var tasks = _context.Tasks.AsQueryable();
+        
+        tasks = tasks.Where(t => t.RequesterId == accountId);
+
+        return await tasks.ToListAsync();
     }
 
     public async Task<TaskItem> AddTaskAsync(TaskItem task)

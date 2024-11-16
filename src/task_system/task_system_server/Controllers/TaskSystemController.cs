@@ -44,7 +44,7 @@ namespace task_system_server.Controllers
 
         //GET: /tasks/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetTaskById([FromRoute] int id)
+        public async Task<IActionResult> GetTaskById([FromRoute] int taskId)
         {
             if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey!))
                 return Unauthorized(new TaskSystemResponse<string>(ResponseMessages.UNAUTHORIZED, null));
@@ -52,14 +52,40 @@ namespace task_system_server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var task = await _taskSystemRepository.GetTaskByIdAsync(id);
+            var task = await _taskSystemRepository.GetTaskByIdAsync(taskId);
 
             if (task == null)
             {
-                return NotFound(new TaskSystemResponse<int>(ResponseMessages.GET_TASK_FAILED, id));
+                return NotFound(new TaskSystemResponse<int>(ResponseMessages.GET_TASK_FAILED, taskId));
             }
 
             return Ok(new TaskSystemResponse<TaskItem>(ResponseMessages.GET_TASK_SUCCESS, task));
+        }
+
+        //GET: /tasks/account/{accountId}
+        [HttpGet("account/{accountId}")]
+        public async Task<IActionResult> GetTasksByAccountId([FromRoute] int accountId)
+        {
+            /*
+                Gets all tasks associated with an account id
+            */
+
+            //verify that account id is that of the session key, and that it can create tasks
+            //if account can create tasks, then they can see their own!
+            if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidateAccountId(accountId, apiKey!) || 
+                    !_permissionValidator.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey!))       
+                return Unauthorized(new TaskSystemResponse<string>(ResponseMessages.UNAUTHORIZED, null));
+
+            var tasks = await _taskSystemRepository.GetTaskByAccountIdAsync(accountId);
+
+            //the returned list of tasks could be empty, and that is expected behaviour
+            //return 404 if there is no list to return
+            if (tasks == null)
+            {
+                return NotFound(new TaskSystemResponse<string>(ResponseMessages.GET_TASKS_FAILED, null));
+            }
+
+            return Ok(new TaskSystemResponse<IEnumerable<TaskItem>>(ResponseMessages.GET_TASKS_SUCCESS, tasks));
         }
 
         //POST: /tasks
