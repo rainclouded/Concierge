@@ -76,6 +76,9 @@ namespace task_system_server.Controllers
                     !_permissionValidator.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey!))       
                 return Unauthorized(new TaskSystemResponse<string>(ResponseMessages.UNAUTHORIZED, null));
 
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var tasks = await _taskSystemRepository.GetTaskByAccountIdAsync(accountId);
 
             //the returned list of tasks could be empty, and that is expected behaviour
