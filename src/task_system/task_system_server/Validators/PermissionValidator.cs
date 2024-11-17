@@ -15,8 +15,7 @@
         public bool ValidateAccountId(int accountId, string sessionKey)
         {
             var permData = _permClient.GetSessionData(sessionKey).GetAwaiter().GetResult();
-
-            Console.WriteLine(permData?.Data?.SessionData?.AccountId + " " + accountId);
+            
             return permData?.Data?.SessionData?.AccountId == accountId;
         }
     }

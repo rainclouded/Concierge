@@ -9,5 +9,6 @@ public class QueryObject
     public int? Year { get; set; } = null;
     public int? Month { get; set; } = null;
     public int? Day { get; set; } = null;
+    public int? AccountId { get; set; } = null;
     public bool SortAscending { get; set; } = true;
 }

@@ -103,7 +103,8 @@ public class StubTaskSystemRepository : ITaskSystemRepository
             (!query.Status.HasValue || s.Status == query.Status) &&
             (!query.Year.HasValue || s.CreatedAt.Year == query.Year) &&
             (!query.Month.HasValue || s.CreatedAt.Month == query.Month) &&
-            (!query.Day.HasValue || s.CreatedAt.Day == query.Day)
+            (!query.Day.HasValue || s.CreatedAt.Day == query.Day) &&
+            (!query.AccountId.HasValue || s.RequesterId == query.AccountId)
         );
 
         tasks = query.SortAscending ? tasks.OrderBy(s => s.CreatedAt) : tasks.OrderByDescending(s => s.CreatedAt);
@@ -114,15 +115,6 @@ public class StubTaskSystemRepository : ITaskSystemRepository
     public async Task<TaskItem?> GetTaskByIdAsync(int id)
     {
         return await Task.FromResult(_tasks.FirstOrDefault(t => t.Id == id));
-    }
-
-    public async Task<IEnumerable<TaskItem>> GetTaskByAccountIdAsync(int accountId)
-    {
-        var tasks = _tasks.AsQueryable();
-    
-        var matchingTasks = tasks.Where(s => s.RequesterId == accountId);
-
-        return await Task.FromResult(matchingTasks);
     }
 
     public async Task<TaskItem> AddTaskAsync(TaskItem task)

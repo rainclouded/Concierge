@@ -26,18 +26,22 @@ namespace task_system_server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTasks([FromQuery] QueryObject query)
         {
-            if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey!))
+            if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey))
                 return Unauthorized(new TaskSystemResponse<string>(ResponseMessages.UNAUTHORIZED, null));
+
+            if(!_permissionValidator.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey) && 
+                (!query.AccountId.HasValue || !_permissionValidator.ValidateAccountId(query.AccountId.Value, apiKey!) || !_permissionValidator.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey!)))
+            {
+                return Unauthorized(new TaskSystemResponse<string>(ResponseMessages.UNAUTHORIZED, null));
+            }
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
+                
             var tasks = await _taskSystemRepository.GetTasksAsync(query);
 
             if (!tasks.Any())
-            {
                 return NotFound(new TaskSystemResponse<string>(ResponseMessages.GET_TASKS_FAILED, null));
-            }
 
             return Ok(new TaskSystemResponse<IEnumerable<TaskItem>>(ResponseMessages.GET_TASKS_SUCCESS, tasks));
         }
@@ -60,35 +64,6 @@ namespace task_system_server.Controllers
             }
 
             return Ok(new TaskSystemResponse<TaskItem>(ResponseMessages.GET_TASK_SUCCESS, task));
-        }
-
-        //GET: /tasks/account/{accountId}
-        [HttpGet("account/{accountId}")]
-        public async Task<IActionResult> GetTasksByAccountId([FromRoute] int accountId)
-        {
-            /*
-                Gets all tasks associated with an account id
-            */
-
-            //verify that account id is that of the session key, and that it can create tasks
-            //if account can create tasks, then they can see their own!
-            if (!Request.Headers.TryGetValue("X-API-Key", out var apiKey) || !_permissionValidator.ValidateAccountId(accountId, apiKey!) || 
-                    !_permissionValidator.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey!))       
-                return Unauthorized(new TaskSystemResponse<string>(ResponseMessages.UNAUTHORIZED, null));
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var tasks = await _taskSystemRepository.GetTaskByAccountIdAsync(accountId);
-
-            //the returned list of tasks could be empty, and that is expected behaviour
-            //return 404 if there is no list to return
-            if (tasks == null)
-            {
-                return NotFound(new TaskSystemResponse<string>(ResponseMessages.GET_TASKS_FAILED, null));
-            }
-
-            return Ok(new TaskSystemResponse<IEnumerable<TaskItem>>(ResponseMessages.GET_TASKS_SUCCESS, tasks));
         }
 
         //POST: /tasks
