@@ -151,6 +151,96 @@ namespace task_system_test
         }
 
         [Fact]
+        public async Task GetTasks_WhenUserLacksViewTasksPermission_AndNoAccountIdProvided_AndLacksCreateTasksPermission_ReturnsUnauthorized()
+        {
+            var query = new QueryObject { AccountId = null };
+            var apiKey = "testApiKey";
+
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(false);
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey)).Returns(false);
+
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var result = await _controller.GetTasks(query);
+
+            Assert.IsType<UnauthorizedObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task GetTasks_WhenUserLacksViewTasksPermission_AndValidAccountId_AndLacksCreateTasksPermission_ReturnsUnauthorized()
+        {
+            var query = new QueryObject { AccountId = 4 };
+            var apiKey = "testApiKey";
+
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(false);
+            _mockPermValidator.Setup(v => v.ValidateAccountId(query.AccountId.Value, apiKey)).Returns(true);
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey)).Returns(false);
+
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var result = await _controller.GetTasks(query);
+
+            Assert.IsType<UnauthorizedObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task GetTasks_WhenUserHasCreateTasksPermissionAndInvalidAccountId_ReturnsUnauthorized()
+        {
+            var query = new QueryObject { AccountId = 4 };
+            var apiKey = "testApiKey";
+            var tasks = new List<TaskItem> { new TaskItem() };
+
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(false);
+            _mockPermValidator.Setup(v => v.ValidateAccountId(query.AccountId.Value, apiKey)).Returns(false);
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey)).Returns(true);
+            _mockRepo.Setup(r => r.GetTasksAsync(query)).ReturnsAsync(tasks);
+
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var result = await _controller.GetTasks(query);
+
+            Assert.IsType<UnauthorizedObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task GetTasks_WhenUserHasCreateTasksPermissionAndValidAccountId_ReturnsOk()
+        {
+            var query = new QueryObject { AccountId = 4 };
+            var apiKey = "testApiKey";
+            var tasks = new List<TaskItem> { new TaskItem() };
+
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(false);
+            _mockPermValidator.Setup(v => v.ValidateAccountId(query.AccountId.Value, apiKey)).Returns(true);
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey)).Returns(true);
+            _mockRepo.Setup(r => r.GetTasksAsync(query)).ReturnsAsync(tasks);
+
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var result = await _controller.GetTasks(query);
+
+            Assert.IsType<OkObjectResult>(result);
+        }
+        [Fact]
         public async Task GetTaskById_ReturnsOkResult_WhenTaskExists()
         {
             int taskId = 1;
@@ -429,128 +519,6 @@ namespace task_system_test
             var actionResult = await _controller.DeleteTask(1);
 
             Assert.IsType<BadRequestObjectResult>(actionResult);
-        }
-
-        [Fact]
-        public async Task GetTasksByAccountId_ReturnsOk_WhenValidAccountId()
-        {
-            int accountId = 1;
-
-            _mockPermValidator.Setup(p => p.ValidateAccountId(accountId, It.IsAny<string>())).Returns(true);
-            _mockPermValidator.Setup(p => p.ValidatePermissions(PermissionNames.CREATE_TASKS, It.IsAny<string>())).Returns(true);
-            
-            var tasks = new List<TaskItem>{
-                new TaskItem
-                {
-                    Id = 1,
-                    TaskType = TaskItemType.Maintenance,
-                    Description = "There is a leak in the bathroom sink that needs urgent attention.",
-                    RoomId = 101,
-                    RequesterId = 1,
-                    AssigneeId = 2,
-                    Status = TaskItemStatus.InProgress,
-                    CreatedAt = new DateTime(2024, 10, 10, 10, 30, 0)
-                },
-                new TaskItem
-                {
-                    Id = 2,
-                    TaskType = TaskItemType.Maintenance,
-                    Description = "Some light bulbs are out in the hallway. Please replace them.",
-                    RoomId = 102,
-                    RequesterId = 3,
-                    AssigneeId = 2,
-                    Status = TaskItemStatus.Pending,
-                    CreatedAt = new DateTime(2024, 10, 12, 9, 0, 0)
-                },
-                new TaskItem
-                {
-                    Id = 3,
-                    TaskType = TaskItemType.RoomCleaning,
-                    Description = "The conference room needs to be cleaned before the meeting.",
-                    RoomId = 201,
-                    RequesterId = 4,
-                    AssigneeId = 5,
-                    Status = TaskItemStatus.Completed,
-                    CreatedAt = new DateTime(2024, 10, 13, 15, 0, 0)
-                },
-                new TaskItem
-                {
-                    Id = 4,
-                    TaskType = TaskItemType.FoodDelivery,
-                    Description = "Deliver breakfast to room 203.",
-                    RoomId = 203,
-                    RequesterId = 6,
-                    AssigneeId = 7,
-                    Status = TaskItemStatus.Pending,
-                    CreatedAt = new DateTime(2024, 10, 16, 8, 0, 0)
-                },
-                new TaskItem
-                {
-                    Id = 5,
-                    TaskType = TaskItemType.WakeUpCall,
-                    Description = "Provide a wake-up call at 6:00 AM for room 204.",
-                    RoomId = 204,
-                    RequesterId = 8,
-                    AssigneeId = 9,
-                    Status = TaskItemStatus.Completed,
-                    CreatedAt = new DateTime(2024, 10, 16, 6, 0, 0)
-                },
-                new TaskItem
-                {
-                    Id = 6,
-                    TaskType = TaskItemType.LaundryService,
-                    Description = "Pick up laundry from room 205 and deliver it back clean.",
-                    RoomId = 205,
-                    RequesterId = 10,
-                    AssigneeId = 11,
-                    Status = TaskItemStatus.InProgress,
-                    CreatedAt = new DateTime(2024, 10, 17, 10, 0, 0)
-                },
-                new TaskItem
-                {
-                    Id = 7,
-                    TaskType = TaskItemType.SpaAndMassage,
-                    Description = "Schedule a massage for the guest in room 206 at 3:00 PM.",
-                    RoomId = 206,
-                    RequesterId = 12,
-                    AssigneeId = 13,
-                    Status = TaskItemStatus.Pending,
-                    CreatedAt = new DateTime(2024, 10, 18, 15, 0, 0)
-                }
-            };
-
-            _mockRepo.Setup(r => r.GetTaskByAccountIdAsync(accountId)).ReturnsAsync(tasks);
-
-            var controllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext()
-            };
-            controllerContext.HttpContext.Request.Headers["X-API-Key"] = "valid-api-key";
-            _controller.ControllerContext = controllerContext;
-
-            var result = await _controller.GetTasksByAccountId(accountId);
-
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            var response = Assert.IsType<TaskSystemResponse<IEnumerable<TaskItem>>>(okResult.Value);
-        }
-
-        [Fact]
-        public async Task GetTasksByAccountId_ReturnsUnauthorized_WhenApiKeyInvalid()
-        {
-            int accountId = 1;
-            _mockPermValidator.Setup(p => p.ValidateAccountId(accountId, It.IsAny<string>())).Returns(false);
-
-            var controllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext()
-            };
-            controllerContext.HttpContext.Request.Headers["X-API-Key"] = "invalid-api-key";
-            _controller.ControllerContext = controllerContext;
-
-            var result = await _controller.GetTasksByAccountId(accountId);
-
-            var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
-            var response = Assert.IsType<TaskSystemResponse<string>>(unauthorizedResult.Value);
         }
     }
 }
