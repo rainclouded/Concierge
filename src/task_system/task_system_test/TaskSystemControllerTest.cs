@@ -15,7 +15,6 @@ namespace task_system_test
         private readonly Mock<ITaskSystemRepository> _mockRepo;
         private readonly Mock<IPermissionValidator> _mockPermValidator;
         private readonly TaskSystemController _controller;
-
         public TaskSystemControllerTest()
         {
             _mockRepo = new Mock<ITaskSystemRepository>();
@@ -110,7 +109,7 @@ namespace task_system_test
             _mockRepo.Setup(repo => repo.GetTasksAsync(query)).ReturnsAsync(tasks);
             
             var apiKey = "test-api-key";
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(true);
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey, out It.Ref<SessionObj>.IsAny)).Returns(true);
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers["X-API-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
@@ -134,7 +133,7 @@ namespace task_system_test
             _mockRepo.Setup(repo => repo.GetTasksAsync(query)).ReturnsAsync(emptyTasks);
 
             var apiKey = "test-api-key";
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(true);
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey, out It.Ref<SessionObj>.IsAny)).Returns(true);
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers["X-API-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
@@ -151,95 +150,112 @@ namespace task_system_test
         }
 
         [Fact]
-        public async Task GetTasks_WhenUserLacksViewTasksPermission_AndNoAccountIdProvided_AndLacksCreateTasksPermission_ReturnsUnauthorized()
+        public async Task GetTasks_ShouldReturnOk_WhenPermissionCheckFails()
         {
-            var query = new QueryObject { AccountId = null };
-            var apiKey = "testApiKey";
+            var sessionObj = new SessionObj
+            {
+                AccountId = 4,
+                AccountName = "JohnDoe",
+                SessionPermissionList = new List<string> { "VIEW_TASKS", "EDIT_TASKS" }
+            };
+            var query = new QueryObject();
+            var tasks = new List<TaskItem>{
+                new TaskItem
+                {
+                    Id = 1,
+                    TaskType = TaskItemType.Maintenance,
+                    Description = "There is a leak in the bathroom sink that needs urgent attention.",
+                    RoomId = 101,
+                    RequesterId = 1,
+                    AssigneeId = 2,
+                    Status = TaskItemStatus.InProgress,
+                    CreatedAt = new DateTime(2024, 10, 10, 10, 30, 0)
+                },
+                new TaskItem
+                {
+                    Id = 2,
+                    TaskType = TaskItemType.Maintenance,
+                    Description = "Some light bulbs are out in the hallway. Please replace them.",
+                    RoomId = 102,
+                    RequesterId = 3,
+                    AssigneeId = 2,
+                    Status = TaskItemStatus.Pending,
+                    CreatedAt = new DateTime(2024, 10, 12, 9, 0, 0)
+                },
+                new TaskItem
+                {
+                    Id = 3,
+                    TaskType = TaskItemType.RoomCleaning,
+                    Description = "The conference room needs to be cleaned before the meeting.",
+                    RoomId = 201,
+                    RequesterId = 4,
+                    AssigneeId = 5,
+                    Status = TaskItemStatus.Completed,
+                    CreatedAt = new DateTime(2024, 10, 13, 15, 0, 0)
+                },
+                new TaskItem
+                {
+                    Id = 4,
+                    TaskType = TaskItemType.FoodDelivery,
+                    Description = "Deliver breakfast to room 203.",
+                    RoomId = 203,
+                    RequesterId = 6,
+                    AssigneeId = 7,
+                    Status = TaskItemStatus.Pending,
+                    CreatedAt = new DateTime(2024, 10, 16, 8, 0, 0)
+                },
+                new TaskItem
+                {
+                    Id = 5,
+                    TaskType = TaskItemType.WakeUpCall,
+                    Description = "Provide a wake-up call at 6:00 AM for room 204.",
+                    RoomId = 204,
+                    RequesterId = 8,
+                    AssigneeId = 9,
+                    Status = TaskItemStatus.Completed,
+                    CreatedAt = new DateTime(2024, 10, 16, 6, 0, 0)
+                },
+                new TaskItem
+                {
+                    Id = 6,
+                    TaskType = TaskItemType.LaundryService,
+                    Description = "Pick up laundry from room 205 and deliver it back clean.",
+                    RoomId = 205,
+                    RequesterId = 10,
+                    AssigneeId = 11,
+                    Status = TaskItemStatus.InProgress,
+                    CreatedAt = new DateTime(2024, 10, 17, 10, 0, 0)
+                },
+                new TaskItem
+                {
+                    Id = 7,
+                    TaskType = TaskItemType.SpaAndMassage,
+                    Description = "Schedule a massage for the guest in room 206 at 3:00 PM.",
+                    RoomId = 206,
+                    RequesterId = 12,
+                    AssigneeId = 13,
+                    Status = TaskItemStatus.Pending,
+                    CreatedAt = new DateTime(2024, 10, 18, 15, 0, 0)
+                }
+            };
 
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(false);
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey)).Returns(false);
+            _mockPermValidator.Setup(pv => pv.ValidatePermissions(It.IsAny<string>(), It.IsAny<string>(), out sessionObj)).Returns(false);
+            _mockRepo.Setup(repo => repo.GetTasksAsync(It.IsAny<QueryObject>())).ReturnsAsync(tasks);
 
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["X-API-Key"] = apiKey;
+            httpContext.Request.Headers["X-API-Key"] = "test-api-key";
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
             };
 
-            var result = await _controller.GetTasks(query);
+            var result = await _controller.GetTasks(new QueryObject());
 
-            Assert.IsType<UnauthorizedObjectResult>(result);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var response = Assert.IsType<TaskSystemResponse<IEnumerable<TaskItem>>>(okResult.Value);
+            Assert.Equal(ResponseMessages.GET_TASKS_SUCCESS, response.Message);
         }
 
-        [Fact]
-        public async Task GetTasks_WhenUserLacksViewTasksPermission_AndValidAccountId_AndLacksCreateTasksPermission_ReturnsUnauthorized()
-        {
-            var query = new QueryObject { AccountId = 4 };
-            var apiKey = "testApiKey";
-
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(false);
-            _mockPermValidator.Setup(v => v.ValidateAccountId(query.AccountId.Value, apiKey)).Returns(true);
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey)).Returns(false);
-
-            var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["X-API-Key"] = apiKey;
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext
-            };
-
-            var result = await _controller.GetTasks(query);
-
-            Assert.IsType<UnauthorizedObjectResult>(result);
-        }
-
-        [Fact]
-        public async Task GetTasks_WhenUserHasCreateTasksPermissionAndInvalidAccountId_ReturnsUnauthorized()
-        {
-            var query = new QueryObject { AccountId = 4 };
-            var apiKey = "testApiKey";
-            var tasks = new List<TaskItem> { new TaskItem() };
-
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(false);
-            _mockPermValidator.Setup(v => v.ValidateAccountId(query.AccountId.Value, apiKey)).Returns(false);
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey)).Returns(true);
-            _mockRepo.Setup(r => r.GetTasksAsync(query)).ReturnsAsync(tasks);
-
-            var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["X-API-Key"] = apiKey;
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext
-            };
-
-            var result = await _controller.GetTasks(query);
-
-            Assert.IsType<UnauthorizedObjectResult>(result);
-        }
-
-        [Fact]
-        public async Task GetTasks_WhenUserHasCreateTasksPermissionAndValidAccountId_ReturnsOk()
-        {
-            var query = new QueryObject { AccountId = 4 };
-            var apiKey = "testApiKey";
-            var tasks = new List<TaskItem> { new TaskItem() };
-
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(false);
-            _mockPermValidator.Setup(v => v.ValidateAccountId(query.AccountId.Value, apiKey)).Returns(true);
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey)).Returns(true);
-            _mockRepo.Setup(r => r.GetTasksAsync(query)).ReturnsAsync(tasks);
-
-            var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["X-API-Key"] = apiKey;
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext
-            };
-
-            var result = await _controller.GetTasks(query);
-
-            Assert.IsType<OkObjectResult>(result);
-        }
         [Fact]
         public async Task GetTaskById_ReturnsOkResult_WhenTaskExists()
         {
@@ -258,7 +274,7 @@ namespace task_system_test
             _mockRepo.Setup(repo => repo.GetTaskByIdAsync(taskId)).ReturnsAsync(task);
 
             var apiKey = "test-api-key";
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(true);
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey, out It.Ref<SessionObj>.IsAny)).Returns(true);
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers["X-API-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
@@ -282,7 +298,7 @@ namespace task_system_test
             _mockRepo.Setup(repo => repo.GetTaskByIdAsync(taskId)).ReturnsAsync(noTask);
 
             var apiKey = "test-api-key";
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(true);
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey, out It.Ref<SessionObj>.IsAny)).Returns(true);
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers["X-API-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
@@ -316,7 +332,7 @@ namespace task_system_test
             _mockRepo.Setup(repo => repo.AddTaskAsync(It.IsAny<TaskItem>())).ReturnsAsync(newTask);
 
             var apiKey = "test-api-key";
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey)).Returns(true);
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey, out It.Ref<SessionObj>.IsAny)).Returns(true);
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers["X-API-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
@@ -357,7 +373,7 @@ namespace task_system_test
             _mockRepo.Setup(repo => repo.UpdateTaskAsync(taskId, taskDto)).ReturnsAsync(updatedTask);
 
             var apiKey = "test-api-key";
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.EDIT_TASKS, apiKey)).Returns(true);
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.EDIT_TASKS, apiKey, out It.Ref<SessionObj>.IsAny)).Returns(true);
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers["X-API-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
@@ -391,7 +407,7 @@ namespace task_system_test
             _mockRepo.Setup(repo => repo.GetTaskByIdAsync(taskId)).ReturnsAsync(existingTask);
             _mockRepo.Setup(repo => repo.DeleteTaskAsync(taskId)).ReturnsAsync(true);
             var apiKey = "test-api-key";
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.DELETE_TASKS, apiKey)).Returns(true);
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.DELETE_TASKS, apiKey, out It.Ref<SessionObj>.IsAny)).Returns(true);
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers["X-API-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
@@ -414,7 +430,7 @@ namespace task_system_test
             TaskItem? noTask = null;
             _mockRepo.Setup(repo => repo.GetTaskByIdAsync(taskId)).ReturnsAsync(noTask);
             var apiKey = "test-api-key";
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.DELETE_TASKS, apiKey)).Returns(true);
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.DELETE_TASKS, apiKey, out It.Ref<SessionObj>.IsAny)).Returns(true);
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers["X-API-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
@@ -435,7 +451,7 @@ namespace task_system_test
         public async Task GetTasks_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
             var apiKey = "test-api-key";
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(true);
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey, out It.Ref<SessionObj>.IsAny)).Returns(true);
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers["X-API-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
@@ -453,7 +469,7 @@ namespace task_system_test
         public async Task GetTask_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
             var apiKey = "test-api-key";
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey)).Returns(true);
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.VIEW_TASKS, apiKey, out It.Ref<SessionObj>.IsAny)).Returns(true);
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers["X-API-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
@@ -471,7 +487,7 @@ namespace task_system_test
         public async Task AddTask_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
             var apiKey = "test-api-key";
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey)).Returns(true);
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.CREATE_TASKS, apiKey, out It.Ref<SessionObj>.IsAny)).Returns(true);
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers["X-API-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
@@ -489,7 +505,7 @@ namespace task_system_test
         public async Task UpdateTask_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
             var apiKey = "test-api-key";
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.EDIT_TASKS, apiKey)).Returns(true);
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.EDIT_TASKS, apiKey, out It.Ref<SessionObj>.IsAny)).Returns(true);
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers["X-API-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext
@@ -507,7 +523,7 @@ namespace task_system_test
         public async Task DeleteTask_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
             var apiKey = "test-api-key";
-            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.DELETE_TASKS, apiKey)).Returns(true);
+            _mockPermValidator.Setup(v => v.ValidatePermissions(PermissionNames.DELETE_TASKS, apiKey, out It.Ref<SessionObj>.IsAny)).Returns(true);
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers["X-API-Key"] = apiKey;
             _controller.ControllerContext = new ControllerContext

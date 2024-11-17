@@ -1,14 +1,18 @@
-﻿namespace task_system_server.Validators
+﻿using task_system_server.Models;
+
+namespace task_system_server.Validators
 {
     public class MockPermissionValidator : IPermissionValidator
     {
-        public bool ValidatePermissions(string permissionName, string sessionkey)
+        public bool ValidatePermissions(string permissionName, string sessionkey, out SessionObj sessionData)
         {
-            return true;
-        }
+            sessionData = new SessionObj
+            {
+                AccountId = 4,
+                AccountName = "0",
+                SessionPermissionList = new List<string> { "VIEW_TASKS", "EDIT_TASKS" }
+            };
 
-        public bool ValidateAccountId(int accountId, string sessionKey)
-        {
             return true;
         }
     }
