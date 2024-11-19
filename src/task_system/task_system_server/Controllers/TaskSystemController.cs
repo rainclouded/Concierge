@@ -33,6 +33,11 @@ namespace task_system_server.Controllers
             {
                 if(sessionData == null)
                     return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
+                
+                // if client asks for a different account's task details, return unauthorized
+                if(query.AccountId.HasValue)
+                    return Unauthorized(new TaskSystemResponse<string>(ResponseMessages.UNAUTHORIZED, null));
+
                 query.AccountId = sessionData.AccountId;
             }
 
