@@ -52,8 +52,8 @@ const AmenitiesPage = () => {
               <div className="basis-1/2">
               <p className="text-brown mb-2">{amenity.description}</p>
                 <div className="text-brown text-sm font-medium">
-                  <p>Start Time: {amenity.startTime}</p>
-                  <p>End Time: {amenity.endTime}</p>
+                  <p>Opens: {new Date(`1970-01-01T${amenity.startTime}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true }).toLowerCase()}</p>
+                  <p>Closes: {new Date(`1970-01-01T${amenity.endTime}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true }).toLowerCase()}</p>
                 </div>
               </div>
             </div>
