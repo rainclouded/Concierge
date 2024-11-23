@@ -1,6 +1,6 @@
 <h3 class="font-semibold text-5xl mb-5">Incident Reports</h3>
 <p class="mb-5 font-bold text-xl">Manage Incident Reports</p>
-<button (click)="openWindow()" type="button" class="bg-black text-white px-4 py-2 rounded-lg mb-4 tracking-wide">
+<button (click)="openReportWindow()" type="button" class="bg-black text-white px-4 py-2 rounded-lg mb-4 tracking-wide">
 	<i class="fa-solid fa-exclamation-triangle mr-1"></i>
 	Report an incident
 </button>
@@ -34,7 +34,7 @@
 							class="bg-slate-200 hover:bg-primary p-1 mr-2 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-pen"></i>
 						</button>
-						<button type="button" (click)="report.id && deleteReport(report.id)"
+						<button type="button" (click)="report.id && openConfirmWindow(report.id)"
 							class="bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-trash"></i>
 						</button>
@@ -74,7 +74,7 @@
 							class="bg-slate-200 hover:bg-primary p-1 mr-2 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-pen"></i>
 						</button>
-						<button type="button" (click)="report.id && deleteReport(report.id)"
+						<button type="button" (click)="report.id && openConfirmWindow(report.id)"
 							class="bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-trash"></i>
 						</button>
@@ -114,7 +114,7 @@
 							class="bg-slate-200 hover:bg-primary p-1 mr-2 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-pen"></i>
 						</button>
-						<button type="button" (click)="report.id && deleteReport(report.id)"
+						<button type="button" (click)="report.id && openConfirmWindow(report.id)"
 							class="bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-trash"></i>
 						</button>
@@ -154,7 +154,7 @@
 							class="bg-slate-200 hover:bg-primary p-1 mr-2 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-pen"></i>
 						</button>
-						<button type="button" (click)="report.id && deleteReport(report.id)"
+						<button type="button" (click)="report.id && openConfirmWindow(report.id)"
 							class="bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-trash"></i>
 						</button>
@@ -166,6 +166,12 @@
 	</div>
 </div>
 
-<app-window [isOpen]="isOpenWindow" (closeWindow)="closeWindow()">
-	<app-incident-report-form (onCloseWindow)="closeWindow()" [data]="incidentReport"></app-incident-report-form>
+<!-- report form popup window -->
+<app-window [isOpen]="isReportWindowOpen" (closeWindow)="closeReportWindow()">
+	<app-incident-report-form (onCloseWindow)="closeReportWindow()" [data]="incidentReport"></app-incident-report-form>
 </app-window>
+
+<!-- confirmation popup window -->
+<app-window [isOpen]="isConfirmWindowOpen" (closeWindow)="closeConfirmWindow()">
+	<app-confirmation-dialog (onConfirm)="deleteReport()" (onCancel)="closeConfirmWindow()"></app-confirmation-dialog>
+  </app-window>

@@ -4,15 +4,18 @@ import { IncidentReportService } from '../../services/incident-report.service';
 import { IIncidentReport } from '../../models/incident-report.model';
 import { WindowComponent } from '../../components/window/window.component'; 
 import { IncidentReportFormComponent } from '../../components/incident-report-form/incident-report-form.component';
+import { ConfirmationDialogComponent } from "../../components/confirmation-dialog/confirmation-dialog.component";
 
 @Component({
   selector: 'app-incident-reports-tab',
   standalone: true,
-  imports: [WindowComponent, IncidentReportFormComponent, CommonModule],
+  imports: [WindowComponent, IncidentReportFormComponent, CommonModule, ConfirmationDialogComponent],
   templateUrl: './incident-reports-tab.component.html',
 })
 export class IncidentReportsTabComponent {
-  isOpenWindow = false;
+  isReportWindowOpen = false;
+  isConfirmWindowOpen = false;
+  reportToDelete: number | null = null;
   incidentReport !: IIncidentReport;
   incidentReports : IIncidentReport[] = [];
   
@@ -44,25 +47,43 @@ export class IncidentReportsTabComponent {
   // load current incident report onto IncidentReportForm to edit
   loadAmenity(incidentReport: IIncidentReport) {
     this.incidentReport = incidentReport;
-    this.openWindow();
+    this.openReportWindow();
   }
 
-  deleteReport(id: number) {
-    this.incidentReportService.deleteReport(id)
-    .subscribe({
-      next: (response) => {
-        this.getAllReports();
-        console.log(response.message);
-      }
-    });
+  deleteReport() {
+    if (this.reportToDelete !== null) {
+      this.incidentReportService.deleteReport(this.reportToDelete)
+      .subscribe({
+        next: (response) => {
+          this.getAllReports();
+          console.log(response.message);
+          this.closeConfirmWindow();
+        },
+        error: (error) => {
+          console.error('Error deleting incident report:', error);
+        }
+      });
+    } else {
+      console.log('Incident Report ID is null, cannot delete.');
+    }
   }
 
-  openWindow() {
-    this.isOpenWindow = true;
+  openReportWindow() {
+    this.isReportWindowOpen = true;
   }
 
-  closeWindow() {
-    this.isOpenWindow = false;
+  closeReportWindow() {
+    this.isReportWindowOpen = false;
+    this.getAllReports();
+  }
+
+  openConfirmWindow(reportId: number) {
+    this.isConfirmWindowOpen = true;
+    this.reportToDelete = reportId;
+  }
+
+  closeConfirmWindow() {
+    this.isConfirmWindowOpen = false;
     this.getAllReports();
   }
 
