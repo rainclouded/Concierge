@@ -81,3 +81,18 @@ class UserService():
             if self.delete_user(user.username)
             else (None, None)
         )
+    
+    def get_users(self, user_type=None):
+        """
+        Get all the users of a specific type or
+        just all the users
+
+        """
+        users = None
+        if user_type == cfg.GUEST_TYPE:
+            users = self.db.get_guests()
+        elif user_type == cfg.STAFF_TYPE:
+            users = self.db.get_staff()
+        else:
+            users = self.db.get_users()
+        return(users)
