@@ -3,15 +3,18 @@ import { WindowComponent } from '../../components/window/window.component';
 import { AmenityFormComponent } from "../../components/amenity-form/amenity-form.component";
 import { IAmenity } from '../../models/amenity.model';
 import { AmenityService } from '../../services/amenity.service';
+import { ConfirmationDialogComponent } from "../../components/confirmation-dialog/confirmation-dialog.component";
 
 @Component({
   selector: 'app-amenities-tab',
   standalone: true,
-  imports: [WindowComponent, AmenityFormComponent],
+  imports: [WindowComponent, AmenityFormComponent, ConfirmationDialogComponent],
   templateUrl: './amenities-tab.component.html',
 })
 export class AmenitiesTabComponent implements OnInit {
-  isOpenWIndow = false;
+  isAmenityWindowOpen = false;
+  isConfirmWindowOpen = false;
+  amenityToDelete: number | null = null;
   amenities: IAmenity[] = [];
   amenity !: IAmenity;
 
@@ -37,25 +40,43 @@ export class AmenitiesTabComponent implements OnInit {
   // load current amenity onto AmenityForm to edit
   loadAmenity(amenity: IAmenity) {
     this.amenity = amenity;
-    this.openWindow();
+    this.openAmenityWindow();
   }
 
-  deleteAmenity(id: number) {
-    this.amenityService.deleteAmenity(id)
-      .subscribe({
-        next: (response) => {
-          this.getAllAmenities();
-          console.log(response.message);
-        }
-      });
+  deleteAmenity() {
+    if (this.amenityToDelete !== null) { // Ensure amenityToDelete is not null
+      this.amenityService.deleteAmenity(this.amenityToDelete)
+        .subscribe({
+          next: (response) => {
+            this.getAllAmenities(); // Refresh the amenities list
+            console.log(response.message);
+            this.closeConfirmWindow(); // Close the confirmation window
+          },
+          error: (error) => {
+            console.error('Error deleting amenity:', error);
+          }
+        });
+    } else {
+      console.error('Amenity ID is null, cannot delete.');
+    }
+  }  
+
+  openAmenityWindow() {
+    this.isAmenityWindowOpen = true;
   }
 
-  openWindow() {
-    this.isOpenWIndow = true;
+  closeAmenityWindow() {
+    this.isAmenityWindowOpen = false;
+    this.getAllAmenities();
   }
 
-  closeWindow() {
-    this.isOpenWIndow = false;
+  openConfirmWindow(amenityId: number) {
+    this.isConfirmWindowOpen = true;
+    this.amenityToDelete = amenityId;
+  }
+
+  closeConfirmWindow() {
+    this.isConfirmWindowOpen = false;
     this.getAllAmenities();
   }
 

@@ -1,6 +1,6 @@
 <h3 class="font-semibold text-5xl mb-5">Amenities</h3>
 <p class="mb-5 font-bold text-xl">Manage Amenities</p>
-<button (click)="openWindow()" type="button" class="bg-black text-white px-4 py-2 rounded-lg mb-4">
+<button (click)="openAmenityWindow()" type="button" class="bg-black text-white px-4 py-2 rounded-lg mb-4">
   <i class="fa-solid fa-plus-circle mr-1"></i>
   Add Amenity
 </button>
@@ -32,7 +32,8 @@
             class="bg-slate-200 rounded-lg w-9 h-9">
             <i class="fa-solid fa-pen"></i>
           </button>
-          <button type="button" (click)="amenity.id && deleteAmenity(amenity.id)"
+          <!-- <button type="button" (click)="amenity.id && deleteAmenity(amenity.id)" -->
+          <button type="button" (click)="amenity.id && openConfirmWindow(amenity.id)"
             class="bg-red-700 text-white rounded-lg w-9 h-9">
             <i class="fa-solid fa-trash"></i>
           </button>
@@ -46,6 +47,12 @@
   </table>
 </div>
 
-<app-window [isOpen]="isOpenWIndow" (closeWindow)="closeWindow()">
-  <app-amenity-form (onCloseWindow)="closeWindow()" [data]="amenity"></app-amenity-form>
+<!-- amenitiy form popup window -->
+<app-window [isOpen]="isAmenityWindowOpen" (closeWindow)="closeAmenityWindow()">
+  <app-amenity-form (onCloseWindow)="closeAmenityWindow()" [data]="amenity"></app-amenity-form>
+</app-window>
+
+<!-- confirmation popup window -->
+<app-window [isOpen]="isConfirmWindowOpen" (closeWindow)="closeConfirmWindow()">
+  <app-confirmation-dialog (onConfirm)="deleteAmenity()" (onCancel)="closeConfirmWindow()"></app-confirmation-dialog>
 </app-window>
