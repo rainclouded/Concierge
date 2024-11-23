@@ -1,11 +1,13 @@
 <div class="bg-primary">
 	<!-- Top Bar -->
 	<div class="flex justify-between items-center h-16 py-2 px-5">
-		<div>
-			<h3 class="text-xl font-bold">Concierge Admin Dashboard</h3>
+		<div class="flex flex-row items-center">
+			<img src="../../../assets/conciergevector.svg" alt="Concierge" class="h-20 object-contain" />
+			<h3 class="ml-16 hidden lg:inline-block text-2xl font-semibold tracking-wide">Admin Dashboard</h3>
 		</div>
 		<div>
 			<a href="#" id="logout" (click)="handleLogout()" class="bg-black text-white p-2 rounded-lg">
+				<span class="mr-2 hidden lg:inline-block">Logout</span>
 				<i class="fa-solid fa-sign-out-alt"></i>
 			</a>
 		</div>

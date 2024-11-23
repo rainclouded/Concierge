@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Event, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -9,6 +9,17 @@ import { CommonModule } from '@angular/common';
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent {
+  currentRoute: string = '';
+
+  constructor(public router: Router) {
+    // Subscribe to router events to update current route
+    this.router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationEnd) {
+        this.currentRoute = event.urlAfterRedirects.split('/').pop() || '';
+      }
+    });
+  }
+  
   items = [
     {
       routerLink: 'home',
@@ -36,4 +47,8 @@ export class SidebarComponent {
       icon: 'fa-solid fa-user-shield',
     },
   ];
+
+  isRouteActive(route: string): boolean {
+    return this.currentRoute === route;
+  }
 }
