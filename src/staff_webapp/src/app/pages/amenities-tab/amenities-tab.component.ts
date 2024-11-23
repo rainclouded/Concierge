@@ -4,6 +4,7 @@ import { AmenityFormComponent } from "../../components/amenity-form/amenity-form
 import { IAmenity } from '../../models/amenity.model';
 import { AmenityService } from '../../services/amenity.service';
 import { ConfirmationDialogComponent } from "../../components/confirmation-dialog/confirmation-dialog.component";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-amenities-tab',
@@ -19,7 +20,8 @@ export class AmenitiesTabComponent implements OnInit {
   amenity !: IAmenity;
 
   constructor(
-    private amenityService: AmenityService
+    private amenityService: AmenityService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -50,10 +52,12 @@ export class AmenitiesTabComponent implements OnInit {
           next: (response) => {
             this.getAllAmenities(); // Refresh the amenities list
             console.log(response.message);
+            this.toastr.success('Amenity deleted successfully!', 'Delete Successful');
             this.closeConfirmWindow(); // Close the confirmation window
           },
           error: (error) => {
             console.error('Error deleting amenity:', error);
+            this.toastr.error('Error deleting amenity!', 'Delete Failed');
           }
         });
     } else {

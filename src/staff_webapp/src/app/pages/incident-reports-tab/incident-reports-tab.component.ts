@@ -5,6 +5,7 @@ import { IIncidentReport } from '../../models/incident-report.model';
 import { WindowComponent } from '../../components/window/window.component'; 
 import { IncidentReportFormComponent } from '../../components/incident-report-form/incident-report-form.component';
 import { ConfirmationDialogComponent } from "../../components/confirmation-dialog/confirmation-dialog.component";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-incident-reports-tab',
@@ -25,7 +26,8 @@ export class IncidentReportsTabComponent {
   closedReports: IIncidentReport[] = [];
 
   constructor(
-    private incidentReportService: IncidentReportService
+    private incidentReportService: IncidentReportService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit():void {
@@ -57,10 +59,12 @@ export class IncidentReportsTabComponent {
         next: (response) => {
           this.getAllReports();
           console.log(response.message);
+          this.toastr.success('Incident report deleted successfully!', 'Delete Successful');
           this.closeConfirmWindow();
         },
         error: (error) => {
           console.error('Error deleting incident report:', error);
+          this.toastr.error('Error deleting incident report!', 'Delete Failed');
         }
       });
     } else {

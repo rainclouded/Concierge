@@ -5,56 +5,48 @@
   Add Task
 </button>
 
-<table class="w-full text-left table-auto border-collapse">
-  <thead class="bg-gray-100">
-    <tr>
-      <th class="border-b px-2 py-4 w-[10%] cursor-pointer" (click)="toggleSort('roomId')">
-        Room No
-        <span *ngIf="currentSortField === 'roomId'">{{
-          sortDirection === "asc" ? "▲" : "▼"
-          }}</span>
-      </th>
-      <th class="border-b px-2 py-4 w-[15%] cursor-pointer" (click)="toggleSort('taskType')">
-        Type of Service
-        <span *ngIf="currentSortField === 'taskType'">{{
-          sortDirection === "asc" ? "▲" : "▼"
-          }}</span>
-      </th>
-      <th class="border-b px-2 py-4 w-[45%]">Description</th>
-      <th class="border-b px-2 py-4 w-[12%] cursor-pointer" (click)="toggleSort('createdAt')">
-        Time Created
-        <span *ngIf="currentSortField === 'createdAt'">{{
-          sortDirection === "asc" ? "▲" : "▼"
-          }}</span>
-      </th>
-      <th class="border-b px-2 py-4 w-[10%] cursor-pointer" (click)="toggleSort('assignee')">
-        Assignee
-        <span *ngIf="currentSortField === 'assignee'">{{
-          sortDirection === "asc" ? "▲" : "▼"
-          }}</span>
-      </th>
-      <th class="border-b px-2 py-4 w-[8%] cursor-pointer" (click)="toggleSort('status')">
-        Status
-        <span *ngIf="currentSortField === 'status'">{{
-          sortDirection === "asc" ? "▲" : "▼"
-          }}</span>
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let task of paginatedTasks; let i = index" [ngClass]="i % 2 === 0 ? 'bg-white' : 'bg-gray-100'"
-      (click)="openModal(task)" class="cursor-pointer hover:bg-lightPrimary">
-      <td class="border-b px-2 py-3">{{ task.roomId }}</td>
-      <td class="border-b px-2 py-3">{{ formatTaskType(task.taskType) }}</td>
-      <td class="border-b px-2 py-3">
-        {{ getDescriptionPreview(task.description) }}
-      </td>
-      <td class="border-b px-2 py-3">{{ task.createdAt | date : "short" }}</td>
-      <td class="border-b px-2 py-3">{{ task.assignee || "Unassigned" }}</td>
-      <td class="border-b px-2 py-3">{{ formatTaskStatus(task.status) }}</td>
-    </tr>
-  </tbody>
-</table>
+<div class="table-container overflow-auto border rounded-lg h-[600px]">
+  <table class="w-full text-left table-auto border-collapse">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="border-b px-2 py-4 w-[10%] cursor-pointer" (click)="toggleSort('roomId')">
+          Room No
+          <span *ngIf="currentSortField === 'roomId'">{{ sortDirection === "asc" ? "▲" : "▼" }}</span>
+        </th>
+        <th class="border-b px-2 py-4 w-[15%] cursor-pointer" (click)="toggleSort('taskType')">
+          Type of Service
+          <span *ngIf="currentSortField === 'taskType'">{{ sortDirection === "asc" ? "▲" : "▼" }}</span>
+        </th>
+        <th class="border-b px-2 py-4 w-[45%]">Description</th>
+        <th class="border-b px-2 py-4 w-[12%] cursor-pointer" (click)="toggleSort('createdAt')">
+          Time Created
+          <span *ngIf="currentSortField === 'createdAt'">{{ sortDirection === "asc" ? "▲" : "▼" }}</span>
+        </th>
+        <th class="border-b px-2 py-4 w-[10%] cursor-pointer" (click)="toggleSort('assignee')">
+          Assignee
+          <span *ngIf="currentSortField === 'assignee'">{{ sortDirection === "asc" ? "▲" : "▼" }}</span>
+        </th>
+        <th class="border-b px-2 py-4 w-[8%] cursor-pointer" (click)="toggleSort('status')">
+          Status
+          <span *ngIf="currentSortField === 'status'">{{ sortDirection === "asc" ? "▲" : "▼" }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let task of paginatedTasks; let i = index" [ngClass]="i % 2 === 0 ? 'bg-white' : 'bg-gray-100'"
+        (click)="openModal(task)" class="cursor-pointer hover:bg-lightPrimary">
+        <td class="border-b px-2 py-3">{{ task.roomId }}</td>
+        <td class="border-b px-2 py-3">{{ formatTaskType(task.taskType) }}</td>
+        <td class="border-b px-2 py-3">
+          {{ getDescriptionPreview(task.description) }}
+        </td>
+        <td class="border-b px-2 py-3">{{ task.createdAt | date : "short" }}</td>
+        <td class="border-b px-2 py-3">{{ task.assignee || "Unassigned" }}</td>
+        <td class="border-b px-2 py-3">{{ formatTaskStatus(task.status) }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 <!-- Pagination controls -->
 <div class="flex justify-end items-center mt-4">
