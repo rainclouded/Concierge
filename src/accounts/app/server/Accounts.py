@@ -80,7 +80,8 @@ def get_port() -> int:
 @app.route("/accounts", methods=['GET'])
 def index():
     """
-    Route to the index page or get accounts
+    Route to the index page or 
+    the specified users if permissions grant
     """
     print('something')
     response = {
@@ -101,7 +102,10 @@ def index():
                             token
                         ):
                 print('we are here')
-                users = [{'usersname':user.username,'type':user.type} for user in user_service.get_users(type_to_retrieve)]
+                users = [
+                    {'usersname':user.username,'type':user.type} 
+                    for user in user_service.get_users(type_to_retrieve)
+                ]
                 print('we did not het here')
                 return jsonify(users), 200
 
