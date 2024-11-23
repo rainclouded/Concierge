@@ -10,7 +10,9 @@ module.exports = {
         lightPrimary: '#faf2eb',
         secondary: '#C9B8AA',
         lightText: '#8d8ba0',
-        brown: '#8f613c'
+        brown: '#8f613c',
+        lightGreen: '#07bc0c',
+        lightRed: '#e74c3c'
       },
       boxShadow: {
         'inner-custom': 'inset 0px 4px 8px rgba(0, 0, 0, 0.2)',

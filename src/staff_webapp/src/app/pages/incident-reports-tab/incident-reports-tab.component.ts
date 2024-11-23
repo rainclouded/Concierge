@@ -45,7 +45,7 @@ export class IncidentReportsTabComponent {
   }
 
   // load current incident report onto IncidentReportForm to edit
-  loadAmenity(incidentReport: IIncidentReport) {
+  loadReport(incidentReport: IIncidentReport) {
     this.incidentReport = incidentReport;
     this.openReportWindow();
   }

@@ -10,7 +10,12 @@ export default {
         lightPrimary: '#faf2eb',
         secondary: '#C9B8AA',
         lightText: '#8d8ba0',
-        brown: '#8f613c'
+        brown: '#8f613c',
+        lightGreen: '#07bc0c',
+        lightRed: '#e74c3c'
+      },
+      fontFamily: {
+        futura: ['Futura', 'Helvetica Neue', 'sans-serif'],
       }
     },
   },

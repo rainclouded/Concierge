@@ -6,7 +6,7 @@
 
 @font-face {
     font-family: 'Futura';
-    src: url('/assets/Jost-Regular.ttf') format('truetype');
+    src: url('assets/Jost-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }

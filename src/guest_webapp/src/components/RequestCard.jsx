@@ -21,7 +21,7 @@ const RequestCard = ({ text, icon, children, onSubmit, onClose }) => {
 
       <Modal isOpen={isModalOpen} onClose={() => { toggleModal(); onClose(); }}>
         <h2 className="text-xl font-bold mb-4">Request {text}</h2>
-        <div className="flex-grow overflow-y-auto">
+        <div className="flex-grow h-full">
           {children}
         </div>
         <div className="mt-4"> 

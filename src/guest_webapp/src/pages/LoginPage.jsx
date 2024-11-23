@@ -1,19 +1,24 @@
 import React, { useState } from "react";
 import { setSessionKey } from "../utils/auth";
+import conciergeVector from "../assets/conciergevector.svg";
 
 const LoginPage = () => {
   const [roomKey, setRoomKey] = useState("");
-  const [error, setError] = useState(null)
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/sessions`,
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/sessions`,
         {
           method: "POST",
-          headers: { "Content-Type":"application/json"},
-          body:JSON.stringify({"username":`${roomKey}`, "password":`${roomKey}`})
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: `${roomKey}`,
+            password: `${roomKey}`,
+          }),
         }
       );
       if (!response.ok) {
@@ -23,7 +28,7 @@ const LoginPage = () => {
       }
       const data = await response.json();
       setSessionKey(data.data.sessionKey);
-      sessionStorage.setItem('roomKey', roomKey);
+      sessionStorage.setItem("roomKey", roomKey);
       window.location.href = "/home";
     } catch (error) {
       console.log(error);
@@ -34,9 +39,16 @@ const LoginPage = () => {
   return (
     <div className="flex bg-secondary items-center justify-center min-h-screen bg-gradient-to-r from-beige-200 to-beige-500 p-4">
       <div className="bg-lightPrimary p-6 sm:p-8 lg:p-10 rounded-lg shadow-xl max-w-md w-full">
-        <h1 className="text-2xl sm:text-3xl font-semibold text-center text-brown mb-4 sm:mb-6">
-          Welcome
+        <h1 className="text-2xl sm:text-3xl font-semibold text-center text-black">
+          Welcome to
         </h1>
+        <div className="flex justify-center mb-5">
+          <img
+            src={conciergeVector}
+            alt="Concierge"
+            className="h-24 object-contain"
+          />
+        </div>
         <form onSubmit={handleSubmit}>
           <label
             htmlFor="roomKey"
@@ -66,4 +78,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-

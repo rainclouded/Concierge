@@ -20,7 +20,8 @@ import ServiceCard from "../components/ServiceCard";
 import { removeSessionKey } from "../utils/auth";
 import RequestCard from "../components/RequestCard";
 import { fetchWithAuth } from "../utils/authFetch";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/ReactToastify.css";
 
 const HomePage = () => {
   const roomKey = sessionStorage.getItem("roomKey"); //room key of user
@@ -87,7 +88,7 @@ const HomePage = () => {
       (tag === MaintenanceTag && !inputValue);
 
     if (isInvalidRequest) {
-      alert("Can't send your request: please enter a valid description!");
+      toast.error("Can't send your request: please enter a valid description!");
       setInputValue("");
       return;
     }
@@ -114,12 +115,12 @@ const HomePage = () => {
       );
 
       if (response.ok) {
-        alert("Successfully submitted request!");
+        toast.success("Successfully submitted request!");
       } else {
         throw new Error("Failed to submit request");
       }
     } catch (error) {
-      alert("Couldn't submit your request at this time!");
+      toast.error("Couldn't submit your request at this time!");
       console.error(error);
     }
   };
@@ -142,6 +143,7 @@ const HomePage = () => {
 
   return (
     <div className="h-screen relative flex flex-col">
+      <ToastContainer bodyClassName="toast-body" />
       <div className="flex-grow overflow-y-auto">
         {/* Sticky Header */}
         <header className="bg-white sticky top-0 my-2 p-2 flex justify-between items-center z-40">
@@ -156,7 +158,7 @@ const HomePage = () => {
             onClick={toggleProfile}
             className="rounded-full bg-gray-300 p-2 h-10 w-10 flex items-center justify-center"
           >
-            <FontAwesomeIcon icon={faUser} className="text-xl" />
+            <FontAwesomeIcon icon={faUser} className="text-xl text-white" />
           </button>
         </header>
 
@@ -167,9 +169,14 @@ const HomePage = () => {
           </div>
           <div className="text-gray-600 text-center text-sm">
             <FontAwesomeIcon icon={faCalendar} className="mr-2" />
-            {roomInfo.periodOfStay}</div>
-          <h2 className="mt-2 text-lg lg:text-xl font-semibold lg:text-center">Explore Our Services</h2>
-          <p className="text-sm lg:text-md lg:text-center">Choose your service. We will deliver right to your door!</p>
+            {roomInfo.periodOfStay}
+          </div>
+          <h2 className="mt-2 text-lg lg:text-xl font-semibold lg:text-center">
+            Explore Our Services
+          </h2>
+          <p className="text-sm lg:text-md lg:text-center">
+            Choose your service. We will deliver right to your door!
+          </p>
         </div>
 
         <div className="absolute bottom-0 w-full h-1/2 bg-primary z-0"></div>
@@ -378,7 +385,6 @@ const HomePage = () => {
             </RequestCard>
           </div>
         </div>
-
       </div>
 
       {/* Left Side Drawer (Menu) */}
@@ -393,7 +399,15 @@ const HomePage = () => {
           >
             <ul>
               <li>
-                <a href="/home">Menu</a>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent default navigation
+                    toast.info("Coming soon!");
+                  }}
+                >
+                  Menu
+                </a>
               </li>
             </ul>
           </div>
@@ -413,7 +427,15 @@ const HomePage = () => {
             <ul className="flex flex-col space-y-4">
               <li>
                 <FontAwesomeIcon icon={faCog} className="mr-2" />
-                <a href="/home">Settings</a>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent default navigation
+                    toast.info("Coming soon!");
+                  }}
+                >
+                  Settings
+                </a>
               </li>
               <li>
                 <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
