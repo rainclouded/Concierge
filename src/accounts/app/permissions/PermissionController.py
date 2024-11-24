@@ -58,6 +58,22 @@ class PermissionController():
         except Exception as e:
             raise e
 
+    def can_view_users(self, token:str, public_key:str=None)->bool:
+        """Verifies if the token permits user retrevial
+
+            Args:            
+                token is the jwt Token to be verified
+                public_key is the public key to decode the token
+            Returns:
+                True if action is permitted
+                False otherwise
+        """
+        public_key = self.get_public_key() if not public_key else public_key
+        try:
+            return self._permission_handler.can_view_users(token, public_key)
+        except Exception as e:
+            raise e
+
 
     def can_update_guest(self, token:str, public_key:str=None)->bool:
         """Verifies if the token permits guest update
@@ -85,7 +101,7 @@ class PermissionController():
             Returns:
                 True if update is permitted
                 False otherwise
-        """        
+        """       
         public_key = self.get_public_key() if not public_key else public_key
         try:
             return self._permission_handler.can_update_staff(token, public_key)

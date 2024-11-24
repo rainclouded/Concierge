@@ -80,13 +80,43 @@ def get_port() -> int:
 @app.route("/accounts", methods=['GET'])
 def index():
     """
-    Route to the index page
+    Route to the index page or 
+    the specified users if permissions grant
     """
+    print('something')
     response = {
         "message": "You have contacted the accounts",
         "status": "success"
     }
-    return jsonify(response)
+    print(request)
+    
+    if(request.data):
+        data = request.get_json()
+        print(f'data:: {data}::')
+        token = request.headers.get('X-Api-Key')
+        print(token)
+        type_to_retrieve = data['type']
+        print(type_to_retrieve)
+        try:
+            if token and permissions.can_delete_guest(
+                            token
+                        ):
+                print('we are here')
+                users = [
+                    {'usersname':user.username,'type':user.type} 
+                    for user in user_service.get_users(type_to_retrieve)
+                ]
+                print('we did not het here')
+                return jsonify(users), 200
+
+        except Exception as e:
+            print(e)
+            return jsonify({
+                    "message": "Action not permitted",
+                    "status": "forbidden"
+                }), 403
+    else:
+        return jsonify(response)
 
 
 @app.route("/accounts", methods=["POST"])
