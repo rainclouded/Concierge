@@ -14,6 +14,10 @@ export class SidebarComponent {
       label: 'Home',
     },
     {
+      routerLink: 'accounts',
+      label: 'Accounts',
+    },
+    {
       routerLink: 'amenities',
       label: 'Amenities',
     },

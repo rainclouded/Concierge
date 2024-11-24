@@ -1,0 +1,35 @@
+<div class="container mx-auto p-4">
+  <h3 class="font-semibold text-5xl mb-5">Accounts</h3>
+
+  <button
+    type="button"
+    class="bg-blue-500 text-white p-2 rounded-lg mr-4"
+    (click)="getAllAccounts()"
+  >
+    Print All Accounts
+  </button>
+
+  <button
+    type="button"
+    class="bg-green-500 text-white p-2 rounded-lg mr-4"
+    (click)="createAccount()"
+  >
+    Create Hardcoded Account
+  </button>
+
+  <button
+    type="button"
+    class="bg-red-500 text-white p-2 rounded-lg mr-4"
+    (click)="deleteHardcodedAccount()"
+  >
+    Delete Hardcoded Account
+  </button>
+
+  <button
+    type="button"
+    class="bg-yellow-500 text-white p-2 rounded-lg"
+    (click)="updateAccount()"
+  >
+    Update Hardcoded Account
+  </button>
+</div>
