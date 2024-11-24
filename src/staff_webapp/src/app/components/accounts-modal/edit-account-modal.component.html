@@ -1,0 +1,63 @@
+<div
+  class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50"
+  role="dialog"
+  aria-labelledby="editAccountTitle"
+  aria-describedby="editAccountDescription"
+>
+  <div class="bg-white p-6 rounded shadow-lg max-w-md w-full">
+    <h3 id="editAccountTitle" class="text-xl font-bold mb-4">Edit Account</h3>
+
+    <!-- Guest Account Editing -->
+    <div *ngIf="account.type === 'guest'; else staffEdit">
+      <p id="editAccountDescription">
+        <strong>Username:</strong> {{ account.username }}
+      </p>
+      <p><strong>Type:</strong> {{ account.type }}</p>
+      <button
+        class="bg-blue-500 text-white px-4 py-2 rounded mt-4 hover:bg-blue-600"
+        (click)="generateNewPassword()"
+      >
+        Generate New Password
+      </button>
+      <p
+        *ngIf="newPassword"
+        class="mt-4 text-green-600 font-semibold"
+        role="alert"
+      >
+        New Password: {{ newPassword }}
+      </p>
+    </div>
+
+    <!-- Staff Account Editing -->
+    <ng-template #staffEdit>
+      <p><strong>Username:</strong> {{ account.username }}</p>
+      <p><strong>Type:</strong> {{ account.type }}</p>
+      <label for="newPasswordInput" class="block mt-4">New Password:</label>
+      <input
+        id="newPasswordInput"
+        [(ngModel)]="newPassword"
+        placeholder="Enter new password"
+        class="border p-2 w-full rounded mt-2"
+      />
+    </ng-template>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end mt-6 gap-2">
+      <button
+        class="bg-gray-300 text-black px-4 py-2 rounded-lg hover:bg-gray-400"
+        (click)="close.emit()"
+        aria-label="Cancel editing"
+      >
+        Cancel
+      </button>
+      <button
+        class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+        [disabled]="account.type === 'staff' && !newPassword"
+        (click)="saveChanges()"
+        aria-label="Save changes"
+      >
+        Save
+      </button>
+    </div>
+  </div>
+</div>

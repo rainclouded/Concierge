@@ -1,32 +1,107 @@
 import { Component, OnInit } from '@angular/core';
-import { WindowComponent } from '../../components/window/window.component';
-//import { AccountFormComponent } from "../../components/account-form/account-form.component";
+import { CommonModule } from '@angular/common';
 import { IAccount } from '../../models/account.model';
+import { EditAccountModalComponent } from '../../components/accounts-modal/edit-account-modal.component';
+import { DeleteConfirmationModalComponent } from '../../components/accounts-modal/delete-confirmation-modal.component';
 import { AccountService } from '../../services/account.service';
+import { mockUsers } from './mock-users';
 
 @Component({
   selector: 'app-accounts-tab',
   standalone: true,
-  imports: [WindowComponent], //AccountFormComponent
+  imports: [
+    CommonModule,
+    EditAccountModalComponent,
+    DeleteConfirmationModalComponent, 
+  ],
   templateUrl: './accounts-tab.component.html',
 })
 export class AccountsTabComponent implements OnInit {
-  isOpenWindow = false;
-  accounts: IAccount[] = [];
-  account!: IAccount;
+  accounts: IAccount[] = [...mockUsers];
+  paginatedAccounts: IAccount[] = [];
+  selectedAccount!: IAccount;
+  usernameToDelete!: string;
 
   constructor(private accountService: AccountService) {}
 
+  // Pagination variables
+  currentPage = 1;
+  itemsPerPage = 5;
+  totalPages = Math.ceil(this.accounts.length / this.itemsPerPage);
+
+  // Modal states
+  isEditModalOpen = false;
+  isDeleteModalOpen = false;
+
   ngOnInit(): void {
-    this.getAllAccounts();
+    this.updatePagination();
   }
 
-  // Fetch all accounts from the service
+  // Pagination logic
+  updatePagination() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    this.paginatedAccounts = this.accounts.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+  goToPreviousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePagination();
+    }
+  }
+
+  goToNextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updatePagination();
+    }
+  }
+
+  // Edit modal logic
+  openEditModal(account: IAccount) {
+    this.selectedAccount = account;
+    this.isEditModalOpen = true;
+  }
+
+  closeEditModal() {
+    this.isEditModalOpen = false;
+  }
+
+  saveEditedAccount(updatedAccount: IAccount) {
+    const index = this.accounts.findIndex((acc) => acc.username === updatedAccount.username);
+    if (index !== -1) {
+      this.accounts[index] = updatedAccount;
+      this.updatePagination();
+      console.log('Account updated:', updatedAccount);
+    }
+    this.closeEditModal();
+  }
+
+  // Delete modal logic
+  openDeleteModal(username: string) {
+    this.usernameToDelete = username;
+    this.isDeleteModalOpen = true;
+  }
+
+  closeDeleteModal() {
+    this.isDeleteModalOpen = false;
+  }
+
+  confirmDeleteAccount(username: string) {
+    this.accounts = this.accounts.filter((acc) => acc.username !== username);
+    this.totalPages = Math.ceil(this.accounts.length / this.itemsPerPage);
+    this.updatePagination();
+    console.log('Account deleted:', username);
+    this.closeDeleteModal();
+  }
+
   getAllAccounts() {
     this.accountService.getAllAccounts().subscribe({
       next: (response) => {
         if (response.data) {
           this.accounts = response.data;
+          console.log('accounts:');
+          console.log(this.accounts);
         }
       },
       error: (err) => {
@@ -37,7 +112,7 @@ export class AccountsTabComponent implements OnInit {
 
   createAccount() {
     const newAccount = {
-      username: '12345',
+      username: '12346',
       type: 'guest',
       //password: 'password123',
     };
@@ -50,58 +125,5 @@ export class AccountsTabComponent implements OnInit {
         console.error('Error creating account:', err);
       },
     });
-  }
-
-  // Load the selected account into the form for editing
-  loadAccount(account: IAccount) {
-    this.account = account;
-    this.openWindow();
-  }
-
-  // New method to delete a hardcoded account
-  deleteHardcodedAccount() {
-    const hardcodedUsername = 'staff3';
-    this.deleteAccount(hardcodedUsername);
-  }
-
-  // Delete an account by username
-  deleteAccount(username: string) {
-    this.accountService.deleteAccount(username).subscribe({
-      next: (response) => {
-        console.log(response.message);
-        this.getAllAccounts();
-      },
-      error: (err) => {
-        console.error('Error deleting account:', err);
-      },
-    });
-  }
-
-  updateAccount() {
-    const updatedAccount: IAccount = {
-      username: '12345',
-      type: 'guest',
-      //password: 'password3122',
-    };
-
-    this.accountService.updateAccount(updatedAccount).subscribe({
-      next: (response) => {
-        console.log('Account updated successfully:', response.message);
-      },
-      error: (err) => {
-        console.error('Error updating account:', err);
-      },
-    });
-  }
-
-  // Open the modal
-  openWindow() {
-    this.isOpenWindow = true;
-  }
-
-  // Close the modal and refresh the list
-  closeWindow() {
-    this.isOpenWindow = false;
-    this.getAllAccounts();
   }
 }
