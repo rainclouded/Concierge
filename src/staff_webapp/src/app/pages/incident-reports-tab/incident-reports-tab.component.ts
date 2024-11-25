@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IncidentReportService } from '../../services/incident-report.service';
 import { IIncidentReport } from '../../models/incident-report.model';
@@ -6,6 +6,7 @@ import { WindowComponent } from '../../components/window/window.component';
 import { IncidentReportFormComponent } from '../../components/incident-report-form/incident-report-form.component';
 import { ConfirmationDialogComponent } from "../../components/confirmation-dialog/confirmation-dialog.component";
 import { ToastrService } from 'ngx-toastr';
+import { SessionService } from '../../services/session.service';
 
 @Component({
   selector: 'app-incident-reports-tab',
@@ -13,7 +14,8 @@ import { ToastrService } from 'ngx-toastr';
   imports: [WindowComponent, IncidentReportFormComponent, CommonModule, ConfirmationDialogComponent],
   templateUrl: './incident-reports-tab.component.html',
 })
-export class IncidentReportsTabComponent {
+export class IncidentReportsTabComponent implements OnInit {
+
   isReportWindowOpen = false;
   isConfirmWindowOpen = false;
   reportToDelete: number | null = null;
@@ -25,13 +27,33 @@ export class IncidentReportsTabComponent {
   resolvedReports: IIncidentReport[] = [];
   closedReports: IIncidentReport[] = [];
 
+  sessionPermissionList: string[] | null = null;
+  canCreate: boolean = false;
+  canEdit: boolean = false;
+  canDelete: boolean = false;
+
   constructor(
     private incidentReportService: IncidentReportService,
+    private sessionService: SessionService,
     private toastr: ToastrService
   ) { }
 
   ngOnInit():void {
     this.getAllReports();
+    this.sessionService.getSessionMe().subscribe(() => {
+      this.sessionPermissionList = this.sessionService.sessionPermissionList;
+      this.checkPermissions();
+      console.log();
+    });
+  }
+
+  checkPermissions():void {
+    if (this.sessionPermissionList) {
+      console.log('reached here')
+      this.canCreate = this.sessionPermissionList.includes('canCreateIncidentReports');
+      this.canEdit = this.sessionPermissionList.includes('canEditIncidentReports');
+      this.canDelete = this.sessionPermissionList.includes('canDeleteIncidentReports');
+    }
   }
 
   getAllReports() {

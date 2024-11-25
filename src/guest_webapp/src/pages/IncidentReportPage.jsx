@@ -4,6 +4,8 @@ import { fetchWithAuth } from "../utils/authFetch";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/ReactToastify.css";
 
 const IncidentReportPage = () => {
   const [title, setTitle] = useState("");
@@ -34,16 +36,17 @@ const IncidentReportPage = () => {
         }
       );
       if (!response.ok) throw new Error("Failed to submit report");
-      setMessage("Incident report submitted successfully");
+      toast.success("Incident report submitted successfully!");
       setTitle("");
       setDescription("");
     } catch (error) {
-      setMessage("Error: " + error.message);
+      toast.error(`Error: ${error.message}`);
     }
   };
 
   return (
     <div className="relative bg-primary h-screen">
+      <ToastContainer bodyClassName="toast-body" />
       <Link
         to="/home"
         className="absolute left-4 top-4 p-1 text-xl font-semibold rounded-full z-50"
@@ -55,7 +58,6 @@ const IncidentReportPage = () => {
         <h1 className="text-2xl mt-2 font-extrabold mx-auto">Make a report</h1>
       </header>
       <div className="w-full max-w-[95%] lg:max-w-[50%] mx-auto">
-        {message && <p className="text-center mb-2 text-red-700">{message}</p>}
         <form onSubmit={handleSubmit} className="px-2">
           <div className="mb-4">
             <p className="text-sm italic text-justify lg:px-0 my-4 text-lightText px-1">

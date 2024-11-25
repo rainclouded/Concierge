@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Event, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { SessionService } from '../../services/session.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -8,15 +9,22 @@ import { CommonModule } from '@angular/common';
   imports: [RouterModule, CommonModule],
   templateUrl: './sidebar.component.html',
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
   currentRoute: string = '';
+  accountName: string | null = null;
 
-  constructor(public router: Router) {
+  constructor(public router: Router, private sessionService: SessionService) {
     // Subscribe to router events to update current route
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
         this.currentRoute = event.urlAfterRedirects.split('/').pop() || '';
       }
+    });
+  }
+
+  ngOnInit() {
+    this.sessionService.getSessionMe().subscribe(() => {
+      this.accountName = this.sessionService.accountName;
     });
   }
   

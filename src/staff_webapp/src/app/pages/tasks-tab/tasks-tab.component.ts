@@ -201,6 +201,7 @@ export class TasksTabComponent {
     console.log('Add Task clicked');
   }
 
+  // TODO: update assignee through patch request to backend
   claimUnclaimTask(task: ITask) {
     if (task.assignee) {
       task.assignee = null;

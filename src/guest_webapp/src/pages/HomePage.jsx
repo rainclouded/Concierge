@@ -100,8 +100,6 @@ const HomePage = () => {
       requesterId: 100,
     };
 
-    setInputValue("");
-
     try {
       const response = await fetchWithAuth(
         `${import.meta.env.VITE_API_BASE_URL}/tasks/`,
@@ -116,6 +114,8 @@ const HomePage = () => {
 
       if (response.ok) {
         toast.success("Successfully submitted request!");
+        setInputValue("");
+        resetFoodDeliveryInputs();
       } else {
         throw new Error("Failed to submit request");
       }
@@ -139,6 +139,15 @@ const HomePage = () => {
     }
 
     return items.trim();
+  };
+
+  const resetFoodDeliveryInputs = () => {
+    setMainDish("");
+    setSideDish("");
+    setDrink("");
+    setMainChecked(false);
+    setSideChecked(false);
+    setDrinkChecked(false);
   };
 
   return (

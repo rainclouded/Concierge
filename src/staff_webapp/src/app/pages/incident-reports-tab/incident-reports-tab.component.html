@@ -1,6 +1,6 @@
 <h3 class="font-semibold text-5xl mb-5">Incident Reports</h3>
 <p class="mb-5 font-bold text-xl">Manage Incident Reports</p>
-<button (click)="openReportWindow()" type="button" class="bg-black text-white px-4 py-2 rounded-lg mb-4 tracking-wide">
+<button *ngIf="canCreate" (click)="openReportWindow()" type="button" class="bg-black text-white px-4 py-2 rounded-lg mb-4 tracking-wide">
 	<i class="fa-solid fa-exclamation-triangle mr-1"></i>
 	Report an incident
 </button>
@@ -29,12 +29,12 @@
 							'bg-red-600 text-white': report.severity === 'CRITICAL'
 						}"
 					>{{ report.severity }}</p>
-					<div>
-						<button type="button" (click)="report.id && loadReport(report)"
-							class="bg-slate-200 hover:bg-primary p-1 mr-2 rounded-md w-8 h-8 text-center">
+					<div class="flex flex-row gap-2">
+						<button *ngIf="canEdit" type="button" (click)="report.id && loadReport(report)"
+							class="bg-slate-200 hover:bg-primary p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-pen"></i>
 						</button>
-						<button type="button" (click)="report.id && openConfirmWindow(report.id)"
+						<button *ngIf="canDelete" type="button" (click)="report.id && openConfirmWindow(report.id)"
 							class="hover:bg-lightRed bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-trash"></i>
 						</button>
@@ -69,12 +69,12 @@
 							'bg-red-600 text-white': report.severity === 'CRITICAL'
 						}"
 					>{{ report.severity }}</p>
-					<div>
-						<button type="button" (click)="report.id && loadReport(report)"
-							class="bg-slate-200 hover:bg-primary p-1 mr-2 rounded-md w-8 h-8 text-center">
+					<div class="flex flex-row gap-2">
+						<button *ngIf="canEdit" type="button" (click)="report.id && loadReport(report)"
+							class="bg-slate-200 hover:bg-primary p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-pen"></i>
 						</button>
-						<button type="button" (click)="report.id && openConfirmWindow(report.id)"
+						<button *ngIf="canDelete" type="button" (click)="report.id && openConfirmWindow(report.id)"
 							class="hover:bg-lightRed bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-trash"></i>
 						</button>
@@ -109,12 +109,12 @@
 							'bg-red-600 text-white': report.severity === 'CRITICAL'
 						}"
 					>{{ report.severity }}</p>
-					<div>
-						<button type="button" (click)="report.id && loadReport(report)"
-							class="bg-slate-200 hover:bg-primary p-1 mr-2 rounded-md w-8 h-8 text-center">
+					<div class="flex flex-row gap-2">
+						<button *ngIf="canEdit" type="button" (click)="report.id && loadReport(report)"
+							class="bg-slate-200 hover:bg-primary p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-pen"></i>
 						</button>
-						<button type="button" (click)="report.id && openConfirmWindow(report.id)"
+						<button *ngIf="canDelete" type="button" (click)="report.id && openConfirmWindow(report.id)"
 							class="hover:bg-lightRed bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-trash"></i>
 						</button>
@@ -149,12 +149,12 @@
 							'bg-red-600 text-white': report.severity === 'CRITICAL'
 						}"
 					>{{ report.severity }}</p>
-					<div>
-						<button type="button" (click)="report.id && loadReport(report)"
-							class="bg-slate-200 hover:bg-primary p-1 mr-2 rounded-md w-8 h-8 text-center">
+					<div class="flex flex-row gap-2">
+						<button *ngIf="canEdit" type="button" (click)="report.id && loadReport(report)"
+							class="bg-slate-200 hover:bg-primary p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-pen"></i>
 						</button>
-						<button type="button" (click)="report.id && openConfirmWindow(report.id)"
+						<button *ngIf="canDelete" type="button" (click)="report.id && openConfirmWindow(report.id)"
 							class="hover:bg-lightRed bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-trash"></i>
 						</button>
