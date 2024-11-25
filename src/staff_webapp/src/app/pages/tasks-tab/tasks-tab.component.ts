@@ -11,6 +11,7 @@ import {
 } from '../../models/task-enums';
 import { TaskService } from '../../services/task.service';
 import { ToastrService } from 'ngx-toastr';
+import { SessionService } from '../../services/session.service';
 
 @Component({
   selector: 'app-tasks-tab',
@@ -37,10 +38,27 @@ export class TasksTabComponent {
   // Method to format TaskStatus
   formatTaskStatus = formatStatus;
 
-  constructor(private taskService: TaskService, private toastr: ToastrService) {}
+  sessionPermissionList: string[] | null = null;
+  canCreate: boolean = false;
+  canEdit: boolean = false;
+  canDelete: boolean = false;
+
+  constructor(private taskService: TaskService, private sessionService: SessionService, private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.fetchTasks();
+    this.sessionService.getSessionMe().subscribe(() => {
+      this.sessionPermissionList = this.sessionService.sessionPermissionList;
+      this.checkPermissions();
+    });
+  }
+
+  checkPermissions():void {
+    if (this.sessionPermissionList) {
+      this.canCreate = this.sessionPermissionList.includes('canCreateTasks');
+      this.canEdit = this.sessionPermissionList.includes('canEditTasks');
+      this.canDelete = this.sessionPermissionList.includes('canDeleteTasks');
+    }
   }
 
   fetchTasks(): void {

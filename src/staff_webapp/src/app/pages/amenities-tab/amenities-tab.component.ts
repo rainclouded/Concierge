@@ -1,15 +1,17 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { WindowComponent } from '../../components/window/window.component';
 import { AmenityFormComponent } from "../../components/amenity-form/amenity-form.component";
 import { IAmenity } from '../../models/amenity.model';
 import { AmenityService } from '../../services/amenity.service';
 import { ConfirmationDialogComponent } from "../../components/confirmation-dialog/confirmation-dialog.component";
 import { ToastrService } from 'ngx-toastr';
+import { SessionService } from '../../services/session.service';
 
 @Component({
   selector: 'app-amenities-tab',
   standalone: true,
-  imports: [WindowComponent, AmenityFormComponent, ConfirmationDialogComponent],
+  imports: [WindowComponent, AmenityFormComponent, ConfirmationDialogComponent, CommonModule],
   templateUrl: './amenities-tab.component.html',
 })
 export class AmenitiesTabComponent implements OnInit {
@@ -19,13 +21,29 @@ export class AmenitiesTabComponent implements OnInit {
   amenities: IAmenity[] = [];
   amenity !: IAmenity;
 
+  sessionPermissionList: string[] | null = null;
+  canEdit: boolean = false;
+  canDelete: boolean = false;
+
   constructor(
     private amenityService: AmenityService,
+    private sessionService: SessionService,
     private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
     this.getAllAmenities();
+    this.sessionService.getSessionMe().subscribe(() => {
+      this.sessionPermissionList = this.sessionService.sessionPermissionList;
+      this.checkPermissions();
+    });
+  }
+
+  checkPermissions():void {
+    if (this.sessionPermissionList) {
+      this.canEdit = this.sessionPermissionList.includes('canEditAmenities');
+      this.canDelete = this.sessionPermissionList.includes('canDeleteAmenities');
+    }
   }
 
   getAllAmenities() {

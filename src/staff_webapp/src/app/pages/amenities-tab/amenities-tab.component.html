@@ -8,31 +8,31 @@
   <table class="w-full text-left rtl:text-right">
     <thead class="text-md text-gray-700 uppercase bg-gray-50">
       <tr>
-        <th scope="col" class="px-6 py-3">Title</th>
+        <th scope="col" class="px-6 py-3 w-[25%]">Title</th>
         <th scope="col" class="px-6 py-3">Description</th>
-        <th scope="col" class="px-6 py-3">Time</th>
-        <th scope="col" class="px-6 py-3 w-1/12">Edit</th>
+        <th scope="col" class="px-6 py-3 w-[25%]">Time</th>
+        <th scope="col" class="px-6 py-3 w-[5%]"><span *ngIf="canEdit || canDelete">Edit</span></th>
       </tr>
     </thead>
     <tbody>
       @if (amenities.length > 0) {
       @for(amenity of amenities; track amenity.id) {
       <tr class="bg-white border-b amenity-item">
-        <th scope="row" class="px-4 py-4 font-semibold text-2xl whitespace-nowrap">
+        <th scope="row" class="px-6 py-4 font-semibold text-2xl whitespace-nowrap">
           {{amenity.name}}
         </th>
-        <td class="px-4 py-4">
+        <td class="px-6 py-4">
           {{amenity.description}}
         </td>
-        <td class="px-4 py-4">
+        <td class="px-6 py-4">
           {{ formatTimeToAMPM(amenity.startTime) }} - {{ formatTimeToAMPM(amenity.endTime) }}
         </td>
-        <td class="px-4 py-4 flex gap-3 items-center justify-end">
-          <button type="button" (click)="amenity.id && loadAmenity(amenity)"
+        <td class="px-6 py-4 flex gap-3 items-center justify-start">
+          <button *ngIf="canEdit" type="button" (click)="amenity.id && loadAmenity(amenity)"
             class="bg-slate-200 hover:bg-primary rounded-lg w-9 h-9">
             <i class="fa-solid fa-pen"></i>
           </button>
-          <button type="button" (click)="amenity.id && openConfirmWindow(amenity.id)"
+          <button *ngIf="canDelete" type="button" (click)="amenity.id && openConfirmWindow(amenity.id)"
             class="hover:bg-lightRed bg-red-700 text-white rounded-lg w-9 h-9">
             <i class="fa-solid fa-trash"></i>
           </button>

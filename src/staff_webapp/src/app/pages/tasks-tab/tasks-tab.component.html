@@ -1,6 +1,6 @@
 <h3 class="font-semibold text-5xl mb-5">Task Management</h3>
 <p class="mb-5 font-bold text-xl">Manage Tasks</p>
-<button (click)="openAddTaskModal()" class="bg-black text-white px-4 py-2  rounded-lg mb-4 tracking-wide">
+<button *ngIf="canCreate" (click)="openAddTaskModal()" class="bg-black text-white px-4 py-2  rounded-lg mb-4 tracking-wide">
   <i class="fa-solid fa-plus-circle mr-1"></i>
   Add Task
 </button>
@@ -64,5 +64,5 @@
   (save)="saveNewTask($event)"></app-add-task-modal>
 
 <!-- Task Modal for editing existing tasks -->
-<app-task-modal [isOpen]="isModalOpen" (close)="closeModal()" [task]="selectedTask" (taskDeleted)="removeTask($event)"
+<app-task-modal [canEdit]="canEdit" [canDelete]="canDelete" [isOpen]="isModalOpen" (close)="closeModal()" [task]="selectedTask" (taskDeleted)="removeTask($event)"
   (taskUpdated)="updateTaskList($event)"></app-task-modal>

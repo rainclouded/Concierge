@@ -43,13 +43,11 @@ export class IncidentReportsTabComponent implements OnInit {
     this.sessionService.getSessionMe().subscribe(() => {
       this.sessionPermissionList = this.sessionService.sessionPermissionList;
       this.checkPermissions();
-      console.log();
     });
   }
 
   checkPermissions():void {
     if (this.sessionPermissionList) {
-      console.log('reached here')
       this.canCreate = this.sessionPermissionList.includes('canCreateIncidentReports');
       this.canEdit = this.sessionPermissionList.includes('canEditIncidentReports');
       this.canDelete = this.sessionPermissionList.includes('canDeleteIncidentReports');
