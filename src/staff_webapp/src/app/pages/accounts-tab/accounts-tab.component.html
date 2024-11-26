@@ -71,9 +71,27 @@
     Fetch Accounts
   </button>
   <button
+    (click)="updateAccount()"
+    class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+  >
+    Update Account
+  </button>
+  <button
+    (click)="deleteHardcodedAccount()"
+    class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+  >
+    Delete Account
+  </button>
+  <button
     (click)="createAccount()"
-    class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+    class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-black-600"
   >
     Create Account
+  </button>
+  <button
+    (click)="getAllPermissionGroups()"
+    class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+  >
+    Get PermGroups
   </button>
 </div>

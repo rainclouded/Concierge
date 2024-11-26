@@ -4,6 +4,7 @@ import { IAccount } from '../../models/account.model';
 import { EditAccountModalComponent } from '../../components/accounts-modal/edit-account-modal.component';
 import { DeleteConfirmationModalComponent } from '../../components/accounts-modal/delete-confirmation-modal.component';
 import { AccountService } from '../../services/account.service';
+import { PermissionService } from '../../services/permission.service';
 import { mockUsers } from './mock-users';
 
 @Component({
@@ -12,7 +13,7 @@ import { mockUsers } from './mock-users';
   imports: [
     CommonModule,
     EditAccountModalComponent,
-    DeleteConfirmationModalComponent, 
+    DeleteConfirmationModalComponent,
   ],
   templateUrl: './accounts-tab.component.html',
 })
@@ -22,7 +23,10 @@ export class AccountsTabComponent implements OnInit {
   selectedAccount!: IAccount;
   usernameToDelete!: string;
 
-  constructor(private accountService: AccountService) {}
+  constructor(
+    private accountService: AccountService,
+    private permissionService: PermissionService
+  ) {}
 
   // Pagination variables
   currentPage = 1;
@@ -40,7 +44,10 @@ export class AccountsTabComponent implements OnInit {
   // Pagination logic
   updatePagination() {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    this.paginatedAccounts = this.accounts.slice(startIndex, startIndex + this.itemsPerPage);
+    this.paginatedAccounts = this.accounts.slice(
+      startIndex,
+      startIndex + this.itemsPerPage
+    );
   }
 
   goToPreviousPage() {
@@ -68,7 +75,9 @@ export class AccountsTabComponent implements OnInit {
   }
 
   saveEditedAccount(updatedAccount: IAccount) {
-    const index = this.accounts.findIndex((acc) => acc.username === updatedAccount.username);
+    const index = this.accounts.findIndex(
+      (acc) => acc.username === updatedAccount.username
+    );
     if (index !== -1) {
       this.accounts[index] = updatedAccount;
       this.updatePagination();
@@ -110,9 +119,26 @@ export class AccountsTabComponent implements OnInit {
     });
   }
 
+  updateAccount() {
+    const updatedAccount: IAccount = {
+      username: '12368',
+      type: 'guest',
+      //password: 'password3122',
+    };
+
+    this.accountService.updateAccount(updatedAccount).subscribe({
+      next: (response) => {
+        console.log('Account updated successfully:', response.message);
+      },
+      error: (err) => {
+        console.error('Error updating account:', err);
+      },
+    });
+  }
+
   createAccount() {
     const newAccount = {
-      username: '12346',
+      username: '12368',
       type: 'guest',
       //password: 'password123',
     };
@@ -123,6 +149,31 @@ export class AccountsTabComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error creating account:', err);
+      },
+    });
+  }
+
+  deleteHardcodedAccount() {
+    const hardcodedUsername = '12368';
+    this.deleteAccount(hardcodedUsername);
+  }
+
+  deleteAccount(username: string) {
+    this.accountService.deleteAccount(username).subscribe({
+      next: (response) => {
+        console.log(response.message);
+        this.getAllAccounts();
+      },
+      error: (err) => {
+        console.error('Error deleting account:', err);
+      },
+    });
+  }
+
+  getAllPermissionGroups() {
+    this.permissionService.getAllPermissionGroups().subscribe({
+      next: (response) => {
+        console.log(response.data);
       },
     });
   }
