@@ -47,7 +47,8 @@ INSERT INTO permissions_db.Permissions (name) VALUES
 ('canViewTasks'),
 ('canCreateTasks'),
 ('canEditTasks'),
-('canDeleteTasks');
+('canDeleteTasks'),
+('canViewAccounts');
 
 INSERT INTO permissions_db.PermissionGroups (name, description) VALUES
 ('admin', 'Has all permissions'),
@@ -75,11 +76,13 @@ INSERT INTO permissions_db.GroupPermissions (groupId, permission_id, value) VALU
 (1, 17, true),
 (1, 18, true),
 (1, 19, true),
+(1, 20, true),
 (2, 1, true),
 (2, 3, true),
 (4, 5, true),
 (4, 14, true),
 (4, 17, true);
+
 
 
 INSERT INTO permissions_db.GroupMembers (groupId, memberId) VALUES

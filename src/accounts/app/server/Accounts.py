@@ -90,31 +90,31 @@ def index():
     }
     print(request)
     
-    if(request.data):
-        data = request.get_json()
-        print(f'data:: {data}::')
-        token = request.headers.get('X-Api-Key')
-        print(token)
-        type_to_retrieve = data['type']
-        print(type_to_retrieve)
+    token = request.headers.get('X-Api-Key')
+    if(token is not None):
         try:
-            if token and permissions.can_delete_guest(
+            account_type_filter = request.args.get('account_type')
+            if token and permissions.can_view_users(
                             token
                         ):
-                print('we are here')
                 users = [
-                    {'usersname':user.username,'type':user.type} 
-                    for user in user_service.get_users(type_to_retrieve)
+                    {'id':user.id, 'username':user.username,'type':user.type} 
+                    for user in user_service.get_users(account_type_filter)
                 ]
-                print('we did not het here')
                 return jsonify(users), 200
+            else:
+                print("Missing CanViewUsers permissions")
+                return jsonify({
+                    "message": "Missing Permission",
+                    "status": "Unauthorized"
+                }), 401
 
         except Exception as e:
             print(e)
             return jsonify({
-                    "message": "Action not permitted",
-                    "status": "forbidden"
-                }), 403
+                    "message": "An error has occured",
+                    "status": "Internal Server Error"
+                }), 500
     else:
         return jsonify(response)
 
