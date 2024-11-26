@@ -5,6 +5,10 @@
 ## Run locally
 - go run ./src/permissions/cmd/server/main.go
 
+## Run Tests
+- Navigate to ./src/permissions/tests
+- Run `go test`
+
 ## Required Permissions
 - canViewPermissionGroups
 - canEditPermissionGroups

@@ -6,6 +6,7 @@ import (
 	"concierge/permissions/internal/models"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,7 +29,21 @@ func GetPermissionGroups(ctx *gin.Context) {
 		return
 	}
 
-	permissions, err := db.GetPermissionGroups()
+	accountIdFilter := ctx.DefaultQuery("account-id", "-1")
+	accountNumber, err := strconv.Atoi(accountIdFilter)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, middleware.Format(err.Error(), nil))
+		return
+	}
+
+	var permissions []*models.PermissionGroup
+
+	if accountNumber >= 0 {
+		permissions, err = db.GetPermissionGroupsByAccount(accountNumber)
+	} else {
+		permissions, err = db.GetPermissionGroups()
+	}
+
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, middleware.Format(err.Error(), nil))
 		return
