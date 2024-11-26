@@ -24,7 +24,8 @@ public class PostgresTaskSystemRepository : ITaskSystemRepository
             (!query.Status.HasValue || s.Status == query.Status) &&
             (!query.Year.HasValue || s.CreatedAt.Year == query.Year) &&
             (!query.Month.HasValue || s.CreatedAt.Month == query.Month) &&
-            (!query.Day.HasValue || s.CreatedAt.Day == query.Day)
+            (!query.Day.HasValue || s.CreatedAt.Day == query.Day) &&
+            (!query.AccountId.HasValue || s.RequesterId == query.AccountId)
         );
 
         tasks = query.SortAscending ? tasks.OrderBy(s => s.CreatedAt) : tasks.OrderByDescending(s => s.CreatedAt);
@@ -32,9 +33,9 @@ public class PostgresTaskSystemRepository : ITaskSystemRepository
         return await tasks.ToListAsync();
     }
 
-    public async Task<TaskItem?> GetTaskByIdAsync(int id)
+    public async Task<TaskItem?> GetTaskByIdAsync(int taskId)
     {
-        return await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id);
+        return await _context.Tasks.FirstOrDefaultAsync(t => t.Id == taskId);
     }
 
     public async Task<TaskItem> AddTaskAsync(TaskItem task)
