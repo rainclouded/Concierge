@@ -19,7 +19,6 @@ class MongoConnection(DatabaseInterface):
             self.database.create_collection('accounts')
             self.collection = self.database['accounts']
             self.collection.create_index([("username", 1)])
-
             self.add_guest(
                 {'id':0, 'username':'11111', 'hash':'guest', 'type':'guest'}
             )
