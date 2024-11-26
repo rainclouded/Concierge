@@ -24,3 +24,12 @@ class UserObject:
                 for key in cfg.USER_ATTRIBUTES
             )
         )
+    def __str__(self):
+        # Create a dictionary of attribute names and their values
+        attribute_dict = {key: getattr(self, key) for key in cfg.USER_ATTRIBUTES}
+        
+        # Create a string representation, which will include each attribute and its value
+        attribute_str = ', '.join(f"{key}={value}" for key, value in attribute_dict.items())
+        
+        # Return the formatted string
+        return f"{self.__class__.__name__}({attribute_str})"

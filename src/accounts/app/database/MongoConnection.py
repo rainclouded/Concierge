@@ -4,6 +4,7 @@ Module for the MongoDB connection
 from os import getenv
 from pymongo import MongoClient
 from app.database.DatabaseInterface import DatabaseInterface
+import app.Configs as cfg
 
 class MongoConnection(DatabaseInterface):
     """
@@ -19,9 +20,18 @@ class MongoConnection(DatabaseInterface):
             self.collection = self.database['accounts']
             self.collection.create_index([("username", 1)])
 
+            self.add_guest(
+                {'id':0, 'username':'11111', 'hash':'guest', 'type':'guest'}
+            )
             self.add_staff(
-                {'id':0, 'username':'12345', 'hash':'guest', 'type':'guest'},
-                {'id':1, 'username':'admin', 'hash':'admin', 'type':'staff'}
+                {
+                    'id':1, 
+                    'username':'admin', 
+                    'hash':cfg.PASSWORD_HASH_FUNCTION(
+                        "1admin".encode()
+                        ).hexdigest(), 
+                    'type':'staff'
+                }
             )
         else:
             self.collection = self.database['accounts']

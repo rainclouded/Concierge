@@ -491,7 +491,7 @@ func TestMariaPatchPermissionGroupsBadDesc(t *testing.T) {
 func TestMariaPatchPermissionGroupsOkPermission(t *testing.T) {
 	newGroup := models.PermissionGroupRequest{
 		Permissions: []*models.PermissionId{
-			{ID: 0, State: false},
+			{ID: 1, State: false},
 		},
 	}
 
