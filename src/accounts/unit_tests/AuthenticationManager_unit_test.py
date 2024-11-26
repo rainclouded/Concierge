@@ -177,7 +177,7 @@ class TestAuthenticationManager(unittest.TestCase):
         ]
 
         for username, password in valid_credentials:
-            self.assertTrue(self.am.authenticate_user_login(username, password))
+            self.assertIsNotNone(self.am.authenticate_user_login(username, password))
         for username, password in invalid_credentials:
-            self.assertFalse(self.am.authenticate_user_login(username,password))
+            self.assertIsNone(self.am.authenticate_user_login(username,password))
             

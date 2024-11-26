@@ -53,9 +53,11 @@ class AuthenticationManager:
                 password: string of the password to validate
 
             Returns:
-                If the user was successfully validated
+                The User obj on success, None on failure
         """
         user = \
             list(filter(lambda x : x.username == username, self.db.get_users()))
 
-        return len(user) == 1 and self.check_hash(user.pop(), password)
+        if len(user) == 1 and self.check_hash(user.pop(), password):
+            return user
+        return None

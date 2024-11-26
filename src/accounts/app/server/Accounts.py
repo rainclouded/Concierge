@@ -168,8 +168,10 @@ def login():
     }
     data = request.get_json()
     try:
-        if auth.authenticate_user_login(data["username"], data["password"]):
+        user = auth.authenticate_user_login(data["username"], data["password"])
+        if user is not None:
             response["message"] = f"Welcome, {data['username']}!"
+            response["data"] = {'id':user['id'],'type':user['type'],'username':user['username']}
             response["status"] = "ok"
             return response
     except Exception:#If there is an issus, throw a 401

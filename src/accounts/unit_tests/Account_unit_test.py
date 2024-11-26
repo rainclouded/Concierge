@@ -110,6 +110,7 @@ class TestFlaskApp(unittest.TestCase):
             response.json,
             {
                 'message': 'Welcome, test1!',
+                'data':{'id':1,'type':'staff','username':'test1'},
                 'status': 'ok',
             },
         )
@@ -123,6 +124,7 @@ class TestFlaskApp(unittest.TestCase):
             response.json,
             {
                 'message': 'Welcome, 5!',
+                'data':{'id':1,'type':'guest','username':'5'},
                 'status': 'ok',
             },
         )
