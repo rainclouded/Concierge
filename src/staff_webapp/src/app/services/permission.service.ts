@@ -22,4 +22,12 @@ export class PermissionService {
       groupPermissions:[{permissionId:permissionId, state:state}],
     });
   }
+
+  updatePermissionGroupMembers(groupId: number, addAccounts: number[], removeAccounts: number[]) {
+    return this.http.patch<ApiResponse<IPermissionGroup[]>>(`${this.apiUrl}/${groupId}`, {
+      templateId: groupId,
+      groupMembers: addAccounts,
+      removeGroupMembers: removeAccounts
+    });
+  }
 }
