@@ -18,11 +18,6 @@ class MongoConnection(DatabaseInterface):
             self.database.create_collection('accounts')
             self.collection = self.database['accounts']
             self.collection.create_index([("username", 1)])
-
-            self.add_staff(
-                {'id':0, 'username':'12345', 'hash':'guest', 'type':'guest'},
-                {'id':1, 'username':'admin', 'hash':'admin', 'type':'staff'}
-            )
         else:
             self.collection = self.database['accounts']
 
