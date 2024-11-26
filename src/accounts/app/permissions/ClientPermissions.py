@@ -121,15 +121,20 @@ class ClientPermissionValidator(PermissionInterface):
     @staticmethod
     def validate_session_key_for_permission_name(sessionKey: str, permissionName: str) -> bool:
         permissions = ClientPermissionValidator.get_session_permissions(sessionKey)
+        print(f'Permission {permissionName} in permissions? {permissionName in permissions}')
         return permissionName in permissions
     
     @staticmethod
     def get_session_permissions(sessionKey: str) -> list[int]:
         endpoint = os.getenv('SESSIONS_ENDPOINT')
+        
         try:
-            response = requests.get(f'{endpoint}/sessions/me')
-            permissions = json.loads(response)['data']['sessionsData']['SessionPermissionList']
+            response = requests.get(f'{endpoint}/sessions/me', headers={'x-api-key':sessionKey})
+            print(json.loads(response.text)['data'])
+            print(json.loads(response.text)['data']['sessionData'])
+            print(json.loads(response.text)['data']['sessionData']['SessionPermissionList'])
+            permissions = json.loads(response.text)['data']['sessionData']['SessionPermissionList']
             return permissions
         except requests.exceptions.RequestException as e:
-            print(e)
+            print(f'Error in get_session_permissions: {e}')
         return []

@@ -38,6 +38,7 @@ class UserService():
         """
         if self.validation.validate_new_guest(new_guest):
             new_guest.password = randbelow(cfg.MAX_GUEST_PASSWORD)
+            new_guest.id = 0
             new_guest.hash = \
                 self.auth.get_hash(new_guest.username,new_guest.password)
             return (self.db.create_guest(new_guest), f'{new_guest.password}')

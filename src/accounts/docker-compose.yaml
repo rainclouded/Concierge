@@ -16,7 +16,7 @@ services:
     depends_on:
       - accounts_mongo
     environment:
-      - SESSION_ENDPOINT=http://permissions:8080
+      - SESSIONS_ENDPOINT=http://permissions:8080
     env_file: 
       - .env.prod
 volumes:

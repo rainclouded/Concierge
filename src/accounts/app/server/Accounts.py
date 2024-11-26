@@ -19,7 +19,6 @@ permissions = None
 DEFAULT_PORT = 8080
 ENVIRONMENT_VAR_NAME_PORT = "ACCOUNTS_PORT"
 
-
 def start_service():
     """Run the service"""
     #pylint: disable=global-statement
