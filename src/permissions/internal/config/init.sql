@@ -88,9 +88,8 @@ INSERT INTO permissions_db.GroupPermissions (groupId, permission_id, value) VALU
 INSERT INTO permissions_db.GroupMembers (groupId, memberId) VALUES
 (1, 1),
 (4, 4),
-(1, 0),
+(4, 0),
 (1, 2),
-(2, 0),
 (2, 1),
 (3, -1),
 (3, 5);

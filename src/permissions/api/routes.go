@@ -22,11 +22,11 @@ type Option func(*ContextOptions)
 
 func DefaultOptions() *ContextOptions {
 	return &ContextOptions{
-		DB: config.LoadDB(),
-		// AccountClient: config.LoadAccountEndpoint(),
-		AccountClient: client.NewMockAccountClient(),
-		JWTContext:    middleware.NewJWT(),
-		ginMode:       gin.DebugMode,
+		DB:            config.LoadDB(),
+		AccountClient: config.LoadAccountEndpoint(),
+		// AccountClient: client.NewMockAccountClient(),
+		JWTContext: middleware.NewJWT(),
+		ginMode:    gin.DebugMode,
 	}
 }
 
