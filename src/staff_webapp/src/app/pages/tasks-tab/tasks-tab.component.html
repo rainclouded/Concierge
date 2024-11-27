@@ -1,5 +1,10 @@
 <h3 class="font-semibold text-5xl mb-5">Task Management</h3>
-<p class="mb-5 font-bold text-xl">Manage Tasks</p>
+<div class="flex gap-5">
+  <p class="mb-5 font-bold text-xl">Manage Tasks</p>
+  <button (click)="fetchTasks()">
+    <i class="fa-solid fa-rotate-right relative -top-2 hover:rotate-180 hover:transition-all duration-500"></i>
+  </button>
+</div>
 <button *ngIf="canCreate" (click)="openAddTaskModal()" class="bg-black text-white px-4 py-2  rounded-lg mb-4 tracking-wide">
   <i class="fa-solid fa-plus-circle mr-1"></i>
   Add Task
@@ -7,7 +12,7 @@
 
 <div class="table-container overflow-auto border rounded-lg h-[600px]">
   <table class="w-full text-left table-auto border-collapse">
-    <thead class="bg-gray-100">
+    <thead class="bg-gray-100 sticky top-0 z-10">
       <tr>
         <th class="border-b px-2 py-4 w-[10%] cursor-pointer" (click)="toggleSort('roomId')">
           Room No

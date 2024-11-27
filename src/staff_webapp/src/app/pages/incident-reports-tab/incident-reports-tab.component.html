@@ -1,5 +1,10 @@
 <h3 class="font-semibold text-5xl mb-5">Incident Reports</h3>
-<p class="mb-5 font-bold text-xl">Manage Incident Reports</p>
+<div class="flex gap-5">
+	<p class="mb-5 font-bold text-xl">Manage Incident Reports</p>
+	<button (click)="getAllReports()">
+	  <i class="fa-solid fa-rotate-right relative -top-2 hover:rotate-180 hover:transition-all duration-500"></i>
+	</button>
+  </div>
 <button *ngIf="canCreate" (click)="openReportWindow()" type="button" class="bg-black text-white px-4 py-2 rounded-lg mb-4 tracking-wide">
 	<i class="fa-solid fa-exclamation-triangle mr-1"></i>
 	Report an incident
