@@ -28,10 +28,10 @@ const AmenitiesPage = () => {
   }, []);
 
   return (
-    <div className="relative bg-primary h-screen">
+    <div className="relative bg-primary min-h-screen pb-10">
       <Link
         to="/home"
-        className="absolute left-4 top-4 p-1 text-xl font-semibold rounded-full z-50"
+        className="fixed left-4 top-4 p-1 text-xl font-semibold rounded-full z-50"
       >
         <FontAwesomeIcon icon={faArrowLeft} />
       </Link>
@@ -45,9 +45,11 @@ const AmenitiesPage = () => {
       {!error && amenities.length > 0 ? (
         <div className="flex flex-col justify-center items-center space-y-4 mt-4">
           <p className="text-sm italic text-justify px-4 mb-2 text-lightText lg:max-w-[50%]">
-            Explore our range of amenities designed to make your stay unforgettable. 
-            From luxurious facilities to convenient services, we offer everything you need for a relaxing and enjoyable experience. 
-            Please take advantage of these offerings and make the most of your time with us!
+            Explore our range of amenities designed to make your stay
+            unforgettable. From luxurious facilities to convenient services, we
+            offer everything you need for a relaxing and enjoyable experience.
+            Please take advantage of these offerings and make the most of your
+            time with us!
           </p>
           {amenities.map((amenity) => (
             <div

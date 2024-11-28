@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
+import { getAccountId } from "../utils/auth";
 
 const IncidentReportPage = () => {
   const [title, setTitle] = useState("");
@@ -15,10 +16,17 @@ const IncidentReportPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const filingPersonId = getAccountId(); // Retrieve accountId from token
+    if (!filingPersonId) {
+      toast.error("Unable to submit. No account ID found.");
+      return;
+    }
+
     const requestBody = {
       title: title,
       description: description,
-      filing_person_id: 1234, // Replace with actual person ID
+      filing_person_id: filingPersonId,
       reviewer_id: 5678, // Add reviewer_id, replace with actual logic
       severity: "LOW", // Default value for severity
       status: "OPEN", // Default value for status
@@ -45,11 +53,11 @@ const IncidentReportPage = () => {
   };
 
   return (
-    <div className="relative bg-primary h-screen">
+    <div className="relative bg-primary min-h-screen pb-10">
       <ToastContainer bodyClassName="toast-body" />
       <Link
         to="/home"
-        className="absolute left-4 top-4 p-1 text-xl font-semibold rounded-full z-50"
+        className="fixed left-4 top-4 p-1 text-xl font-semibold rounded-full z-50"
       >
         <FontAwesomeIcon icon={faArrowLeft} />
       </Link>

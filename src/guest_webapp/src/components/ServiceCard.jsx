@@ -7,8 +7,8 @@ const ServiceCard = ({ icon, text, link }) => (
     to={link}
     className="tile-item flex flex-col lg:flex-row justify-center items-center text-center border bg-secondary text-black p-4 rounded-md transform transition-transform duration-300"
   >
-    <FontAwesomeIcon icon={icon} className="mr-2 text-3xl" />
-    <p className="text-sm lg:text-xl">{text}</p>
+    <FontAwesomeIcon icon={icon} className="text-3xl" />
+    <p className="text-sm lg:ml-2 lg:text-xl">{text}</p>
   </Link>
 );
 

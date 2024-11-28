@@ -5,6 +5,7 @@ import HomePage from "./pages/HomePage";
 import AmenitiesPage from "./pages/AmenitiesPage";
 import IncidentReportPage from "./pages/IncidentReportPage";
 import "./App.css";
+import TaskPage from "./pages/TaskPage";
 
 
 const App = () => {
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/home" element={<HomePage />} />
         <Route path="/amenities" element={<AmenitiesPage />} />
         <Route path="/incident_reports" element={<IncidentReportPage />} />
+        <Route path="/tasks" element={<TaskPage />} />
       </Routes>
     </Router>
   );
