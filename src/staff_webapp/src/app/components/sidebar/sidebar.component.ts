@@ -27,7 +27,7 @@ export class SidebarComponent implements OnInit {
       this.accountName = this.sessionService.accountName;
     });
   }
-  
+
   items = [
     {
       routerLink: 'home',
@@ -37,6 +37,7 @@ export class SidebarComponent implements OnInit {
     {
       routerLink: 'accounts',
       label: 'Accounts',
+      icon: 'fa-solid fa-users',
     },
     {
       routerLink: 'amenities',

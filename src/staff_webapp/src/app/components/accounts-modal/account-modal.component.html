@@ -3,17 +3,16 @@
 >
   <div class="bg-white p-6 rounded shadow-lg w-96">
     <!-- Modal Header -->
+
     <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-bold">Account Details</h2>
-      <!-- Close Button -->
-      <button
-        class="text-gray-500 hover:text-gray-900 transition text-2xl font-bold"
-        (click)="close.emit()"
-        aria-label="Close"
-        title="Close"
-      >
-        &times;
-      </button>
+      <div class="flex items-center">
+        <h2 class="text-2xl font-semibold">Account Details</h2>
+        <!-- Delete icon -->
+        <button (click)="openDeleteModal()" class="ml-3 text-red-700">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+      <button class="text-2xl font-bold" (click)="close.emit()">×</button>
     </div>
 
     <!-- Account Info -->
@@ -30,7 +29,7 @@
         placeholder="Enter new password"
       />
       <button
-        class="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+      class="bg-white border border-black text-black hover:bg-black hover:text-white p-2 rounded-lg w-40 mt-2"
         (click)="updatePassword()"
       >
         Save Password
@@ -39,49 +38,44 @@
 
     <div *ngIf="!isPasswordEnabled" class="mt-4">
       <button
-        class="bg-green-500 text-white px-4 py-2 rounded"
+        class="bg-white border border-black text-black hover:bg-black hover:text-white p-2 rounded-lg w-48"
         (click)="updatePassword()"
       >
         Generate New Password
       </button>
     </div>
+    
 
     <!-- Permissions Section -->
     <div class="mt-6">
-      <h3 class="text-lg font-bold">Permissions</h3>
-      <div *ngFor="let group of allPermissions" class="flex items-center mt-2">
-        <input
-          type="checkbox"
-          [checked]="modifiedPermissions.includes(group.groupId)"
-          (change)="togglePermission(group.groupId)"
-        />
-        <label class="ml-2">{{ group.groupName }}</label>
+        <h3 class="text-lg font-bold mb-2">Permissions</h3>
+        <div *ngFor="let group of allPermissions" class="flex items-center gap-2">
+          <input
+            type="checkbox"
+            [checked]="modifiedPermissions.includes(group.groupId)"
+            (change)="togglePermission(group.groupId)"
+            class="cursor-pointer"
+          />
+          <label class="cursor-pointer">{{ group.groupName }}</label>
+        </div>
       </div>
-    </div>
+
 
     <!-- Modal Actions -->
-    <div class="flex justify-between mt-6">
+    <div class="flex justify-end mt-2">
       <button
-        class="bg-red-500 text-white px-4 py-2 rounded"
-        (click)="openDeleteModal()"
+        class="bg-white border border-red-700 text-red-700 hover:bg-red-700 hover:text-white p-2 rounded-lg w-20 mr-1"
+        (click)="close.emit()"
       >
-        Delete Account
+        Cancel
       </button>
-      <div class="flex">
-        <button
-          class="bg-gray-300 text-black px-4 py-2 rounded mr-2"
-          (click)="close.emit()"
-        >
-          Cancel
-        </button>
-        <button
-          class="bg-blue-500 text-white px-4 py-2 rounded"
-          [disabled]="!hasPermissionChanges()"
-          (click)="saveChanges()"
-        >
-          Save
-        </button>
-      </div>
+      <button
+        class="bg-white border border-black text-black hover:bg-black hover:text-white p-2 rounded-lg w-20"
+        [disabled]="!hasPermissionChanges()"
+        (click)="saveChanges()"
+      >
+        Save
+      </button>
     </div>
   </div>
 </div>

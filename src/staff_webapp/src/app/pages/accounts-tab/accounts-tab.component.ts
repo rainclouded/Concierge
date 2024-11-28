@@ -96,4 +96,8 @@ export class AccountsTabComponent implements OnInit {
       this.updatePage();
     }
   }
+
+  get totalPages(): number {
+    return Math.ceil(this.allAccounts.length / this.pageSize);
+  }
 }
