@@ -5,10 +5,10 @@ import { Link } from "react-router-dom";
 const ServiceCard = ({ icon, text, link }) => (
   <Link
     to={link}
-    className="tile-item flex flex-col justify-center items-center bg-black text-white p-4 rounded-2xl transform transition-transform duration-300 hover:scale-105 min-w-[150px]"
+    className="tile-item flex flex-col lg:flex-row justify-center items-center text-center border bg-secondary text-black p-4 rounded-md transform transition-transform duration-300"
   >
-    <FontAwesomeIcon icon={icon} size="1x" />
-    <p className="mt-1 text-small sm:text-1xl">{text}</p>
+    <FontAwesomeIcon icon={icon} className="mr-2 text-3xl" />
+    <p className="text-sm lg:text-xl">{text}</p>
   </Link>
 );
 

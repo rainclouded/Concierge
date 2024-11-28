@@ -23,6 +23,9 @@ export class TaskModalComponent {
   @Output() taskDeleted = new EventEmitter<number>(); // Emit task ID when deleted
   @Output() taskUpdated = new EventEmitter<ITask>(); // Emit the updated task
 
+  @Input() canEdit: boolean = false;
+  @Input() canDelete: boolean = false;
+
   isEditing = false; // To toggle between edit and view mode
   editedDescription: string = ''; // For holding the description in edit mode
   isDeleteConfirmModalOpen = false; // Control for the confirm deletion modal
