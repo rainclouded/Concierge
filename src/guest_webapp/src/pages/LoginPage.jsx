@@ -4,6 +4,7 @@ import conciergeVector from "../assets/conciergevector.svg";
 
 const LoginPage = () => {
   const [roomKey, setRoomKey] = useState("");
+  const [roomNum, setRoomNum] = useState("");
   const [error, setError] = useState(null);
 
   const handleSubmit = async (event) => {
@@ -16,7 +17,7 @@ const LoginPage = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            username: `${roomKey}`,
+            username: `${roomNum}`,
             password: `${roomKey}`,
           }),
         }
@@ -29,6 +30,7 @@ const LoginPage = () => {
       const data = await response.json();
       setSessionKey(data.data.sessionKey);
       sessionStorage.setItem("roomKey", roomKey);
+      sessionStorage.setItem("roomNum", roomNum);
       window.location.href = "/home";
     } catch (error) {
       console.log(error);
@@ -50,6 +52,21 @@ const LoginPage = () => {
           />
         </div>
         <form onSubmit={handleSubmit}>
+          <label
+            htmlFor="roomNum"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Enter Your Key Number:
+          </label>
+          <input
+            type="text"
+            id="roomNum"
+            value={roomNum}
+            onChange={(e) => setRoomNum(e.target.value)}
+            className="block w-full p-2 sm:p-3 border border-gray-300 rounded-md mb-3 sm:mb-4 focus:ring-2 focus:ring-primary shadow-sm hover:shadow-md transition duration-200"
+            placeholder="Room #"
+          />
+          
           <label
             htmlFor="roomKey"
             className="block text-sm font-medium text-gray-700 mb-2"
