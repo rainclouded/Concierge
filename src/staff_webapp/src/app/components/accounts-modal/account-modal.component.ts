@@ -91,7 +91,7 @@ export class AccountModalComponent implements OnInit {
       ...addGroups.map((groupId) =>
         this.permissionService.updatePermissionGroupMembers(
           groupId,
-          [+this.account.username],
+          [+this.account.id!],
           []
         )
       ),
@@ -99,7 +99,7 @@ export class AccountModalComponent implements OnInit {
         this.permissionService.updatePermissionGroupMembers(
           groupId,
           [],
-          [+this.account.username]
+          [+this.account.id!]
         )
       ),
     ];
