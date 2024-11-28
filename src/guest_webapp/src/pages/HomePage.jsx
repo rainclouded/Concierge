@@ -26,7 +26,7 @@ import "react-toastify/ReactToastify.css";
 import { getAccountId } from "../utils/auth";
 
 const HomePage = () => {
-  const roomKey = sessionStorage.getItem("roomKey"); //room key of user
+  const roomNum = sessionStorage.getItem("roomNum"); //room key of user
   //State for requests
   const [inputValue, setInputValue] = useState("");
 
@@ -96,7 +96,7 @@ const HomePage = () => {
     }
 
     const accountId = getAccountId(); // Retrieve accountId from the token
-    if (!accountId) {
+    if (!accountId && accountId !== 0) {
       toast.error("Unable to submit request. No account ID found.");
       return;
     }
@@ -104,7 +104,7 @@ const HomePage = () => {
     const requestBody = {
       taskType: tag.replace(/\s+/g, ""),
       description: items || inputValue || "N/A",
-      roomId: parseInt(roomKey, 10),
+      roomId: parseInt(roomNum, 10),
       requesterId: accountId,
     };
 
@@ -511,7 +511,7 @@ const getRoomInfo = () => {
 
   const periodOfStay = `${todayStr} - ${next7DaysStr}`;
   return {
-    roomNumber: "Room " + sessionStorage.getItem("roomKey"),
+    roomNumber: "Room " + sessionStorage.getItem("roomNum"),
     periodOfStay: periodOfStay,
   };
 };
