@@ -317,7 +317,7 @@ WHERE
 	gp.groupId in (SELECT groupId from GroupMembers where memberId = ?);
 	`
 
-	permissionRows, err := m.db.Query(permissionQuery)
+	permissionRows, err := m.db.Query(permissionQuery, accountId)
 	if err != nil {
 		return nil, err
 	}
@@ -340,7 +340,7 @@ WHERE
 		}
 	}
 
-	var groups []*models.PermissionGroup
+	groups := []*models.PermissionGroup{}
 	for _, group := range groupsMap {
 		groups = append(groups, group)
 	}
