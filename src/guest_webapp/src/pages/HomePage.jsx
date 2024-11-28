@@ -14,6 +14,7 @@ import {
   faCog,
   faSignOutAlt,
   faCalendar,
+  faClipboardList,
 } from "@fortawesome/free-solid-svg-icons";
 
 import ServiceCard from "../components/ServiceCard";
@@ -22,6 +23,7 @@ import RequestCard from "../components/RequestCard";
 import { fetchWithAuth } from "../utils/authFetch";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
+import { getAccountId } from "../utils/auth";
 
 const HomePage = () => {
   const roomKey = sessionStorage.getItem("roomKey"); //room key of user
@@ -93,11 +95,17 @@ const HomePage = () => {
       return;
     }
 
+    const accountId = getAccountId(); // Retrieve accountId from the token
+    if (!accountId) {
+      toast.error("Unable to submit request. No account ID found.");
+      return;
+    }
+
     const requestBody = {
       taskType: tag.replace(/\s+/g, ""),
       description: items || inputValue || "N/A",
       roomId: parseInt(roomKey, 10),
-      requesterId: 100,
+      requesterId: accountId,
     };
 
     try {
@@ -458,15 +466,20 @@ const HomePage = () => {
       )}
 
       {/* Sticky Footer */}
-      <footer className="grid grid-cols-2 space-x-0.5 items-center z-40 px-1 pb-1">
+      <footer className="grid grid-cols-3 space-x-0.5 items-center z-40 px-1 pb-1 ">
         <ServiceCard
           icon={faConciergeBell}
           text="Amenities"
           link="/amenities"
         />
         <ServiceCard
+          icon={faClipboardList}
+          text="Your requests"
+          link="/tasks"
+        />
+        <ServiceCard
           icon={faExclamationTriangle}
-          text="Report an Incident"
+          text="Complaint"
           link="/incident_reports"
         />
       </footer>
@@ -475,9 +488,31 @@ const HomePage = () => {
 };
 
 const getRoomInfo = () => {
+  // Semi hard code stay duration: Right now it gets today time and next 7days
+  const today = new Date();
+
+  function formatDate(date) {
+    const options = {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    };
+    return date.toLocaleString("en-GB", options).toLowerCase().replace(",", "");
+  }
+
+  const sevenDaysLater = new Date(today);
+  sevenDaysLater.setDate(today.getDate() + 7);
+
+  const todayStr = formatDate(today);
+  const next7DaysStr = formatDate(sevenDaysLater);
+
+  const periodOfStay = `${todayStr} - ${next7DaysStr}`;
   return {
     roomNumber: "Room " + sessionStorage.getItem("roomKey"),
-    periodOfStay: "23.11  11:00am - 26.11  11:00am",
+    periodOfStay: periodOfStay,
   };
 };
 
