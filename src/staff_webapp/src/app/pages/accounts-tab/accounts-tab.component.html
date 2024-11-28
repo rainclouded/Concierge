@@ -1,97 +1,61 @@
-<h1 class="text-2xl font-bold mb-5">Accounts Manager</h1>
+<div class="p-4">
+  <button
+    class="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+    (click)="openAddAccountModal()"
+  >
+    Add Account
+  </button>
 
-<table class="w-full text-left table-auto border-collapse">
-  <thead class="bg-gray-100">
-    <tr>
-      <th class="border-b p-2 w-[30%]">Username</th>
-      <th class="border-b p-2 w-[20%]">Type</th>
-      <th class="border-b p-2 w-[30%]">Password</th>
-      <th class="border-b p-2 w-[20%]">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr
-      *ngFor="let account of paginatedAccounts; let i = index"
-      [ngClass]="i % 2 === 0 ? 'bg-white' : 'bg-gray-100'"
-      class="hover:bg-gray-300"
+  <input
+    type="text"
+    placeholder="Search by username"
+    [(ngModel)]="searchTerm"
+    class="border p-2 rounded w-full mb-4"
+    (keydown.enter)="searchAccounts()"
+  />
+
+  <table class="w-full border-collapse text-left">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="border p-2">Username</th>
+        <th class="border p-2">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let account of filteredAccounts"
+        class="cursor-pointer hover:bg-gray-200"
+        (click)="openAccountModal(account)"
+      >
+        <td class="border p-2">{{ account.username }}</td>
+        <td class="border p-2">{{ account.type }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="flex justify-between mt-4">
+    <button
+      class="bg-gray-300 px-4 py-2 rounded"
+      [disabled]="currentPage === 1"
+      (click)="goToPreviousPage()"
     >
-      <td class="border-b p-2">{{ account.username }}</td>
-      <td class="border-b p-2">{{ account.type }}</td>
-      <td class="border-b p-2">{{ account.password }}</td>
-      <td class="border-b p-2 flex gap-2">
-        <button (click)="openEditModal(account)">
-          <i class="fas fa-edit text-blue-500"></i>
-        </button>
-        <button (click)="openDeleteModal(account.username)">
-          <i class="fas fa-trash text-red-500"></i>
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<div class="flex justify-end items-center mt-4">
-  <button
-    (click)="goToPreviousPage()"
-    class="bg-gray-300 p-2 rounded w-20"
-    [disabled]="currentPage === 1"
-  >
-    Previous
-  </button>
-  <p class="mx-4">Page {{ currentPage }} of {{ totalPages }}</p>
-  <button
-    (click)="goToNextPage()"
-    class="bg-gray-300 p-2 rounded w-20"
-    [disabled]="currentPage === totalPages"
-  >
-    Next
-  </button>
+      Previous
+    </button>
+    <button class="bg-gray-300 px-4 py-2 rounded" (click)="goToNextPage()">
+      Next
+    </button>
+  </div>
 </div>
 
-<!-- Modals -->
-<app-edit-account-modal
-  *ngIf="isEditModalOpen"
+<add-account-modal
+  *ngIf="isAddAccountModalOpen"
+  (close)="closeAddAccountModal()"
+  (save)="addNewAccount($event)"
+></add-account-modal>
+
+<account-modal
+  *ngIf="selectedAccount"
   [account]="selectedAccount"
-  (close)="closeEditModal()"
-  (save)="saveEditedAccount($event)"
-></app-edit-account-modal>
-
-<app-delete-confirmation-modal
-  *ngIf="isDeleteModalOpen"
-  [username]="usernameToDelete"
-  (close)="closeDeleteModal()"
-  (confirm)="confirmDeleteAccount($event)"
-></app-delete-confirmation-modal>
-
-<div class="flex mt-6 gap-4">
-  <button
-    (click)="getAllAccounts()"
-    class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-  >
-    Fetch Accounts
-  </button>
-  <button
-    (click)="updateAccount()"
-    class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
-  >
-    Update Account
-  </button>
-  <button
-    (click)="deleteHardcodedAccount()"
-    class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-  >
-    Delete Account
-  </button>
-  <button
-    (click)="createAccount()"
-    class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-black-600"
-  >
-    Create Account
-  </button>
-  <button
-    (click)="getAllPermissionGroups()"
-    class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-  >
-    Get PermGroups
-  </button>
-</div>
+  (close)="closeAccountModal()"
+  (accountDeleted)="fetchAccounts()"
+></account-modal>

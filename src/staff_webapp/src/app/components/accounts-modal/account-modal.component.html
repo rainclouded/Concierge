@@ -1,0 +1,95 @@
+<div
+  class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center"
+>
+  <div class="bg-white p-6 rounded shadow-lg w-96">
+    <!-- Modal Header -->
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-bold">Account Details</h2>
+      <!-- Close Button -->
+      <button
+        class="text-gray-500 hover:text-gray-900 transition text-2xl font-bold"
+        (click)="close.emit()"
+        aria-label="Close"
+        title="Close"
+      >
+        &times;
+      </button>
+    </div>
+
+    <!-- Account Info -->
+    <p><strong>Username:</strong> {{ account.username }}</p>
+    <p><strong>Type:</strong> {{ account.type }}</p>
+
+    <!-- Password Section -->
+    <div *ngIf="isPasswordEnabled" class="mt-4">
+      <label>New Password:</label>
+      <input
+        type="password"
+        [(ngModel)]="newPassword"
+        class="border p-2 rounded w-full"
+        placeholder="Enter new password"
+      />
+      <button
+        class="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+        (click)="updatePassword()"
+      >
+        Save Password
+      </button>
+    </div>
+
+    <div *ngIf="!isPasswordEnabled" class="mt-4">
+      <button
+        class="bg-green-500 text-white px-4 py-2 rounded"
+        (click)="updatePassword()"
+      >
+        Generate New Password
+      </button>
+    </div>
+
+    <!-- Permissions Section -->
+    <div class="mt-6">
+      <h3 class="text-lg font-bold">Permissions</h3>
+      <div *ngFor="let group of allPermissions" class="flex items-center mt-2">
+        <input
+          type="checkbox"
+          [checked]="modifiedPermissions.includes(group.groupId)"
+          (change)="togglePermission(group.groupId)"
+        />
+        <label class="ml-2">{{ group.groupName }}</label>
+      </div>
+    </div>
+
+    <!-- Modal Actions -->
+    <div class="flex justify-between mt-6">
+      <button
+        class="bg-red-500 text-white px-4 py-2 rounded"
+        (click)="openDeleteModal()"
+      >
+        Delete Account
+      </button>
+      <div class="flex">
+        <button
+          class="bg-gray-300 text-black px-4 py-2 rounded mr-2"
+          (click)="close.emit()"
+        >
+          Cancel
+        </button>
+        <button
+          class="bg-blue-500 text-white px-4 py-2 rounded"
+          [disabled]="!hasPermissionChanges()"
+          (click)="saveChanges()"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<confirm-deletion-modal
+  *ngIf="isDeleteModalOpen"
+  [accountUsername]="account.username"
+  (confirm)="deleteAccount()"
+  (cancel)="closeDeleteModal()"
+></confirm-deletion-modal>

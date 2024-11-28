@@ -13,8 +13,8 @@ export class AccountService {
   constructor(private http: HttpClient) {}
 
   // GET request - Retrieve all accounts
-  getAllAccounts(): Observable<ApiResponse<IAccount[]>> {
-    return this.http.get<ApiResponse<IAccount[]>>(`${this.apiUrl}`);
+  getAllAccounts(): Observable<IAccount[]> {
+    return this.http.get<IAccount[]>(`${this.apiUrl}`);
   }
 
   // GET request - Retrieve a single account by username

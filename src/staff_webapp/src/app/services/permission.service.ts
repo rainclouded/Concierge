@@ -15,19 +15,35 @@ export class PermissionService {
     return this.http.get<ApiResponse<IPermissionGroup[]>>(`${this.apiUrl}`);
   }
 
-  updatePermissionGroup(groupId: number, permissionId: number, state: boolean) {
-    console.log(`Group ${groupId} permission ${permissionId} state ${state}`)
-    return this.http.patch<ApiResponse<IPermissionGroup[]>>(`${this.apiUrl}/${groupId}`, {
-      templateId: groupId,
-      groupPermissions:[{permissionId:permissionId, state:state}],
-    });
+  getPermissionsForAccount(accountId: number) {
+    return this.http.get<ApiResponse<IPermissionGroup[]>>(
+      `${this.apiUrl}?account-id=${accountId}`
+    );
   }
 
-  updatePermissionGroupMembers(groupId: number, addAccounts: number[], removeAccounts: number[]) {
-    return this.http.patch<ApiResponse<IPermissionGroup[]>>(`${this.apiUrl}/${groupId}`, {
-      templateId: groupId,
-      groupMembers: addAccounts,
-      removeGroupMembers: removeAccounts
-    });
+  updatePermissionGroup(groupId: number, permissionId: number, state: boolean) {
+    console.log(`Group ${groupId} permission ${permissionId} state ${state}`);
+    return this.http.patch<ApiResponse<IPermissionGroup[]>>(
+      `${this.apiUrl}/${groupId}`,
+      {
+        templateId: groupId,
+        groupPermissions: [{ permissionId: permissionId, state: state }],
+      }
+    );
+  }
+
+  updatePermissionGroupMembers(
+    groupId: number,
+    addAccounts: number[],
+    removeAccounts: number[]
+  ) {
+    return this.http.patch<ApiResponse<IPermissionGroup[]>>(
+      `${this.apiUrl}/${groupId}`,
+      {
+        templateId: groupId,
+        groupMembers: addAccounts,
+        removeGroupMembers: removeAccounts,
+      }
+    );
   }
 }

@@ -1,117 +1,37 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { IAccount } from '../../models/account.model';
-import { EditAccountModalComponent } from '../../components/accounts-modal/edit-account-modal.component';
-import { DeleteConfirmationModalComponent } from '../../components/accounts-modal/delete-confirmation-modal.component';
 import { AccountService } from '../../services/account.service';
-import { PermissionService } from '../../services/permission.service';
-import { mockUsers } from './mock-users';
+import { AccountModalComponent } from '../../components/accounts-modal/account-modal.component';
+import { AddAccountModalComponent } from '../../components/accounts-modal/add-account-modal.component';
 
 @Component({
-  selector: 'app-accounts-tab',
+  selector: 'accounts-tab',
   standalone: true,
-  imports: [
-    CommonModule,
-    EditAccountModalComponent,
-    DeleteConfirmationModalComponent,
-  ],
+  imports: [CommonModule, FormsModule, AccountModalComponent, AddAccountModalComponent],
   templateUrl: './accounts-tab.component.html',
 })
 export class AccountsTabComponent implements OnInit {
-  accounts: IAccount[] = [...mockUsers];
-  paginatedAccounts: IAccount[] = [];
-  selectedAccount!: IAccount;
-  usernameToDelete!: string;
+  allAccounts: IAccount[] = []; // Master list of all accounts
+  filteredAccounts: IAccount[] = []; // Current page of accounts
+  searchTerm: string = '';
+  currentPage: number = 1;
+  pageSize: number = 10; // Number of accounts per page
+  isAddAccountModalOpen: boolean = false;
+  selectedAccount!: IAccount | null;
 
-  constructor(
-    private accountService: AccountService,
-    private permissionService: PermissionService
-  ) {}
-
-  // Pagination variables
-  currentPage = 1;
-  itemsPerPage = 5;
-  totalPages = Math.ceil(this.accounts.length / this.itemsPerPage);
-
-  // Modal states
-  isEditModalOpen = false;
-  isDeleteModalOpen = false;
+  constructor(private accountService: AccountService) {}
 
   ngOnInit(): void {
-    this.updatePagination();
+    this.fetchAccounts();
   }
 
-  // Pagination logic
-  updatePagination() {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    this.paginatedAccounts = this.accounts.slice(
-      startIndex,
-      startIndex + this.itemsPerPage
-    );
-  }
-
-  goToPreviousPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.updatePagination();
-    }
-  }
-
-  goToNextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.updatePagination();
-    }
-  }
-
-  // Edit modal logic
-  openEditModal(account: IAccount) {
-    this.selectedAccount = account;
-    this.isEditModalOpen = true;
-  }
-
-  closeEditModal() {
-    this.isEditModalOpen = false;
-  }
-
-  saveEditedAccount(updatedAccount: IAccount) {
-    const index = this.accounts.findIndex(
-      (acc) => acc.username === updatedAccount.username
-    );
-    if (index !== -1) {
-      this.accounts[index] = updatedAccount;
-      this.updatePagination();
-      console.log('Account updated:', updatedAccount);
-    }
-    this.closeEditModal();
-  }
-
-  // Delete modal logic
-  openDeleteModal(username: string) {
-    this.usernameToDelete = username;
-    this.isDeleteModalOpen = true;
-  }
-
-  closeDeleteModal() {
-    this.isDeleteModalOpen = false;
-  }
-
-  confirmDeleteAccount(username: string) {
-    this.accounts = this.accounts.filter((acc) => acc.username !== username);
-    this.totalPages = Math.ceil(this.accounts.length / this.itemsPerPage);
-    this.updatePagination();
-    console.log('Account deleted:', username);
-    this.closeDeleteModal();
-  }
-
-  getAllAccounts() {
+  fetchAccounts(): void {
     this.accountService.getAllAccounts().subscribe({
       next: (response) => {
-        if (response.data) {
-          this.accounts = response.data;
-          console.log('accounts:');
-          console.log(this.accounts);
-        }
+        this.allAccounts = response;
+        this.updatePage(); // Show the first page
       },
       error: (err) => {
         console.error('Error fetching accounts:', err);
@@ -119,62 +39,61 @@ export class AccountsTabComponent implements OnInit {
     });
   }
 
-  updateAccount() {
-    const updatedAccount: IAccount = {
-      username: '12368',
-      type: 'guest',
-      //password: 'password3122',
-    };
-
-    this.accountService.updateAccount(updatedAccount).subscribe({
-      next: (response) => {
-        console.log('Account updated successfully:', response.message);
-      },
-      error: (err) => {
-        console.error('Error updating account:', err);
-      },
-    });
-  }
-
-  createAccount() {
-    const newAccount = {
-      username: '12368',
-      type: 'guest',
-      //password: 'password123',
-    };
-
-    this.accountService.addAccount(newAccount).subscribe({
+  addNewAccount(account: IAccount): void {
+    this.accountService.addAccount(account).subscribe({
       next: (response) => {
         console.log(response.message);
+        this.fetchAccounts(); // Refresh the accounts list
       },
       error: (err) => {
-        console.error('Error creating account:', err);
+        console.error('Error adding account:', err);
       },
     });
   }
 
-  deleteHardcodedAccount() {
-    const hardcodedUsername = '12368';
-    this.deleteAccount(hardcodedUsername);
+  updatePage(): void {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = this.currentPage * this.pageSize;
+    this.filteredAccounts = this.allAccounts.slice(startIndex, endIndex);
   }
 
-  deleteAccount(username: string) {
-    this.accountService.deleteAccount(username).subscribe({
-      next: (response) => {
-        console.log(response.message);
-        this.getAllAccounts();
-      },
-      error: (err) => {
-        console.error('Error deleting account:', err);
-      },
-    });
+  searchAccounts(): void {
+    const searchTerm = this.searchTerm.trim().toLowerCase();
+    const filtered = this.allAccounts.filter((account) =>
+      account.username.toLowerCase().includes(searchTerm)
+    );
+    this.currentPage = 1; // Reset to the first page
+    this.filteredAccounts = filtered.slice(0, this.pageSize);
   }
 
-  getAllPermissionGroups() {
-    this.permissionService.getAllPermissionGroups().subscribe({
-      next: (response) => {
-        console.log(response.data);
-      },
-    });
+  openAddAccountModal(): void {
+    this.isAddAccountModalOpen = true;
+  }
+
+  closeAddAccountModal(): void {
+    this.isAddAccountModalOpen = false;
+  }
+
+  openAccountModal(account: IAccount): void {
+    this.selectedAccount = account;
+  }
+
+  closeAccountModal(): void {
+    this.selectedAccount = null;
+  }
+
+  goToPreviousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePage();
+    }
+  }
+
+  goToNextPage(): void {
+    const maxPages = Math.ceil(this.allAccounts.length / this.pageSize);
+    if (this.currentPage < maxPages) {
+      this.currentPage++;
+      this.updatePage();
+    }
   }
 }
