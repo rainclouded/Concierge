@@ -17,8 +17,9 @@ const IncidentReportPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const filingPersonId = getAccountId(); // Retrieve accountId from token
-    if (!filingPersonId) {
+    const accountId = getAccountId();
+    const filingPersonId = accountId === 0 ? 1 : accountId; // Retrieve accountId from token
+    if (!filingPersonId && filingPersonId !== 0) {
       toast.error("Unable to submit. No account ID found.");
       return;
     }
