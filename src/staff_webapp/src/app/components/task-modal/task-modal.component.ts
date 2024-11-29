@@ -80,6 +80,14 @@ export class TaskModalComponent {
     if (this.task) {
       this.task.assignee = 'John Doe'; // Mock user for assignment
       this.task.status = TaskStatus.InProgress;
+      this.taskService.updateTask(this.task.id!, {...this.task, status: TaskStatus.InProgress}).subscribe({
+        next: (response) => {
+          console.log(response)
+        },
+        error: (error) => {
+          console.error(error)
+        } 
+      })
     }
   }
 
@@ -87,6 +95,14 @@ export class TaskModalComponent {
     if (this.task) {
       this.task.assignee = null;
       this.task.status = TaskStatus.Pending;
+      this.taskService.updateTask(this.task.id!, {...this.task, status: TaskStatus.Pending}).subscribe({
+        next: (response) => {
+          console.log(response)
+        },
+        error: (error) => {
+          console.error(error)
+        } 
+      })
     }
   }
 
@@ -96,6 +112,14 @@ export class TaskModalComponent {
         this.task.status === TaskStatus.Completed
           ? TaskStatus.InProgress
           : TaskStatus.Completed;
+        this.taskService.updateTask(this.task.id!, {...this.task, status: this.task.status}).subscribe({
+          next: (response) => {
+            console.log(response)
+          },
+          error: (error) => {
+            console.error(error)
+          } 
+        })
     }
   }
 
