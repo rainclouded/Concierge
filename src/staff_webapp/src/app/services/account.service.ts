@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../models/apiresponse.model';
+import { ApiGenPasswordResponse, ApiResponse } from '../models/apiresponse.model';
 import { IAccount } from '../models/account.model';
 
 @Injectable({
@@ -35,8 +35,8 @@ export class AccountService {
   }
 
   // PUT request - Update an existing account
-  updateAccount(account: IAccount): Observable<ApiResponse<IAccount>> {
-    return this.http.put<ApiResponse<IAccount>>(
+  updateAccount(account: IAccount): Observable<ApiGenPasswordResponse> {
+    return this.http.put<ApiGenPasswordResponse>(
       `${this.apiUrl}/update`,
       account
     );

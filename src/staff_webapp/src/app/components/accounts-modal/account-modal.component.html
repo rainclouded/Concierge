@@ -36,13 +36,30 @@
       </button>
     </div>
 
-    <div *ngIf="!isPasswordEnabled" class="mt-4">
-      <button
-        class="bg-white border border-black text-black hover:bg-black hover:text-white p-2 rounded-lg w-48"
-        (click)="updatePassword()"
-      >
-        Generate New Password
-      </button>
+    <div *ngIf="!isPasswordEnabled && !isShowingPassword" class="mt-4">
+      <!-- <div *ngIf="!isShowingPassword"> -->
+        <button
+          class="bg-white border border-black text-black hover:bg-black hover:text-white p-2 rounded-lg w-48"
+          (click)="updatePassword()"
+        >
+          Generate New Password
+        </button>
+      <!-- </div> -->
+    </div>
+
+      <div *ngIf="!isPasswordEnabled && isShowingPassword" class="mt-4 flex items-center justify-left">
+        <i class="p-2 fa fa-refresh" (click)="refreshGenPass()"></i>
+        <button
+          type="text"
+          [value]="newPassword"
+          readonly
+          class="bg-white border border-black text-black hover:bg-black hover:text-white p-2 rounded-lg w-48 flex items-center justify-between"
+          (click)="copyToClipboard(newPassword)"
+        >
+          <span>{{ newPassword }}</span>
+            <i *ngIf="!copiedToClipboard" class="fa fa-clipboard"></i>
+            <i *ngIf="copiedToClipboard"class="fas fa-check-square"></i>
+        </button>
     </div>
     
 

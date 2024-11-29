@@ -22,6 +22,8 @@ export class AccountModalComponent implements OnInit {
   accountPermissions: number[] = []; // Current permission group IDs for the account
   modifiedPermissions: number[] = []; // Selected permissions (modified locally)
   isPasswordEnabled: boolean = false;
+  isShowingPassword: boolean = false;
+  copiedToClipboard: boolean = false;
   newPassword: string = '';
 
   isDeleteModalOpen: boolean = false;
@@ -32,6 +34,7 @@ export class AccountModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.isShowingPassword = false;
     this.isPasswordEnabled = this.account.type === 'staff';
     this.loadPermissions();
   }
@@ -118,14 +121,32 @@ export class AccountModalComponent implements OnInit {
 
     this.accountService.updateAccount(updatedAccount).subscribe({
       next: (response) => {
-        if (this.account.type === 'guest') {
-          console.log(response.message);
+        if (this.account.type === 'guest' && response.message) {
+          const match = response.message.match(/password:\s*(\d+)/);
+          if (match) {
+            console.log("I did a tthing2"+match[1])
+            this.newPassword = ""+match[1];
+            this.isShowingPassword = true;
+          }
         }
       },
       error: (err) => console.error('Error updating account:', err),
     });
   }
 
+  copyToClipboard(text: string): void {
+    this.copiedToClipboard = true;
+    navigator.clipboard.writeText(text).then(() => {
+      console.log('Password copied to clipboard');
+    }).catch((err) => {
+      console.error('Error copying password to clipboard:', err);
+    });
+  }
+  
+  refreshGenPass(): void {
+    this.copiedToClipboard = false;
+    this.isShowingPassword = false;
+  }
   deleteAccount(): void {
     this.accountService.deleteAccount(this.account.username).subscribe({
       next: () => {
