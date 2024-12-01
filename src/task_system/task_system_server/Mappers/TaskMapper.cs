@@ -14,8 +14,6 @@ namespace task_system_server.Mappers
         Converts an AddTaskDto to a TaskItem model.
 
         This method takes an AddTaskDto object and maps its properties to a new TaskItem object.
-        The TaskItem is initialized with the TaskType, Description, RoomId, and RequesterId
-        from the AddTaskDto, and the CreatedAt property is set to the current UTC time.
         The Status is set to Pending by default.
 
         Args:
