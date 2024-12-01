@@ -7,11 +7,24 @@ namespace amenities_server.services
     {
         private readonly IHttpClientFactory _httpClientFactory;
         
+        /*
+        Constructor that initializes the PermissionClient with an IHttpClientFactory to create HTTP client instances.
+        Args:
+            httpClientFactory: An instance of IHttpClientFactory used to create HTTP client instances.
+        */
         public PermissionClient(IHttpClientFactory httpClientFactory) 
         {
             _httpClientFactory = httpClientFactory;
         }
 
+        /*
+        Asynchronously retrieves data from a service endpoint with the provided API key for authorization.
+        Args:
+            endpoint: The endpoint URL to retrieve data from.
+            apiKey: The API key used for authentication in the request headers.
+        Returns:
+            Task<string>: A task that represents the asynchronous operation, containing the response data as a string.
+        */
         public async Task<string> GetDataFromServiceAsync(string endpoint, string apiKey)
         {
             Console.WriteLine($"Connecting to Permissions @ {endpoint}");
@@ -24,6 +37,13 @@ namespace amenities_server.services
             return resp;
         }
 
+        /*
+        Asynchronously retrieves session data for the given session key by calling the sessions endpoint.
+        Args:
+            sessionKey: The session key used to authenticate the request.
+        Returns:
+            Task<SessionData?>: A task that represents the asynchronous operation, containing the session data or null if not found.
+        */
         public async Task<SessionData?> GetSessionData(string sessionKey)
         {
             var endpoint = Environment.GetEnvironmentVariable("SESSIONS_ENDPOINT");

@@ -16,7 +16,12 @@ class UserService():
         self.validation = validation
 
     def get_user_type(self, username:str)->str:
-        """Find the 'type' of a user
+        """
+        Find the 'type' of a user
+        Args:
+            username is the name of the user to identify
+        Returns:
+            string of user type identification
         """
         return next(
             (
@@ -74,7 +79,10 @@ class UserService():
     def update_user(self, user:User)->tuple[User, str]:
         """
             Update the account associated with a username
-            Args
+            Args:
+                User is the user to update
+            Retrns:
+                Tuple of user password pair
         """
         return (
             self.create_new_guest(user)
