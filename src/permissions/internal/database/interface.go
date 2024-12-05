@@ -11,6 +11,7 @@ type Database interface {
 	UpdatePermission(*models.Permission) error
 	GetPermissionGroups() ([]*models.PermissionGroup, error)
 	GetPermissionGroupById(int) (*models.PermissionGroup, error)
+	GetPermissionGroupsByAccount(int) ([]*models.PermissionGroup, error)
 	CreatePermissionGroup(*models.PermissionGroupRequest) error
 	UpdatePermissionGroup(int, *models.PermissionGroupRequest) error
 	GetGroupMembers(int) ([]int, error)

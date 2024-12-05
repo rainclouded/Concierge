@@ -30,12 +30,15 @@ STAFF_TYPE = 'staff'
 
 #The database to use
 if getenv('DEPLOYMENT') == 'production':
+    print("Running in Prod")
     DATABASE = MongoConnection()
     PERMISSIONS = ClientPermissionValidator()
 elif getenv('DEPLOYMENT') == 'development':
+    print("Running in dev")
     DATABASE = MongoConnection()
     PERMISSIONS = MockPermissions()
 else:
+    print("Running in dev")
     DATABASE = Mockdata()
     PERMISSIONS = MockPermissions()
 

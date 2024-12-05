@@ -12,7 +12,7 @@ const RequestCard = ({ text, icon, children, onSubmit, onClose }) => {
   return (
     <>
       <button 
-        className="tile-item flex flex-col justify-center items-center bg-black text-white p-4 rounded-2xl transform transition-transform duration-300 hover:scale-105 w-full min-h-[150px] sm:min-h-[200px]"
+        className="tile-item flex flex-col justify-center items-center bg-black text-white p-4 rounded-2xl transform transition-transform duration-300 hover:scale-[102%] w-full aspect-square"
         onClick={toggleModal}
       >
         <FontAwesomeIcon icon={icon} size="2x" />
@@ -21,7 +21,7 @@ const RequestCard = ({ text, icon, children, onSubmit, onClose }) => {
 
       <Modal isOpen={isModalOpen} onClose={() => { toggleModal(); onClose(); }}>
         <h2 className="text-xl font-bold mb-4">Request {text}</h2>
-        <div className="flex-grow overflow-y-auto">
+        <div className="flex-grow h-full">
           {children}
         </div>
         <div className="mt-4"> 

@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { IAmenity } from '../../models/amenity.model';
 import { AmenityService } from '../../services/amenity.service';
 import { HttpErrorResponse } from '@angular/common/http';
-
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-amenity-form',
@@ -19,7 +19,8 @@ export class AmenityFormComponent implements OnChanges {
 
   constructor(
     private fb: FormBuilder,
-    private amenityService: AmenityService
+    private amenityService: AmenityService,
+    private toastr: ToastrService
   ) {
     this.amenityForm = this.fb.group({
       name: new FormControl<string>('', [Validators.required]),
@@ -64,7 +65,11 @@ export class AmenityFormComponent implements OnChanges {
             next: (response: any) => {
               this.onClose();
               console.log(response.message);
-              if (response.status === 400) alert("You have entered invalid data for the amenity!");
+              if (response.status === 400) {
+                this.toastr.error('You have entered invalid data for the amenity!', 'Update Failed');
+              } else {
+                this.toastr.success('Amenity updated successfully!', 'Update Successful');
+              }
             },
             error: (error: HttpErrorResponse) => {
               this.onClose();
@@ -81,7 +86,11 @@ export class AmenityFormComponent implements OnChanges {
             next: (response: any) => {
               this.onClose();
               console.log(response.message);
-              if (response.status === 400) alert("You have entered invalid data for the amenity!");
+              if (response.status === 400) {
+                this.toastr.error('You have entered invalid data for the amenity!', 'Add Failed');
+              } else {
+                this.toastr.success('Amenity added successfully!', 'Add Successful');
+              }
             },
             error: (error: HttpErrorResponse) => {
               this.onClose();

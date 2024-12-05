@@ -1,7 +1,17 @@
+@import 'ngx-toastr/toastr';
+
 @import '@fortawesome/fontawesome-free/css/all.min.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+@font-face {
+    font-family: 'Futura';
+    src: url('assets/Jost-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html, body { height: 100%; font-size: 103%;}
+body { margin: 0; font-family: "Futura", "Helvetica Neue", sans-serif; }

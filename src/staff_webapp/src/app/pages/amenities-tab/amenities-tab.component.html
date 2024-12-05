@@ -1,44 +1,87 @@
 <h3 class="font-semibold text-5xl mb-5">Amenities</h3>
-<p class="mb-5 font-bold text-xl">Manage Amenities</p>
-<button (click)="openWindow()" type="button" class="bg-blue-500 text-white p-2 rounded-lg mb-4">
+<div class="flex gap-5">
+  <p class="mb-5 font-bold text-xl">Manage Amenities</p>
+  <button (click)="getAllAmenities()">
+    <i
+      class="fa-solid fa-rotate-right relative -top-2 hover:rotate-180 hover:transition-all duration-500"
+    ></i>
+  </button>
+</div>
+<button
+  (click)="openAmenityWindow()"
+  type="button"
+  class="bg-black text-white px-4 py-2 rounded-lg mb-4"
+>
+  <i class="fa-solid fa-plus-circle mr-1"></i>
   Add Amenity
 </button>
 <div class="relative overflow-x-auto shadow-sm rounded-lg">
   <table class="w-full text-left rtl:text-right">
     <thead class="text-md text-gray-700 uppercase bg-gray-50">
       <tr>
-        <th scope="col" class="px-6 py-3">Title</th>
+        <th scope="col" class="px-6 py-3 w-[25%]">Title</th>
         <th scope="col" class="px-6 py-3">Description</th>
-        <th scope="col" class="px-6 py-3">Time</th>
-        <th scope="col" class="px-6 py-3 w-1/12">Edit</th>
+        <th scope="col" class="px-6 py-3 w-[25%]">Time</th>
+        <th scope="col" class="px-6 py-3 w-[5%]">
+          <span *ngIf="canEdit || canDelete">Edit</span>
+        </th>
       </tr>
     </thead>
     <tbody>
-      @if (amenities.length > 0) {
-        @for(amenity of amenities; track amenity.id) {
-          <tr class="bg-white border-b amenity-item">
-            <th scope="row" class="px-6 py-6 font-semibold text-2xl whitespace-nowrap">
-              {{amenity.name}}
-            </th>
-            <td class="px-6 py-6">
-              {{amenity.description}}
-            </td>
-            <td class="px-6 py-6">
-              {{ formatTimeToAMPM(amenity.startTime) }} - {{ formatTimeToAMPM(amenity.endTime) }}
-            </td>
-            <td class="px-6 py-6 flex gap-3 items-center justify-end">
-              <button type="button" (click)="amenity.id && loadAmenity(amenity)" class="bg-slate-200 p-3 rounded-lg">Edit</button>
-              <button type="button" (click)="amenity.id && deleteAmenity(amenity.id)" class="bg-red-700 text-white p-3 rounded-lg">Delete</button>
-            </td>
-          </tr>
-        }
-      } @else {
-        <p>No amenities found</p>
-      } 
+      @if (amenities.length > 0) { @for(amenity of amenities; track amenity.id)
+      {
+      <tr class="bg-white border-b amenity-item">
+        <th
+          scope="row"
+          class="px-6 py-4 font-semibold text-2xl whitespace-nowrap"
+        >
+          {{ amenity.name }}
+        </th>
+        <td class="px-6 py-4">
+          {{ amenity.description }}
+        </td>
+        <td class="px-6 py-4">
+          {{ formatTimeToAMPM(amenity.startTime) }} -
+          {{ formatTimeToAMPM(amenity.endTime) }}
+        </td>
+        <td class="px-6 py-4 flex gap-3 items-center justify-start">
+          <button
+            *ngIf="canEdit"
+            type="button"
+            (click)="amenity.id && loadAmenity(amenity)"
+            class="bg-slate-200 hover:bg-primary rounded-lg w-9 h-9"
+          >
+            <i class="fa-solid fa-pen"></i>
+          </button>
+          <button
+            *ngIf="canDelete"
+            type="button"
+            (click)="amenity.id && openConfirmWindow(amenity.id)"
+            class="hover:bg-lightRed bg-red-700 text-white rounded-lg w-9 h-9"
+          >
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+      } } @else {
+      <p>No amenities found</p>
+      }
     </tbody>
   </table>
 </div>
 
-<app-window [isOpen]="isOpenWIndow" (closeWindow)="closeWindow()">
-  <app-amenity-form (onCloseWindow)="closeWindow()" [data]="amenity"></app-amenity-form>
+<!-- amenitiy form popup window -->
+<app-window [isOpen]="isAmenityWindowOpen" (closeWindow)="closeAmenityWindow()">
+  <app-amenity-form
+    (onCloseWindow)="closeAmenityWindow()"
+    [data]="amenity"
+  ></app-amenity-form>
+</app-window>
+
+<!-- confirmation popup window -->
+<app-window [isOpen]="isConfirmWindowOpen" (closeWindow)="closeConfirmWindow()">
+  <app-confirmation-dialog
+    (onConfirm)="deleteAmenity()"
+    (onCancel)="closeConfirmWindow()"
+  ></app-confirmation-dialog>
 </app-window>

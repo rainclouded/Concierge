@@ -10,6 +10,8 @@ import {
   formatStatus,
 } from '../../models/task-enums';
 import { TaskService } from '../../services/task.service';
+import { ToastrService } from 'ngx-toastr';
+import { SessionService } from '../../services/session.service';
 
 @Component({
   selector: 'app-tasks-tab',
@@ -36,10 +38,27 @@ export class TasksTabComponent {
   // Method to format TaskStatus
   formatTaskStatus = formatStatus;
 
-  constructor(private taskService: TaskService) {}
+  sessionPermissionList: string[] | null = null;
+  canCreate: boolean = false;
+  canEdit: boolean = false;
+  canDelete: boolean = false;
+
+  constructor(private taskService: TaskService, private sessionService: SessionService, private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.fetchTasks();
+    this.sessionService.getSessionMe().subscribe(() => {
+      this.sessionPermissionList = this.sessionService.sessionPermissionList;
+      this.checkPermissions();
+    });
+  }
+
+  checkPermissions():void {
+    if (this.sessionPermissionList) {
+      this.canCreate = this.sessionPermissionList.includes('canCreateTasks');
+      this.canEdit = this.sessionPermissionList.includes('canEditTasks');
+      this.canDelete = this.sessionPermissionList.includes('canDeleteTasks');
+    }
   }
 
   fetchTasks(): void {
@@ -158,10 +177,12 @@ export class TasksTabComponent {
       next: (response) => {
         this.tasks.push(response.data); // Add the newly created task to the local list
         this.closeAddTaskModal();
+        this.toastr.success('Task added successfully!', 'Add Successful');
         console.log('Task added successfully:', response.data);
       },
       error: (error) => {
         console.error('Failed to add task:', error);
+        this.toastr.error('Error updating task!', 'Update Failed');
       },
     });
   }
@@ -170,11 +191,13 @@ export class TasksTabComponent {
     const index = this.tasks.findIndex(task => task.id === updatedTask.id);
     if (index !== -1) {
       this.tasks[index] = updatedTask; // Update the task in the list
+      this.toastr.success('Task updated successfully!', 'Update Successful');
     }
   }
 
   removeTask(deletedTaskId: number) {
     this.tasks = this.tasks.filter(task => task.id !== deletedTaskId); // Update the tasks list
+    this.toastr.success('Task deleted successfully!', 'Delete Successful');
     console.log('Task list updated after deletion');
   }
 
@@ -196,6 +219,7 @@ export class TasksTabComponent {
     console.log('Add Task clicked');
   }
 
+  // TODO: update assignee through patch request to backend
   claimUnclaimTask(task: ITask) {
     if (task.assignee) {
       task.assignee = null;

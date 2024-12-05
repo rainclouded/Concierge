@@ -1,0 +1,79 @@
+<h3 class="font-semibold text-5xl mb-5">Accounts</h3>
+<div class="flex gap-5">
+  <p class="mb-5 font-bold text-xl">Manage Accounts</p>
+  <button (click)="fetchAccounts()">
+    <i
+      class="fa-solid fa-rotate-right relative -top-2 hover:rotate-180 hover:transition-all duration-500"
+    ></i>
+  </button>
+</div>
+<button
+  (click)="openAddAccountModal()"
+  type="button"
+  class="bg-black text-white px-4 py-2 rounded-lg mb-4"
+>
+  <i class="fa-solid fa-plus-circle mr-1"></i>
+  Add Account
+</button>
+
+<input
+  type="text"
+  placeholder="Search by username"
+  [(ngModel)]="searchTerm"
+  class="border p-2 rounded w-full mb-1"
+  (keydown.enter)="searchAccounts()"
+/>
+
+<div class="table-container overflow-auto border rounded-lg h-[500px]">
+  <table class="w-full text-left table-auto border-collapse">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="border p-2">Username</th>
+        <th class="border p-2">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let account of filteredAccounts; let i = index"
+        [ngClass]="i % 2 === 0 ? 'bg-white' : 'bg-gray-100'"
+        class="cursor-pointer hover:bg-lightPrimary"
+        (click)="openAccountModal(account)"
+      >
+        <td class="border p-2">{{ account.username }}</td>
+        <td class="border p-2">{{ account.type }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination controls -->
+<div class="flex justify-end items-center mt-4">
+  <button
+    (click)="goToPreviousPage()"
+    class="bg-slate-200 hover:bg-primary p-2 rounded w-10 h-10 cursor-pointer"
+    [disabled]="currentPage === 1"
+  >
+    <i class="fa-solid fa-arrow-left"></i>
+  </button>
+  <p class="mx-4">Page {{ currentPage }} of {{ totalPages }}</p>
+  <button
+    (click)="goToNextPage()"
+    class="bg-slate-200 hover:bg-primary p-2 rounded w-10 h-10 cursor-pointer"
+    [disabled]="currentPage === totalPages"
+  >
+    <i class="fa-solid fa-arrow-right"></i>
+  </button>
+</div>
+
+<add-account-modal
+  *ngIf="isAddAccountModalOpen"
+  (close)="closeAddAccountModal()"
+  (save)="addNewAccount($event)"
+></add-account-modal>
+
+<account-modal
+  *ngIf="selectedAccount"
+  [account]="selectedAccount"
+  (close)="closeAccountModal()"
+  (accountDeleted)="fetchAccounts()"
+></account-modal>
