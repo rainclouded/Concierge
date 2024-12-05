@@ -40,9 +40,8 @@ export class PermissionService {
     return this.http.patch<ApiResponse<IPermissionGroup[]>>(
       `${this.apiUrl}/${groupId}`,
       {
-        templateId: groupId,
-        groupMembers: addAccounts,
-        removeGroupMembers: removeAccounts,
+        'add-accounts': addAccounts,
+        'remove-accounts': removeAccounts,
       }
     );
   }

@@ -89,26 +89,33 @@ export class AccountModalComponent implements OnInit {
       (id) => !this.modifiedPermissions.includes(id)
     );
 
-    // Sequentially update permission groups
+    console.log('Add Groups:', addGroups, 'Remove Groups:', removeGroups);
+
     const updates = [
       ...addGroups.map((groupId) =>
-        this.permissionService.updatePermissionGroupMembers(
-          groupId,
-          [+this.account.id!],
-          []
-        )
+        this.permissionService
+          .updatePermissionGroupMembers(groupId, [+this.account.id!], [])
+          .toPromise()
       ),
       ...removeGroups.map((groupId) =>
-        this.permissionService.updatePermissionGroupMembers(
-          groupId,
-          [],
-          [+this.account.id!]
-        )
+        this.permissionService
+          .updatePermissionGroupMembers(groupId, [], [+this.account.id!])
+          .toPromise()
       ),
     ];
 
+    if (updates.length === 0) {
+      console.log('No changes to save.');
+      return;
+    }
+
     Promise.allSettled(updates).then((results) => {
-      console.log('Permission updates:', results);
+      console.log('Permission updates completed:', results);
+      results.forEach((result, index) => {
+        if (result.status === 'rejected') {
+          console.error(`Update failed for request ${index}:`, result.reason);
+        }
+      });
       this.close.emit(); // Close the modal after saving
     });
   }
@@ -124,8 +131,8 @@ export class AccountModalComponent implements OnInit {
         if (this.account.type === 'guest' && response.message) {
           const match = response.message.match(/password:\s*(\d+)/);
           if (match) {
-            console.log("I did a tthing2"+match[1])
-            this.newPassword = ""+match[1];
+            console.log('I did a tthing2' + match[1]);
+            this.newPassword = '' + match[1];
             this.isShowingPassword = true;
           }
         }
@@ -136,13 +143,16 @@ export class AccountModalComponent implements OnInit {
 
   copyToClipboard(text: string): void {
     this.copiedToClipboard = true;
-    navigator.clipboard.writeText(text).then(() => {
-      console.log('Password copied to clipboard');
-    }).catch((err) => {
-      console.error('Error copying password to clipboard:', err);
-    });
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        console.log('Password copied to clipboard');
+      })
+      .catch((err) => {
+        console.error('Error copying password to clipboard:', err);
+      });
   }
-  
+
   refreshGenPass(): void {
     this.copiedToClipboard = false;
     this.isShowingPassword = false;
