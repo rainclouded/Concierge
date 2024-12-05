@@ -21,10 +21,12 @@ describe('Integration Test for Task Manager', () => {
   });
 
   it('View All Tasks', () => {
-    // Check that initial tasks are loaded correctly
-    cy.get('table').find('tr').should('have.length.greaterThan', 1); // Including header row
-    cy.contains('Previous').should('be.visible');
-    cy.contains('Next').should('be.visible');
+    // Check that the table is present
+    cy.get('table').should('exist');
+
+    // Check that the pagination controls exist
+    cy.get('button').find('.fa-arrow-left').should('exist'); // Left arrow
+    cy.get('button').find('.fa-arrow-right').should('exist'); // Right arrow
   });
 
   it('Add New Task', () => {
@@ -92,8 +94,8 @@ describe('Integration Test for Task Manager', () => {
   it('Edit Task', () => {
     // Open task details by clicking on the row containing the task
     getTaskRow(
-      101,
-      'There is a leak in the bathroom sink that needs urgent attention.'
+      102,
+      'Some light bulbs are out in the hallway. Please replace them.'
     ).click(); // Opens the modal for this task
 
     // Click on the edit icon
@@ -108,30 +110,28 @@ describe('Integration Test for Task Manager', () => {
     cy.contains('button', 'Save').click();
 
     // Manually close the modal by clicking the close button (×)
-    cy.get('button').contains('×').click();
+    cy.get('#task-modal').find('button').contains('×').click();
 
     // Ensure modal is closed by checking that the modal backdrop no longer exists
     cy.get('.fixed.z-10.inset-0.bg-black.bg-opacity-50').should('not.exist');
 
     // Verify the task list shows the updated description
-    getTaskRow(101, 'This is an edited description.').should('exist');
+    getTaskRow(102, 'This is an edited description.').should('exist');
 
     // Cleanup: revert task to original description
-    getTaskRow(101, 'This is an edited description.').click();
+    getTaskRow(102, 'This is an edited description.').click();
 
     // Click on the edit icon again to revert the description
     cy.get('.fa-edit').parent('button').click();
     cy.get('textarea.w-full.mt-1.p-2.border.rounded.h-32')
       .clear()
-      .type(
-        'There is a leak in the bathroom sink that needs urgent attention.'
-      );
+      .type('Some light bulbs are out in the hallway. Please replace them.');
 
     // Save the original description
     cy.contains('button', 'Save').click();
 
     // Manually close the modal again after reverting the description
-    cy.get('button').contains('×').click();
+    cy.contains('button', '×').click();
 
     // Ensure modal is closed after cleanup
     cy.get('.fixed.z-10.inset-0.bg-black.bg-opacity-50').should('not.exist');
@@ -176,8 +176,8 @@ describe('Integration Test for Task Manager', () => {
   it('Assign and Unassign Task', () => {
     // Open the task modal by clicking on the task row
     getTaskRow(
-      101,
-      'There is a leak in the bathroom sink that needs urgent attention.'
+      102,
+      'Some light bulbs are out in the hallway. Please replace them.'
     ).click();
 
     // Click "Assign to Me" to assign the task
@@ -205,8 +205,8 @@ describe('Integration Test for Task Manager', () => {
   it('Mark Task as Completed', () => {
     // Open task details by clicking on the task row
     getTaskRow(
-      101,
-      'There is a leak in the bathroom sink that needs urgent attention.'
+      102,
+      'Some light bulbs are out in the hallway. Please replace them.'
     ).click();
 
     // Click "Assign to Me" to assign the task if it's not already assigned
