@@ -9,7 +9,7 @@ namespace task_system_server.Validators
     Returns:
       None
     */
-    public class PermissionValidator : IPermissionValidator
+    public class PermissionValidator(Clients.PermissionClient permissionClient) : IPermissionValidator
     {
         // Private field for PermissionClient instance
         private readonly Clients.PermissionClient _permClient = permissionClient;
