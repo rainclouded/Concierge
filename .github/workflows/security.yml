@@ -1,3 +1,6 @@
+#References:
+#https://github.com/anshumanbh/sast-code-repo-poc/blob/main/.github/workflows/semgrep.yml
+#https://semgrep.dev/docs/semgrep-ci/sample-ci-configs#github-actions
 name: Semgrep Scan
 
 on:
