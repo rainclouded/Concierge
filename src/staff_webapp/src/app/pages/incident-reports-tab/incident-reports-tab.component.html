@@ -20,7 +20,7 @@
 			@if(todoReports.length > 0){ @for(report of todoReports; track report.id){
 			<div class="w-full h-[175px] flex flex-col justify-between p-2 border rounded-lg">
 				<div class="flex justify-between mb-1">
-					<p class="text-xl font-semibold truncate">{{ report.title }}</p>
+					<p class="report-title text-xl font-semibold truncate">{{ report.title }}</p>
 				</div>
 				<p class="line-clamp-3 break-words">
 					{{ report.description }}
@@ -36,11 +36,11 @@
 					>{{ report.severity }}</p>
 					<div class="flex flex-row gap-2">
 						<button *ngIf="canEdit" type="button" (click)="report.id && loadReport(report)"
-							class="bg-slate-200 hover:bg-primary p-1 rounded-md w-8 h-8 text-center">
+							class="edit-report bg-slate-200 hover:bg-primary p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-pen"></i>
 						</button>
 						<button *ngIf="canDelete" type="button" (click)="report.id && openConfirmWindow(report.id)"
-							class="hover:bg-lightRed bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
+							class="delete-report hover:bg-lightRed bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-trash"></i>
 						</button>
 					</div>
@@ -60,7 +60,7 @@
 			report.id){
 			<div class="w-full h-[175px] flex flex-col justify-between p-2 border rounded-lg">
 				<div class="flex justify-between mb-1">
-					<p class="text-xl font-semibold truncate">{{ report.title }}</p>
+					<p class="report-title text-xl font-semibold truncate">{{ report.title }}</p>
 				</div>
 				<p class="line-clamp-3 break-words">
 					{{ report.description }}
@@ -76,11 +76,11 @@
 					>{{ report.severity }}</p>
 					<div class="flex flex-row gap-2">
 						<button *ngIf="canEdit" type="button" (click)="report.id && loadReport(report)"
-							class="bg-slate-200 hover:bg-primary p-1 rounded-md w-8 h-8 text-center">
+							class="edit-report bg-slate-200 hover:bg-primary p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-pen"></i>
 						</button>
 						<button *ngIf="canDelete" type="button" (click)="report.id && openConfirmWindow(report.id)"
-							class="hover:bg-lightRed bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
+							class="delete-report hover:bg-lightRed bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-trash"></i>
 						</button>
 					</div>
@@ -100,7 +100,7 @@
 			report.id){
 			<div class="w-full h-[175px] flex flex-col justify-between p-2 border rounded-lg">
 				<div class="flex justify-between mb-1">
-					<p class="text-xl font-semibold truncate">{{ report.title }}</p>
+					<p class="report-title text-xl font-semibold truncate">{{ report.title }}</p>
 				</div>
 				<p class="line-clamp-3 break-words">
 					{{ report.description }}
@@ -116,11 +116,11 @@
 					>{{ report.severity }}</p>
 					<div class="flex flex-row gap-2">
 						<button *ngIf="canEdit" type="button" (click)="report.id && loadReport(report)"
-							class="bg-slate-200 hover:bg-primary p-1 rounded-md w-8 h-8 text-center">
+							class="edit-report bg-slate-200 hover:bg-primary p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-pen"></i>
 						</button>
 						<button *ngIf="canDelete" type="button" (click)="report.id && openConfirmWindow(report.id)"
-							class="hover:bg-lightRed bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
+							class="delete-report hover:bg-lightRed bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-trash"></i>
 						</button>
 					</div>
@@ -140,7 +140,7 @@
 			report.id){
 			<div class="w-full h-[175px] flex flex-col justify-between p-2 border rounded-lg">
 				<div class="flex justify-between mb-1">
-					<p class="text-xl font-semibold truncate">{{ report.title }}</p>
+					<p class="report-title text-xl font-semibold truncate">{{ report.title }}</p>
 				</div>
 				<p class="line-clamp-3 break-words">
 					{{ report.description }}
@@ -156,11 +156,11 @@
 					>{{ report.severity }}</p>
 					<div class="flex flex-row gap-2">
 						<button *ngIf="canEdit" type="button" (click)="report.id && loadReport(report)"
-							class="bg-slate-200 hover:bg-primary p-1 rounded-md w-8 h-8 text-center">
+							class="edit-report bg-slate-200 hover:bg-primary p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-pen"></i>
 						</button>
 						<button *ngIf="canDelete" type="button" (click)="report.id && openConfirmWindow(report.id)"
-							class="hover:bg-lightRed bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
+							class="delete-report hover:bg-lightRed bg-red-700 text-white p-1 rounded-md w-8 h-8 text-center">
 							<i class="fa-solid fa-trash"></i>
 						</button>
 					</div>
