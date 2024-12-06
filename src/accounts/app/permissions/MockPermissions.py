@@ -67,6 +67,25 @@ class MockPermissions(PermissionInterface):
             raise e
 
 
+    def can_view_users(self, token: str, public_key:str)->bool:
+        """Verifies if the token permits account retrieval
+        
+            Args:            
+                token is the jwt Token to be verified
+                public_key is the public key to decode the token
+            Returns:
+                True if action is permitted
+                False otherwise
+        """
+        try:
+            return (
+                self.decode_token(token, public_key)['expiry']
+                >= datetime.datetime.now().timestamp()
+            )
+        except jwt.PyJWTError as e:
+            raise e
+
+
     def can_update_guest(self, token: str, public_key:str)->bool:
         """Verifies if the token permits guest update
 

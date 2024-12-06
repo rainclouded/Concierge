@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { DashboardPageComponent } from './pages/dashboard-page/dashboard-page.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { HomeTabComponent } from './pages/home-tab/home-tab.component';
+import { AccountsTabComponent } from './pages/accounts-tab/accounts-tab.component';
 import { AmenitiesTabComponent } from './pages/amenities-tab/amenities-tab.component';
 import { IncidentReportsTabComponent } from './pages/incident-reports-tab/incident-reports-tab.component';
 import { TasksTabComponent } from './pages/tasks-tab/tasks-tab.component';
@@ -29,6 +30,11 @@ export const routes: Routes = [
       {
         path: 'home',
         component: HomeTabComponent,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'accounts',
+        component: AccountsTabComponent,
         canActivate: [authGuard],
       },
       {

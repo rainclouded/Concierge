@@ -103,7 +103,8 @@ public class StubTaskSystemRepository : ITaskSystemRepository
             (!query.Status.HasValue || s.Status == query.Status) &&
             (!query.Year.HasValue || s.CreatedAt.Year == query.Year) &&
             (!query.Month.HasValue || s.CreatedAt.Month == query.Month) &&
-            (!query.Day.HasValue || s.CreatedAt.Day == query.Day)
+            (!query.Day.HasValue || s.CreatedAt.Day == query.Day) &&
+            (!query.AccountId.HasValue || s.RequesterId == query.AccountId)
         );
 
         tasks = query.SortAscending ? tasks.OrderBy(s => s.CreatedAt) : tasks.OrderByDescending(s => s.CreatedAt);

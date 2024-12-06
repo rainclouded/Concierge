@@ -17,6 +17,11 @@ export class TaskService {
     return this.http.get<ApiResponse<ITask[]>>(this.apiUrl);
   }
 
+  // GET tasks filtered by status
+  getTasksByStatus(status: string): Observable<ApiResponse<ITask[]>> {
+    return this.http.get<ApiResponse<ITask[]>>(`${this.apiUrl}?status=${status}`);
+  }
+
   // GET a specific task
   getTask(id: number): Observable<ApiResponse<ITask>> {
     return this.http.get<ApiResponse<ITask>>(`${this.apiUrl}${id}`);

@@ -14,10 +14,10 @@ public class AddTaskDto
 	public string Description { get; set; } = string.Empty;
 
     [Required]
-    [Range(100, 500)]
+    [Range(0, 5000000)]
     public int RoomId { get; set; }
     
     [Required]
-    [Range(1, 500)]
+    [Range(0, 5000000)]
 	public int RequesterId { get; set; }
 }

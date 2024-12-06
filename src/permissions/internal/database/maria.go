@@ -243,6 +243,115 @@ LEFT JOIN
 
 	return groups, nil
 }
+
+func (m *MariaDB) GetPermissionGroupsByAccount(accountId int) ([]*models.PermissionGroup, error) {
+	err := m.setupConnection()
+	if err != nil {
+		return nil, err
+	}
+
+	groupQuery := `
+SELECT 
+	pg.id AS groupId,
+	pg.name AS groupName,
+	pg.description AS groupDescription
+FROM 
+	PermissionGroups pg
+WHERE
+	pg.id in (SELECT groupId from GroupMembers where memberId = ?);
+	`
+
+	rows, err := m.db.Query(groupQuery, accountId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	groupsMap := make(map[int]*models.PermissionGroup)
+
+	for rows.Next() {
+		var g models.PermissionGroup
+		if err := rows.Scan(&g.ID, &g.Name, &g.Description); err != nil {
+			return nil, err
+		}
+		groupsMap[g.ID] = &g
+	}
+
+	memberQuery := `
+SELECT 
+	gm.groupId,
+	gm.memberId
+FROM 
+	GroupMembers gm
+WHERE 
+	gm.memberId = ?;
+	`
+
+	memberRows, err := m.db.Query(memberQuery, accountId)
+	if err != nil {
+		return nil, err
+	}
+	defer memberRows.Close()
+
+	for memberRows.Next() {
+		var groupId, memberId int
+		if err := memberRows.Scan(&groupId, &memberId); err != nil {
+			return nil, err
+		}
+		if group, exists := groupsMap[groupId]; exists {
+			group.Members = append(group.Members, memberId)
+		}
+	}
+
+	permissionQuery := `
+SELECT 
+	gp.groupId,
+	p.id AS permissionId,
+	p.name AS permissionName,
+	gp.value as permissionValue
+FROM 
+	GroupPermissions gp
+LEFT JOIN 
+	Permissions p ON gp.permission_id = p.id
+WHERE 
+	gp.groupId in (SELECT groupId from GroupMembers where memberId = ?);
+	`
+
+	permissionRows, err := m.db.Query(permissionQuery, accountId)
+	if err != nil {
+		return nil, err
+	}
+	defer permissionRows.Close()
+
+	for permissionRows.Next() {
+		var groupId, permissionId int
+		var permissionName string
+		var permissionValue bool
+		if err := permissionRows.Scan(&groupId, &permissionId, &permissionName, &permissionValue); err != nil {
+			return nil, err
+		}
+		if group, exists := groupsMap[groupId]; exists && permissionId != 0 {
+			perm := &models.Permission{
+				ID:    permissionId,
+				Name:  permissionName,
+				Value: permissionValue,
+			}
+			group.Permissions = append(group.Permissions, perm)
+		}
+	}
+
+	groups := []*models.PermissionGroup{}
+	for _, group := range groupsMap {
+		groups = append(groups, group)
+	}
+
+	sort.Slice(groups, func(i, j int) bool {
+		return groups[i].ID < groups[j].ID
+	})
+
+	return groups, nil
+}
+
 func (m *MariaDB) GetPermissionGroupById(id int) (*models.PermissionGroup, error) {
 	err := m.setupConnection()
 	if err != nil {

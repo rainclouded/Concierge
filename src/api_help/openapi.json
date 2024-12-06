@@ -2295,6 +2295,14 @@
                   "schema": {
                      "type": "boolean"
                   }
+               },
+               {
+                  "name": "AccountId",
+                  "in": "query",
+                  "schema": {
+                     "type": "integer",
+                     "format": "int32"
+                  }
                }
             ],
             "responses": {

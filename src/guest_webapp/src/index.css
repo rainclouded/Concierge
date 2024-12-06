@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: 'Futura';
+    src: url('assets/Jost-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html, body {
+    height: 100%;
+    font-size: 103%;
+}
+
+body {
+    margin: 0;
+    font-family: 'Futura', 'Helvetica Neue', sans-serif;
+}
+
+.toast-body {
+    font-family: 'Futura', 'Helvetica Neue', sans-serif;
+}
