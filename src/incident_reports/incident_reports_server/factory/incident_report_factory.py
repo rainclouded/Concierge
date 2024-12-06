@@ -5,10 +5,22 @@ from incident_reports_server.models.models import IncidentReport, Severity, Stat
 
 class IncidentReportFactory:
 
-    #converts json object to incident report object
     @staticmethod
-    def create_incident_report(incident_report_JSON : json) -> IncidentReport:
-        required_keys = ["severity","status","title","description","filing_person_id","reviewer_id"]
+    def create_incident_report(incident_report_JSON: json) -> IncidentReport:
+        """
+        Converts a JSON object to an IncidentReport object.
+        
+        Arguments:
+            incident_report_JSON -- The JSON object containing the incident report data.
+        
+        Returns:
+            IncidentReport: The created IncidentReport object.
+
+        Raises:
+            ValueError: If no JSON object is passed.
+            KeyError: If required keys are missing from the JSON object.
+        """
+        required_keys = ["severity", "status", "title", "description", "filing_person_id", "reviewer_id"]
         
         if incident_report_JSON is None:
             raise ValueError("No JSON object was passed!")
@@ -31,9 +43,20 @@ class IncidentReportFactory:
         
         return result
     
-    #convert status string into status enum. can pass multiple by separating values with comma
     @staticmethod
     def create_severity(severities: str) -> list:
+        """
+        Converts a string of severities into a list of Severity enum values.
+        
+        Arguments:
+            severities -- A comma-separated string representing severities.
+        
+        Returns:
+            list: A list of Severity enum values.
+        
+        Raises:
+            ValueError: If any severity is invalid.
+        """
         severity_list = []
         
         for severity in severities.split(','):
@@ -46,9 +69,20 @@ class IncidentReportFactory:
             
         return severity_list
     
-    #convert status string into status enum. can pass multiple by separating values with comma
     @staticmethod
     def create_status(statuses: str) -> list:
+        """
+        Converts a string of statuses into a list of Status enum values.
+        
+        Arguments:
+            statuses -- A comma-separated string representing statuses.
+        
+        Returns:
+            list: A list of Status enum values.
+        
+        Raises:
+            ValueError: If any status is invalid.
+        """
         status_list = []
         
         for status in statuses.split(','):
@@ -62,14 +96,14 @@ class IncidentReportFactory:
         return status_list
 
     @staticmethod
-    def create_date(date: str):        
-        return datetime.strptime(date, "%Y-%m-%d") 
-
-    
+    def create_date(date: str):
+        """
+        Converts a string representation of a date into a datetime object.
         
- 
+        Arguments:
+            date -- A string representing the date in the format "YYYY-MM-DD".
         
-        
-        
-        
-     
+        Returns:
+            datetime: The corresponding datetime object.
+        """
+        return datetime.strptime(date, "%Y-%m-%d")
