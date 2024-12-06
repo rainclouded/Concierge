@@ -29,11 +29,11 @@ jobs:
 
     - name: Run Semgrep scan
       run: |
-        semgrep --config=auto --output=semgrep-results.json .
+        semgrep --config=auto --output=semgrep-results.sarif .
         
     - name: Upload Semgrep results to GitHub
       if: always()
       uses: actions/upload-artifact@v3
       with:
         name: semgrep-results
-        path: semgrep-results.json
+        path: semgrep-results.sarif
