@@ -45,7 +45,7 @@ class AuthenticationManager:
             ).hexdigest()
 
 
-    def authenticate_user_login(self, username:str, password:str)->bool:
+    def authenticate_user_login(self, username:str, password:str)->User:
         """Validate the credentials of a user
 
             Args:
@@ -53,9 +53,10 @@ class AuthenticationManager:
                 password: string of the password to validate
 
             Returns:
-                If the user was successfully validated
+                The User obj on success, None on failure
         """
         user = \
             list(filter(lambda x : x.username == username, self.db.get_users()))
-
-        return len(user) == 1 and self.check_hash(user.pop(), password)
+        if len(user) == 1 and self.check_hash(user[0], password):
+            return user[0]
+        return None

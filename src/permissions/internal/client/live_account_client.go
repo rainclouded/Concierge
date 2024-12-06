@@ -36,8 +36,14 @@ func NewLiveAccountClient(baseURL string) *LiveAccountClient {
 // Returns:
 //     ([]byte, error): The response body as a byte slice and any error encountered.
 func (cl *LiveAccountClient) Get(path string) ([]byte, error) {
-	fullURL := fmt.Sprintf("%s/%s", cl.BaseURL, path) // Construct full URL
-	resp, err := http.Get(fullURL) // Send GET request
+
+	fullURL := fmt.Sprintf("%s%s", cl.BaseURL, path)
+	resp, err := http.Get(fullURL)
+	e := "No ErrOr"
+	if err != nil {
+		e = err.Error()
+	}
+	fmt.Printf("%s/%s :: %s\n", cl.BaseURL, path, e)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +64,8 @@ func (cl *LiveAccountClient) Get(path string) ([]byte, error) {
 // Returns:
 //     ([]byte, error): The response body as a byte slice and any error encountered.
 func (cl *LiveAccountClient) Post(path string, body any) ([]byte, error) {
-	fullURL := fmt.Sprintf("%s/%s", cl.BaseURL, path) // Construct full URL
+
+	fullURL := fmt.Sprintf("%s%s", cl.BaseURL, path)
 
 	jsonData, err := json.Marshal(body) // Marshal the body into JSON
 	if err != nil {
@@ -86,8 +93,9 @@ func (cl *LiveAccountClient) Post(path string, body any) ([]byte, error) {
 // Returns:
 //     (*models.Account, error): A pointer to the account object and any error encountered.
 func (cl *LiveAccountClient) PostLoginAttempt(request models.LoginAttempt) (*models.Account, error) {
-	var loginResponse models.Account
-	respBody, err := cl.Post("/login-attempt", request) // Send login attempt POST request
+
+	var loginResponse models.AccountResponse
+	respBody, err := cl.Post("/accounts/login_attempt", request)
 	if err != nil {
 		return nil, err
 	}
@@ -97,5 +105,11 @@ func (cl *LiveAccountClient) PostLoginAttempt(request models.LoginAttempt) (*mod
 		return nil, fmt.Errorf("could not parse response from json")
 	}
 
-	return &loginResponse, nil
+	if loginResponse.AccountData == nil {
+		return nil, fmt.Errorf("login failed")
+	}
+
+	fmt.Println(loginResponse.AccountData)
+
+	return loginResponse.AccountData, nil
 }

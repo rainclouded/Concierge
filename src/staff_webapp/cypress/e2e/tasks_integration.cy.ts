@@ -213,7 +213,7 @@ describe('Integration Test for Task Manager', () => {
     cy.contains('button', 'Assign to Me').click();
 
     // Mark the task as complete
-    cy.contains('button', 'Mark Complete').click();
+    cy.contains('button', 'Resolved').click();
 
     // Verify the status change to "Completed"
     cy.contains('p', 'Status:').invoke('text').should('include', 'Completed');

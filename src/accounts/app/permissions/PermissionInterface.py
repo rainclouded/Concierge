@@ -17,6 +17,17 @@ class PermissionInterface(ABC):
                 NotImplementedError if the method is not implemented
         """
         raise NotImplementedError
+    
+    @abstractmethod
+    def can_view_users(self, token:str, public_key:str):
+        """Verify if the token permits retrieval of users
+        
+            Returns:
+                Boolean indicating permission
+            Raises:
+                NotImplementedError if the method is not implemented
+        """
+        raise NotImplementedError
 
 
     @abstractmethod

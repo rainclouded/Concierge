@@ -34,15 +34,15 @@ func LoadDB() (db database.Database) {
 	var newDb database.Database
 	dbImplementation := os.Getenv("PERMISSION_DB_IMPLEMENTATION")
 
-	fmt.Printf("Loading DB")
+	fmt.Println("Loading DB")
 
 	if dbImplementation == "MARIADB" {
 		mariaDb, _ := database.NewMariaDB(loadConnectionString(), false)
 		if mariaDb != nil {
-			fmt.Printf("DB Connected")
+			fmt.Println("DB Connected")
 			newDb = mariaDb
 		} else {
-			fmt.Printf("Not connected")
+			fmt.Println("Not connected")
 		}
 	}
 

@@ -1,9 +1,16 @@
 import { jwtDecode } from "jwt-decode";
 
 const SESSION_KEY = "sessionKey";
+let cachedAccountId = null;
 
 export const setSessionKey = (key) => {
   localStorage.setItem(SESSION_KEY, key);
+  try {
+    const decoded = jwtDecode(key);
+    cachedAccountId = decoded?.accountId; // Store accountId in cache
+  } catch {
+    cachedAccountId = null;
+  }
 };
 
 export const getSessionkey = () => {
@@ -33,5 +40,25 @@ export const isAuthenticated = () => {
   } catch (error) {
     console.log(error);
     return false;
+  }
+};
+
+// Utility to get the accountId from the cached value or by decoding the token
+export const getAccountId = () => {
+  if (cachedAccountId) {
+    return cachedAccountId;
+  }
+
+  const sessionKey = getSessionkey();
+  if (!sessionKey) {
+    return null;
+  }
+
+  try {
+    const decoded = jwtDecode(sessionKey);
+    cachedAccountId = decoded?.accountId;
+    return cachedAccountId;
+  } catch {
+    return null;
   }
 };

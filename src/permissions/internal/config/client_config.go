@@ -2,6 +2,7 @@ package config
 
 import (
 	"concierge/permissions/internal/client"
+	"fmt"
 	"os"
 )
 
@@ -13,13 +14,18 @@ import (
 //     client.AccountClient: The live account client if the endpoint is valid, otherwise a mock account client.
 func LoadAccountEndpoint() client.AccountClient {
 	var accCli client.AccountClient
-	accEndpoint := os.Getenv("ACCOUNT_ENDPOINT") // Get the account endpoint from environment variables
-	accCli = client.NewLiveAccountClient(accEndpoint) // Initialize the live account client
-	if accEndpoint != "" && TestAccountEndpoint(accCli) { // Check if the endpoint is valid and reachable
-		return accCli // Return the live account client if it's valid
+
+	accEndpoint := os.Getenv("ACCOUNT_ENDPOINT")
+	accCli = client.NewLiveAccountClient(accEndpoint)
+	if accEndpoint != "" {
+		fmt.Println("Connected to Account")
+		return accCli
+	} else {
+		fmt.Println("Connected to Mock account")
+		return client.NewMockAccountClient()
 	}
 
-	return client.NewMockAccountClient() // Return the mock account client if the endpoint is not valid or not provided
+
 }
 
 // TestAccountEndpoint tests if the given account client can successfully make a GET request to the "/healthcheck" endpoint.
@@ -28,6 +34,8 @@ func LoadAccountEndpoint() client.AccountClient {
 // Returns:
 //     bool: True if the endpoint is reachable and responds without error, otherwise false.
 func TestAccountEndpoint(client client.AccountClient) bool {
-	_, err := client.Get("/healthcheck") // Attempt to get healthcheck from the account endpoint
-	return err == nil // Return true if no error occurred, otherwise false
+
+	_, err := client.Get("/accounts")
+	return err == nil
+
 }

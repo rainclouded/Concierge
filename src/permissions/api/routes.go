@@ -37,11 +37,13 @@ type Option func(*ContextOptions)
 //     *ContextOptions - Returns a new instance of ContextOptions with default settings
 func DefaultOptions() *ContextOptions {
 	return &ContextOptions{
-		DB: config.LoadDB(),  // Loads the database configuration
-		// AccountClient: config.LoadAccountEndpoint(), // Can be replaced with actual account client
-		AccountClient: client.NewMockAccountClient(), // Using mock account client for testing or default behavior
-		JWTContext:    middleware.NewJWT(),           // Initializes a new JWT context for authorization
-		ginMode:       gin.DebugMode,                 // Sets the Gin mode to Debug by default
+
+		DB:            config.LoadDB(),
+		AccountClient: config.LoadAccountEndpoint(),
+		// AccountClient: client.NewMockAccountClient(),
+		JWTContext: middleware.NewJWT(),
+		ginMode:    gin.DebugMode,
+
 	}
 }
 

@@ -3,3 +3,9 @@ export interface ApiResponse<T> {
   data: T;
 	timestamp: string;
 }
+
+export interface ApiGenPasswordResponse {
+    message?: string;
+    password?: number;
+    status?: string
+}

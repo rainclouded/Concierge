@@ -3,6 +3,7 @@ import { ReactiveFormsModule , FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SessionService } from '../../services/session.service';
 import { ApiKeyService } from '../../services/api-key.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login-page',
@@ -16,7 +17,8 @@ export class LoginPageComponent {
   constructor(
     private router: Router,
     private sessionService: SessionService,
-    private apiKeyService: ApiKeyService
+    private apiKeyService: ApiKeyService,
+    private toastr: ToastrService
   ) {
     this.loginForm = new FormGroup({
       username: new FormControl(''),
@@ -36,7 +38,7 @@ export class LoginPageComponent {
       error: (response: any) => {
         console.log(response);
         console.log(response.status);
-        alert(`Login Failed: \n${response.error.message}`);
+        this.toastr.error(`${response.error.message}`, 'Sign In Failed');
       }
     });
   }

@@ -170,11 +170,18 @@ func (db *MockDatabase) GetPermissionGroupById(groupId int) (*models.PermissionG
 	return nil, fmt.Errorf("permission Group with ID %d not found", groupId)
 }
 
-// CreatePermissionGroup creates a new permission group in the mock database.
-// Args:
-//    newGroup: A request object containing the details of the new permission group.
-// Returns:
-//    error: Returns an error if any of the permissions could not be found or added.
+func (db *MockDatabase) GetPermissionGroupsByAccount(accountId int) ([]*models.PermissionGroup, error) {
+	var groupsWithAcc []*models.PermissionGroup
+
+	for _, group := range db.groups {
+		if contains(group.Members, accountId) {
+			groupsWithAcc = append(groupsWithAcc, group)
+		}
+	}
+
+	return groupsWithAcc, nil
+}
+
 func (db *MockDatabase) CreatePermissionGroup(newGroup *models.PermissionGroupRequest) error {
 	newGroupObj := models.PermissionGroup{
 		ID:          db.getMaxGroupId(),
@@ -433,4 +440,13 @@ func (db *MockDatabase) GetGroupPermissionState(group *models.PermissionGroup, p
 //    None
 func (db *MockDatabase) ClearPermissions() {
 	db.permissions = []*models.Permission{}
+}
+
+func contains(list []int, value int) bool {
+	for _, item := range list {
+		if item == value {
+			return true
+		}
+	}
+	return false
 }

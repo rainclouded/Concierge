@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IIncidentReport } from '../../models/incident-report.model';
 import { IncidentReportService } from '../../services/incident-report.service';
-
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-incident-report-form',
@@ -18,7 +18,8 @@ export class IncidentReportFormComponent {
 
   constructor (
     private fb: FormBuilder,
-    private reportService: IncidentReportService
+    private reportService: IncidentReportService,
+    private toastr: ToastrService
   ) {
     this.reportForm = this.fb.group({
       title: new FormControl<string>('', [Validators.required]),
@@ -66,6 +67,7 @@ export class IncidentReportFormComponent {
         .subscribe({
           next: (response) => {
             this.onClose();
+            this.toastr.success('Incident report updated successfully!', 'Update Successful');
             console.log(response.message);
           }
         });
@@ -80,6 +82,7 @@ export class IncidentReportFormComponent {
         .subscribe({
           next: (response) => {
             this.onClose();
+            this.toastr.success('Incident report added successfully!', 'Add Successful');
             console.log(response.message);
           }
         });
