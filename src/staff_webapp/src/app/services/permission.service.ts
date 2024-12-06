@@ -44,6 +44,9 @@ export class PermissionService {
         groupMembers: addAccounts,
         removeGroupMembers: removeAccounts,
       }
-    );
+    ).subscribe({
+      next: (response) => console.log('API Success:', response),
+      error: (err) => console.error('API Error:', err),
+    });
   }
 }

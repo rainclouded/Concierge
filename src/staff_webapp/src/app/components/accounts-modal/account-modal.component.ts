@@ -91,18 +91,18 @@ export class AccountModalComponent implements OnInit {
 
     // Sequentially update permission groups
     const updates = [
-      ...addGroups.map((groupId) =>
-        this.permissionService.updatePermissionGroupMembers(
-          groupId,
-          [+this.account.id!],
-          []
-        )
-      ),
       ...removeGroups.map((groupId) =>
         this.permissionService.updatePermissionGroupMembers(
           groupId,
           [],
           [+this.account.id!]
+        )
+      ),
+      ...addGroups.map((groupId) =>
+        this.permissionService.updatePermissionGroupMembers(
+          groupId,
+          [+this.account.id!],
+          []
         )
       ),
     ];
