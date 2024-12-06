@@ -7,6 +7,12 @@ namespace amenities_server.persistence
     {
         private readonly string _connectionString;
 
+        /*
+        Constructor that initializes the PostgresAmenityPersistence with a 
+            connection string and validates the database connection.
+        Args:
+            connectionString: The connection string used to connect to the PostgreSQL database.
+        */
         public PostgresAmenityPersistence(string connectionString)
         {
             _connectionString = connectionString;
@@ -21,6 +27,14 @@ namespace amenities_server.persistence
             }
         }
 
+        /*
+        Adds a new Amenity to the database and returns the added 
+        Amenity with the generated ID.
+        Args:
+            amenity: The Amenity object that contains the data to be added to the database.
+        Returns:
+            Amenity: The added Amenity with the assigned ID from the database.
+        */
         public Amenity AddAmenity(Amenity amenity)
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -34,6 +48,11 @@ namespace amenities_server.persistence
             return amenity;
         }
 
+        /*
+        Deletes an Amenity from the database based on its ID.
+        Args:
+            id: The ID of the Amenity to be deleted.
+        */
         public void DeleteAmenity(int id)
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -43,6 +62,11 @@ namespace amenities_server.persistence
             using var reader = command.ExecuteReader();
         }
 
+        /*
+        Retrieves all Amenities from the database.
+        Returns:
+            IEnumerable<Amenity>: A collection of Amenity objects.
+        */
         public IEnumerable<Amenity> GetAmenities()
         {
             var amenities = new List<Amenity>();
@@ -63,6 +87,13 @@ namespace amenities_server.persistence
             return amenities;
         }
 
+        /*
+        Retrieves a specific Amenity from the database by its ID.
+        Args:
+            id: The ID of the Amenity to retrieve.
+        Returns:
+            Amenity: The Amenity object matching the provided ID, or null if not found.
+        */
         public Amenity GetAmenityByID(int id)
         {
             Amenity? amenity = null;
@@ -85,6 +116,14 @@ namespace amenities_server.persistence
             return amenity;
         }
 
+        /*
+        Updates an existing Amenity in the database with new values.
+        Args:
+            id: The ID of the Amenity to be updated.
+            amenity: The Amenity object containing the updated values.
+        Returns:
+            Amenity: The updated Amenity object.
+        */
         public Amenity UpdateAmenity(int id, Amenity amenity)
         {
             using var connection = new NpgsqlConnection(_connectionString);
