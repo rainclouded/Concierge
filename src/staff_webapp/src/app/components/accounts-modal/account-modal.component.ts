@@ -124,8 +124,8 @@ export class AccountModalComponent implements OnInit {
         if (this.account.type === 'guest' && response.message) {
           const match = response.message.match(/password:\s*(\d+)/);
           if (match) {
-            console.log("I did a tthing2"+match[1])
-            this.newPassword = ""+match[1];
+            console.log('I did a tthing2' + match[1]);
+            this.newPassword = '' + match[1];
             this.isShowingPassword = true;
           }
         }
@@ -136,13 +136,16 @@ export class AccountModalComponent implements OnInit {
 
   copyToClipboard(text: string): void {
     this.copiedToClipboard = true;
-    navigator.clipboard.writeText(text).then(() => {
-      console.log('Password copied to clipboard');
-    }).catch((err) => {
-      console.error('Error copying password to clipboard:', err);
-    });
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        console.log('Password copied to clipboard');
+      })
+      .catch((err) => {
+        console.error('Error copying password to clipboard:', err);
+      });
   }
-  
+
   refreshGenPass(): void {
     this.copiedToClipboard = false;
     this.isShowingPassword = false;

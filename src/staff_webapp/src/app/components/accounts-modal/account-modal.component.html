@@ -20,63 +20,30 @@
     <p><strong>Type:</strong> {{ account.type }}</p>
 
     <!-- Password Section -->
-    <div *ngIf="isPasswordEnabled" class="mt-4">
-      <label>New Password:</label>
-      <input
-        type="password"
-        [(ngModel)]="newPassword"
-        class="border p-2 rounded w-full"
-        placeholder="Enter new password"
-      />
-      <button
-      class="bg-white border border-black text-black hover:bg-black hover:text-white p-2 rounded-lg w-40 mt-2"
-        (click)="updatePassword()"
-      >
-        Save Password
-      </button>
-    </div>
-
     <div *ngIf="!isPasswordEnabled && !isShowingPassword" class="mt-4">
       <!-- <div *ngIf="!isShowingPassword"> -->
-        <button
-          class="bg-white border border-black text-black hover:bg-black hover:text-white p-2 rounded-lg w-48"
-          (click)="updatePassword()"
-        >
-          Generate New Password
-        </button>
+      <button
+        class="bg-white border border-black text-black hover:bg-black hover:text-white p-2 rounded-lg w-48"
+        (click)="updatePassword()"
+      >
+        Generate New Password
+      </button>
       <!-- </div> -->
     </div>
 
-      <div *ngIf="!isPasswordEnabled && isShowingPassword" class="mt-4 flex items-center justify-left">
-        <i class="p-2 fa fa-refresh" (click)="refreshGenPass()"></i>
-        <button
-          type="text"
-          [value]="newPassword"
-          readonly
-          class="bg-white border border-black text-black hover:bg-black hover:text-white p-2 rounded-lg w-48 flex items-center justify-between"
-          (click)="copyToClipboard(newPassword)"
-        >
-          <span>{{ newPassword }}</span>
-            <i *ngIf="!copiedToClipboard" class="fa fa-clipboard"></i>
-            <i *ngIf="copiedToClipboard"class="fas fa-check-square"></i>
-        </button>
-    </div>
-    
-
     <!-- Permissions Section -->
     <div class="mt-6">
-        <h3 class="text-lg font-bold mb-2">Permissions</h3>
-        <div *ngFor="let group of allPermissions" class="flex items-center gap-2">
-          <input
-            type="checkbox"
-            [checked]="modifiedPermissions.includes(group.groupId)"
-            (change)="togglePermission(group.groupId)"
-            class="cursor-pointer"
-          />
-          <label class="cursor-pointer">{{ group.groupName }}</label>
-        </div>
+      <h3 class="text-lg font-bold mb-2">Permissions</h3>
+      <div *ngFor="let group of allPermissions" class="flex items-center gap-2">
+        <input
+          type="checkbox"
+          [checked]="modifiedPermissions.includes(group.groupId)"
+          (change)="togglePermission(group.groupId)"
+          class="cursor-pointer"
+        />
+        <label class="cursor-pointer">{{ group.groupName }}</label>
       </div>
-
+    </div>
 
     <!-- Modal Actions -->
     <div class="flex justify-end mt-2">
