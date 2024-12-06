@@ -1,7 +1,10 @@
+
+name: Semgrep CI
+
 #References:
 #https://github.com/anshumanbh/sast-code-repo-poc/blob/main/.github/workflows/semgrep.yml
 
-name: Semgrep Scan
+
 
 on:
   push:
@@ -23,18 +26,19 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.9'
+        python-version: '3.11'
+        cache: 'pip'
 
-    - name: Install Semgrep
+    - name: Install python semgrep package
       run: |
         python -m pip install --upgrade pip
         pip install semgrep
 
-    - name: Run Semgrep scan
+    - name: Run semgrep and publish as json
       run: |
         semgrep --config=auto --output=semgrep-results.json --json .
         
-    - name: Upload Semgrep results to GitHub
+    - name: Upload artifact
       if: always()
       uses: actions/upload-artifact@v3
       with:
