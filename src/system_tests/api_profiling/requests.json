@@ -30,7 +30,7 @@
         },
         {
             "type":"post",
-            "url" : "http://localhost:8089/accounts",
+            "url" : "http://localhost:50001/accounts",
             "body":{
                 "username" : "100",
                 "type" : "guest"
