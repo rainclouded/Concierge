@@ -9,9 +9,9 @@
        routerLinkActive="bg-secondary text-white" 
        [routerLinkActiveOptions]="{ exact: true }">
     <!-- Left side with icon and label -->
-    <div class="flex items-center justify-center lg:justify-start w-full lg:pl-7">
+    <div class="sidebar-item flex items-center justify-center lg:justify-start w-full lg:pl-7">
       <i class="{{ item.icon }} text-lg"></i>
-      <span class="ml-3 sidebar-item font-medium text-lg tracking-wide hidden lg:inline-block">{{ item.label }}</span>
+      <span class="ml-3 font-medium text-lg tracking-wide hidden lg:inline-block">{{ item.label }}</span>
     </div>
     <!-- Arrow indicator for active state -->
     <div class="hidden lg:block">

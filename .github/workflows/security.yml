@@ -1,4 +1,10 @@
+
 name: Semgrep CI
+
+#References:
+#https://github.com/anshumanbh/sast-code-repo-poc/blob/main/.github/workflows/semgrep.yml
+
+
 
 on:
   push:
