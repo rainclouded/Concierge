@@ -110,7 +110,7 @@ describe('Integration Test for Task Manager', () => {
     cy.contains('button', 'Save').click();
 
     // Manually close the modal by clicking the close button (×)
-    cy.get('#task-modal').find('button').contains('×').click();
+    cy.contains('button', '×').click();
 
     // Ensure modal is closed by checking that the modal backdrop no longer exists
     cy.get('.fixed.z-10.inset-0.bg-black.bg-opacity-50').should('not.exist');
