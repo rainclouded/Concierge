@@ -89,33 +89,26 @@ export class AccountModalComponent implements OnInit {
       (id) => !this.modifiedPermissions.includes(id)
     );
 
-    console.log('Add Groups:', addGroups, 'Remove Groups:', removeGroups);
-
+    // Sequentially update permission groups
     const updates = [
-      ...addGroups.map((groupId) =>
-        this.permissionService
-          .updatePermissionGroupMembers(groupId, [+this.account.id!], [])
-          .toPromise()
-      ),
       ...removeGroups.map((groupId) =>
-        this.permissionService
-          .updatePermissionGroupMembers(groupId, [], [+this.account.id!])
-          .toPromise()
+        this.permissionService.updatePermissionGroupMembers(
+          groupId,
+          [],
+          [+this.account.id!]
+        )
+      ),
+      ...addGroups.map((groupId) =>
+        this.permissionService.updatePermissionGroupMembers(
+          groupId,
+          [+this.account.id!],
+          []
+        )
       ),
     ];
 
-    if (updates.length === 0) {
-      console.log('No changes to save.');
-      return;
-    }
-
     Promise.allSettled(updates).then((results) => {
-      console.log('Permission updates completed:', results);
-      results.forEach((result, index) => {
-        if (result.status === 'rejected') {
-          console.error(`Update failed for request ${index}:`, result.reason);
-        }
-      });
+      console.log('Permission updates:', results);
       this.close.emit(); // Close the modal after saving
     });
   }
