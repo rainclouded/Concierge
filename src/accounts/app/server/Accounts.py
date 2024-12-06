@@ -34,7 +34,13 @@ def start_service():
 
 def set_services(new_database=None, new_authentication=None,
                  new_user_service=None, new_permissions=None):
-    """Inject various services into the Server
+    """
+    Inject various services into the Server
+    Args:
+        new_database becomes the database
+        new_authentication becomes the authenticator
+        new_user_service becomes the user service
+        new_permissions becomes the permissions
     """
     # pylint: disable=global-statement
     global database, auth, user_service, permissions
@@ -49,7 +55,8 @@ def set_services(new_database=None, new_authentication=None,
 
 
 def get_port() -> int:
-    """Get the port the server should run on
+    """
+    Get the port the server should run on
         Returns: port number
     """
     parser = argparse.ArgumentParser(

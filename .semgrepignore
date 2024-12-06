@@ -1,0 +1,6 @@
+src/accounts/integration_tests/**
+src/accounts/unit_tests/**
+src/system_tests/**
+src/permissions/tests/**
+src/api_help/**
+*.md
