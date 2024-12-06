@@ -40,8 +40,9 @@ export class PermissionService {
     return this.http.patch<ApiResponse<IPermissionGroup[]>>(
       `${this.apiUrl}/${groupId}`,
       {
-        'add-accounts': addAccounts,
-        'remove-accounts': removeAccounts,
+        templateId: groupId,
+        groupMembers: addAccounts,
+        removeGroupMembers: removeAccounts,
       }
     ).subscribe({
       next: (response) => console.log('API Success:', response),
