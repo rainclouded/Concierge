@@ -11,6 +11,7 @@ import (
 	"math"
 	"net/http"
 	"time"
+	"sync"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -26,6 +27,7 @@ type JWT_Context struct {
 	sessionHeader           string               // The header name used for session keys
 	permissionNames         map[string]int      // A map of permission names to their IDs
 	permissionNamesCacheExp time.Time            // The expiration time for the permission names cache
+  rwMutex                 sync.RWMutex        //handles concurrent read/writes of permissionNames
 }
 
 // NewJWT creates a new instance of JWT_Context
@@ -224,14 +226,17 @@ func (jwtCtx *JWT_Context) HasPermissionByName(ctx *gin.Context, permName string
 		return false
 	}
 
+	jwtCtx.rwMutex.Lock()
 	if time.Now().After(jwtCtx.permissionNamesCacheExp) {
 		db, ok := GetDb(ctx)
 		if !ok {
+			jwtCtx.rwMutex.Unlock()
 			return false
 		}
 
 		permissions, err := db.GetPermissions()
 		if err != nil {
+			jwtCtx.rwMutex.Unlock()
 			return false
 		}
 
@@ -241,9 +246,13 @@ func (jwtCtx *JWT_Context) HasPermissionByName(ctx *gin.Context, permName string
 			jwtCtx.permissionNames[perm.Name] = perm.ID
 		}
 	}
+	jwtCtx.rwMutex.Unlock()
 
 	// Get the permission ID for the specified permission name
+  jwtCtx.rwMutex.RLock()
 	id, found := jwtCtx.permissionNames[permName]
+	jwtCtx.rwMutex.RUnlock()
+
 	if !found {
 		return false
 	}
@@ -265,14 +274,18 @@ func (jwtCtx *JWT_Context) GetSessionPermissions(ctx *gin.Context, sessionData *
 	}
 
 	permissions := []string{}
+
+	jwtCtx.rwMutex.Lock()
 	if time.Now().After(jwtCtx.permissionNamesCacheExp) {
 		db, ok := GetDb(ctx)
 		if !ok {
+			jwtCtx.rwMutex.Unlock()
 			return permissions
 		}
 
 		permissionsVal, err := db.GetPermissionForAccountId(sessionData.AccountID)
 		if err != nil {
+			jwtCtx.rwMutex.Unlock()
 			return permissions
 		}
 
@@ -282,13 +295,16 @@ func (jwtCtx *JWT_Context) GetSessionPermissions(ctx *gin.Context, sessionData *
 			jwtCtx.permissionNames[perm.Name] = perm.ID
 		}
 	}
+	jwtCtx.rwMutex.Unlock()
 
 	// Add permissions to the result list
-	for key, value := range jwtCtx.permissionNames {
+	jwtCtx.rwMutex.RLock()
+  for key, value := range jwtCtx.permissionNames {
 		if jwtCtx.GetPermissionStateFromPermString(value, apiKey.PermissionString) {
 			permissions = append(permissions, key)
 		}
 	}
+	jwtCtx.rwMutex.RUnlock()
 
 	return permissions
 }
