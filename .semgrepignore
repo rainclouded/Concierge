@@ -1,2 +1,3 @@
 src/accounts/integration_tests/**
 src/accounts/unit_tests/**
+src/system_tests/**
