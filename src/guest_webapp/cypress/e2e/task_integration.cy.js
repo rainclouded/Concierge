@@ -9,17 +9,20 @@ describe("HomePage Integration Tests", () => {
     cy.get(".tile-item").contains("Your requests").click();
   });
 
-  it("POST incident repot", () => {
+  it("GET tasks", () => {
     cy.contains("Your requests");
 
     cy.get(".flex.flex-col.space-y-4").should("exist");
 
-    // Check if any task has the title "Room Cleaning"
-    cy.get(".relative.min-h-36.bg-lightPrimary").within(() => {
-      cy.contains(
-        ".text-xl.font-semibold.tracking-wide",
-        "Room Cleaning"
-      ).should("exist");
+    // Check for specific task titles
+    const expectedTitles = ["Room Cleaning", "Wake Up Call", "Food Delivery"];
+
+    expectedTitles.forEach((title) => {
+      cy.get(
+        ".relative.min-h-36.bg-lightPrimary .text-xl.font-semibold.tracking-wide"
+      )
+        .contains(title)
+        .should("exist", `Task with title "${title}" should exist`);
     });
   });
 
