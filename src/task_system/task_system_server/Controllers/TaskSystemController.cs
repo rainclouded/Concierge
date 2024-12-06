@@ -16,13 +16,30 @@ namespace task_system_server.Controllers
         private readonly ITaskSystemRepository _taskSystemRepository;
         private readonly IPermissionValidator _permissionValidator;
 
+        /* 
+        Constructor for TaskSystemController.
+        Initializes the controller with task system repository and permission validator.
+
+        Args:
+        taskSystemRepository: Repository for interacting with tasks in the system.
+        permissionValidator: Validator for checking if the API key has appropriate permissions.
+        */
         public TaskSystemController(ITaskSystemRepository taskSystemRepository, IPermissionValidator permissionValidator)
         {
             _taskSystemRepository = taskSystemRepository;
             _permissionValidator = permissionValidator;
         }
 
-        //GET: /tasks
+        /* 
+        GetTasks retrieves tasks based on the provided query parameters.
+        It validates the API key and permission to view tasks.
+
+        Args:
+        query: Contains filter parameters for the tasks, such as AccountId.
+
+        Returns:
+        A response with the list of tasks or an error message.
+        */
         [HttpGet]
         public async Task<IActionResult> GetTasks([FromQuery] QueryObject query)
         {
@@ -52,7 +69,15 @@ namespace task_system_server.Controllers
             return Ok(new TaskSystemResponse<IEnumerable<TaskItem>>(ResponseMessages.GET_TASKS_SUCCESS, tasks));
         }
 
-        //GET: /tasks/{id}
+        /* 
+        GetTaskById retrieves a specific task by its ID.
+
+        Args:
+        taskId: The ID of the task to retrieve.
+
+        Returns:
+        A response with the task details or an error message if not found.
+        */
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTaskById([FromRoute] int taskId)
         {
@@ -72,7 +97,15 @@ namespace task_system_server.Controllers
             return Ok(new TaskSystemResponse<TaskItem>(ResponseMessages.GET_TASK_SUCCESS, task));
         }
 
-        //POST: /tasks
+        /* 
+        AddTask creates a new task in the system.
+
+        Args:
+        taskDto: Data transfer object containing the details for the new task.
+
+        Returns:
+        A response with the created task or an error message if creation fails.
+        */
         [HttpPost]
         public async Task<IActionResult> AddTask([FromBody] AddTaskDto taskDto)
         {
@@ -94,7 +127,16 @@ namespace task_system_server.Controllers
             );
         }
 
-        //PUT: /tasks/{id}
+        /* 
+        UpdateTask updates the details of an existing task.
+
+        Args:
+        id: The ID of the task to be updated.
+        taskDto: Data transfer object containing updated task details.
+
+        Returns:
+        A response with the updated task or an error message if update fails.
+        */
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTask([FromRoute] int id, [FromBody] UpdateTaskDto taskDto)
         {
@@ -109,7 +151,16 @@ namespace task_system_server.Controllers
             return Ok(new TaskSystemResponse<TaskItem>(ResponseMessages.UPDATE_TASK_SUCCESS, updatedTask));
         }
 
-        // PATCH: /tasks/{id}/assignee
+        /* 
+        UpdateAssignee changes the assignee of a task.
+
+        Args:
+        id: The ID of the task whose assignee is to be updated.
+        assigneeDto: Data transfer object containing the new assignee ID.
+
+        Returns:
+        A response with the updated task or an error message if update fails.
+        */
         [HttpPatch("{id}/assignee")]
         public async Task<IActionResult> UpdateAssignee([FromRoute] int id, [FromBody] UpdateAssigneeDto assigneeDto)
         {
@@ -124,7 +175,15 @@ namespace task_system_server.Controllers
             return Ok(new TaskSystemResponse<TaskItem>(ResponseMessages.UPDATE_TASK_SUCCESS, updatedTask));
         }
 
-        //DELETE: /tasks/{id}
+        /* 
+        DeleteTask removes a task from the system by its ID.
+
+        Args:
+        id: The ID of the task to be deleted.
+
+        Returns:
+        A response indicating whether the task was deleted successfully or an error message if deletion fails.
+        */
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask([FromRoute] int id)
         {

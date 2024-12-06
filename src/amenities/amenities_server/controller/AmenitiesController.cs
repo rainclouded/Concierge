@@ -13,6 +13,14 @@ public class AmenitiesController : ControllerBase
 {
     private IAmenityPersistence _amenityPersistence;
     private IPermissionValidator _permissionValidator;
+
+    /*
+    Initializes the AmenitiesController with the provided permission validator.
+    Args:
+        permissionValidator: A permission validator to check the requester's permissions for different actions
+    Returns:
+        None
+    */
     public AmenitiesController(IPermissionValidator permissionValidator)
     {
         _amenityPersistence = Services.GetAmenityPersistence();
@@ -20,6 +28,14 @@ public class AmenitiesController : ControllerBase
     }
 
     //get: /amenities
+    /*
+    Retrieves a list of all amenities. Validates the requester's permissions before fetching the data.
+    Args:
+        None
+    Returns:
+        IActionResult: Returns Ok with a list of amenities if the request is successful, 
+        or Unauthorized/NotFound if permissions or data issues occur.
+    */
     [HttpGet]
     public IActionResult GetAmenities()
     {
@@ -40,6 +56,14 @@ public class AmenitiesController : ControllerBase
     }
 
     //get: /amenities/{id}
+    /*
+    Retrieves a specific amenity by its ID. Verifies the requester's permissions and checks if the requested amenity exists.
+    Args:
+        id: The unique identifier of the amenity to retrieve
+    Returns:
+        IActionResult: Returns Ok with the requested amenity if found, or 
+        Unauthorized/NotFound if there are permission issues or the amenity does not exist.
+    */
     [HttpGet("{id}")]
     public IActionResult GetAmenityByID(int id)
     {
@@ -61,6 +85,15 @@ public class AmenitiesController : ControllerBase
     }
 
     //delete: /amenities/{id}
+    /*
+    Deletes a specific amenity by its ID after validating the requester's
+     permissions. Verifies if the amenity exists before attempting to delete it.
+    Args:
+        id: The unique identifier of the amenity to delete
+    Returns:
+        IActionResult: Returns Ok if the amenity is successfully 
+        deleted, or Unauthorized/NotFound if there are permission issues or the amenity does not exist.
+    */
     [HttpDelete("{id}")]
     public IActionResult DeleteAmenity(int id)
     {
@@ -82,6 +115,14 @@ public class AmenitiesController : ControllerBase
     }
 
     //post: /amenities
+    /*
+    Adds a new amenity to the system after validating the requester's permissions and the input data.
+    Args:
+        newAmenity: The new amenity object to be added to the system
+    Returns:
+        IActionResult: Returns CreatedAtAction with the newly created 
+        amenity if successful, or Unauthorized/BadRequest if there are permission issues or invalid data.
+    */
     [HttpPost]
     public IActionResult AddAmenity(Amenity newAmenity)
     {
@@ -108,6 +149,16 @@ public class AmenitiesController : ControllerBase
     }
 
     //put: /amenities/{id}
+    /*
+    Updates an existing amenity by its ID. Validates the requester's 
+    permissions, checks if the amenity exists, and validates the input data before updating.
+    Args:
+        id: The ID of the amenity to update
+        newAmenity: The updated amenity data to replace the existing one
+    Returns:
+        IActionResult: Returns Ok with the updated amenity if successful, 
+        or Unauthorized/NotFound/BadRequest if there are permission issues, missing data, or validation errors.
+    */
     [HttpPut("{id}")]
     public IActionResult UpdateAmenity(int id, Amenity newAmenity)
     {
@@ -134,5 +185,3 @@ public class AmenitiesController : ControllerBase
         return Ok(new AmenityResponse<Amenity>(ResponseMessages.UPDATE_AMENITY_SUCCESS, newAmenity));
     }
 }
-
-

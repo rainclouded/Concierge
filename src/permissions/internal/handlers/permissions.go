@@ -10,6 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GetPermissions retrieves all permissions from the database
+// Args:
+//   ctx: The Gin context containing the request and response objects
+// Returns:
+//   A JSON response with the status and list of permissions or an error message
 func GetPermissions(ctx *gin.Context) {
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
@@ -23,10 +28,14 @@ func GetPermissions(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, middleware.Format("Permissions retreived successfully", permissions))
+	ctx.JSON(http.StatusOK, middleware.Format("Permissions retrieved successfully", permissions))
 }
 
-// expects router.GET("/permissions/:id", GetPermission)
+// GetPermissionById retrieves a permission by its ID
+// Args:
+//   ctx: The Gin context containing the request and response objects
+// Returns:
+//   A JSON response with the status and the requested permission or an error message
 func GetPermissionById(ctx *gin.Context) {
 	db, ok := middleware.GetDb(ctx)
 	if !ok {
@@ -60,6 +69,11 @@ func GetPermissionById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, middleware.Format("Permission found successfully", permissions))
 }
 
+// PostPermission creates a new permission in the database
+// Args:
+//   ctx: The Gin context containing the request and response objects
+// Returns:
+//   A JSON response with the status and the created permission or an error message
 func PostPermission(ctx *gin.Context) {
 	var permission models.PermissionPostRequest
 	db, ok := middleware.GetDb(ctx)
@@ -79,7 +93,7 @@ func PostPermission(ctx *gin.Context) {
 		return
 	}
 
-	//https://gin-gonic.com/docs/examples/binding-and-validation/
+	// Binding the request body to the permission struct
 	if err := ctx.ShouldBindJSON(&permission); err != nil {
 		ctx.JSON(http.StatusBadRequest, middleware.Format("Invalid input", nil))
 		return

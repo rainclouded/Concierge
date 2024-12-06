@@ -49,7 +49,7 @@
             *ngIf="canEdit"
             type="button"
             (click)="amenity.id && loadAmenity(amenity)"
-            class="bg-slate-200 hover:bg-primary rounded-lg w-9 h-9"
+            class="edit-amenity bg-slate-200 hover:bg-primary rounded-lg w-9 h-9"
           >
             <i class="fa-solid fa-pen"></i>
           </button>
@@ -57,7 +57,7 @@
             *ngIf="canDelete"
             type="button"
             (click)="amenity.id && openConfirmWindow(amenity.id)"
-            class="hover:bg-lightRed bg-red-700 text-white rounded-lg w-9 h-9"
+            class="delete-amenity hover:bg-lightRed bg-red-700 text-white rounded-lg w-9 h-9"
           >
             <i class="fa-solid fa-trash"></i>
           </button>
