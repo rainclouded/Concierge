@@ -11,6 +11,7 @@ import (
 	"math"
 	"net/http"
 	"time"
+	"sync"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -24,6 +25,7 @@ type JWT_Context struct {
 	sessionHeader           string
 	permissionNames         map[string]int
 	permissionNamesCacheExp time.Time
+	rwMutex                 sync.RWMutex
 }
 
 func NewJWT() *JWT_Context {
@@ -167,14 +169,17 @@ func (jwtCtx *JWT_Context) HasPermissionByName(ctx *gin.Context, permName string
 		return false
 	}
 
+	jwtCtx.rwMutex.Lock()
 	if time.Now().After(jwtCtx.permissionNamesCacheExp) {
 		db, ok := GetDb(ctx)
 		if !ok {
+			jwtCtx.rwMutex.Unlock()
 			return false
 		}
 
 		permissions, err := db.GetPermissions()
 		if err != nil {
+			jwtCtx.rwMutex.Unlock()
 			return false
 		}
 
@@ -183,8 +188,12 @@ func (jwtCtx *JWT_Context) HasPermissionByName(ctx *gin.Context, permName string
 			jwtCtx.permissionNames[perm.Name] = perm.ID
 		}
 	}
+	jwtCtx.rwMutex.Unlock()
 
+	jwtCtx.rwMutex.RLock()
 	id, found := jwtCtx.permissionNames[permName]
+	jwtCtx.rwMutex.RUnlock()
+
 	if !found {
 		return false
 	}
@@ -199,14 +208,18 @@ func (jwtCtx *JWT_Context) GetSessionPermissions(ctx *gin.Context, sessionData *
 	}
 
 	permissions := []string{}
+
+	jwtCtx.rwMutex.Lock()
 	if time.Now().After(jwtCtx.permissionNamesCacheExp) {
 		db, ok := GetDb(ctx)
 		if !ok {
+			jwtCtx.rwMutex.Unlock()
 			return permissions
 		}
 
 		permissionsVal, err := db.GetPermissionForAccountId(sessionData.AccountID)
 		if err != nil {
+			jwtCtx.rwMutex.Unlock()
 			return permissions
 		}
 
@@ -215,12 +228,15 @@ func (jwtCtx *JWT_Context) GetSessionPermissions(ctx *gin.Context, sessionData *
 			jwtCtx.permissionNames[perm.Name] = perm.ID
 		}
 	}
+	jwtCtx.rwMutex.Unlock()
 
+	jwtCtx.rwMutex.RLock()
 	for key, value := range jwtCtx.permissionNames {
 		if jwtCtx.GetPermissionStateFromPermString(value, apiKey.PermissionString) {
 			permissions = append(permissions, key)
 		}
 	}
+	jwtCtx.rwMutex.RUnlock()
 
 	return permissions
 }
