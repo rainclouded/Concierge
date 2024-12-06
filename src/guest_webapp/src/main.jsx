@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import AmenitiesPage from "./pages/AmenitiesPage.jsx";
 import IncidentReportPage from "./pages/IncidentReportPage";
+import TaskPage from "./pages/TaskPage.jsx";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ProtectedRoute } from "./utils/ProtectedRoutes.jsx";
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: "/incident_reports",
     element: <ProtectedRoute canAccessFunc={isAuthenticated} element={<IncidentReportPage />} fallbackPath={"/"} />,
+  },
+  {
+    path: "/tasks",
+    element: <ProtectedRoute canAccessFunc={isAuthenticated} element={<TaskPage />} fallbackPath={"/"} />,
   },
 ]);
 

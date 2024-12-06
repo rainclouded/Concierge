@@ -67,7 +67,7 @@
       {
         "response_number": 200,
         "endpoint":"/login_attempt",
-        "response_data": "{\"message\":\"Welcome, staffman1!\",\"status\":\"ok\"}",
+        "response_data": "{\"data\":{\"id\":1,\"type\":\"staff\",\"username\":\"staffman1\"},\"message\":\"Welcome, staffman1!\",\"status\":\"ok\"}",
         "request_message": {
           "username" : "staffman1",
           "type" : "staff",
@@ -79,7 +79,7 @@
       {
         "response_number": 401,
         "endpoint":"/login_attempt",
-        "response_data": "{\"message\":\"Login Fail - Invalid Credentials\",\"status\":\"error\"}",
+        "response_data": "{\"message\":\"Something went wrong!\",\"status\":\"error\"}",
         "request_message": {
             "username" : "100",
             "type" : "guest"

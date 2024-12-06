@@ -9,10 +9,17 @@ public class StubTaskSystemRepository : ITaskSystemRepository
     private readonly List<TaskItem> _tasks;
     private int _nextId = 1;
 
+    /*
+    Constructor for StubTaskSystemRepository
+    Args:
+      None
+    Returns:
+      None
+    */
     public StubTaskSystemRepository()
     {
-        _tasks =
-        [
+        _tasks = new List<TaskItem>
+        {
             new TaskItem
             {
                 Id = _nextId++,
@@ -90,12 +97,21 @@ public class StubTaskSystemRepository : ITaskSystemRepository
                 Status = TaskItemStatus.Pending,
                 CreatedAt = new DateTime(2024, 10, 18, 15, 0, 0)
             }
-        ];
+        };
     }
 
+    /*
+    Retrieves tasks based on the provided query filters
+    Args:
+      QueryObject query: Object containing various filter and sorting parameters
+    Returns:
+      Task<IEnumerable<TaskItem>>: A task representing the asynchronous operation that returns the filtered list of tasks
+    */
     public async Task<IEnumerable<TaskItem>> GetTasksAsync(QueryObject query)
     {
         var tasks = _tasks.AsQueryable();
+        
+        // Apply filters based on the query parameters
         tasks = tasks.Where(s =>
             (!query.RoomId.HasValue || s.RoomId == query.RoomId) &&
             (!query.RequesterId.HasValue || s.RequesterId == query.RequesterId) &&
@@ -103,21 +119,40 @@ public class StubTaskSystemRepository : ITaskSystemRepository
             (!query.Status.HasValue || s.Status == query.Status) &&
             (!query.Year.HasValue || s.CreatedAt.Year == query.Year) &&
             (!query.Month.HasValue || s.CreatedAt.Month == query.Month) &&
-            (!query.Day.HasValue || s.CreatedAt.Day == query.Day)
+            (!query.Day.HasValue || s.CreatedAt.Day == query.Day) &&
+            (!query.AccountId.HasValue || s.RequesterId == query.AccountId)
         );
 
+        // Apply sorting based on the query parameter
         tasks = query.SortAscending ? tasks.OrderBy(s => s.CreatedAt) : tasks.OrderByDescending(s => s.CreatedAt);
 
         return await Task.FromResult(tasks);
     }
 
+    /*
+    Retrieves a task by its ID
+    Args:
+      int id: The ID of the task to retrieve
+    Returns:
+      Task<TaskItem?>: A task representing the asynchronous operation that returns the task or null if not found
+    */
     public async Task<TaskItem?> GetTaskByIdAsync(int id)
     {
         return await Task.FromResult(_tasks.FirstOrDefault(t => t.Id == id));
     }
 
+    /*
+    Adds a new task to the repository
+    Args:
+      TaskItem task: The task to add
+    Returns:
+      Task<TaskItem>: A task representing the asynchronous operation that returns the added task
+    Throws:
+      InvalidOperationException: If a task with the same ID already exists
+    */
     public async Task<TaskItem> AddTaskAsync(TaskItem task)
     {
+        // Check if task with the same ID already exists
         if (_tasks.FirstOrDefault(t => t.Id == task.Id) != null)
         {
             throw new InvalidOperationException("TaskItem with the same ID already exists.");
@@ -129,6 +164,16 @@ public class StubTaskSystemRepository : ITaskSystemRepository
         return await Task.FromResult(task);
     }
 
+    /*
+    Updates an existing task with new values
+    Args:
+      int id: The ID of the task to update
+      UpdateTaskDto taskDto: Object containing the updated task values
+    Returns:
+      Task<TaskItem?>: A task representing the asynchronous operation that returns the updated task
+    Throws:
+      KeyNotFoundException: If the task with the given ID does not exist
+    */
     public async Task<TaskItem?> UpdateTaskAsync(int id, UpdateTaskDto taskDto)
     {
         var existingTask = _tasks.FirstOrDefault(t => t.Id == id) ?? throw new KeyNotFoundException("Task not found.");
@@ -144,6 +189,16 @@ public class StubTaskSystemRepository : ITaskSystemRepository
         return await Task.FromResult(existingTask);
     }
 
+    /*
+    Updates the assignee of an existing task
+    Args:
+      int id: The ID of the task to update
+      int assigneeId: The ID of the new assignee
+    Returns:
+      Task<TaskItem?>: A task representing the asynchronous operation that returns the updated task
+    Throws:
+      KeyNotFoundException: If the task with the given ID does not exist
+    */
     public async Task<TaskItem?> UpdateAssigneeAsync(int id, int assigneeId)
     {
         var existingTask = _tasks.FirstOrDefault(t => t.Id == id) ?? throw new KeyNotFoundException("Task not found.");
@@ -153,6 +208,15 @@ public class StubTaskSystemRepository : ITaskSystemRepository
         return await Task.FromResult(existingTask);
     }
 
+    /*
+    Deletes a task from the repository
+    Args:
+      int id: The ID of the task to delete
+    Returns:
+      Task<bool>: A task representing the asynchronous operation that returns true if the task was deleted
+    Throws:
+      KeyNotFoundException: If the task with the given ID does not exist
+    */
     public async Task<bool> DeleteTaskAsync(int id)
     {
         var taskToDelete = _tasks.FirstOrDefault(t => t.Id == id) ?? throw new KeyNotFoundException("Task not found.");

@@ -6,6 +6,9 @@ namespace amenities_server.model
         public T Data { get; set; }
         public DateTime Timestamp { get; set; }
 
+        /*
+        AmenityResponse constructor
+        */
         public AmenityResponse(string message, T data)
         {
             Message = message;

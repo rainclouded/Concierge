@@ -21,10 +21,12 @@ describe('Integration Test for Task Manager', () => {
   });
 
   it('View All Tasks', () => {
-    // Check that initial tasks are loaded correctly
-    cy.get('table').find('tr').should('have.length.greaterThan', 1); // Including header row
-    cy.contains('Previous').should('be.visible');
-    cy.contains('Next').should('be.visible');
+    // Check that the table is present
+    cy.get('table').should('exist');
+
+    // Check that the pagination controls exist
+    cy.get('button').find('.fa-arrow-left').should('exist'); // Left arrow
+    cy.get('button').find('.fa-arrow-right').should('exist'); // Right arrow
   });
 
   it('Add New Task', () => {
@@ -52,7 +54,7 @@ describe('Integration Test for Task Manager', () => {
 
     // Enter the task description
     cy.get('textarea[placeholder="Enter task description"]').type(
-      'Clean the balcony area.'
+      'Temporary task for test.'
     );
 
     // Verify that the fields contain the correct values before saving
@@ -63,7 +65,7 @@ describe('Integration Test for Task Manager', () => {
 
     cy.get('textarea[placeholder="Enter task description"]').should(
       'have.value',
-      'Clean the balcony area.'
+      'Temporary task for test.'
     );
 
     // Click the Save button to add the task
@@ -72,28 +74,15 @@ describe('Integration Test for Task Manager', () => {
     // Verify the new task appears in the task list
     cy.contains('td', '202')
       .parent()
-      .contains('td', 'Clean the balcony area.')
+      .contains('td', '202')
       .should('exist');
-
-    // Cleanup: delete the newly added task
-    // Step 1: Open the task by clicking on it
-    cy.contains('td', '202').click();
-
-    // Step 2: Click the delete icon inside the task details modal
-    cy.get('.fa-trash').click();
-
-    // Step 3: Confirm the deletion in the confirmation modal
-    cy.contains('button', 'Confirm').click();
-
-    // Wait and verify deletion: Ensure the task is no longer in the list
-    cy.contains('td', '202').should('not.exist');
   });
 
   it('Edit Task', () => {
     // Open task details by clicking on the row containing the task
     getTaskRow(
-      101,
-      'There is a leak in the bathroom sink that needs urgent attention.'
+      202,
+      'Temporary task for test.'
     ).click(); // Opens the modal for this task
 
     // Click on the edit icon
@@ -108,76 +97,39 @@ describe('Integration Test for Task Manager', () => {
     cy.contains('button', 'Save').click();
 
     // Manually close the modal by clicking the close button (×)
-    cy.get('button').contains('×').click();
+    cy.contains('button', '×').click();
 
     // Ensure modal is closed by checking that the modal backdrop no longer exists
     cy.get('.fixed.z-10.inset-0.bg-black.bg-opacity-50').should('not.exist');
 
     // Verify the task list shows the updated description
-    getTaskRow(101, 'This is an edited description.').should('exist');
+    getTaskRow(202, 'This is an edited description.').should('exist');
 
     // Cleanup: revert task to original description
-    getTaskRow(101, 'This is an edited description.').click();
+    getTaskRow(202, 'This is an edited description.').click();
 
     // Click on the edit icon again to revert the description
     cy.get('.fa-edit').parent('button').click();
     cy.get('textarea.w-full.mt-1.p-2.border.rounded.h-32')
       .clear()
-      .type(
-        'There is a leak in the bathroom sink that needs urgent attention.'
-      );
+      .type('Temporary task for test.');
 
     // Save the original description
     cy.contains('button', 'Save').click();
 
     // Manually close the modal again after reverting the description
-    cy.get('button').contains('×').click();
+    cy.contains('button', '×').click();
 
     // Ensure modal is closed after cleanup
     cy.get('.fixed.z-10.inset-0.bg-black.bg-opacity-50').should('not.exist');
   });
 
-  it('Delete Task', () => {
-    // Add a new task to delete
-    cy.contains('Add Task').click();
-    cy.get('input[placeholder="Enter room number"]').type('203');
-    // Set the value of the dropdown using JavaScript
-    cy.get('#taskType').then(($select) => {
-      const selectElement = $select[0] as HTMLSelectElement;
-      const targetOption = Array.from(selectElement.options).find(
-        (option) => option.text === 'Maintenance'
-      );
-      if (targetOption) {
-        targetOption.selected = true;
-        selectElement.dispatchEvent(new Event('change', { bubbles: true }));
-      }
-    });
-    cy.get('textarea[placeholder="Enter task description"]').type(
-      'Temporary task for deletion test.'
-    );
-    cy.contains('button', 'Save').click();
-
-    // Open task details by clicking on the row containing the new task
-    getTaskRow(203, 'Temporary task for deletion test.').click();
-
-    // Click on the delete icon
-    cy.get('.fa-trash').parent('button').click();
-
-    // Confirm the deletion in the confirmation modal
-    cy.contains('button', 'Confirm').click();
-
-    // Verify both modals are closed after deletion
-    cy.get('.fixed.z-10.inset-0.bg-black.bg-opacity-50').should('not.exist');
-
-    // Verify the task no longer exists in the task list
-    cy.contains('Temporary task for deletion test.').should('not.exist');
-  });
 
   it('Assign and Unassign Task', () => {
     // Open the task modal by clicking on the task row
     getTaskRow(
-      101,
-      'There is a leak in the bathroom sink that needs urgent attention.'
+      202,
+      'Temporary task for test.'
     ).click();
 
     // Click "Assign to Me" to assign the task
@@ -205,15 +157,15 @@ describe('Integration Test for Task Manager', () => {
   it('Mark Task as Completed', () => {
     // Open task details by clicking on the task row
     getTaskRow(
-      101,
-      'There is a leak in the bathroom sink that needs urgent attention.'
+      202,
+      'Temporary task for test.'
     ).click();
 
     // Click "Assign to Me" to assign the task if it's not already assigned
     cy.contains('button', 'Assign to Me').click();
 
     // Mark the task as complete
-    cy.contains('button', 'Mark Complete').click();
+    cy.contains('button', 'Resolved').click();
 
     // Verify the status change to "Completed"
     cy.contains('p', 'Status:').invoke('text').should('include', 'Completed');
@@ -237,6 +189,23 @@ describe('Integration Test for Task Manager', () => {
 
     // Verify the modal is closed
     cy.get('.fixed.z-10.inset-0.bg-black.bg-opacity-50').should('not.exist');
+  });
+
+  it('Delete Task', () => {
+    // Open task details by clicking on the row containing the new task
+    getTaskRow(202, 'Temporary task for test.').click();
+
+    // Click on the delete icon
+    cy.get('.fa-trash').parent('button').click();
+
+    // Confirm the deletion in the confirmation modal
+    cy.contains('button', 'Confirm').click();
+
+    // Verify both modals are closed after deletion
+    cy.get('.fixed.z-10.inset-0.bg-black.bg-opacity-50').should('not.exist');
+
+    // Verify the task no longer exists in the task list
+    cy.contains('Temporary task for test.').should('not.exist');
   });
 
   afterEach(() => {

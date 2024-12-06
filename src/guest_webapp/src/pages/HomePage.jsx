@@ -11,16 +11,22 @@ import {
   faShirt,
   faSpa,
   faWrench,
+  faCog,
+  faSignOutAlt,
+  faCalendar,
+  faClipboardList,
 } from "@fortawesome/free-solid-svg-icons";
 
 import ServiceCard from "../components/ServiceCard";
 import { removeSessionKey } from "../utils/auth";
 import RequestCard from "../components/RequestCard";
 import { fetchWithAuth } from "../utils/authFetch";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/ReactToastify.css";
+import { getAccountId } from "../utils/auth";
 
 const HomePage = () => {
-  const roomKey = sessionStorage.getItem("roomKey"); //room key of user
+  const roomNum = sessionStorage.getItem("roomNum"); //room key of user
   //State for requests
   const [inputValue, setInputValue] = useState("");
 
@@ -84,19 +90,23 @@ const HomePage = () => {
       (tag === MaintenanceTag && !inputValue);
 
     if (isInvalidRequest) {
-      alert("Can't send your request: please enter a valid description!");
+      toast.error("Can't send your request: please enter a valid description!");
       setInputValue("");
+      return;
+    }
+
+    const accountId = getAccountId(); // Retrieve accountId from the token
+    if (!accountId && accountId !== 0) {
+      toast.error("Unable to submit request. No account ID found.");
       return;
     }
 
     const requestBody = {
       taskType: tag.replace(/\s+/g, ""),
       description: items || inputValue || "N/A",
-      roomId: parseInt(roomKey, 10),
-      requesterId: 100,
+      roomId: parseInt(roomNum, 10),
+      requesterId: accountId,
     };
-
-    setInputValue("");
 
     try {
       const response = await fetchWithAuth(
@@ -111,12 +121,14 @@ const HomePage = () => {
       );
 
       if (response.ok) {
-        alert("Successfully submitted request!");
+        toast.success("Successfully submitted request!");
+        setInputValue("");
+        resetFoodDeliveryInputs();
       } else {
         throw new Error("Failed to submit request");
       }
     } catch (error) {
-      alert("Couldn't submit your request at this time!");
+      toast.error("Couldn't submit your request at this time!");
       console.error(error);
     }
   };
@@ -137,11 +149,21 @@ const HomePage = () => {
     return items.trim();
   };
 
+  const resetFoodDeliveryInputs = () => {
+    setMainDish("");
+    setSideDish("");
+    setDrink("");
+    setMainChecked(false);
+    setSideChecked(false);
+    setDrinkChecked(false);
+  };
+
   return (
-    <div className="h-screen bg-[#ECD8C8] relative flex flex-col">
+    <div className="h-screen relative flex flex-col">
+      <ToastContainer bodyClassName="toast-body" />
       <div className="flex-grow overflow-y-auto">
         {/* Sticky Header */}
-        <header className="sticky top-0 bg-white p-4 shadow-md flex justify-between items-center z-40">
+        <header className="bg-white sticky top-0 my-2 p-2 flex justify-between items-center z-40">
           <button
             className="p-2 h-10 w-10 flex items-center justify-center"
             onClick={toggleMenu}
@@ -153,225 +175,232 @@ const HomePage = () => {
             onClick={toggleProfile}
             className="rounded-full bg-gray-300 p-2 h-10 w-10 flex items-center justify-center"
           >
-            <FontAwesomeIcon icon={faUser} className="text-xl" />
+            <FontAwesomeIcon icon={faUser} className="text-xl text-white" />
           </button>
         </header>
 
         {/* Light Brown Section */}
-        <div className="p-4 bg-[#ECD8C8] rounded-t-xl text-center mx-auto max-w-full md:max-w-[75%]">
-          <div className="text-[#8F613C] text-2xl font-bold">
+        <div className="px-4 pt-3 pb-2 bg-primary rounded-t-[50%] mx-auto max-w-full shadow-[0_-2px_4px_rgba(0,0,0,0.2)] z-10">
+          <div className="text-brown text-2xl font-bold text-center">
             {roomInfo.roomNumber}
           </div>
-          <div className="text-gray-500">{roomInfo.periodOfStay}</div>
-          <h2 className="mt-4 text-lg font-semibold">Explore Our Services</h2>
-          <p>Choose your service. We will deliver right to your door!</p>
+          <div className="text-gray-600 text-center text-sm">
+            <FontAwesomeIcon icon={faCalendar} className="mr-2" />
+            {roomInfo.periodOfStay}
+          </div>
+          <h2 className="mt-2 text-lg lg:text-xl font-semibold lg:text-center">
+            Explore Our Services
+          </h2>
+          <p className="text-sm lg:text-md lg:text-center">
+            Choose your service. We will deliver right to your door!
+          </p>
         </div>
 
+        <div className="absolute bottom-0 w-full h-1/2 bg-primary z-0"></div>
+
         {/* Requests Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 mx-auto justify-items-center max-w-full md:max-w-[75%]">
-          <RequestCard
-            icon={faBroom}
-            text={RoomServiceTag}
-            onSubmit={handleSubmit}
-            onClose={handleModalClose}
-          >
-            <label htmlFor="request" className="block mb-2">
-              Special Instructions:
-            </label>
-            <textarea
-              placeholder="Enter special instructions"
-              value={inputValue}
-              onChange={handleInputChange}
-              className="border rounded p-2 mb-4 w-full"
-              style={{ height: "180px", resize: "none" }}
-            />
-          </RequestCard>
-
-          <RequestCard
-            icon={faHamburger}
-            text={FoodDeliveryTag}
-            onSubmit={handleSubmit}
-            onClose={handleModalClose}
-          >
-            <label htmlFor="request" className="block mb-2">
-              Choose from our selection:
-            </label>
-
-            {/* Main Dish Selection */}
-            <div className="flex items-center mb-4">
-              <select
-                value={mainDish}
-                onChange={(e) => setMainDish(e.target.value)}
-                className="border rounded p-2 mr-2 w-48"
-                disabled={!mainChecked} // Disabled unless checkbox is checked
-              >
-                <option value="" disabled>
-                  Select a Main Dish
-                </option>
-                <option value="Grilled Chicken">Grilled Chicken</option>
-                <option value="Steak">Steak</option>
-                <option value="Pasta Primavera">Pasta Primavera</option>
-                <option value="Grilled Salmon">Grilled Salmon</option>
-              </select>
-
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={mainChecked}
-                  onChange={() => {
-                    setMainChecked(!mainChecked);
-                    if (mainChecked) setMainDish(""); // Reset dropdown when unchecked
-                  }}
-                  className="mr-2 w-5 h-5"
-                />
-                <span>Main</span>
-              </label>
-            </div>
-
-            {/* Side Dish Selection */}
-            <div className="flex items-center mb-4">
-              <select
-                value={sideDish}
-                onChange={(e) => setSideDish(e.target.value)}
-                className="border rounded p-2 mr-2 w-48"
-                disabled={!sideChecked} // Disabled unless checkbox is checked
-              >
-                <option value="" disabled>
-                  Select a Side Dish
-                </option>
-                <option value="French Fries">French Fries</option>
-                <option value="Caesar Salad">Caesar Salad</option>
-                <option value="Steamed Vegetables">Steamed Vegetables</option>
-                <option value="Garlic Rice">Garlic Rice</option>
-              </select>
-
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={sideChecked}
-                  onChange={() => {
-                    setSideChecked(!sideChecked);
-                    if (sideChecked) setSideDish(""); // Reset dropdown when unchecked
-                  }}
-                  className="mr-2 w-5 h-5"
-                />
-                <span>Side</span>
-              </label>
-            </div>
-
-            {/* Drink Selection */}
-            <div className="flex items-center mb-4">
-              <select
-                value={drink}
-                onChange={(e) => setDrink(e.target.value)}
-                className="border rounded p-2 mr-2 w-48"
-                disabled={!drinkChecked} // Disabled unless checkbox is checked
-              >
-                <option value="" disabled>
-                  Select a Drink
-                </option>
-                <option value="Soda">Soda</option>
-                <option value="Red Wine">Red Wine</option>
-                <option value="Cocktail">Cocktail</option>
-                <option value="Sparkling Water">Sparkling Water</option>
-              </select>
-
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={drinkChecked}
-                  onChange={() => {
-                    setDrinkChecked(!drinkChecked);
-                    if (drinkChecked) setDrink(""); // Reset dropdown when unchecked
-                  }}
-                  className="mr-2 w-5 h-5"
-                />
-                <span>Drink</span>
-              </label>
-            </div>
-          </RequestCard>
-
-          <RequestCard
-            icon={faClock}
-            text={WakeUpCallTag}
-            onSubmit={handleSubmit}
-            onClose={handleModalClose}
-          >
-            <label htmlFor="request" className="block mb-2">
-              What time do we wake you up?
-            </label>
-            <select
-              className="border rounded p-2 mb-4 w-full"
-              value={inputValue}
-              onChange={handleInputChange}
+        <div className="bg-primary">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 px-5 py-2 lg:py-5 mx-auto justify-items-center max-w-full lg:max-w-[50%] z-10">
+            <RequestCard
+              icon={faBroom}
+              text={RoomServiceTag}
+              onSubmit={handleSubmit}
+              onClose={handleModalClose}
             >
-              <option value="">Choose a time</option>
-              <option value="1:00 AM">1:00 AM</option>
-              <option value="2:00 AM">2:00 AM</option>
-              <option value="3:00 AM">3:00 AM</option>
-              <option value="4:00 AM">4:00 AM</option>
-              <option value="5:00 AM">5:00 AM</option>
-              <option value="6:00 AM">6:00 AM</option>
-              <option value="7:00 AM">7:00 AM</option>
-              <option value="8:00 AM">8:00 AM</option>
-              <option value="9:00 AM">9:00 AM</option>
-              <option value="10:00 AM">10:00 AM</option>
-            </select>
-          </RequestCard>
+              <label htmlFor="request" className="block mb-2">
+                Special Instructions:
+              </label>
+              <textarea
+                placeholder="Enter special instructions"
+                value={inputValue}
+                onChange={handleInputChange}
+                className="border rounded p-2 mb-4 w-full h-[150px] resize-none"
+              />
+            </RequestCard>
 
-          <RequestCard
-            icon={faShirt}
-            text={LaundryServiceTag}
-            onSubmit={handleSubmit}
-            onClose={handleModalClose}
-          >
-            <label htmlFor="request" className="block mb-2">
-              Special Instructions:
-            </label>
-            <textarea
-              placeholder="Enter special instructions"
-              value={inputValue}
-              onChange={handleInputChange}
-              className="border rounded p-2 mb-4 w-full"
-              style={{ height: "180px", resize: "none" }}
-            />
-          </RequestCard>
+            <RequestCard
+              icon={faHamburger}
+              text={FoodDeliveryTag}
+              onSubmit={handleSubmit}
+              onClose={handleModalClose}
+            >
+              <label htmlFor="request" className="block mb-2">
+                Choose from our selection:
+              </label>
 
-          <RequestCard
-            icon={faSpa}
-            text={SpaMassageTag}
-            onSubmit={handleSubmit}
-            onClose={handleModalClose}
-          >
-            <label htmlFor="request" className="block mb-2">
-              Special Instructions:
-            </label>
-            <textarea
-              placeholder="Enter special instructions"
-              value={inputValue}
-              onChange={handleInputChange}
-              className="border rounded p-2 mb-4 w-full"
-              style={{ height: "180px", resize: "none" }}
-            />
-          </RequestCard>
+              {/* Main Dish Selection */}
+              <div className="flex items-center mb-4">
+                <select
+                  value={mainDish}
+                  onChange={(e) => setMainDish(e.target.value)}
+                  className="border rounded p-2 mr-2 w-48"
+                  disabled={!mainChecked} // Disabled unless checkbox is checked
+                >
+                  <option value="" disabled>
+                    Select a Main Dish
+                  </option>
+                  <option value="Grilled Chicken">Grilled Chicken</option>
+                  <option value="Steak">Steak</option>
+                  <option value="Pasta Primavera">Pasta Primavera</option>
+                  <option value="Grilled Salmon">Grilled Salmon</option>
+                </select>
 
-          <RequestCard
-            icon={faWrench}
-            text={MaintenanceTag}
-            onSubmit={handleSubmit}
-            onClose={handleModalClose}
-          >
-            <label htmlFor="request" className="block mb-2">
-              Details:
-            </label>
-            <textarea
-              placeholder="Enter special instructions"
-              value={inputValue}
-              onChange={handleInputChange}
-              className="border rounded p-2 mb-4 w-full"
-              style={{ height: "180px", resize: "none" }}
-            />
-          </RequestCard>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={mainChecked}
+                    onChange={() => {
+                      setMainChecked(!mainChecked);
+                      if (mainChecked) setMainDish(""); // Reset dropdown when unchecked
+                    }}
+                    className="mr-2 w-5 h-5"
+                  />
+                  <span>Main</span>
+                </label>
+              </div>
+
+              {/* Side Dish Selection */}
+              <div className="flex items-center mb-4">
+                <select
+                  value={sideDish}
+                  onChange={(e) => setSideDish(e.target.value)}
+                  className="border rounded p-2 mr-2 w-48"
+                  disabled={!sideChecked} // Disabled unless checkbox is checked
+                >
+                  <option value="" disabled>
+                    Select a Side Dish
+                  </option>
+                  <option value="French Fries">French Fries</option>
+                  <option value="Caesar Salad">Caesar Salad</option>
+                  <option value="Steamed Vegetables">Steamed Vegetables</option>
+                  <option value="Garlic Rice">Garlic Rice</option>
+                </select>
+
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={sideChecked}
+                    onChange={() => {
+                      setSideChecked(!sideChecked);
+                      if (sideChecked) setSideDish(""); // Reset dropdown when unchecked
+                    }}
+                    className="mr-2 w-5 h-5"
+                  />
+                  <span>Side</span>
+                </label>
+              </div>
+
+              {/* Drink Selection */}
+              <div className="flex items-center mb-4">
+                <select
+                  value={drink}
+                  onChange={(e) => setDrink(e.target.value)}
+                  className="border rounded p-2 mr-2 w-48"
+                  disabled={!drinkChecked} // Disabled unless checkbox is checked
+                >
+                  <option value="" disabled>
+                    Select a Drink
+                  </option>
+                  <option value="Soda">Soda</option>
+                  <option value="Red Wine">Red Wine</option>
+                  <option value="Cocktail">Cocktail</option>
+                  <option value="Sparkling Water">Sparkling Water</option>
+                </select>
+
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={drinkChecked}
+                    onChange={() => {
+                      setDrinkChecked(!drinkChecked);
+                      if (drinkChecked) setDrink(""); // Reset dropdown when unchecked
+                    }}
+                    className="mr-2 w-5 h-5"
+                  />
+                  <span>Drink</span>
+                </label>
+              </div>
+            </RequestCard>
+
+            <RequestCard
+              icon={faClock}
+              text={WakeUpCallTag}
+              onSubmit={handleSubmit}
+              onClose={handleModalClose}
+            >
+              <label htmlFor="request" className="block mb-2">
+                What time do we wake you up?
+              </label>
+              <select
+                className="border rounded p-2 mb-4 w-full"
+                value={inputValue}
+                onChange={handleInputChange}
+              >
+                <option value="">Choose a time</option>
+                <option value="1:00 AM">1:00 AM</option>
+                <option value="2:00 AM">2:00 AM</option>
+                <option value="3:00 AM">3:00 AM</option>
+                <option value="4:00 AM">4:00 AM</option>
+                <option value="5:00 AM">5:00 AM</option>
+                <option value="6:00 AM">6:00 AM</option>
+                <option value="7:00 AM">7:00 AM</option>
+                <option value="8:00 AM">8:00 AM</option>
+                <option value="9:00 AM">9:00 AM</option>
+                <option value="10:00 AM">10:00 AM</option>
+              </select>
+            </RequestCard>
+
+            <RequestCard
+              icon={faShirt}
+              text={LaundryServiceTag}
+              onSubmit={handleSubmit}
+              onClose={handleModalClose}
+            >
+              <label htmlFor="request" className="block mb-2">
+                Special Instructions:
+              </label>
+              <textarea
+                placeholder="Enter special instructions"
+                value={inputValue}
+                onChange={handleInputChange}
+                className="border rounded p-2 mb-4 w-full h-[150px] resize-none"
+              />
+            </RequestCard>
+
+            <RequestCard
+              icon={faSpa}
+              text={SpaMassageTag}
+              onSubmit={handleSubmit}
+              onClose={handleModalClose}
+            >
+              <label htmlFor="request" className="block mb-2">
+                Special Instructions:
+              </label>
+              <textarea
+                placeholder="Enter special instructions"
+                value={inputValue}
+                onChange={handleInputChange}
+                className="border rounded p-2 mb-4 w-full h-[150px] resize-none"
+              />
+            </RequestCard>
+
+            <RequestCard
+              icon={faWrench}
+              text={MaintenanceTag}
+              onSubmit={handleSubmit}
+              onClose={handleModalClose}
+            >
+              <label htmlFor="request" className="block mb-2">
+                Details:
+              </label>
+              <textarea
+                placeholder="Enter special instructions"
+                value={inputValue}
+                onChange={handleInputChange}
+                className="border rounded p-2 mb-4 w-full h-[150px] resize-none"
+              />
+            </RequestCard>
+          </div>
         </div>
       </div>
 
@@ -382,12 +411,20 @@ const HomePage = () => {
           onClick={closeMenu}
         >
           <div
-            className="fixed left-0 top-0 h-full w-1/2 md:w-1/4 bg-white z-60 p-4"
+            className="fixed left-5 top-14 bg-white z-60 p-5 lg:p-8 text-xl lg:text-2xl rounded-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <ul>
               <li>
-                <a href="/home">Menu</a>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent default navigation
+                    toast.info("Coming soon!");
+                  }}
+                >
+                  Menu
+                </a>
               </li>
             </ul>
           </div>
@@ -401,14 +438,24 @@ const HomePage = () => {
           onClick={closeProfile}
         >
           <div
-            className="fixed right-0 top-0 h-full w-3/4 md:w-1/4 bg-white z-60 p-4"
+            className="fixed right-5 top-14 bg-white z-60 p-5 lg:p-8 text-xl lg:text-2xl rounded-lg"
             onClick={(e) => e.stopPropagation()}
           >
-            <ul>
+            <ul className="flex flex-col space-y-4">
               <li>
-                <a href="/home">Settings</a>
+                <FontAwesomeIcon icon={faCog} className="mr-2" />
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent default navigation
+                    toast.info("Coming soon!");
+                  }}
+                >
+                  Settings
+                </a>
               </li>
               <li>
+                <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
                 <a href="#" onClick={handleLogout}>
                   Log Out
                 </a>
@@ -419,15 +466,20 @@ const HomePage = () => {
       )}
 
       {/* Sticky Footer */}
-      <footer className="bg-white p-4 shadow-md flex justify-between items-center z-40">
+      <footer className="grid grid-cols-3 space-x-0.5 items-center z-40 px-1 pb-1 ">
         <ServiceCard
           icon={faConciergeBell}
           text="Amenities"
           link="/amenities"
         />
         <ServiceCard
+          icon={faClipboardList}
+          text="Your requests"
+          link="/tasks"
+        />
+        <ServiceCard
           icon={faExclamationTriangle}
-          text="Report an Incident"
+          text="Complaint"
           link="/incident_reports"
         />
       </footer>
@@ -436,9 +488,31 @@ const HomePage = () => {
 };
 
 const getRoomInfo = () => {
+  // Semi hard code stay duration: Right now it gets today time and next 7days
+  const today = new Date();
+
+  function formatDate(date) {
+    const options = {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    };
+    return date.toLocaleString("en-GB", options).toLowerCase().replace(",", "");
+  }
+
+  const sevenDaysLater = new Date(today);
+  sevenDaysLater.setDate(today.getDate() + 7);
+
+  const todayStr = formatDate(today);
+  const next7DaysStr = formatDate(sevenDaysLater);
+
+  const periodOfStay = `${todayStr} - ${next7DaysStr}`;
   return {
-    roomNumber: "Room " + sessionStorage.getItem("roomKey"),
-    periodOfStay: "23.11  11:00am - 26.11  11:00am",
+    roomNumber: "Room " + sessionStorage.getItem("roomNum"),
+    periodOfStay: periodOfStay,
   };
 };
 

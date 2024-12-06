@@ -1,1 +1,174 @@
-<h3 class="font-semibold text-5xl">Welcome, Mr.Admin</h3>
+<h3 class="font-semibold text-5xl mb-5">Welcome, {{ accountName }}</h3>
+<div class="flex gap-5">
+  <p class="mb-5 font-bold text-xl">Summary</p>
+  <button (click)="refreshPage()">
+    <i
+      class="fa-solid fa-rotate-right relative -top-2 hover:rotate-180 hover:transition-all duration-500"
+    ></i>
+  </button>
+</div>
+<div>
+  <div class="grid grid-rows-2 gap-6">
+    <!-- Upper section -->
+    <div class="upper-section grid grid-cols-2 gap-6 h-1/2">
+      <!-- Left column: Amenities -->
+      <div class="left-upper-section">
+        <h2 class="text-2xl font-bold mb-4">Amenities</h2>
+        <div class="bg-white rounded-xl shadow">
+          <div class="max-h-[277px] overflow-y-auto">
+            <table class="w-full text-left rtl:text-right">
+              <thead
+                class="text-md text-gray-700 uppercase bg-lightPrimary sticky top-0 z-10"
+              >
+                <tr>
+                  <th scope="col" class="px-6 py-2 w-[25%]">Title</th>
+                  <th scope="col" class="px-6 py-2 w-[25%]">Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                @if (amenities.length > 0) { @for(amenity of amenities; track
+                amenity.id) {
+                <tr class="bg-white border-b amenity-item">
+                  <th
+                    scope="row"
+                    class="px-6 py-3 font-semibold text-2xl whitespace-nowrap"
+                  >
+                    {{ amenity.name }}
+                  </th>
+                  <td class="px-6 py-3">
+                    {{ formatTimeToAMPM(amenity.startTime) }} -
+                    {{ formatTimeToAMPM(amenity.endTime) }}
+                  </td>
+                </tr>
+                } } @else {
+                <p>No amenities found</p>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column: 2x2 grid: Incident report -->
+      <div class="right-upper-section">
+        <h2 class="text-2xl font-bold mb-4">Incident Reports</h2>
+        <div class="grid grid-cols-2 gap-6 h-[277px]">
+          <!-- To Do -->
+          <div class="bg-lightPrimary px-4 rounded-xl shadow flex">
+            <div class="w-2/3 flex justify-center items-center">
+              <div>
+                <h3 class="text-xl font-semibold uppercase">To Do</h3>
+                <p class="text-sm italic text-lightText">
+                  Pending reports that have not yet been started.
+                </p>
+              </div>
+            </div>
+            <div
+              class="w-1/3 flex justify-center items-center bg-lightGray px-4 rounded-xl"
+            >
+              <span class="text-5xl font-bold">{{ reportCounts.OPEN }}</span>
+            </div>
+          </div>
+
+          <!-- In Progress -->
+          <div class="bg-lightPrimary px-4 rounded-xl shadow flex">
+            <div class="w-2/3 flex justify-center items-center">
+              <div>
+                <h3 class="text-xl font-semibold uppercase">In Progress</h3>
+                <p class="text-sm italic text-lightText">
+                  Reports that are currently being worked on.
+                </p>
+              </div>
+            </div>
+            <div
+              class="w-1/3 flex justify-center items-center bg-lightGray px-4 rounded-xl"
+            >
+              <span class="text-5xl font-bold">{{
+                reportCounts.IN_PROGRESS
+              }}</span>
+            </div>
+          </div>
+
+          <!-- Resolved -->
+          <div class="bg-lightPrimary px-4 rounded-xl shadow flex">
+            <div class="w-2/3 flex justify-center items-center">
+              <div>
+                <h3 class="text-xl font-semibold uppercase">Resolved</h3>
+                <p class="text-sm italic text-lightText">
+                  Reports that have been successfully resolved.
+                </p>
+              </div>
+            </div>
+            <div
+              class="w-1/3 flex justify-center items-center bg-lightGray px-4 rounded-xl"
+            >
+              <span class="text-5xl font-bold">{{
+                reportCounts.RESOLVED
+              }}</span>
+            </div>
+          </div>
+
+          <!-- Closed -->
+          <div class="bg-lightPrimary px-4 rounded-xl shadow flex">
+            <div class="w-2/3 flex justify-center items-center">
+              <div>
+                <h3 class="text-xl font-semibold uppercase">Closed</h3>
+                <p class="text-sm italic text-lightText">
+                  Reports that have been closed without a solution.
+                </p>
+              </div>
+            </div>
+            <div
+              class="w-1/3 flex justify-center items-center bg-lightGray px-4 rounded-xl"
+            >
+              <span class="text-5xl font-bold">{{ reportCounts.CLOSED }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lower section: Task System -->
+    <div class="bottom-section">
+      <h2 class="text-2xl font-bold mb-4">Recent Unclaimed Tasks</h2>
+      <div class="rounded-xl shadow max-h-[300px] overflow-y-auto">
+        <table class="table-auto w-full border-gray-300">
+          <thead class="bg-lightPrimary sticky top-0 z-10">
+            <tr>
+              <th class="border-b border-gray-300 px-4 py-2">Room No</th>
+              <th class="border-b border-gray-300 px-4 py-2">
+                Type of Service
+              </th>
+              <th class="border-b border-gray-300 px-4 py-2">Description</th>
+              <th class="border-b border-gray-300 px-4 py-2">Time Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let task of tasks">
+              <td class="border-b border-gray-300 px-4 py-2 text-center">
+                {{ task.roomId }}
+              </td>
+              <td class="border-b border-gray-300 px-4 py-2">
+                {{ task.taskType }}
+              </td>
+              <td class="border-b border-gray-300 px-4 py-2">
+                {{ task.description }}
+              </td>
+              <td class="border-b border-gray-300 px-4 py-2">
+                {{ task.createdAt | date : "medium" }}
+              </td>
+            </tr>
+            <tr *ngIf="tasks.length === 0">
+              <td
+                colspan="5"
+                class="border border-gray-300 px-4 py-2 text-center"
+              >
+                No tasks found
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

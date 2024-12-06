@@ -6,6 +6,16 @@ from incident_reports_server.models.models import IncidentReportResponse, Respon
 from incident_reports_server.validators.incident_report_validator import IncidentReportValidator
 
 def create_app(persistence=None, permissionValidator=None):
+    """
+    Creates a Flask application with routes for handling incident reports.
+    
+    Arguments:
+    persistence -- The persistence layer to be used (optional).
+    permissionValidator -- The permission validator to be used (optional).
+    
+    Returns:
+        Flask app: The Flask application instance.
+    """
     app = Flask(__name__)
     
     _incident_report_persistence = persistence or Services.get_incident_report_persistence()
@@ -13,6 +23,12 @@ def create_app(persistence=None, permissionValidator=None):
 
     @app.route("/incident_reports/", methods=["GET"])
     def get_incident_reports() -> IncidentReportResponse:
+        """
+        Handles GET requests to retrieve incident reports based on query parameters (severity, status, date range).
+        
+        Returns:
+            Response: A JSON response with incident reports or an error message.
+        """
         api_key = request.headers.get('X-API-Key')
         if not _permission_validator.validate_session_key_for_permission_name(api_key, PermissionNames.VIEW_IR):
             return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
@@ -58,10 +74,19 @@ def create_app(persistence=None, permissionValidator=None):
     
     @app.route("/incident_reports/<int:id>", methods=["GET"])
     def get_incident_report_by_id(id: int) -> IncidentReportResponse:
+        """
+        Handles GET requests to retrieve a single incident report by its ID.
+        
+        Arguments:
+            id -- The ID of the incident report to retrieve.
+        
+        Returns:
+            Response: A JSON response with the incident report or an error message.
+        """
         api_key = request.headers.get('X-API-Key')
         if not _permission_validator.validate_session_key_for_permission_name(api_key, PermissionNames.VIEW_IR):
             return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
-        
+
         incident_report = _incident_report_persistence.get_incident_report_by_id(id)
 
         #check if report with passed id exists
@@ -75,6 +100,12 @@ def create_app(persistence=None, permissionValidator=None):
 
     @app.route("/incident_reports/", methods=["POST"])
     def create_incident_report() -> IncidentReportResponse:
+        """
+        Handles POST requests to create a new incident report.
+        
+        Returns:
+            Response: A JSON response indicating success or failure.
+        """
         api_key = request.headers.get('X-API-Key')
         if not _permission_validator.validate_session_key_for_permission_name(api_key, PermissionNames.CREATE_IR):
             return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
@@ -96,7 +127,7 @@ def create_app(persistence=None, permissionValidator=None):
 
         #create URI that points to the newly created report
         uri = f"{request.scheme}://{request.host}/incident_reports/{incident_report.id}"
-        
+
         response_data = IncidentReportResponse(ResponseMessages.CREATE_INCIDENT_REPORT_SUCCESS,incident_report.to_dict()).to_dict()
         response = make_response(jsonify(response_data), 201)
         response.headers["Location"] = uri
@@ -105,6 +136,15 @@ def create_app(persistence=None, permissionValidator=None):
 
     @app.route("/incident_reports/<int:id>", methods=["PUT"])
     def update_incident_report(id: int) -> IncidentReportResponse:   
+        """
+        Handles PUT requests to update an existing incident report by its ID.
+        
+        Arguments:
+            id -- The ID of the incident report to update.
+        
+        Returns:
+            Response: A JSON response indicating success or failure.
+        """
         api_key = request.headers.get('X-API-Key')
         if not _permission_validator.validate_session_key_for_permission_name(api_key, PermissionNames.EDIT_IR):
             return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
@@ -125,7 +165,7 @@ def create_app(persistence=None, permissionValidator=None):
         if _incident_report_persistence.get_incident_report_by_id(id) is None:
             incident_response = IncidentReportResponse(ResponseMessages.GET_INCIDENT_REPORT_FAILED, None).to_dict()
             return jsonify(incident_response), 404
-        
+
         #make call to database to update incident report
         incident_report = _incident_report_persistence.update_incident_report(id, incident_report)
 
@@ -134,6 +174,15 @@ def create_app(persistence=None, permissionValidator=None):
 
     @app.route("/incident_reports/<int:id>", methods=["DELETE"])
     def delete_incident_report(id: int) -> IncidentReportResponse:
+        """
+        Handles DELETE requests to remove an incident report by its ID.
+        
+        Arguments:
+            id -- The ID of the incident report to delete.
+        
+        Returns:
+            Response: A JSON response indicating success or failure.
+        """
         api_key = request.headers.get('X-API-Key')
         if not _permission_validator.validate_session_key_for_permission_name(api_key, PermissionNames.DELETE_IR):
             return jsonify(IncidentReportResponse(ResponseMessages.UNAUTHORIZED, None).to_dict()), 401
@@ -152,6 +201,9 @@ def create_app(persistence=None, permissionValidator=None):
     return app
 
 if __name__ == "__main__":
+    """
+    Runs the Flask app with CORS enabled and listens on port 8080.
+    """
     app = create_app()
     CORS(app)
     app.run(host="0.0.0.0", port=8080, debug=True)

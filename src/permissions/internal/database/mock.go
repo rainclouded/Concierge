@@ -6,11 +6,22 @@ import (
 	"fmt"
 )
 
+// MockDatabase is a mock implementation of a database that holds permissions and permission groups
+// for testing purposes. It simulates operations such as creating, retrieving, updating, and deleting permissions and permission groups.
+// Args:
+//    None
+// Returns:
+//    None
 type MockDatabase struct {
 	permissions []*models.Permission
 	groups      []*models.PermissionGroup
 }
 
+// NewMockDB creates a new instance of MockDatabase with predefined permissions and permission groups
+// Args:
+//    None
+// Returns:
+//    *MockDatabase: Returns a new instance of MockDatabase populated with test data
 func NewMockDB() *MockDatabase {
 	var permissions = []*models.Permission{
 		{ID: 1, Name: constants.CanViewPermissionGroups, Value: true},
@@ -73,10 +84,22 @@ func NewMockDB() *MockDatabase {
 	return db
 }
 
+// GetPermissions retrieves all permissions stored in the mock database.
+// Args:
+//    None
+// Returns:
+//    []*models.Permission: A slice of all permission objects stored in the mock database.
+//    error: Returns any error that occurs during the operation.
 func (db *MockDatabase) GetPermissions() ([]*models.Permission, error) {
 	return db.permissions, nil
 }
 
+// GetPermissionById retrieves a permission by its ID from the mock database.
+// Args:
+//    permissionId: The ID of the permission to retrieve.
+// Returns:
+//    *models.Permission: The permission with the specified ID.
+//    error: Returns an error if the permission is not found.
 func (db *MockDatabase) GetPermissionById(permissionId int) (*models.Permission, error) {
 	for _, permission := range db.permissions {
 		if permission.ID == permissionId {
@@ -87,6 +110,12 @@ func (db *MockDatabase) GetPermissionById(permissionId int) (*models.Permission,
 	return nil, fmt.Errorf("permission with ID %d not found", permissionId)
 }
 
+// CreatePermission creates a new permission in the mock database.
+// Args:
+//    permissionName: The name of the new permission to create.
+// Returns:
+//    *models.Permission: The newly created permission object.
+//    error: Returns an error if a permission with the same name already exists.
 func (db *MockDatabase) CreatePermission(permissionName string) (*models.Permission, error) {
 	permission := &models.Permission{ID: db.getMaxPermissionId(), Name: permissionName, Value: true}
 	for _, p := range db.permissions {
@@ -99,6 +128,11 @@ func (db *MockDatabase) CreatePermission(permissionName string) (*models.Permiss
 	return permission, nil
 }
 
+// UpdatePermission updates an existing permission in the mock database.
+// Args:
+//    updatedPermission: A pointer to the updated permission object.
+// Returns:
+//    error: Returns an error if the permission with the specified ID is not found.
 func (db *MockDatabase) UpdatePermission(updatedPermission *models.Permission) error {
 	for i, permission := range db.permissions {
 		if permission.ID == updatedPermission.ID {
@@ -110,10 +144,22 @@ func (db *MockDatabase) UpdatePermission(updatedPermission *models.Permission) e
 	return fmt.Errorf("update failed, permission not found with ID %d", updatedPermission.ID)
 }
 
+// GetPermissionGroups retrieves all permission groups stored in the mock database.
+// Args:
+//    None
+// Returns:
+//    []*models.PermissionGroup: A slice of all permission group objects stored in the mock database.
+//    error: Returns any error that occurs during the operation.
 func (db *MockDatabase) GetPermissionGroups() ([]*models.PermissionGroup, error) {
 	return db.groups, nil
 }
 
+// GetPermissionGroupById retrieves a permission group by its ID from the mock database.
+// Args:
+//    groupId: The ID of the permission group to retrieve.
+// Returns:
+//    *models.PermissionGroup: The permission group with the specified ID.
+//    error: Returns an error if the permission group is not found.
 func (db *MockDatabase) GetPermissionGroupById(groupId int) (*models.PermissionGroup, error) {
 	for _, group := range db.groups {
 		if group.ID == groupId {
@@ -122,6 +168,18 @@ func (db *MockDatabase) GetPermissionGroupById(groupId int) (*models.PermissionG
 	}
 
 	return nil, fmt.Errorf("permission Group with ID %d not found", groupId)
+}
+
+func (db *MockDatabase) GetPermissionGroupsByAccount(accountId int) ([]*models.PermissionGroup, error) {
+	var groupsWithAcc []*models.PermissionGroup
+
+	for _, group := range db.groups {
+		if contains(group.Members, accountId) {
+			groupsWithAcc = append(groupsWithAcc, group)
+		}
+	}
+
+	return groupsWithAcc, nil
 }
 
 func (db *MockDatabase) CreatePermissionGroup(newGroup *models.PermissionGroupRequest) error {
@@ -148,6 +206,12 @@ func (db *MockDatabase) CreatePermissionGroup(newGroup *models.PermissionGroupRe
 	return nil
 }
 
+// UpdatePermissionGroup updates an existing permission group in the mock database.
+// Args:
+//    id: The ID of the permission group to update.
+//    groupReq: The request object containing the new details for the group.
+// Returns:
+//    error: Returns an error if the update fails.
 func (db *MockDatabase) UpdatePermissionGroup(id int, groupReq *models.PermissionGroupRequest) error {
 	group, err := db.GetPermissionGroupById(id)
 	if err != nil {
@@ -161,10 +225,6 @@ func (db *MockDatabase) UpdatePermissionGroup(id int, groupReq *models.Permissio
 
 	if groupReq.Description != "" {
 		group.Description = groupReq.Description
-	}
-
-	if groupReq.Name != "" {
-		group.Name = groupReq.Name
 	}
 
 	if groupReq.Permissions != nil {
@@ -235,6 +295,12 @@ func (db *MockDatabase) UpdatePermissionGroup(id int, groupReq *models.Permissio
 	return nil
 }
 
+// GetGroupMembers retrieves the list of member IDs for a given permission group.
+// Args:
+//    groupId: The ID of the permission group.
+// Returns:
+//    []int: A slice of member IDs belonging to the specified group.
+//    error: Returns an error if the group is not found.
 func (db *MockDatabase) GetGroupMembers(groupId int) ([]int, error) {
 	group, err := db.GetPermissionGroupById(groupId)
 	if err != nil {
@@ -244,6 +310,12 @@ func (db *MockDatabase) GetGroupMembers(groupId int) ([]int, error) {
 	return group.Members, nil
 }
 
+// AddMemberToGroup adds a member to a given permission group.
+// Args:
+//    groupId: The ID of the permission group.
+//    accountId: The ID of the account to add as a member.
+// Returns:
+//    error: Returns an error if the account cannot be added to the group.
 func (db *MockDatabase) AddMemberToGroup(groupId int, accountId int) error {
 	group, err := db.GetPermissionGroupById(groupId)
 	if err != nil {
@@ -254,6 +326,12 @@ func (db *MockDatabase) AddMemberToGroup(groupId int, accountId int) error {
 	return nil
 }
 
+// RemoveMemberFromGroup removes a member from a given permission group.
+// Args:
+//    groupId: The ID of the permission group.
+//    accountId: The ID of the account to remove from the group.
+// Returns:
+//    error: Returns an error if the account cannot be removed from the group.
 func (db *MockDatabase) RemoveMemberFromGroup(groupId int, accountId int) error {
 	group, err := db.GetPermissionGroupById(groupId)
 	if err != nil {
@@ -270,6 +348,11 @@ func (db *MockDatabase) RemoveMemberFromGroup(groupId int, accountId int) error 
 	return fmt.Errorf("remove Failed, Account %d is not a member of group %d", groupId, accountId)
 }
 
+// getMaxPermissionId calculates the maximum permission ID from the existing permissions.
+// Args:
+//    None
+// Returns:
+//    int: The next available ID for a new permission.
 func (db *MockDatabase) getMaxPermissionId() int {
 	if len(db.permissions) == 0 {
 		return 0
@@ -285,6 +368,11 @@ func (db *MockDatabase) getMaxPermissionId() int {
 	return max + 1
 }
 
+// getMaxGroupId calculates the maximum group ID from the existing groups.
+// Args:
+//    None
+// Returns:
+//    int: The next available ID for a new group.
 func (db *MockDatabase) getMaxGroupId() int {
 	if len(db.groups) == 0 {
 		return 0
@@ -300,6 +388,12 @@ func (db *MockDatabase) getMaxGroupId() int {
 	return max + 1
 }
 
+// GetPermissionForAccountId retrieves the permissions for a given account ID based on their group memberships.
+// Args:
+//    accountId: The ID of the account to retrieve permissions for.
+// Returns:
+//    []*models.Permission: A slice of permissions for the specified account.
+//    error: Returns an error if the account is not found or permissions cannot be determined.
 func (db *MockDatabase) GetPermissionForAccountId(accountId int) ([]*models.Permission, error) {
 	userGroups := []*models.PermissionGroup{}
 	for _, group := range db.groups {
@@ -324,6 +418,12 @@ func (db *MockDatabase) GetPermissionForAccountId(accountId int) ([]*models.Perm
 	return userPermission, nil
 }
 
+// GetGroupPermissionState checks if a permission is assigned to a group.
+// Args:
+//    group: The permission group to check.
+//    permissionId: The ID of the permission.
+// Returns:
+//    bool: Returns true if the permission is assigned to the group, otherwise false.
 func (db *MockDatabase) GetGroupPermissionState(group *models.PermissionGroup, permissionId int) bool {
 	for _, permission := range group.Permissions {
 		if permission.ID == permissionId {
@@ -333,7 +433,20 @@ func (db *MockDatabase) GetGroupPermissionState(group *models.PermissionGroup, p
 	return false
 }
 
-// Testing setup methods
+// ClearPermissions clears all permissions from the mock database.
+// Args:
+//    None
+// Returns:
+//    None
 func (db *MockDatabase) ClearPermissions() {
 	db.permissions = []*models.Permission{}
+}
+
+func contains(list []int, value int) bool {
+	for _, item := range list {
+		if item == value {
+			return true
+		}
+	}
+	return false
 }

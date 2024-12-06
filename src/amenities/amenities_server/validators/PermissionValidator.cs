@@ -21,6 +21,14 @@ namespace amenities_server.validators
             _permClient = permissionClient;
         }
 
+        /*
+        Given the session key, validate if the permission is held
+        Args:
+            permission name is the name of the permission to verify
+            sessionKey is the value which indicates the permisions
+        Returns:
+            True if the permisison is held, False otherwose
+        */
         public bool ValidatePermissions(string permissionName, string sessionKey)
         {
             var permData = _permClient.GetSessionData(sessionKey).GetAwaiter().GetResult();

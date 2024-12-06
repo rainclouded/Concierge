@@ -17,6 +17,7 @@ class ClientPermissionValidator(PermissionInterface):
     CAN_DELETE_STAFF = "canDeleteStaffAccounts"
     CAN_EDIT_STAFF =   "canEditStaffAccounts"
     CAN_EDIT_GUEST =   "canEditGuestAccounts"
+    CAN_VIEW_USERS =   "canViewAccounts"
 
 
     def __init__(self):
@@ -50,6 +51,18 @@ class ClientPermissionValidator(PermissionInterface):
         return self.validate_session_key_for_permission_name(token, self.CAN_DELETE_GUEST)
 
 
+    def can_view_users(self, token:str, public_key:str)->bool:
+        """Verifies if the token permits user retrieval
+
+            Args:            
+                token is the jwt Token to be verified
+                public_key is the public key to decode the token
+            Returns:
+                True if action is permitted
+                False otherwise
+        """
+        return self.validate_session_key_for_permission_name(token, self.CAN_VIEW_USERS)
+
 
     def can_update_staff(self, token: str, public_key:str)->bool:
         """Verifies if the token permits staff update
@@ -75,7 +88,8 @@ class ClientPermissionValidator(PermissionInterface):
                 False otherwise
         """
         return self.validate_session_key_for_permission_name(token, self.CAN_DELETE_GUEST)
-    
+
+
     def decode_token(self, token:str, public_key:str,\
                      algorithm:str='ES256'):
         """Decodes a jwt token
@@ -103,19 +117,45 @@ class ClientPermissionValidator(PermissionInterface):
         return (
             """-----BEGIN PUBLIC KEY-----MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE+tognnc+cFv4SK9KTuw7BIAVkZKr ET7NVlEYW+n+4XMSlK8ZOlUTuYw35b6aJsT7GWrGGsOBE7I+g3x6nikmxg==-----END PUBLIC KEY-----"""
         )
-    
+
+
     @staticmethod
     def validate_session_key_for_permission_name(sessionKey: str, permissionName: str) -> bool:
+        """
+        Validates the session key for the specified permission
+
+        Args:
+            sessionKey the session key to validate
+            permissionName the permission name to look for
+        Returns:
+            True if permission granted, otherwise false
+        """
         permissions = ClientPermissionValidator.get_session_permissions(sessionKey)
+        print(f'Permission {permissionName} in permissions? {permissionName in permissions}')
         return permissionName in permissions
-    
+
+
     @staticmethod
     def get_session_permissions(sessionKey: str) -> list[int]:
+        """
+        Retrieve the list of permissions from the session api
+
+        Args:
+            sessionKey is the current jwt key for the session
+        Returns:
+            List of available values
+        """
         endpoint = os.getenv('SESSIONS_ENDPOINT')
+        
         try:
-            response = requests.get(f'{endpoint}/sessions/me')
-            permissions = json.loads(response)['data']['sessionsData']['SessionPermissionList']
+            response = requests.get(f'{endpoint}/sessions/me', headers={'x-api-key':sessionKey})
+            print(json.loads(response.text)['data'])
+            print(json.loads(response.text)['data']['sessionData'])
+            print(json.loads(response.text)['data']['sessionData']['SessionPermissionList'])
+            permissions = json.loads(response.text)['data']['sessionData']['SessionPermissionList']
             return permissions
         except requests.exceptions.RequestException as e:
-            print(e)
+
+            print(f'Error in get_session_permissions: {e}')
         return []
+

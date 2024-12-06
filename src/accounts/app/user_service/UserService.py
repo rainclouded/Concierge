@@ -16,7 +16,12 @@ class UserService():
         self.validation = validation
 
     def get_user_type(self, username:str)->str:
-        """Find the 'type' of a user
+        """
+        Find the 'type' of a user
+        Args:
+            username is the name of the user to identify
+        Returns:
+            string of user type identification
         """
         return next(
             (
@@ -38,6 +43,7 @@ class UserService():
         """
         if self.validation.validate_new_guest(new_guest):
             new_guest.password = randbelow(cfg.MAX_GUEST_PASSWORD)
+            new_guest.id = 0
             new_guest.hash = \
                 self.auth.get_hash(new_guest.username,new_guest.password)
             return (self.db.create_guest(new_guest), f'{new_guest.password}')
@@ -74,10 +80,28 @@ class UserService():
     def update_user(self, user:User)->tuple[User, str]:
         """
             Update the account associated with a username
-            Args
+            Args:
+                User is the user to update
+            Retrns:
+                Tuple of user password pair
         """
         return (
             self.create_new_guest(user)
             if self.delete_user(user.username)
             else (None, None)
         )
+    
+    def get_users(self, user_type=None):
+        """
+        Get all the users of a specific type or
+        just all the users
+
+        """
+        users = None
+        if user_type == cfg.GUEST_TYPE:
+            users = self.db.get_guests()
+        elif user_type == cfg.STAFF_TYPE:
+            users = self.db.get_staff()
+        else:
+            users = self.db.get_users()
+        return(users)

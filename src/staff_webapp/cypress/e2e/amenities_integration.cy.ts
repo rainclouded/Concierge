@@ -1,36 +1,38 @@
 describe('integration test for amenities', () => {
   //Integration test that tests the connectin between the staff ui and amenities
 
-  beforeEach(()=> {
+  beforeEach(() => {
     cy.visit('localhost:8082/login')
     cy.get('#room-num-input').clear().type('admin');
     cy.get('#pass-code-input').clear().type('admin');
     cy.get('button').click()
     cy.url().should('include', '/dashboard/home')
     cy.get('.sidebar-item')
-      .contains('Amenities')
+      .eq(2) // Amenities is at index 2 of the sidebar list
       .click()
 
     //We cannot reset the system for each test
     //Instead we ensure initial state is okay
+    const expectedAmenities = ['Pool', 'Gym', 'Breakfast', 'Bar']
+
     cy.get('.amenity-item')
       .should(($items) => {
-        expect($items).to.have.length(4)
-        expect($items[0]).to.contain.text('Pool')
-        expect($items[1]).to.contain.text('Gym')
-        expect($items[2]).to.contain.text('Breakfast')
-        expect($items[3]).to.contain.text('Bar')
+        expect($items).to.have.length(expectedAmenities.length)
+        expectedAmenities.forEach((amenity, index) => {
+          expect($items[index]).to.contain.text(amenity)
+        })
       })
   });
 
   it('Get and view all amenities', () => {
-      cy.get('.amenity-item')
+    const expectedAmenities = ['Pool', 'Gym', 'Breakfast', 'Bar']
+
+    cy.get('.amenity-item')
       .should(($items) => {
-        expect($items).to.have.length(4)
-        expect($items[0]).to.contain.text('Pool')
-        expect($items[1]).to.contain.text('Gym')
-        expect($items[2]).to.contain.text('Breakfast')
-        expect($items[3]).to.contain.text('Bar')
+        expect($items).to.have.length(expectedAmenities.length)
+        expectedAmenities.forEach((amenity, index) => {
+          expect($items[index]).to.contain.text(amenity)
+        })
       })
   });
 
@@ -41,25 +43,40 @@ describe('integration test for amenities', () => {
     cy.get('#startTime').clear().type('18:00');
     cy.get('#endTime').clear().type('19:00');
     cy.contains('Submit').click();
+
     cy.get('.amenity-item')
       .should(($items) => {
         expect($items).to.have.length(5)
-        expect($items[4]).to.contain.text('testAmenity')
+        const hasTestAmenity = Cypress.$.makeArray($items)
+          .some(item => Cypress.$(item).text().includes('testAmenity'))
+        expect(hasTestAmenity).to.be.true
       })
+    
     //cleanup
     cy.contains('th', 'testAmenity')
       .parents('tr')
       .find('td')
-      .contains('Delete')
+      .find('.delete-amenity')
       .click()
+
+    cy.get('app-confirmation-dialog').should('be.visible');
+    cy.get('app-confirmation-dialog')
+      .contains('button', 'Confirm')
+      .click();
   });
 
   it('Delete amenity', () => {
     cy.contains('th', 'Bar')
       .parents('tr')
       .find('td')
-      .contains('Delete')
+      .find('.delete-amenity')
       .click()
+
+    cy.get('app-confirmation-dialog').should('be.visible');
+    cy.get('app-confirmation-dialog')
+      .contains('button', 'Confirm')
+      .click();
+
     cy.get('.amenity-item')
       .should(($items) => {
         expect($items).to.have.length(3)
@@ -73,11 +90,11 @@ describe('integration test for amenities', () => {
     cy.contains('Submit').click();
   });
 
-  it('Edit amenity', ()=>{
+  it('Edit amenity', () => {
     cy.contains('th', 'Bar')
       .parents('tr')
       .find('td')
-      .contains('Edit')
+      .find('.edit-amenity')
       .click();
     cy.get('#name').clear().type('Test');
     cy.get('#description').clear().type('This is a test');
@@ -88,16 +105,19 @@ describe('integration test for amenities', () => {
     cy.contains('th', 'Test')
       .parents('tr')
       .find('td')
-      .should(($tds)=>{
+      .should(($tds) => {
         expect($tds[0]).to.contain.text('This is a test');
         expect($tds[1]).to.contain.text('12:34 PM - 01:57 PM');
       })
+
+    // close toast since it blocks the button
+    cy.get('.toast-close-button').should('be.visible').click();
 
     //cleanup
     cy.contains('th', 'Test')
       .parents('tr')
       .find('td')
-      .contains('Edit')
+      .find('.edit-amenity')
       .click();
     cy.get('#name').clear().type('Bar');
     cy.get('#description').clear().type('Serves alcohol and food');
@@ -106,7 +126,7 @@ describe('integration test for amenities', () => {
     cy.contains('Submit').click();
   })
 
-  afterEach(()=>{
+  afterEach(() => {
     cy.get('#logout')
       .click()
   });

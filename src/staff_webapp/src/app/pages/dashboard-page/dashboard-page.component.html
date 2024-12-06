@@ -1,17 +1,24 @@
-<!-- Top Bar -->
-<div class="flex justify-between items-center h-16 bg-slate-200 py-2 px-5">
-	<div>
-		<h3 class="text-xl font-bold">Concierge Admin Dashboard</h3>
+<div class="bg-primary">
+	<!-- Top Bar -->
+	<div class="flex justify-between items-center h-16 py-2 px-5">
+		<div class="flex flex-row items-center">
+			<img src="../../../assets/conciergevector.svg" alt="Concierge" class="h-20 object-contain" />
+		</div>
+		<div>
+			<a href="#" id="logout" (click)="handleLogout()" class="bg-black text-white p-2 rounded-lg">
+				<span class="mr-2 hidden lg:inline-block">Logout</span>
+				<i class="fa-solid fa-sign-out-alt"></i>
+			</a>
+		</div>
 	</div>
-	<div>
-		<a href="#" id="logout" (click)="handleLogout()" class="bg-slate-300 p-2 rounded-lg">Log out</a>
+	<div class="flex h-[calc(100vh-4rem)]">
+		<!-- Sidebar -->
+		<app-sidebar class="h-full w-20 lg:w-80 flex-none" />
+		<!-- Tabs -->
+		<div class="flex-grow overflow-auto shadow-inner-custom bg-white rounded-lg">
+			<div class="m-10">
+				<router-outlet />
+			</div>
+		</div>
 	</div>
-</div>
-<div class="flex h-[calc(100vh-4rem)]">
-	<!-- Sidebar -->
-  <app-sidebar class="bg-slate-200 h-full w-80 flex-none"/>
-	<!-- Tabs -->
-  <div class="flex-grow overflow-auto mx-10 my-5">
-    <router-outlet />
-  </div>
 </div>

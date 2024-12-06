@@ -1,6 +1,7 @@
 // Shared Utility functions between the integration tests
 
 export const admin_login = () => {
+    cy.viewport(1280, 720);
     cy.visit('localhost:8082/login')
     cy.get('#room-num-input').clear().type('admin');
     cy.get('#pass-code-input').clear().type('admin');
@@ -15,11 +16,11 @@ export const admin_logout = () => {
 }
 
 export const guest_login = () => {
-    cy.visit('localhost:8081')
-    cy.get('input')
-        .type('404')
-    cy.get('button').click()
-
+    cy.viewport(390, 844);
+    cy.visit("localhost:8081");
+    cy.get("#roomNum").type("11111");
+    cy.get("#roomKey").type("password");
+    cy.get("button").click();
 }
 
 export const guest_logout = () => {

@@ -19,7 +19,6 @@ permissions = None
 DEFAULT_PORT = 8080
 ENVIRONMENT_VAR_NAME_PORT = "ACCOUNTS_PORT"
 
-
 def start_service():
     """Run the service"""
     #pylint: disable=global-statement
@@ -35,7 +34,13 @@ def start_service():
 
 def set_services(new_database=None, new_authentication=None,
                  new_user_service=None, new_permissions=None):
-    """Inject various services into the Server
+    """
+    Inject various services into the Server
+    Args:
+        new_database becomes the database
+        new_authentication becomes the authenticator
+        new_user_service becomes the user service
+        new_permissions becomes the permissions
     """
     # pylint: disable=global-statement
     global database, auth, user_service, permissions
@@ -50,7 +55,8 @@ def set_services(new_database=None, new_authentication=None,
 
 
 def get_port() -> int:
-    """Get the port the server should run on
+    """
+    Get the port the server should run on
         Returns: port number
     """
     parser = argparse.ArgumentParser(
@@ -80,13 +86,43 @@ def get_port() -> int:
 @app.route("/accounts", methods=['GET'])
 def index():
     """
-    Route to the index page
+    Route to the index page or 
+    the specified users if permissions grant
     """
+    print('something')
     response = {
         "message": "You have contacted the accounts",
         "status": "success"
     }
-    return jsonify(response)
+    print(request)
+    
+    token = request.headers.get('X-Api-Key')
+    if(token is not None):
+        try:
+            account_type_filter = request.args.get('account_type')
+            if token and permissions.can_view_users(
+                            token
+                        ):
+                users = [
+                    {'id':user.id, 'username':user.username,'type':user.type} 
+                    for user in user_service.get_users(account_type_filter)
+                ]
+                return jsonify(users), 200
+            else:
+                print("Missing CanViewUsers permissions")
+                return jsonify({
+                    "message": "Missing Permission",
+                    "status": "Unauthorized"
+                }), 401
+
+        except Exception as e:
+            print(e)
+            return jsonify({
+                    "message": "An error has occured",
+                    "status": "Internal Server Error"
+                }), 500
+    else:
+        return jsonify(response)
 
 
 @app.route("/accounts", methods=["POST"])
@@ -139,12 +175,15 @@ def login():
     }
     data = request.get_json()
     try:
-        if auth.authenticate_user_login(data["username"], data["password"]):
+        user = auth.authenticate_user_login(data["username"], data["password"])
+        if user is not None:
             response["message"] = f"Welcome, {data['username']}!"
+            response["data"] = {'id':user.id,'type':user.type,'username':user.username}
             response["status"] = "ok"
             return response
-    except Exception:#If there is an issus, throw a 401
-        pass
+    except Exception as e:#If there is an issus, throw a 401
+        print(f"Error in Account login attempt: {e}")
+        response["message"] = "Something went wrong!"
     return response, 401
 
 
