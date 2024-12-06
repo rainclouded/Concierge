@@ -1,6 +1,5 @@
 FROM node:20-alpine AS build_angular
 
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 WORKDIR /app
 
