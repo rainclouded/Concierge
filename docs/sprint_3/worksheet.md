@@ -68,3 +68,9 @@ Our non-functional requirement: 500 users are able to make 1000 concurrent reque
 ![](./images/S2NFR.png)
 
 As shown in our test results, we could not meet our non-functional requirement. The sheer amount of concurrent users and their numerous requests proved to much for Concierge to handle. With enough money, we could maybe delegate our software to a third party service such as AWS to handle such a feat, but perhaps improvements could be made to our system to better handle such situations by improving overall efficiency. 
+
+## Thoughts
+What we would do to change our design of our project given what we know now, we would definitely use third party services to implement some of our services. As an example, authenticating user and user actions took a huge part of development time in sprint 2, and we felt like if we allocated this to a third-party service, we would allocate that time to flesh out our system more by implementing more features, such as a notification service that delegates inter communication between microserivces. By using third-party services we would also be gaining experience in how to integrate them into an existing codebase, which would be valuable in a workplace.
+
+## Other Thoughts
+After discussion with the group we thought if we went over this all over again, we would not use Flask to implement some of our microservices. This is because Flask can not be deployed due to security issues. What we would do instead is find other alternatives to Flask to implement our microservices using Python.
