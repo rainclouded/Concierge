@@ -13,52 +13,62 @@ import { loginGuard } from './guards/login.guard';
 
 export const routes: Routes = [
   {
-    path: '',
-    redirectTo: 'login',
-    pathMatch: 'full',
-  },
-  {
-    path: 'login',
-    component: LoginPageComponent,
-    canActivate: [loginGuard],
-  },
-  {
-    path: 'dashboard',
-    component: DashboardPageComponent,
-    canActivate: [authGuard],
+    path: 'staff',
     children: [
       {
-        path: 'home',
-        component: HomeTabComponent,
-        canActivate: [authGuard],
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'login'
       },
       {
-        path: 'accounts',
-        component: AccountsTabComponent,
-        canActivate: [authGuard],
+        path: 'login',
+        component: LoginPageComponent,
+        canActivate: [loginGuard],
       },
       {
-        path: 'amenities',
-        component: AmenitiesTabComponent,
+        path: 'dashboard',
+        component: DashboardPageComponent,
         canActivate: [authGuard],
-      },
-      {
-        path: 'incident_reports',
-        component: IncidentReportsTabComponent,
-        canActivate: [authGuard],
-      },
-      {
-        path: 'tasks',
-        component: TasksTabComponent,
-        canActivate: [authGuard],
-      },
-      {
-        path: 'permissions',
-        component: PermissionsTabComponent,
-        canActivate: [authGuard],
-      },
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
-    ],
+        children: [
+          {
+            path: 'home',
+            component: HomeTabComponent,
+            canActivate: [authGuard],
+          },
+          {
+            path: 'accounts',
+            component: AccountsTabComponent,
+            canActivate: [authGuard],
+          },
+          {
+            path: 'amenities',
+            component: AmenitiesTabComponent,
+            canActivate: [authGuard],
+          },
+          {
+            path: 'incident_reports',
+            component: IncidentReportsTabComponent,
+            canActivate: [authGuard],
+          },
+          {
+            path: 'tasks',
+            component: TasksTabComponent,
+            canActivate: [authGuard],
+          },
+          {
+            path: 'permissions',
+            component: PermissionsTabComponent,
+            canActivate: [authGuard],
+          },
+          { path: '', redirectTo: 'home', pathMatch: 'full' },
+        ],
+      }
+    ]
   },
-  { path: '**', redirectTo: '/login' },
+  {
+    path: '',
+    redirectTo: 'staff',
+    pathMatch: 'full',
+  },
+  { path: '**', redirectTo: 'staff' },
 ];

@@ -13,6 +13,6 @@ export class DashboardPageComponent {
   constructor(private router: Router, private apiKeyService: ApiKeyService) {}
   handleLogout() {
     this.apiKeyService.endSession();
-    this.router.navigate(['/login']);
+    this.router.navigate(['staff/login']);
   }
 }
