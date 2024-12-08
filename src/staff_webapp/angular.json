@@ -13,6 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
+            "baseHref": "/staff/",
             "outputPath": "dist/staff_webapp",
             "index": "src/index.html",
             "browser": "src/main.ts",

@@ -33,7 +33,7 @@ export class LoginPageComponent {
         console.log(response)
         console.log(`Session key: ${response.data.sessionKey}`)
         this.apiKeyService.setSession(response.data.sessionKey)
-        this.router.navigate(['staff/dashboard']);
+        this.router.navigate(['/dashboard']);
       },
       error: (response: any) => {
         console.log(response);

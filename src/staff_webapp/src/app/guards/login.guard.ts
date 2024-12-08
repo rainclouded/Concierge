@@ -6,7 +6,7 @@ export const loginGuard: CanActivateFn = (route, state) => {
   const apiKeyService = inject(ApiKeyService);
   const router = inject(Router);
   if (!apiKeyService.isKeyExpired()) {
-    router.navigate(['staff/dashboard'])
+    router.navigate(['/dashboard'])
     return false;
   }
 
