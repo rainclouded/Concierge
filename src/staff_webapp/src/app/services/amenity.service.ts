@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../models/apiresponse.model';
 import { IAmenity } from '../models/amenity.model';
+import { BASE_API_URL } from '../constants/constants'
 
 @Injectable({
   providedIn: 'root'
 })
 export class AmenityService {
-  apiUrl = 'http://localhost:8089/amenities/'
+  apiUrl = `${BASE_API_URL}/amenities/`;
 
   constructor(private http: HttpClient) { }
 

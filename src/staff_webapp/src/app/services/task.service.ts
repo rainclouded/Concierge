@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../models/apiresponse.model';
 import { ITask } from '../models/tasks.model';
+import { BASE_API_URL } from '../constants/constants'
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaskService {
-  apiUrl = 'http://localhost:8089/tasks/';
+  apiUrl = `${BASE_API_URL}/tasks/`;
 
   constructor(private http: HttpClient) {}
 
