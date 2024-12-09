@@ -101,8 +101,10 @@ ex. feature/account_server/123
 - [Sprint 0 Worksheet](/docs/sprint_0/sprint_0_worksheet.md)
 ### Sprint 1:
 - [Sprint 1 Worksheet](/docs/sprint_1/sprint_1_worksheet.md)
-### Sprint 1:
-- [Sprint 1 Worksheet](/docs/sprint_2/sprint_2_worksheet.md)
+### Sprint 2:
+- [Sprint 2 Worksheet](/docs/sprint_2/sprint_2_worksheet.md)
+### Sprint 3:
+- [Sprint 3 Worksheet](/docs/sprint_3/worksheet.md)
 
 ### Project:
 - [Getting Started (Docker Compose)](docs/project_docs/getting_started.md)
