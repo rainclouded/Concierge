@@ -1,4 +1,7 @@
 ## Load Testing
+
+[Link to our JMeter testing file](./jmeter/Concierge.jmx)
+
 ### Environment
 For our load testing, we will be using JMeter, and our test cases will be the following: 
 
