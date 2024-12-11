@@ -14,7 +14,7 @@ function TaskPage() {
     const fetchTasks = async () => {
       try {
         const response = await fetchWithAuth(
-          `${import.meta.env.VITE_API_BASE_URL}/tasks/`,
+          `/tasks/`,
           {
             method: "GET",
             headers: {

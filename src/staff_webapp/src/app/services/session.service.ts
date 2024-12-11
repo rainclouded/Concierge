@@ -11,7 +11,7 @@ import { ISessionData } from '../models/session-data.model';
   providedIn: 'root',
 })
 export class SessionService {
-  apiUrl = 'http://localhost:8089/sessions';
+  apiUrl = `/sessions`;
   private sessionCache: ISessionData | null = null;
 
   constructor(private http: HttpClient) {}

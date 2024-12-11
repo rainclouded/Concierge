@@ -8,7 +8,7 @@ import { IAmenity } from '../models/amenity.model';
   providedIn: 'root'
 })
 export class AmenityService {
-  apiUrl = 'http://localhost:8089/amenities/'
+  apiUrl = `/amenities/`;
 
   constructor(private http: HttpClient) { }
 

@@ -8,7 +8,7 @@ import { IAccount } from '../models/account.model';
   providedIn: 'root',
 })
 export class AccountService {
-  apiUrl = 'http://localhost:8089/accounts';
+  apiUrl = `/accounts`;
 
   constructor(private http: HttpClient) {}
 

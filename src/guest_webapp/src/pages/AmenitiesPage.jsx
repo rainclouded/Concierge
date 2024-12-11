@@ -13,7 +13,7 @@ const AmenitiesPage = () => {
     const fetchAmenities = async () => {
       try {
         const response = await fetchWithAuth(
-          `${import.meta.env.VITE_API_BASE_URL}/amenities/`
+          `/amenities/`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch amenities");

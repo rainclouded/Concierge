@@ -73,8 +73,23 @@ As mentioned in question 1, we have been able to keep all of our testing. Curren
 
 
 In terms of test-plan, we have not created more than one. We run all our tests in all scenarios in order to ensure expected and desired performance. However, in future, if the integration tests begin to increase at the rate they have been, we will look into reducing the amount run during development.
-## Not testing
 
+## Not testing
+We have not not been testing anything in our system. All components of Concierge are tested with due diligence.
+
+### Test Coverage Reports
+
+Accounts
+[](/docs/sprint_2/images/reports_accounts.png)
+
+Tasks
+[](/docs/sprint_2/images/report_tasks.png)
+
+Incident Reports
+[](/docs/sprint_2/images/reports_incident_reports.png)
+
+Amenities
+[](/docs/sprint_2/images/reports_amenities.png)
 
 ## Profiler:
 

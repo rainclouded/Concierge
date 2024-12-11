@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class PermissionService {
-  apiUrl = 'http://localhost:8089/permission-groups';
+  apiUrl = `/permission-groups`;
 
   constructor(private http: HttpClient) {}
 
