@@ -59,7 +59,7 @@ For our load testing, we will be using JMeter, and our test cases will be the fo
 ![](./images/S2500100.png)
 
 ### Bottlenecks
-Some of the bottlenecks we identified are the GET and ADD endpoints for amenities, tasks and incident reports. We found as more and more of these amenities/tasks/incident reports are being added to the system concurrently, it slowed down the corresponding endpoints due to the sheer amount being added and the size to retrieve and send to the client. But as we followed a microservice architecture, these bottlenecks only impacted their corresponding service.
+Some of the bottlenecks we identified are the GET and ADD endpoints for amenities, tasks and incident reports. We found as more and more of these amenities/tasks/incident reports are being added to the system concurrently, it slowed down the corresponding endpoints due to the sheer amount being added and the size to retrieve and send to the client. But as we followed a microservice architecture, these bottlenecks only impacted their corresponding service. One possible bottleneck could also have been our nginx container, as all requests must pass through nginx to be able to be routed to it's appropriate microservice, this acts as a single point of failure for our service.
 
 ### Testing Our Non-Functional Requirement
 Our non-functional requirement: 500 users are able to make 1000 concurrent requests, here are the results as follows:
