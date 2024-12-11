@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiGenPasswordResponse, ApiResponse } from '../models/apiresponse.model';
 import { IAccount } from '../models/account.model';
-import { BASE_API_URL } from '../constants/constants'
 
 @Injectable({
   providedIn: 'root',

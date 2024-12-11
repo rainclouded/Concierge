@@ -17,7 +17,7 @@ export const admin_logout = () => {
 
 export const guest_login = () => {
     cy.viewport(390, 844);
-    cy.visit("localhost:8081");
+    cy.visit("localhost:8089");
     cy.get("#roomNum").type("11111");
     cy.get("#roomKey").type("password");
     cy.get("button").click();
