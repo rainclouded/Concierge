@@ -1,1 +1,1 @@
-export const BASE_API_URL = "http://127.0.0.5";
+export const BASE_API_URL = "http://support.skyres.ca:58089";
