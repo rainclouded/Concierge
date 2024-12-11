@@ -10,7 +10,7 @@ describe('Integration Test for Task Manager', () => {
   beforeEach(() => {
     // Set viewport and log in
     cy.viewport(1280, 720);
-    cy.visit('localhost:8082/login');
+    cy.visit('localhost:8089/staff/login');
     cy.get('#room-num-input').clear().type('admin');
     cy.get('#pass-code-input').clear().type('admin');
     cy.get('button').click();

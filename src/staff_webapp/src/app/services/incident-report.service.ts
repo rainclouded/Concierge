@@ -3,13 +3,12 @@ import { Injectable } from '@angular/core';
 import { IIncidentReport } from '../models/incident-report.model';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../models/apiresponse.model';
-import { BASE_API_URL } from '../constants/constants'
 
 @Injectable({
   providedIn: 'root'
 })
 export class IncidentReportService {
-  apiUrl = `${BASE_API_URL}/incident_reports/`;
+  apiUrl = `/incident_reports/`;
 
   constructor(private http: HttpClient) { }
 

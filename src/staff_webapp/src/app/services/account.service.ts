@@ -9,7 +9,7 @@ import { BASE_API_URL } from '../constants/constants'
   providedIn: 'root',
 })
 export class AccountService {
-  apiUrl = `${BASE_API_URL}/accounts`;
+  apiUrl = `/accounts`;
 
   constructor(private http: HttpClient) {}
 

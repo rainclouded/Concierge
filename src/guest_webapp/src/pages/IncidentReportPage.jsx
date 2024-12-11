@@ -35,7 +35,7 @@ const IncidentReportPage = () => {
 
     try {
       const response = await fetchWithAuth(
-        `${import.meta.env.VITE_API_BASE_URL}/incident_reports/`,
+        `/incident_reports/`,
         {
           method: "POST",
           headers: {

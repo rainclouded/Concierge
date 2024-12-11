@@ -12,7 +12,7 @@ const LoginPage = () => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/sessions`,
+        `/sessions`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -6,13 +6,12 @@ import { Observable } from 'rxjs/internal/Observable';
 import { ILogin } from '../models/login.models';
 import { of, tap } from 'rxjs';
 import { ISessionData } from '../models/session-data.model';
-import { BASE_API_URL } from '../constants/constants'
 
 @Injectable({
   providedIn: 'root',
 })
 export class SessionService {
-  apiUrl = `${BASE_API_URL}/sessions`;
+  apiUrl = `/sessions`;
   private sessionCache: ISessionData | null = null;
 
   constructor(private http: HttpClient) {}

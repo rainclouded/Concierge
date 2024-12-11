@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import { IPermissionGroup } from '../models/permission-group';
 import { ApiResponse } from '../models/apiresponse.model';
 import { HttpClient } from '@angular/common/http';
-import { BASE_API_URL } from '../constants/constants'
 
 @Injectable({
   providedIn: 'root',
 })
 export class PermissionService {
-  apiUrl = `${BASE_API_URL}/permission-groups`;
+  apiUrl = `/permission-groups`;
 
   constructor(private http: HttpClient) {}
 
