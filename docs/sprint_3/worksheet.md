@@ -118,7 +118,7 @@ Our python api endpoints are hosted using flask and we have debug enabled on it 
 
 Pr of commits where fixes were merged [here](https://github.com/rainclouded/Concierge/pull/248/files#diff-631f97bc8b38f9e2b921fe9b8ebf9f810f805cc64a779f183407ba4056312910) .
 (Just [dockerfiles](https://github.com/rainclouded/Concierge/pull/248/files?file-filters%5B%5D=No+extension&show-viewed-files=true) were requiring fixing)\
-There are two outstanding critical vulnerabilities which will not be addressed. The are with regards to the docker files both of our front ends using Superuser privileges. The way which we designed our nginx config for the front end, such privileges are necessary and will not be fixed. (Potential technical debt)  
+There are two outstanding critical vulnerabilities which will not be addressed. The are with regards to the docker files both of our front ends using Superuser privileges. The way which we designed our nginx config for the front end, such privileges are necessary and will not be fixed. Moreover, in order to correctly handle the frontend packages ng/npm, we need this privlige - thus it is a requirment and not an issue to be fixed. (Potential technical debt)  
 
 
 ## CI/CD Pipeline: 
