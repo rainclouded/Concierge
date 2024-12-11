@@ -13,7 +13,7 @@ python3 -m pip install requirements.txt
 ```
 Next start the server (ctrl-c to stop)
 ```
-python3 -m accounts
+python3 -m app
 ```
 
 Using docker:
