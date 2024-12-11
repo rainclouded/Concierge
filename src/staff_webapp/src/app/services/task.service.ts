@@ -8,7 +8,7 @@ import { ITask } from '../models/tasks.model';
   providedIn: 'root'
 })
 export class TaskService {
-  apiUrl = 'http://localhost:8089/tasks/';
+  apiUrl = `/tasks/`;
 
   constructor(private http: HttpClient) {}
 

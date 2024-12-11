@@ -6,7 +6,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=mongo_db_user
       - MONGO_INITDB_ROOT_PASSWORD=password
     volumes:
-      - mongo:/data/db 
+      - incidents_mongo_data:/data/db 
     healthcheck:
       test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
       interval: 30s
@@ -26,9 +26,7 @@ services:
       - DB_HOST=mongo_incident_reports_prod
       - DB_PORT=27017
       - DB_USERNAME=mongo_db_user 
-      - DB_PASSWORD=password 
-    volumes:
-      - .:/app
+      - DB_PASSWORD=password
 volumes:
-  mongo:
+  incidents_mongo_data:
     driver: local 

@@ -7,6 +7,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    volumes:
+      - accounts_mongo_data:/data/db 
 
   accounts:
     image: conciergeapp/concierge:accounts
@@ -19,6 +21,7 @@ services:
       - SESSIONS_ENDPOINT=http://permissions:8080
     env_file: 
       - .env.prod
+
 volumes:
-  mongo_data:
+  accounts_mongo_data:
     driver: local

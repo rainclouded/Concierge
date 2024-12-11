@@ -110,7 +110,7 @@ const HomePage = () => {
 
     try {
       const response = await fetchWithAuth(
-        `${import.meta.env.VITE_API_BASE_URL}/tasks/`,
+        `/tasks/`,
         {
           method: "POST",
           headers: {

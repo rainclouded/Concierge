@@ -8,7 +8,7 @@ import { ApiResponse } from '../models/apiresponse.model';
   providedIn: 'root'
 })
 export class IncidentReportService {
-  apiUrl = 'http://localhost:8089/incident_reports/'
+  apiUrl = `/incident_reports/`;
 
   constructor(private http: HttpClient) { }
 
